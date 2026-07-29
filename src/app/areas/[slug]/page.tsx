@@ -6,6 +6,10 @@ import { client } from "@/sanity/client";
 import { AREA_GUIDE_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
+import { HeroNav } from "@/components/HeroNav";
+import { MinimalFooter } from "@/components/MinimalFooter";
+import { ThingsToDoTabs } from "@/components/ThingsToDoTabs";
+import { PropertyCard } from "@/components/PropertyCard";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -25,103 +29,146 @@ export default async function AreaGuidePage({ params }: Props) {
   if (!guide) notFound();
 
   return (
-    <main>
-      {guide.heroImage ? (
-        <div className="relative h-[50vh] w-full">
+    <main className="overflow-x-hidden bg-cream font-sans text-near-black">
+      {/* HERO */}
+      <section className="relative h-[56vh] min-h-[460px] w-full bg-forest-green">
+        {guide.heroImage && (
           <Image
-            src={urlFor(guide.heroImage).width(1600).height(800).url()}
-            alt={guide.heroImage.alt || guide.areaName}
+            src={urlFor(guide.heroImage).width(1800).height(1200).url()}
+            alt={guide.heroImage.alt ?? guide.areaName}
             fill
-            className="object-cover"
             priority
+            className="object-cover"
+            style={{ objectPosition: "center 42%" }}
           />
-          <div className="absolute inset-0 bg-[#0A5540]/30" />
-          <h1 className="absolute bottom-8 left-8 font-serif text-4xl font-semibold text-white sm:text-5xl">
-            {guide.areaName}
-          </h1>
-        </div>
-      ) : (
-        <div className="bg-[#0A5540] px-4 py-16 text-center">
-          <h1 className="font-serif text-4xl font-semibold text-white sm:text-5xl">
-            {guide.areaName}
-          </h1>
-        </div>
-      )}
+        )}
+        <div className="absolute inset-0 bg-forest-green/30" />
+        <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-b from-forest-green/0 to-forest-green/60" />
 
-      <div className="mx-auto max-w-4xl px-4 py-12">
-        {guide.introduction && (
-          <div className="prose prose-neutral max-w-none">
+        <HeroNav />
+
+        <div className="absolute inset-x-8 bottom-11 text-center sm:inset-x-14 sm:text-left">
+          <p className="mb-3.5 text-xs font-medium tracking-widest text-light-sage uppercase">
+            Areas / {guide.areaName}
+          </p>
+          <h1 className="font-serif text-4xl leading-[1.08] font-extrabold tracking-tight text-cream sm:text-6xl">
+            {guide.areaName}
+          </h1>
+        </div>
+      </section>
+
+      {/* INTRO */}
+      {guide.introduction && (
+        <section className="mx-auto max-w-[640px] px-8 pt-16 pb-2 sm:px-14">
+          <div className="prose prose-neutral max-w-none text-lg leading-[1.65] text-near-black [&_p]:m-0">
             <PortableText value={guide.introduction} />
           </div>
-        )}
+        </section>
+      )}
 
-        {guide.thingsToDo?.length > 0 && (
-          <section className="mt-10">
-            <h2 className="font-serif text-2xl font-semibold text-[#1C1C1C]">Things to Do</h2>
-            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {guide.thingsToDo.map((activity: any, i: number) => (
-                <div key={i}>
-                  {activity.image && (
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
-                      <Image
-                        src={urlFor(activity.image).width(500).height(375).url()}
-                        alt={activity.image.alt || activity.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                  <h3 className="mt-2 font-medium text-[#1C1C1C]">{activity.title}</h3>
-                  {activity.description && (
-                    <p className="mt-1 text-sm text-[#555550]">{activity.description}</p>
-                  )}
-                </div>
+      {/* THINGS TO DO */}
+      {guide.thingsToDo?.length > 0 && (
+        <section className="mx-auto max-w-6xl px-8 pt-14 pb-5 sm:px-14">
+          <h2 className="mb-2 font-serif text-[26px] font-bold tracking-tight text-forest-green">
+            A few things worth knowing
+          </h2>
+          <p className="mb-7 text-sm text-near-black/60">
+            Grouped the way we&apos;d tell a friend, not the way a brochure would.
+          </p>
+          <ThingsToDoTabs items={guide.thingsToDo} />
+        </section>
+      )}
+
+      {/* MAP + GETTING HERE */}
+      <section className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-8 py-14 sm:px-14 lg:grid-cols-[1.4fr_1fr]">
+        <div className="min-h-[320px] overflow-hidden rounded-[10px] border border-sage-grey/40">
+          <iframe
+            src={`https://www.google.com/maps?q=${encodeURIComponent(
+              `${guide.areaName}, Ireland`
+            )}&output=embed`}
+            className="h-full min-h-[320px] w-full border-0"
+            loading="lazy"
+          />
+        </div>
+        {guide.travelNotes?.length > 0 && (
+          <div>
+            <h3 className="mb-4 font-serif text-lg font-bold text-forest-green">
+              Getting here
+            </h3>
+            <div className="flex flex-col gap-3.5">
+              {guide.travelNotes.map((note: any, i: number) => (
+                <p key={i} className="text-sm text-near-black">
+                  <strong>{note.label}</strong> — {note.description}
+                </p>
               ))}
             </div>
-          </section>
+          </div>
         )}
+      </section>
 
-        {guide.featuredProperties?.length > 0 && (
-          <section className="mt-10">
-            <h2 className="font-serif text-2xl font-semibold text-[#1C1C1C]">
-              Stays in {guide.areaName}
-            </h2>
-            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {guide.featuredProperties.map((property: any) => (
-                <Link key={property._id} href={`/stays/${property.slug}`} className="group block">
-                  {property.coverImage && (
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
-                      <Image
-                        src={urlFor(property.coverImage).width(500).height(375).url()}
-                        alt={property.name}
-                        fill
-                        className="object-cover transition-transform group-hover:scale-105"
-                      />
-                    </div>
-                  )}
-                  <h3 className="mt-2 font-medium text-[#1C1C1C]">{property.name}</h3>
-                  <p className="text-sm text-[#555550]">{property.location}</p>
+      {/* STAYS IN THIS AREA */}
+      {guide.featuredProperties?.length > 0 && (
+        <section className="mx-auto max-w-6xl px-8 pt-5 pb-20 sm:px-14">
+          <h2 className="mb-6 font-serif text-[26px] font-bold tracking-tight text-forest-green">
+            Stay here
+          </h2>
+          <div className="flex flex-col gap-6">
+            {guide.featuredProperties.map((property: any) => (
+              <PropertyCard
+                key={property._id}
+                slug={property.slug}
+                name={property.name}
+                location={property.location}
+                shortDescription={property.shortDescription}
+                sleeps={property.sleeps}
+                coverImage={property.coverImage}
+                gallery={property.gallery}
+                surface="framed"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* FAQ */}
+      {guide.faqs?.length > 0 && (
+        <section className="mx-auto max-w-[720px] px-8 pb-24 sm:px-14">
+          <h2 className="mb-6 font-serif text-2xl font-bold tracking-tight text-forest-green">
+            A few questions people ask
+          </h2>
+          <div className="border-t border-sage-grey/40">
+            {guide.faqs.map((faq: any, i: number) => (
+              <details key={i} className="border-b border-sage-grey/40 py-4.5">
+                <summary className="cursor-pointer text-[15px] font-semibold text-near-black marker:content-none [&::-webkit-details-marker]:hidden">
+                  {faq.question}
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed text-near-black/70">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* RELATED BLOG POSTS */}
+      {guide.relatedBlogPosts?.length > 0 && (
+        <section className="mx-auto max-w-6xl border-t border-sage-grey/40 px-8 py-10 sm:px-14">
+          <p className="text-sm font-medium text-near-black/60">Read more</p>
+          <ul className="mt-3 flex flex-wrap gap-5">
+            {guide.relatedBlogPosts.map((post: any) => (
+              <li key={post._id}>
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="text-sm font-medium text-forest-green underline"
+                >
+                  {post.title}
                 </Link>
-              ))}
-            </div>
-          </section>
-        )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-        {guide.relatedBlogPosts?.length > 0 && (
-          <section className="mt-10 border-t border-[#E2E2DC] pt-6">
-            <p className="text-sm font-medium text-[#555550]">Read more</p>
-            <ul className="mt-2 flex flex-wrap gap-4">
-              {guide.relatedBlogPosts.map((post: any) => (
-                <li key={post._id}>
-                  <Link href={`/blog/${post.slug}`} className="text-[#0F6E56] underline">
-                    {post.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-      </div>
+      <MinimalFooter />
     </main>
   );
 }

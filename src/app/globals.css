@@ -3,6 +3,13 @@
 :root {
   --background: #FAFAF8;
   --foreground: #1C1C1C;
+
+  --forest-green: #4A5D48;   /* primary */
+  --light-sage: #ACC196;     /* secondary accent */
+  --cream: #FEFEE3;          /* page background */
+  --maroon: #472D30;         /* owner-context accent */
+  --sage-grey: #A6B0A6;      /* border/divider */
+  --near-black: #171917;     /* body text */
 }
 
 @theme inline {
@@ -10,6 +17,13 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-serif: var(--font-playfair);
+
+  --color-forest-green: var(--forest-green);
+  --color-light-sage: var(--light-sage);
+  --color-cream: var(--cream);
+  --color-maroon: var(--maroon);
+  --color-sage-grey: var(--sage-grey);
+  --color-near-black: var(--near-black);
 }
 
 body {

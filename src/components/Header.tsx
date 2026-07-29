@@ -1,6 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { usesHeroChrome } from "@/lib/heroChromeRoutes";
 
 export function Header() {
+  const pathname = usePathname();
+  if (usesHeroChrome(pathname)) return null;
+
   return (
     <header className="sticky top-0 z-40 border-b border-[#E2E2DC] bg-[#FAFAF8]/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">

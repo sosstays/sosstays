@@ -71,10 +71,12 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     sleeps,
     bedrooms,
     uplistingPropertySlug,
+    faqs,
     relatedAreaGuide-> {
       _id,
       areaName,
-      "slug": slug.current
+      "slug": slug.current,
+      introduction
     },
     ${seoProjection}
   }
@@ -99,13 +101,17 @@ export const AREA_GUIDE_QUERY = defineQuery(`
     heroImage,
     introduction,
     thingsToDo,
+    travelNotes,
+    faqs,
     featuredProperties[]-> {
       _id,
       name,
       "slug": slug.current,
       location,
       shortDescription,
+      sleeps,
       "coverImage": gallery[0],
+      "gallery": gallery[0...3],
       uplistingPropertySlug
     },
     "relatedBlogPosts": *[_type == "blogPost" && references(^._id)] {
@@ -167,10 +173,11 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
 
 export const HOMEPAGE_QUERY = defineQuery(`{
   "properties": *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...3] {
-    _id, name, "slug": slug.current, location, shortDescription, "coverImage": gallery[0]
+    _id, name, "slug": slug.current, location, shortDescription, sleeps,
+    "coverImage": gallery[0], "gallery": gallery[0...3]
   },
   "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {
-    _id, areaName, "slug": slug.current, heroImage
+    _id, areaName, "slug": slug.current, heroImage, introduction
   },
   "posts": *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) [0...3] {
     _id, title, "slug": slug.current, excerpt, coverImage

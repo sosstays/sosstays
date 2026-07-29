@@ -1,6 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { usesHeroChrome } from "@/lib/heroChromeRoutes";
 
 export function Footer() {
+  const pathname = usePathname();
+  if (usesHeroChrome(pathname)) return null;
+
   return (
     <footer className="mt-24 border-t border-[#E2E2DC] bg-[#E8F5F0]">
       <div className="mx-auto max-w-6xl px-4 py-12">
