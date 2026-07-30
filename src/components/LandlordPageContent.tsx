@@ -48,19 +48,10 @@ const PROCESS_STEPS = [
 export function LandlordPageContent({ page }: { page: LandlordPage }) {
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
-      {/* Hidden static form so a Netlify build can detect this field set for
-          Netlify Forms. Note: this relies on the deployed site actually being
-          a Netlify build that scans rendered HTML for forms — unconfirmed for
-          this app. LandlordLeadForm falls back to a mailto link if the POST
-          in submitLeadForm() fails, so a lead is never silently lost either way. */}
-      <form name="landlord-leads" data-netlify="true" netlify-honeypot="bot-field" hidden>
-        <input type="text" name="name" />
-        <input type="email" name="email" />
-        <input type="text" name="situation" />
-        <input type="text" name="propertyDescription" />
-        <input type="text" name="mobile" />
-        <input type="text" name="bot-field" />
-      </form>
+      {/* Netlify Forms detection form lives at public/__forms.html, not
+          here — @netlify/plugin-nextjs v5 requires it as a genuinely
+          static file rather than rendered inside the app. See
+          LandlordLeadForm.tsx and https://opennext.js.org/netlify/forms */}
 
       {/* HERO */}
       <section className="relative bg-maroon px-8 pt-[180px] pb-24 sm:px-14 sm:pt-[200px]">

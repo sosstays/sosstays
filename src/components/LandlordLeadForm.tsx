@@ -45,16 +45,15 @@ export function LandlordLeadForm() {
     setStep2Error(false);
     setSubmitting(true);
     try {
-      // Netlify Forms AJAX pattern (per Netlify's own docs) — POST to "/"
-      // with a body matching the hidden static <form name="landlord-leads">
-      // below field-for-field. That hidden form is what lets Netlify's
-      // build-time bot register the form; it only needs to appear once,
-      // anywhere in the site's static output (see /landlords, which is
-      // statically prerendered). If this site isn't deployed on Netlify —
-      // or Netlify's forms bot didn't pick this form up — this POST won't
-      // actually be captured, and the error branch below offers a mailto
-      // fallback so the lead isn't silently lost.
-      const res = await fetch("/", {
+      // Netlify Forms AJAX pattern, targeting the static detection file
+      // at public/__forms.html rather than a Next.js route — required by
+      // @netlify/plugin-nextjs v5, which errors at build time if a form
+      // is rendered inside the app itself instead of a genuinely static
+      // file. See https://opennext.js.org/netlify/forms. If this site
+      // isn't deployed on Netlify, this POST will fail and the error
+      // branch below offers a mailto fallback so the lead isn't silently
+      // lost.
+      const res = await fetch("/__forms.html", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: encodeForm({
