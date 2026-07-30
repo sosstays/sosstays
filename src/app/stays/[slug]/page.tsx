@@ -10,7 +10,7 @@ import { portableTextToPlain } from "@/sanity/portableText";
 import { urlFor } from "@/sanity/image";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
 import { HeroNav } from "@/components/HeroNav";
-import { MinimalFooter } from "@/components/MinimalFooter";
+import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import type { Metadata } from "next";
 
@@ -70,7 +70,7 @@ export default async function PropertyPage({ params }: Props) {
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       {/* HERO GALLERY */}
       <section className="relative">
-        <HeroNav />
+        <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Send your SOS" />
         <PropertyGallery images={property.gallery ?? []} alt={property.name} />
       </section>
 
@@ -242,8 +242,6 @@ export default async function PropertyPage({ params }: Props) {
           />
         </div>
       </section>
-
-      <MinimalFooter />
     </main>
   );
 }

@@ -161,7 +161,7 @@ export const LANDLORD_PAGES_QUERY = defineQuery(`
 // ---- Site settings (singleton) ----
 
 export const SITE_SETTINGS_QUERY = defineQuery(`
-  *[_type == "siteSettings"][0] {
+  *[_id == "siteSettings"][0] {
     siteName,
     defaultSeoTitle,
     defaultSeoDescription,
@@ -179,11 +179,27 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
 // ---- Privacy policy (singleton) ----
 
 export const PRIVACY_POLICY_QUERY = defineQuery(`
-  *[_type == "privacyPolicyPage"][0] {
+  *[_id == "privacyPolicyPage"][0] {
     title,
     lastUpdated,
     body,
     ${seoProjection}
+  }
+`);
+
+// ---- Homepage hero (singleton) ----
+
+export const HERO_SECTION_QUERY = defineQuery(`
+  *[_id == "heroSection"][0] {
+    eyebrow,
+    heading,
+    body,
+    subBody,
+    image,
+    primaryCtaLabel,
+    primaryCtaUrl,
+    secondaryCtaLabel,
+    secondaryCtaUrl
   }
 `);
 

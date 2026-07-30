@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import Script from "next/script";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
@@ -57,7 +56,6 @@ export default async function RootLayout({
             gtag('config', '${GA_MEASUREMENT_ID}');
           `}
         </Script>
-        <Header />
         <div className="flex-1">{children}</div>
         <Footer socialLinks={settings?.socialLinks} />
       </body>

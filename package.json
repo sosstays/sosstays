@@ -13,7 +13,9 @@
     "next": "^16.2.12",
     "next-sanity": "^13.2.2",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^5.15.13",

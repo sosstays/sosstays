@@ -7,7 +7,7 @@ import { AREA_GUIDE_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
-import { MinimalFooter } from "@/components/MinimalFooter";
+import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { ThingsToDoTabs } from "@/components/ThingsToDoTabs";
 import { PropertyCard } from "@/components/PropertyCard";
 import type { Metadata } from "next";
@@ -45,7 +45,7 @@ export default async function AreaGuidePage({ params }: Props) {
         <div className="absolute inset-0 bg-forest-green/30" />
         <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-b from-forest-green/0 to-forest-green/60" />
 
-        <HeroNav />
+        <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Send your SOS" />
 
         <div className="absolute inset-x-8 bottom-11 text-center sm:inset-x-14 sm:text-left">
           <p className="mb-3.5 text-xs font-medium tracking-widest text-light-sage uppercase">
@@ -167,8 +167,6 @@ export default async function AreaGuidePage({ params }: Props) {
           </ul>
         </section>
       )}
-
-      <MinimalFooter />
     </main>
   );
 }

@@ -4,7 +4,7 @@ import { LANDLORD_PAGES_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
 import { LandlordPageContent } from "@/components/LandlordPageContent";
 import { HeroNav } from "@/components/HeroNav";
-import { MinimalFooter } from "@/components/MinimalFooter";
+import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -28,7 +28,12 @@ export default async function LandlordsIndexPage() {
     return (
       <main className="overflow-x-hidden bg-cream font-sans text-near-black">
         <section className="relative bg-maroon px-8 pt-[180px] pb-24 text-center sm:px-14 sm:pt-[200px]">
-          <HeroNav accent="maroon" />
+          <HeroNav
+            links={LANDLORD_NAV_LINKS}
+            variant="landlords"
+            ctaHref="mailto:hello@sosstays.ie"
+            ctaLabel="Contact us"
+          />
           <h1 className="font-serif text-4xl font-bold text-cream">For landlords</h1>
           <p className="mt-4 text-light-sage">
             Details coming soon —{" "}
@@ -38,7 +43,6 @@ export default async function LandlordsIndexPage() {
             in the meantime.
           </p>
         </section>
-        <MinimalFooter />
       </main>
     );
   }
@@ -47,7 +51,12 @@ export default async function LandlordsIndexPage() {
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <section className="relative bg-maroon px-8 pt-[180px] pb-24 sm:px-14 sm:pt-[200px]">
-        <HeroNav accent="maroon" />
+        <HeroNav
+          links={LANDLORD_NAV_LINKS}
+          variant="landlords"
+          ctaHref="mailto:hello@sosstays.ie"
+          ctaLabel="Contact us"
+        />
         <div className="mx-auto max-w-3xl">
           <h1 className="font-serif text-4xl font-bold text-cream">For landlords</h1>
           <ul className="mt-6 space-y-4">
@@ -61,7 +70,6 @@ export default async function LandlordsIndexPage() {
           </ul>
         </div>
       </section>
-      <MinimalFooter />
     </main>
   );
 }

@@ -1,6 +1,6 @@
 import { PortableText } from "next-sanity";
 import { HeroNav } from "@/components/HeroNav";
-import { MinimalFooter } from "@/components/MinimalFooter";
+import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
 import { LandlordLeadForm } from "@/components/LandlordLeadForm";
 
 type LandlordPage = {
@@ -64,7 +64,12 @@ export function LandlordPageContent({ page }: { page: LandlordPage }) {
 
       {/* HERO */}
       <section className="relative bg-maroon px-8 pt-[180px] pb-24 sm:px-14 sm:pt-[200px]">
-        <HeroNav accent="maroon" />
+        <HeroNav
+          links={LANDLORD_NAV_LINKS}
+          variant="landlords"
+          ctaHref="#send-sos"
+          ctaLabel="Contact us"
+        />
         <div className="mx-auto max-w-[760px] text-center">
           <span className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
             For property owners
@@ -316,8 +321,6 @@ export function LandlordPageContent({ page }: { page: LandlordPage }) {
           </a>
         </div>
       </section>
-
-      <MinimalFooter />
     </main>
   );
 }

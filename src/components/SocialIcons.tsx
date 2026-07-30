@@ -33,7 +33,13 @@ const ICONS: Record<SocialLink["platform"], React.ReactNode> = {
   ),
 };
 
-export function SocialIcons({ links }: { links?: SocialLink[] }) {
+export function SocialIcons({
+  links,
+  className = "text-[#555550] hover:bg-[#0F6E56] hover:text-white",
+}: {
+  links?: SocialLink[];
+  className?: string;
+}) {
   if (!links || links.length === 0) return null;
 
   return (
@@ -45,7 +51,7 @@ export function SocialIcons({ links }: { links?: SocialLink[] }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={LABELS[link.platform]}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-[#555550] transition-colors hover:bg-[#0F6E56] hover:text-white"
+            className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${className}`}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
               {ICONS[link.platform]}

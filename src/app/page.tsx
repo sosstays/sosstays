@@ -1,72 +1,89 @@
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import { client } from "@/sanity/client";
-import { HOMEPAGE_QUERY } from "@/sanity/queries";
+import { HERO_SECTION_QUERY, HOMEPAGE_QUERY } from "@/sanity/queries";
+import { urlFor } from "@/sanity/image";
 import { HeroNav } from "@/components/HeroNav";
-import { MinimalFooter } from "@/components/MinimalFooter";
+import { HOME_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyCard } from "@/components/PropertyCard";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const { properties, areas, posts } = await client.fetch(HOMEPAGE_QUERY);
+  const [hero, { properties, areas, posts }] = await Promise.all([
+    client.fetch(HERO_SECTION_QUERY),
+    client.fetch(HOMEPAGE_QUERY),
+  ]);
   const featuredProperty = properties[0];
+  const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       {/* HERO */}
       <section className="relative h-[94vh] min-h-[700px] w-full bg-forest-green">
-        <Image
-          src="https://cdn.sanity.io/images/owyw3r12/production/094b90b907f8217d1f4b26f4607a3acb6169ffff-5464x3640.jpg"
-          alt={featuredProperty?.name ?? "Sos Stays"}
-          fill
-          priority
-          className="object-cover"
-          style={{ objectPosition: "center 62%" }}
-        />
+        {hero?.image && (
+          <Image
+            src={urlFor(hero.image).width(1600).height(1400).url()}
+            alt={hero.image.alt}
+            fill
+            priority
+            className="object-cover"
+          />
+        )}
         <div className="absolute inset-0 bg-forest-green/60" />
 
-        <HeroNav variant="home" />
+        <HeroNav links={HOME_NAV_LINKS} ctaHref="#stays" ctaLabel="Send your SOS" />
 
         {/* hero content */}
         <div className="absolute inset-x-8 bottom-16 z-10 flex flex-col items-center justify-end gap-10 text-center sm:inset-x-14 sm:flex-row sm:items-end sm:justify-between sm:text-left">
           <div className="max-w-2xl">
-            <p className="mb-5 text-xs font-semibold tracking-widest text-light-sage uppercase">
-              Somewhere Out Somewhere
-            </p>
+            {hero?.eyebrow && (
+              <p className="mb-5 text-xs font-semibold tracking-widest text-light-sage uppercase">
+                {hero.eyebrow}
+              </p>
+            )}
             <h1 className="mb-6 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:text-6xl">
-              Somewhere out.
-              <br />
-              Somewhere quiet.
+              {headingLines.map((line: string, i: number) => (
+                <span key={i}>
+                  {line}
+                  {i < headingLines.length - 1 && <br />}
+                </span>
+              ))}
             </h1>
-            <p className="mx-auto mb-4 max-w-[500px] text-lg text-cream/95 sm:mx-0">
-              Real places along the coast and the Boyne Valley — no two the same, all properly looked after. Find your somewhere for the weekend, or longer.
-            </p>
-            <p className="mx-auto mb-8 max-w-[460px] text-sm text-light-sage/85 sm:mx-0">
-              Sos is the Irish word for a break. We named ourselves after exactly
-              what we offer.
-            </p>
+            {hero?.body && (
+              <p className="mx-auto mb-4 max-w-[500px] text-lg text-cream/95 sm:mx-0">
+                {hero.body}
+              </p>
+            )}
+            {hero?.subBody && (
+              <p className="mx-auto mb-8 max-w-[460px] text-sm text-light-sage/85 sm:mx-0">
+                {hero.subBody}
+              </p>
+            )}
             <div className="flex flex-wrap justify-center gap-4 sm:justify-start">
-              <Link
-                href="/stays"
-                className="inline-block rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-forest-green transition-opacity hover:opacity-80"
-              >
-                Find your Somewhere
-              </Link>
-              <Link
-                href="/landlords"
-                className="inline-block rounded-full border border-cream px-8 py-4 text-[15px] font-semibold text-cream transition-opacity hover:opacity-80"
-              >
-                I have a property to manage
-              </Link>
+              {hero?.primaryCtaLabel && (
+                <Link
+                  href={hero.primaryCtaUrl || "/stays"}
+                  className="inline-block rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-forest-green transition-opacity hover:opacity-80"
+                >
+                  {hero.primaryCtaLabel}
+                </Link>
+              )}
+              {hero?.secondaryCtaLabel && (
+                <Link
+                  href={hero.secondaryCtaUrl || "/landlords"}
+                  className="inline-block rounded-full border border-cream px-8 py-4 text-[15px] font-semibold text-cream transition-opacity hover:opacity-80"
+                >
+                  {hero.secondaryCtaLabel}
+                </Link>
+              )}
             </div>
           </div>
-          {featuredProperty && (
+          {hero?.image?.alt && (
             <div className="text-sm whitespace-nowrap text-cream/75 sm:text-right">
-              {featuredProperty.name}
-              <br />
-              {featuredProperty.location}
+              {hero.image.alt}
             </div>
           )}
         </div>
@@ -161,7 +178,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <MinimalFooter variant="home" />
+      {/* INSTAGRAM FEED */}
+      <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
+        <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
+      </section>
+      <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
     </main>
   );
 }
