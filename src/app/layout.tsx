@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
+import Script from "next/script";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import "./globals.css";
+
+const GA_MEASUREMENT_ID = "G-ZG60S049VC";
 
 // Brand fonts per the Sos Stays brand knowledge base:
 // Playfair Display for headlines/pull quotes, Inter for body/UI.
@@ -36,6 +39,18 @@ export default function RootLayout({
       className={`${playfair.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#FAFAF8] font-sans text-[#1C1C1C]">
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga-gtag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
         <Header />
         <div className="flex-1">{children}</div>
         <Footer />

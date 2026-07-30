@@ -18,7 +18,7 @@ export function HeroNav({ variant = "page" }: { variant?: "home" | "page" }) {
       ? [
           { href: "#stays", label: "Stays" },
           { href: "#areas", label: "Area guides" },
-          { href: "#blog", label: "Blog" },
+          { href: "/blog", label: "Blog" },
           { href: "#landlords", label: "For landlords" },
         ]
       : [

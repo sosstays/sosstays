@@ -2,18 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { client } from "@/sanity/client";
 import { HOMEPAGE_QUERY } from "@/sanity/queries";
-import { urlFor } from "@/sanity/image";
-import { portableTextToPlain } from "@/sanity/portableText";
 import { HeroNav } from "@/components/HeroNav";
 import { MinimalFooter } from "@/components/MinimalFooter";
 import { PropertyCard } from "@/components/PropertyCard";
+import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
   const { properties, areas, posts } = await client.fetch(HOMEPAGE_QUERY);
   const featuredProperty = properties[0];
-  const featuredArea = areas[0];
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
@@ -38,13 +36,12 @@ export default async function HomePage() {
               Somewhere Out Somewhere
             </p>
             <h1 className="mb-6 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:text-6xl">
-              Send your SOS.
+              Somewhere out.
               <br />
-              We&apos;ll sort the stay.
+              Somewhere quiet.
             </h1>
             <p className="mx-auto mb-4 max-w-[500px] text-lg text-cream/95 sm:mx-0">
-              Holiday homes across Louth, Meath and the Mournes — book direct, or
-              hand us the keys.
+              Real places along the coast and the Boyne Valley — no two the same, all properly looked after. Find your somewhere for the weekend, or longer.
             </p>
             <p className="mx-auto mb-8 max-w-[460px] text-sm text-light-sage/85 sm:mx-0">
               Sos is the Irish word for a break. We named ourselves after exactly
@@ -55,7 +52,7 @@ export default async function HomePage() {
                 href="/stays"
                 className="inline-block rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-forest-green transition-opacity hover:opacity-80"
               >
-                Find your break
+                Find your Somewhere
               </Link>
               <Link
                 href="/landlords"
@@ -100,45 +97,7 @@ export default async function HomePage() {
       )}
 
       {/* AREA SPOTLIGHT */}
-      {featuredArea && (
-        <section
-          id="areas"
-          className="relative h-[78vh] min-h-[600px] w-full overflow-hidden bg-forest-green"
-        >
-          {featuredArea.heroImage && (
-            <Image
-              src={urlFor(featuredArea.heroImage).width(1800).height(1200).url()}
-              alt={featuredArea.areaName}
-              fill
-              className="object-cover"
-              style={{ objectPosition: "center 40%" }}
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-r from-forest-green/85 via-forest-green/50 to-forest-green/5" />
-
-          <div className="relative flex h-full items-center px-8 sm:px-14">
-            <div className="max-w-[520px]">
-              <p className="mb-5 text-xs font-medium tracking-widest text-light-sage uppercase">
-                Where to start
-              </p>
-              <h2 className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
-                {featuredArea.areaName}
-              </h2>
-              {featuredArea.introduction && (
-                <p className="mb-9 text-lg leading-relaxed text-cream/90">
-                  {portableTextToPlain(featuredArea.introduction, 220)}
-                </p>
-              )}
-              <Link
-                href={`/areas/${featuredArea.slug}`}
-                className="inline-block rounded-full bg-cream px-8 py-4 text-[15px] font-medium text-forest-green transition-opacity hover:opacity-85"
-              >
-                Explore {featuredArea.areaName} →
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
+      <AreaSpotlightCarousel areas={areas} />
 
       {/* BLOG TEASER */}
       {/* {posts.length > 0 && (

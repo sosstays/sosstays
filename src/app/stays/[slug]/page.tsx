@@ -113,7 +113,7 @@ export default async function PropertyPage({ params }: Props) {
       </section>
 
       {/* STORY */}
-      <section className="px-8 pt-12 sm:px-14">
+      <section className="px-8 pt-12 pb-14 sm:px-14">
         {property.amenities?.length > 0 && (
           <div className="mb-5 flex flex-wrap gap-2.5">
             {property.amenities.map((amenity: string) => (
@@ -150,7 +150,7 @@ export default async function PropertyPage({ params }: Props) {
 
       {/* IN THE AREA */}
       {property.relatedAreaGuide && (
-        <section className="mx-auto mt-14 max-w-[1100px] px-8 py-14 sm:px-14">
+        <section className="mx-auto max-w-[1100px] px-8 py-14 sm:px-14">
           <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
             In the area
           </h2>

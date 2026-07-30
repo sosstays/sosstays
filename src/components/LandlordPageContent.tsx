@@ -21,6 +21,21 @@ export function LandlordPageContent({ page }: { page: any }) {
         </div>
       )}
 
+      <section className="mt-12">
+        <h2 className="font-serif text-2xl font-semibold text-[#1C1C1C]">
+          See what your property could earn
+        </h2>
+        <p className="mt-2 text-sm text-[#555550]">Free estimate — no sign-up required.</p>
+        <div className="mt-4 overflow-hidden rounded-lg border border-[#E2E2DC]">
+          <iframe
+            src="https://strrevenue.netlify.app"
+            title="Short-term rental revenue calculator"
+            className="h-[900px] w-full"
+            loading="lazy"
+          />
+        </div>
+      </section>
+
       {page.ctaUrl && (
         <a
           href={page.ctaUrl}

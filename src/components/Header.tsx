@@ -34,7 +34,7 @@ export function Header() {
           href="/stays"
           className="hidden rounded-md bg-[#0F6E56] px-4 py-2 text-sm font-medium text-white hover:bg-[#0A5540] sm:inline-block"
         >
-          Find your break
+          Find your somewhere
         </Link>
 
         {/* Mobile nav: kept intentionally simple for now — a proper
