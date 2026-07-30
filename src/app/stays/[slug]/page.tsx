@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
@@ -6,6 +7,8 @@ import { PROPERTY_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { buildUplistingBookingUrl } from "@/sanity/uplisting";
 import { buildMetadata } from "@/sanity/metadata";
 import { portableTextToPlain } from "@/sanity/portableText";
+import { urlFor } from "@/sanity/image";
+import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
 import { HeroNav } from "@/components/HeroNav";
 import { MinimalFooter } from "@/components/MinimalFooter";
 import { PropertyGallery } from "@/components/PropertyGallery";
@@ -47,11 +50,16 @@ export default async function PropertyPage({ params }: Props) {
 
   if (!property) notFound();
 
-  // The Book Now link only resolves once Site Settings has a real
-  // booking subdomain URL configured. Until then, show a disabled
-  // state rather than a broken link.
-  const bookingUrl =
-    siteSettings?.bookingSubdomainUrl && property.uplistingPropertySlug
+  // uplistingPropertySlug is documented (and validated) in Studio as a
+  // short Uplisting property_slug, to be combined with Site Settings'
+  // bookingSubdomainUrl. In practice it's currently been filled in with a
+  // ready-to-use booking URL directly (and Site Settings has no
+  // bookingSubdomainUrl set at all) — so use it as-is when it's already a
+  // full URL, and only fall back to the slug+subdomain construction
+  // otherwise.
+  const bookingUrl = property.uplistingPropertySlug?.startsWith("http")
+    ? property.uplistingPropertySlug
+    : siteSettings?.bookingSubdomainUrl && property.uplistingPropertySlug
       ? buildUplistingBookingUrl({
           bookingSubdomain: siteSettings.bookingSubdomainUrl,
           propertySlug: property.uplistingPropertySlug,
@@ -113,7 +121,7 @@ export default async function PropertyPage({ params }: Props) {
       </section>
 
       {/* STORY */}
-      <section className="px-8 pt-12 pb-14 sm:px-14">
+      <section className="mx-auto max-w-4xl px-8 pt-12 pb-14 sm:px-14">
         {property.amenities?.length > 0 && (
           <div className="mb-5 flex flex-wrap gap-2.5">
             {property.amenities.map((amenity: string) => (
@@ -148,38 +156,59 @@ export default async function PropertyPage({ params }: Props) {
         )}
       </section>
 
-      {/* IN THE AREA */}
-      {property.relatedAreaGuide && (
-        <section className="mx-auto max-w-[1100px] px-8 py-14 sm:px-14">
-          <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
-            In the area
-          </h2>
-          <div className="grid grid-cols-1 items-start gap-9 lg:grid-cols-[1.3fr_1fr]">
-            <div className="h-[280px] overflow-hidden rounded-[10px] border border-sage-grey/40">
-              <iframe
-                src={`https://www.google.com/maps?q=${encodeURIComponent(
-                  `${property.location}, Ireland`
-                )}&output=embed`}
-                className="h-full w-full border-0"
-                loading="lazy"
-              />
-            </div>
-            <div>
-              {property.relatedAreaGuide.introduction && (
-                <p className="mb-4.5 text-[15px] leading-[1.65] text-near-black">
-                  {portableTextToPlain(property.relatedAreaGuide.introduction, 260)}
-                </p>
-              )}
+      {/* AREAS */}
+      <section id="areas" className="mx-auto max-w-[1100px] px-8 py-14 sm:px-14">
+        <p className="mb-2 text-xs tracking-widest text-near-black/55 uppercase">Areas</p>
+        <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
+          In the area
+        </h2>
+
+        <div className="h-[320px] overflow-hidden rounded-[10px] border border-sage-grey/40">
+          <iframe
+            src={toGoogleMapsEmbedSrc(property.locationLink, `${property.location}, Ireland`)}
+            className="h-full w-full border-0"
+            loading="lazy"
+          />
+        </div>
+
+        {property.relatedAreaGuides?.length > 0 && (
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {property.relatedAreaGuides.map((guide: any) => (
               <Link
-                href={`/areas/${property.relatedAreaGuide.slug}`}
-                className="text-sm font-semibold text-forest-green"
+                key={guide._id}
+                href={`/areas/${guide.slug}`}
+                className="block overflow-hidden rounded-[10px] border border-sage-grey/40 bg-white"
               >
-                Read the {property.relatedAreaGuide.areaName} guide →
+                {guide.heroImage ? (
+                  <div className="relative h-40">
+                    <Image
+                      src={urlFor(guide.heroImage).width(500).height(320).url()}
+                      alt={guide.heroImage.alt ?? guide.areaName}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="h-40 bg-light-sage/25" />
+                )}
+                <div className="p-5">
+                  <h3 className="mb-2 font-serif text-lg font-bold text-near-black">
+                    {guide.areaName}
+                  </h3>
+                  {guide.introduction && (
+                    <p className="mb-3 text-sm leading-relaxed text-near-black/70">
+                      {portableTextToPlain(guide.introduction, 140)}
+                    </p>
+                  )}
+                  <span className="text-sm font-semibold text-forest-green">
+                    Explore {guide.areaName} →
+                  </span>
+                </div>
               </Link>
-            </div>
+            ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* FAQ */}
       {property.faqs?.length > 0 && (

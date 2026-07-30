@@ -4,6 +4,10 @@
 export function usesHeroChrome(pathname: string | null): boolean {
   if (!pathname) return false;
   return (
-    pathname === "/" || pathname.startsWith("/areas/") || pathname.startsWith("/stays/")
+    pathname === "/" ||
+    pathname.startsWith("/areas/") ||
+    pathname.startsWith("/stays/") ||
+    pathname === "/landlords" ||
+    pathname.startsWith("/landlords/")
   );
 }

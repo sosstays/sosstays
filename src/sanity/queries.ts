@@ -64,6 +64,7 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     name,
     "slug": slug.current,
     location,
+    locationLink,
     shortDescription,
     fullDescription,
     gallery,
@@ -72,10 +73,11 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     bedrooms,
     uplistingPropertySlug,
     faqs,
-    relatedAreaGuide-> {
+    relatedAreaGuides[]-> {
       _id,
       areaName,
       "slug": slug.current,
+      heroImage,
       introduction
     },
     ${seoProjection}
@@ -135,6 +137,7 @@ export const LANDLORD_PAGE_QUERY = defineQuery(`
     heroStatement,
     proofPoints,
     body,
+    faqs,
     ctaLabel,
     ctaUrl,
     ${seoProjection}
@@ -165,7 +168,22 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     defaultSeoImage,
     businessName,
     contactEmail,
-    bookingSubdomainUrl
+    bookingSubdomainUrl,
+    socialLinks[] {
+      platform,
+      url
+    }
+  }
+`);
+
+// ---- Privacy policy (singleton) ----
+
+export const PRIVACY_POLICY_QUERY = defineQuery(`
+  *[_type == "privacyPolicyPage"][0] {
+    title,
+    lastUpdated,
+    body,
+    ${seoProjection}
   }
 `);
 

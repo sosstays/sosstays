@@ -3,6 +3,8 @@ import { Playfair_Display, Inter } from "next/font/google";
 import Script from "next/script";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { client } from "@/sanity/client";
+import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import "./globals.css";
 
 const GA_MEASUREMENT_ID = "G-ZG60S049VC";
@@ -22,17 +24,21 @@ const inter = Inter({
   weight: ["400", "500"],
 });
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Sos Stays | Holiday Homes to Book & Properties to Manage in Louth, Meath & the Mournes",
   description:
     "Book direct holiday homes across the Boyne Valley, Louth, and the Mournes — no Airbnb fees. Own a property? We manage it for you and grow your income. Send your SOS.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await client.fetch(SITE_SETTINGS_QUERY);
+
   return (
     <html
       lang="en"
@@ -53,7 +59,7 @@ export default function RootLayout({
         </Script>
         <Header />
         <div className="flex-1">{children}</div>
-        <Footer />
+        <Footer socialLinks={settings?.socialLinks} />
       </body>
     </html>
   );

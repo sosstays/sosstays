@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usesHeroChrome } from "@/lib/heroChromeRoutes";
@@ -11,8 +12,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-[#E2E2DC] bg-[#FAFAF8]/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Link href="/" className="font-serif text-2xl font-semibold text-[#1C1C1C]">
-          Sos Stays
+        <Link href="/" className="flex items-center">
+          <Image src="/logo.svg" alt="Sos Stays" width={126} height={80} className="h-10 w-auto" priority />
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm font-medium text-[#1C1C1C] sm:flex">

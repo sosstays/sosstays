@@ -3,8 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usesHeroChrome } from "@/lib/heroChromeRoutes";
+import { SocialIcons } from "@/components/SocialIcons";
 
-export function Footer() {
+type SocialLink = {
+  platform: "instagram" | "facebook" | "tiktok" | "linkedin" | "x" | "youtube";
+  url: string;
+};
+
+export function Footer({ socialLinks }: { socialLinks?: SocialLink[] }) {
   const pathname = usePathname();
   if (usesHeroChrome(pathname)) return null;
 
@@ -17,6 +23,7 @@ export function Footer() {
             <p className="mt-2 text-sm text-[#555550]">
               Sos is the Irish word for a break.
             </p>
+            <SocialIcons links={socialLinks} />
           </div>
 
           <div>
@@ -74,6 +81,11 @@ export function Footer() {
                 <a href="mailto:hello@sosstays.ie" className="hover:text-[#0F6E56]">
                   hello@sosstays.ie
                 </a>
+              </li>
+              <li>
+                <Link href="/privacy-policy" className="hover:text-[#0F6E56]">
+                  Privacy policy
+                </Link>
               </li>
             </ul>
           </div>

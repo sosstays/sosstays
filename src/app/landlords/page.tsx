@@ -3,6 +3,8 @@ import { client } from "@/sanity/client";
 import { LANDLORD_PAGES_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
 import { LandlordPageContent } from "@/components/LandlordPageContent";
+import { HeroNav } from "@/components/HeroNav";
+import { MinimalFooter } from "@/components/MinimalFooter";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -24,32 +26,42 @@ export default async function LandlordsIndexPage() {
 
   if (pages.length === 0) {
     return (
-      <main className="mx-auto max-w-3xl px-4 py-12 text-center">
-        <h1 className="font-serif text-4xl font-semibold text-[#1C1C1C]">For landlords</h1>
-        <p className="mt-4 text-[#555550]">
-          Details coming soon —{" "}
-          <a href="mailto:hello@sosstays.ie" className="text-[#0F6E56] underline">
-            get in touch
-          </a>{" "}
-          in the meantime.
-        </p>
+      <main className="overflow-x-hidden bg-cream font-sans text-near-black">
+        <section className="relative bg-maroon px-8 pt-[180px] pb-24 text-center sm:px-14 sm:pt-[200px]">
+          <HeroNav accent="maroon" />
+          <h1 className="font-serif text-4xl font-bold text-cream">For landlords</h1>
+          <p className="mt-4 text-light-sage">
+            Details coming soon —{" "}
+            <a href="mailto:hello@sosstays.ie" className="text-cream underline">
+              get in touch
+            </a>{" "}
+            in the meantime.
+          </p>
+        </section>
+        <MinimalFooter />
       </main>
     );
   }
 
   // Multiple landlord pages exist — show a simple chooser.
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
-      <h1 className="font-serif text-4xl font-semibold text-[#1C1C1C]">For landlords</h1>
-      <ul className="mt-6 space-y-4">
-        {pages.map((page: any) => (
-          <li key={page._id}>
-            <Link href={`/landlords/${page.slug}`} className="text-lg text-[#0F6E56] underline">
-              {page.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <main className="overflow-x-hidden bg-cream font-sans text-near-black">
+      <section className="relative bg-maroon px-8 pt-[180px] pb-24 sm:px-14 sm:pt-[200px]">
+        <HeroNav accent="maroon" />
+        <div className="mx-auto max-w-3xl">
+          <h1 className="font-serif text-4xl font-bold text-cream">For landlords</h1>
+          <ul className="mt-6 space-y-4">
+            {pages.map((page: any) => (
+              <li key={page._id}>
+                <Link href={`/landlords/${page.slug}`} className="text-lg text-cream underline">
+                  {page.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+      <MinimalFooter />
     </main>
   );
 }
