@@ -10,7 +10,7 @@ type SocialLink = {
 // The one footer used on every page.
 export function Footer({ socialLinks }: { socialLinks?: SocialLink[] }) {
   return (
-    <footer className="mt-24 border-t border-sage-grey/40 bg-cream font-sans text-near-black">
+    <footer className="border-t border-sage-grey/40 bg-cream font-sans text-near-black">
       <div className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
           <div className="col-span-2 sm:col-span-1">
