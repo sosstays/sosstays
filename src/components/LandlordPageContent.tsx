@@ -1,9 +1,16 @@
 import { PortableText } from "next-sanity";
+import { client } from "@/sanity/client";
+import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { JsonLd, buildServiceSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
 import { LandlordLeadForm } from "@/components/LandlordLeadForm";
 
 type LandlordPage = {
+  title?: string;
+  slug?: string;
+  heroStatement?: string;
+  proofPoints?: string[];
   body?: any;
   faqs?: { question: string; answer: string }[];
 };
@@ -45,9 +52,13 @@ const PROCESS_STEPS = [
   { number: "04", title: "Handover", description: "Listing goes live, calendar's ours to run, you go back to just owning the place." },
 ];
 
-export function LandlordPageContent({ page }: { page: LandlordPage }) {
+export async function LandlordPageContent({ page }: { page: LandlordPage }) {
+  const siteSettings = await client.fetch(SITE_SETTINGS_QUERY);
+
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
+      <JsonLd data={buildServiceSchema(page, siteSettings)} />
+
       {/* Netlify Forms detection form lives at public/__forms.html, not
           here — @netlify/plugin-nextjs v5 requires it as a genuinely
           static file rather than rendered inside the app. See

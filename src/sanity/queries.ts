@@ -70,7 +70,11 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     gallery,
     amenities,
     sleeps,
+    priceLabel,
     bedrooms,
+    beds,
+    bathrooms,
+    propertyType,
     uplistingPropertySlug,
     faqs,
     relatedAreaGuides[]-> {

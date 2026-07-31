@@ -5,9 +5,15 @@ import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
 import { PROPERTY_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { buildUplistingBookingUrl } from "@/sanity/uplisting";
-import { buildMetadata } from "@/sanity/metadata";
+import { buildMetadata, SITE_URL } from "@/sanity/metadata";
 import { portableTextToPlain } from "@/sanity/portableText";
 import { urlFor } from "@/sanity/image";
+import {
+  JsonLd,
+  buildLodgingBusinessSchema,
+  buildBreadcrumbSchema,
+  buildFaqSchema,
+} from "@/sanity/jsonld";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
@@ -29,6 +35,105 @@ function BookNowCta({
     </a>
   ) : (
     <span className={`${className} cursor-not-allowed opacity-60`}>Booking coming soon</span>
+  );
+}
+
+const overviewIconProps = {
+  width: 30,
+  height: 30,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "var(--forest-green)",
+  strokeWidth: 2,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+};
+
+function GuestsIcon() {
+  return (
+    <svg {...overviewIconProps}>
+      <circle cx="9" cy="8" r="3" />
+      <path d="M3 20c0-3 2.5-5 6-5s6 2 6 5" />
+      <circle cx="17" cy="9" r="2.3" />
+      <path d="M15.5 12c2.6.2 4.5 2 4.5 5" />
+    </svg>
+  );
+}
+
+function BedsIcon() {
+  return (
+    <svg {...overviewIconProps}>
+      <path d="M3 19v-8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8" />
+      <path d="M3 17h18" />
+      <path d="M3 19v2M21 19v2" />
+      <path d="M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3" />
+    </svg>
+  );
+}
+
+function BedroomsIcon() {
+  return (
+    <svg {...overviewIconProps}>
+      <rect x="4" y="4" width="16" height="16" rx="2" />
+      <path d="M4 12h6v8" />
+    </svg>
+  );
+}
+
+function BathroomsIcon() {
+  return (
+    <svg {...overviewIconProps}>
+      <path d="M4 12h16v3a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-3Z" />
+      <path d="M6 12V6a2 2 0 0 1 3.5-1.3" />
+      <path d="M8 20v1.5M16 20v1.5" />
+    </svg>
+  );
+}
+
+function TypeIcon() {
+  return (
+    <svg {...overviewIconProps}>
+      <path d="M4 11.5 12 4l8 7.5" />
+      <path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9" />
+    </svg>
+  );
+}
+
+function PropertyOverview({
+  guests,
+  beds,
+  bedrooms,
+  bathrooms,
+  type,
+}: {
+  guests?: number | null;
+  beds?: number | null;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  type?: string | null;
+}) {
+  const items = [
+    { label: "Guests", value: guests, Icon: GuestsIcon },
+    { label: "Beds", value: beds, Icon: BedsIcon },
+    { label: "Bedrooms", value: bedrooms, Icon: BedroomsIcon },
+    { label: "Bathrooms", value: bathrooms, Icon: BathroomsIcon },
+    { label: "Type", value: type, Icon: TypeIcon },
+  ].filter((item) => item.value !== null && item.value !== undefined && item.value !== "");
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="mb-10 flex flex-wrap gap-x-14 gap-y-8 border-b border-sage-grey/40 pb-10">
+      {items.map(({ label, value, Icon }) => (
+        <div key={label} className="flex flex-col gap-2.5">
+          <div className="flex items-center gap-3 text-near-black/55">
+            <Icon />
+            <span className="text-base">{label}</span>
+          </div>
+          <span className="font-serif text-3xl font-bold text-near-black">{value}</span>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -66,8 +171,20 @@ export default async function PropertyPage({ params }: Props) {
         })
       : null;
 
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Stays", url: `${SITE_URL}/stays` },
+    { name: property.name, url: `${SITE_URL}/stays/${slug}` },
+  ]);
+  const faqSchema = buildFaqSchema(property.faqs);
+  const mapEmbedSrc = await toGoogleMapsEmbedSrc(property.locationLink, `${property.location}, Ireland`);
+
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
+      <JsonLd data={buildLodgingBusinessSchema(property, siteSettings)} />
+      <JsonLd data={breadcrumbSchema} />
+      {faqSchema && <JsonLd data={faqSchema} />}
+
       {/* HERO GALLERY */}
       <section className="relative">
         <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Send your SOS" />
@@ -83,9 +200,9 @@ export default async function PropertyPage({ params }: Props) {
           <h1 className="font-serif text-3xl leading-tight font-extrabold tracking-tight text-near-black sm:text-4xl">
             {property.name}
           </h1>
-          {property.sleeps && (
+          {property.priceLabel && (
             <span className="rounded-full bg-light-sage/35 px-4 py-1.5 text-sm font-semibold whitespace-nowrap text-forest-green">
-              Sleeps {property.sleeps}
+              {property.priceLabel}
             </span>
           )}
         </div>
@@ -134,21 +251,18 @@ export default async function PropertyPage({ params }: Props) {
             ))}
           </div>
         )}
-        {(property.sleeps || property.bedrooms) && (
-          <p className="mb-5 text-sm text-near-black/60">
-            {[
-              property.sleeps && `Sleeps ${property.sleeps}`,
-              property.bedrooms && `${property.bedrooms} bedrooms`,
-            ]
-              .filter(Boolean)
-              .join(" · ")}
-          </p>
-        )}
         {property.shortDescription && (
           <p className="mb-5 max-w-[720px] text-lg leading-[1.65] text-near-black">
             {property.shortDescription}
           </p>
         )}
+        <PropertyOverview
+          guests={property.sleeps}
+          beds={property.beds}
+          bedrooms={property.bedrooms}
+          bathrooms={property.bathrooms}
+          type={property.propertyType}
+        />
         {property.fullDescription && (
           <div className="prose prose-neutral max-w-[720px] text-near-black/80 [&_p]:my-3">
             <PortableText value={property.fullDescription} />
@@ -165,7 +279,7 @@ export default async function PropertyPage({ params }: Props) {
 
         <div className="h-[320px] overflow-hidden rounded-[10px] border border-sage-grey/40">
           <iframe
-            src={toGoogleMapsEmbedSrc(property.locationLink, `${property.location}, Ireland`)}
+            src={mapEmbedSrc}
             className="h-full w-full border-0"
             loading="lazy"
           />

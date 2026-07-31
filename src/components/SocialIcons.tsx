@@ -1,5 +1,13 @@
 type SocialLink = {
-  platform: "instagram" | "facebook" | "tiktok" | "linkedin" | "x" | "youtube";
+  platform:
+    | "instagram"
+    | "facebook"
+    | "tiktok"
+    | "linkedin"
+    | "x"
+    | "youtube"
+    | "tripadvisor"
+    | "whatsapp";
   url: string;
 };
 
@@ -10,6 +18,8 @@ const LABELS: Record<SocialLink["platform"], string> = {
   linkedin: "LinkedIn",
   x: "X (Twitter)",
   youtube: "YouTube",
+  tripadvisor: "TripAdvisor",
+  whatsapp: "WhatsApp",
 };
 
 const ICONS: Record<SocialLink["platform"], React.ReactNode> = {
@@ -30,6 +40,18 @@ const ICONS: Record<SocialLink["platform"], React.ReactNode> = {
   ),
   youtube: (
     <path d="M21.6 7.2s-.21-1.5-.87-2.16c-.83-.87-1.76-.87-2.19-.92C15.44 4 12 4 12 4h-.01s-3.43 0-6.53.12c-.43.05-1.35.05-2.19.92C2.6 5.7 2.4 7.2 2.4 7.2S2.18 8.96 2.18 10.7v1.6c0 1.75.22 3.5.22 3.5s.21 1.5.87 2.16c.83.87 1.93.84 2.42.94 1.75.17 7.31.22 7.31.22s3.44-.01 6.54-.12c.43-.05 1.35-.05 2.19-.92.65-.65.87-2.16.87-2.16s.22-1.75.22-3.5v-1.6c0-1.75-.22-3.5-.22-3.5ZM9.98 14.6V8.9l5.4 2.86-5.4 2.85Z" />
+  ),
+  tripadvisor: (
+    <>
+      <circle cx="7.2" cy="13.4" r="3.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="16.8" cy="13.4" r="3.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="7.2" cy="13.4" r="1.15" />
+      <circle cx="16.8" cy="13.4" r="1.15" />
+      <path d="M8.9 8.4c1-.66 2.02-.98 3.1-.98s2.1.32 3.1.98M2.4 8.4h4.7M16.9 8.4h4.7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </>
+  ),
+  whatsapp: (
+    <path d="M17.6 6.32A7.85 7.85 0 0 0 12.02 4a7.94 7.94 0 0 0-6.9 11.87L4 20l4.24-1.11a7.9 7.9 0 0 0 3.78.96h.01a7.95 7.95 0 0 0 5.6-13.53ZM12.02 18.4a6.6 6.6 0 0 1-3.36-.92l-.24-.14-2.5.66.67-2.44-.16-.25a6.58 6.58 0 0 1 10.35-8.05 6.53 6.53 0 0 1 1.93 4.67 6.6 6.6 0 0 1-6.69 6.47Zm3.6-4.93c-.2-.1-1.17-.58-1.35-.64-.18-.07-.31-.1-.44.1-.13.2-.5.64-.62.77-.11.13-.23.14-.43.05-.2-.1-.83-.31-1.58-.98a5.9 5.9 0 0 1-1.1-1.36c-.11-.2 0-.3.09-.4.09-.09.2-.23.3-.35.1-.12.13-.2.2-.33.06-.13.03-.25-.02-.35-.05-.1-.44-1.06-.6-1.45-.16-.38-.32-.33-.44-.34h-.38c-.13 0-.34.05-.52.25-.18.2-.68.66-.68 1.62 0 .96.7 1.88.8 2.01.1.13 1.37 2.1 3.33 2.94.46.2.83.32 1.11.41.47.15.9.13 1.24.08.38-.06 1.17-.48 1.34-.94.16-.46.16-.86.11-.94-.05-.08-.18-.13-.38-.23Z" />
   ),
 };
 

@@ -5,7 +5,13 @@ import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
 import { AREA_GUIDE_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
-import { buildMetadata } from "@/sanity/metadata";
+import { buildMetadata, SITE_URL } from "@/sanity/metadata";
+import {
+  JsonLd,
+  buildAreaGuideSchema,
+  buildBreadcrumbSchema,
+  buildFaqSchema,
+} from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { ThingsToDoTabs } from "@/components/ThingsToDoTabs";
@@ -28,8 +34,19 @@ export default async function AreaGuidePage({ params }: Props) {
   const guide = await client.fetch(AREA_GUIDE_QUERY, { slug });
   if (!guide) notFound();
 
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Areas", url: `${SITE_URL}/areas` },
+    { name: guide.areaName, url: `${SITE_URL}/areas/${slug}` },
+  ]);
+  const faqSchema = buildFaqSchema(guide.faqs);
+
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
+      <JsonLd data={buildAreaGuideSchema(guide)} />
+      <JsonLd data={breadcrumbSchema} />
+      {faqSchema && <JsonLd data={faqSchema} />}
+
       {/* HERO */}
       <section className="relative h-[56vh] min-h-[460px] w-full bg-forest-green">
         {guide.heroImage && (

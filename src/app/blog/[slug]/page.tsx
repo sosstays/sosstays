@@ -3,9 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
-import { BLOG_POST_QUERY } from "@/sanity/queries";
+import { BLOG_POST_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
-import { buildMetadata } from "@/sanity/metadata";
+import { buildMetadata, SITE_URL } from "@/sanity/metadata";
+import { JsonLd, buildArticleSchema, buildBreadcrumbSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import type { Metadata } from "next";
@@ -23,11 +24,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = await client.fetch(BLOG_POST_QUERY, { slug });
+  const [post, siteSettings] = await Promise.all([
+    client.fetch(BLOG_POST_QUERY, { slug }),
+    client.fetch(SITE_SETTINGS_QUERY),
+  ]);
   if (!post) notFound();
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Blog", url: `${SITE_URL}/blog` },
+    { name: post.title, url: `${SITE_URL}/blog/${slug}` },
+  ]);
 
   return (
     <>
+      <JsonLd data={buildArticleSchema(post, siteSettings)} />
+      <JsonLd data={breadcrumbSchema} />
       <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Send your SOS" sticky />
       <main className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="font-serif text-4xl font-semibold text-[#1C1C1C]">{post.title}</h1>

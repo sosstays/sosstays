@@ -2,8 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
 import { client } from "@/sanity/client";
-import { HERO_SECTION_QUERY, HOMEPAGE_QUERY } from "@/sanity/queries";
+import { HERO_SECTION_QUERY, HOMEPAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
+import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { HOME_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyCard } from "@/components/PropertyCard";
@@ -12,15 +13,21 @@ import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [hero, { properties, areas, posts }] = await Promise.all([
+  const [hero, { properties, areas, posts }, siteSettings] = await Promise.all([
     client.fetch(HERO_SECTION_QUERY),
     client.fetch(HOMEPAGE_QUERY),
+    client.fetch(SITE_SETTINGS_QUERY),
   ]);
   const featuredProperty = properties[0];
   const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
+  const instagramUrl = siteSettings?.socialLinks?.find(
+    (link: { platform: string; url: string }) => link.platform === "instagram",
+  )?.url;
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
+      <JsonLd data={buildOrganizationSchema(siteSettings)} />
+
       {/* HERO */}
       <section className="relative h-[94vh] min-h-[700px] w-full bg-forest-green">
         {hero?.image && (
@@ -180,6 +187,26 @@ export default async function HomePage() {
 
       {/* INSTAGRAM FEED */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
+          <div>
+            <p className="mb-2 text-xs tracking-widest text-near-black/55 uppercase">
+              Follow along
+            </p>
+            <h2 className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
+              On Instagram
+            </h2>
+          </div>
+          {instagramUrl && (
+            <a
+              href={instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block rounded-full bg-forest-green px-7 py-3.5 text-[15px] font-semibold whitespace-nowrap text-cream transition-opacity hover:opacity-85"
+            >
+              Follow us on Instagram
+            </a>
+          )}
+        </div>
         <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
       </section>
       <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />

@@ -8,7 +8,7 @@ type SeoData = {
   noIndex?: boolean;
 } | null | undefined;
 
-const SITE_URL = "https://sosstays.com";
+export const SITE_URL = "https://sosstays.com";
 const DEFAULT_TITLE = "Sos Stays | Holiday Homes to Book & Properties to Manage in Louth, Meath & the Mournes";
 const DEFAULT_DESCRIPTION =
   "Book direct holiday homes across the Boyne Valley, Louth, and the Mournes — no Airbnb fees. Own a property? We manage it for you and grow your income. Send your SOS.";
