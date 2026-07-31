@@ -18,6 +18,7 @@ import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
+import { ReviewScoreCard } from "@/components/ReviewScore";
 import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: re-fetch at most once a minute
@@ -269,6 +270,17 @@ export default async function PropertyPage({ params }: Props) {
           </div>
         )}
       </section>
+
+      {/* REVIEWS */}
+      {property.reviewScore && (
+        <section className="mx-auto max-w-4xl px-8 pb-14 sm:px-14">
+          <ReviewScoreCard
+            score={property.reviewScore}
+            reviewCount={property.reviewCount}
+            categories={property.reviewCategories}
+          />
+        </section>
+      )}
 
       {/* AREAS */}
       <section id="areas" className="mx-auto max-w-[1100px] px-8 py-14 sm:px-14">

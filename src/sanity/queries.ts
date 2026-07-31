@@ -75,6 +75,9 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     beds,
     bathrooms,
     propertyType,
+    reviewScore,
+    reviewCount,
+    reviewCategories,
     uplistingPropertySlug,
     faqs,
     relatedAreaGuides[]-> {
