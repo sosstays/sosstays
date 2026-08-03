@@ -77,8 +77,8 @@ export default async function AreaGuidePage({ params }: Props) {
 
       {/* INTRO */}
       {guide.introduction && (
-        <section className="mx-auto max-w-[640px] px-8 pt-16 pb-2 sm:px-14">
-          <div className="prose prose-neutral max-w-none text-lg leading-[1.65] text-near-black [&_p]:m-0">
+        <section className="mx-auto max-w-6xl px-8 pt-16 pb-2 sm:px-14">
+          <div className="prose prose-neutral max-w-[640px] text-lg leading-[1.65] text-near-black [&_p]:m-0">
             <PortableText value={guide.introduction} />
           </div>
         </section>
@@ -148,7 +148,7 @@ export default async function AreaGuidePage({ params }: Props) {
         </section>
       )}
 
-      <FaqSection heading="A few questions people ask" items={guide.faqs} />
+      <FaqSection heading="A few questions people ask" items={guide.faqs} maxWidth="72rem" />
 
       {/* RELATED BLOG POSTS */}
       {guide.relatedBlogPosts?.length > 0 && (
