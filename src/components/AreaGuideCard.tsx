@@ -30,7 +30,7 @@ export function AreaGuideCard({ guide }: { guide: AreaGuide }) {
         <div className="h-40 bg-light-sage/25" />
       )}
       <div className="p-5">
-        <h3 className="mb-2 font-serif text-lg font-bold text-near-black">
+        <h3 className="mb-2 font-serif text-lg font-bold text-forest-green">
           {guide.areaName}
         </h3>
         {guide.introduction && (
