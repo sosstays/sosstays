@@ -340,7 +340,7 @@ export default async function PropertyPage({ params }: Props) {
         )}
       </section>
 
-      <FaqSection heading="Good to know" items={property.faqs} boldQuestions={false} />
+      <FaqSection heading="Good to know" items={property.faqs} />
 
       {/* FINAL CTA */}
       <section className="mx-auto max-w-4xl px-8 pb-24 text-center sm:px-14">
