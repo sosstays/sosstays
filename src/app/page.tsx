@@ -41,7 +41,7 @@ export default async function HomePage() {
         )}
         <div className="absolute inset-0 bg-forest-green/60" />
 
-        <HeroNav links={HOME_NAV_LINKS} ctaHref="#stays" ctaLabel="Send your SOS" />
+        <HeroNav links={HOME_NAV_LINKS} ctaHref="#stays" ctaLabel="Find your break" />
 
         {/* hero content */}
         <div className="absolute inset-x-8 top-24 bottom-16 z-10 flex flex-col items-center justify-end gap-10 overflow-hidden text-center sm:inset-x-14 sm:top-auto sm:flex-row sm:items-end sm:justify-between sm:overflow-visible sm:text-left">

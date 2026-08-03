@@ -82,7 +82,7 @@ export function AreaSpotlightCarousel({ areas }: { areas: Area[] }) {
                 href={`/areas/${area.slug}`}
                 className="inline-block rounded-full bg-cream px-8 py-4 text-[15px] font-medium text-forest-green transition-opacity hover:opacity-85"
               >
-                Explore {area.areaName} →
+                Explore →
               </Link>
             </div>
           </div>

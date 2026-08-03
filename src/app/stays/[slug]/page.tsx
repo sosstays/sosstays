@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { Poppins } from "next/font/google";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
 import { PROPERTY_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
@@ -22,6 +23,8 @@ import { ReviewScoreCard } from "@/components/ReviewScore";
 import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: re-fetch at most once a minute
+
+const poppins = Poppins({ subsets: ["latin"], weight: ["500", "600", "700"] });
 
 function BookNowCta({
   bookingUrl,
@@ -124,14 +127,14 @@ function PropertyOverview({
   if (items.length === 0) return null;
 
   return (
-    <div className="mb-10 flex flex-wrap gap-x-14 gap-y-8 border-b border-sage-grey/40 pb-10">
+    <div className={`${poppins.className} mb-10 flex flex-wrap gap-x-14 gap-y-8 border-b border-sage-grey/40 pb-10`}>
       {items.map(({ label, value, Icon }) => (
         <div key={label} className="flex flex-col gap-2.5">
           <div className="flex items-center gap-3 text-near-black/55">
             <Icon />
             <span className="text-base">{label}</span>
           </div>
-          <span className="font-serif text-3xl font-bold text-near-black">{value}</span>
+          <span className="text-3xl font-bold text-near-black">{value}</span>
         </div>
       ))}
     </div>
@@ -327,7 +330,7 @@ export default async function PropertyPage({ params }: Props) {
                     </p>
                   )}
                   <span className="text-sm font-semibold text-forest-green">
-                    Explore {guide.areaName} →
+                    Explore →
                   </span>
                 </div>
               </Link>
