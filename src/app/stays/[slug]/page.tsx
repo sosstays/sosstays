@@ -135,7 +135,7 @@ function PropertyOverview({
             <Icon />
             <span className="text-base">{label}</span>
           </div>
-          <span className="text-3xl font-bold text-near-black">{value}</span>
+          <span className="text-3xl text-near-black">{value}</span>
         </div>
       ))}
     </div>
@@ -192,7 +192,7 @@ export default async function PropertyPage({ params }: Props) {
 
       {/* HERO GALLERY */}
       <section className="relative">
-        <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Send your SOS" />
+        <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" />
         <PropertyGallery images={property.gallery ?? []} alt={property.name} />
       </section>
 
@@ -340,7 +340,7 @@ export default async function PropertyPage({ params }: Props) {
         )}
       </section>
 
-      <FaqSection heading="Good to know" items={property.faqs} />
+      <FaqSection heading="Good to know" items={property.faqs} boldQuestions={false} />
 
       {/* FINAL CTA */}
       <section className="mx-auto max-w-4xl px-8 pb-24 text-center sm:px-14">

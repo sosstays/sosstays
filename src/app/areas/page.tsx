@@ -18,7 +18,7 @@ export default async function AreasIndexPage() {
 
   return (
     <>
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Send your SOS" sticky />
+      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="mx-auto max-w-5xl px-4 py-12">
         <h1 className="font-serif text-4xl font-semibold text-[#1C1C1C]">Areas</h1>
         <p className="mt-2 text-[#555550]">

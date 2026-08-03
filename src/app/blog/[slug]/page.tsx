@@ -40,7 +40,7 @@ export default async function BlogPostPage({ params }: Props) {
     <>
       <JsonLd data={buildArticleSchema(post, siteSettings)} />
       <JsonLd data={breadcrumbSchema} />
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Send your SOS" sticky />
+      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="font-serif text-4xl font-semibold text-[#1C1C1C]">{post.title}</h1>
         <p className="mt-2 text-sm text-[#555550]">

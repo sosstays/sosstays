@@ -18,7 +18,7 @@ export default async function BlogIndexPage() {
 
   return (
     <>
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Send your SOS" sticky />
+      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="mx-auto max-w-5xl px-4 py-12">
         <h1 className="font-serif text-4xl font-semibold text-[#1C1C1C]">The Blog</h1>
         <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">

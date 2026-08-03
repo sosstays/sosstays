@@ -22,7 +22,7 @@ export default async function PrivacyPolicyPage() {
 
   return (
     <>
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Send your SOS" sticky />
+      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="mx-auto max-w-3xl px-4 py-12 font-sans">
         <h1 className="font-serif text-4xl font-semibold text-near-black">{page.title}</h1>
         {page.lastUpdated && (

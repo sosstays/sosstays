@@ -12,6 +12,7 @@ export function FaqSection({
   accent = "forest-green",
   centered = false,
   maxWidth = "720px",
+  boldQuestions = true,
 }: {
   id?: string;
   eyebrow?: string;
@@ -20,6 +21,7 @@ export function FaqSection({
   accent?: "forest-green" | "maroon";
   centered?: boolean;
   maxWidth?: string;
+  boldQuestions?: boolean;
 }) {
   if (!items || items.length === 0) return null;
 
@@ -42,7 +44,11 @@ export function FaqSection({
       <div className="border-t border-sage-grey/40">
         {items.map((faq, i) => (
           <details key={i} className="group border-b border-sage-grey/40 py-4.5">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-near-black marker:content-none [&::-webkit-details-marker]:hidden">
+            <summary
+              className={`flex cursor-pointer list-none items-center justify-between gap-4 text-[15px] text-near-black marker:content-none [&::-webkit-details-marker]:hidden ${
+                boldQuestions ? "font-semibold" : "font-normal"
+              }`}
+            >
               {faq.question}
               <svg
                 width="16"
