@@ -1,14 +1,10 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { Poppins } from "next/font/google";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
 import { PROPERTY_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { buildUplistingBookingUrl } from "@/sanity/uplisting";
 import { buildMetadata, SITE_URL } from "@/sanity/metadata";
-import { portableTextToPlain } from "@/sanity/portableText";
-import { urlFor } from "@/sanity/image";
 import {
   JsonLd,
   buildLodgingBusinessSchema,
@@ -21,6 +17,7 @@ import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { ReviewScoreCard } from "@/components/ReviewScore";
 import { FaqSection } from "@/components/FaqSection";
+import { AreaGuideCard } from "@/components/AreaGuideCard";
 import { Button, type ButtonColor } from "@/components/Button";
 import type { Metadata } from "next";
 
@@ -314,37 +311,7 @@ export default async function PropertyPage({ params }: Props) {
         {property.relatedAreaGuides?.length > 0 && (
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {property.relatedAreaGuides.map((guide: any) => (
-              <Link
-                key={guide._id}
-                href={`/areas/${guide.slug}`}
-                className="block overflow-hidden rounded-[10px] border border-sage-grey/40 bg-white"
-              >
-                {guide.heroImage ? (
-                  <div className="relative h-40">
-                    <Image
-                      src={urlFor(guide.heroImage).width(500).height(320).url()}
-                      alt={guide.heroImage.alt ?? guide.areaName}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="h-40 bg-light-sage/25" />
-                )}
-                <div className="p-5">
-                  <h3 className="mb-2 font-serif text-lg font-bold text-near-black">
-                    {guide.areaName}
-                  </h3>
-                  {guide.introduction && (
-                    <p className="mb-3 text-sm leading-relaxed text-near-black/70">
-                      {portableTextToPlain(guide.introduction, 80)}
-                    </p>
-                  )}
-                  <span className="text-sm font-semibold text-forest-green">
-                    Explore →
-                  </span>
-                </div>
-              </Link>
+              <AreaGuideCard key={guide._id} guide={guide} />
             ))}
           </div>
         )}

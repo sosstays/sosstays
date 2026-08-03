@@ -98,7 +98,8 @@ export const AREA_GUIDES_QUERY = defineQuery(`
     _id,
     areaName,
     "slug": slug.current,
-    heroImage
+    heroImage,
+    introduction
   }
 `);
 
