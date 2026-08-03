@@ -44,14 +44,14 @@ export default async function HomePage() {
         <HeroNav links={HOME_NAV_LINKS} ctaHref="#stays" ctaLabel="Send your SOS" />
 
         {/* hero content */}
-        <div className="absolute inset-x-8 bottom-16 z-10 flex flex-col items-center justify-end gap-10 text-center sm:inset-x-14 sm:flex-row sm:items-end sm:justify-between sm:text-left">
+        <div className="absolute inset-x-8 top-24 bottom-16 z-10 flex flex-col items-center justify-end gap-10 overflow-hidden text-center sm:inset-x-14 sm:top-auto sm:flex-row sm:items-end sm:justify-between sm:overflow-visible sm:text-left">
           <div className="max-w-2xl">
             {hero?.eyebrow && (
-              <p className="mb-5 text-xs font-semibold tracking-widest text-light-sage uppercase">
+              <p className="mb-3 text-xs font-semibold tracking-widest text-light-sage uppercase sm:mb-5">
                 {hero.eyebrow}
               </p>
             )}
-            <h1 className="mb-6 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:text-6xl">
+            <h1 className="mb-4 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:mb-6 sm:text-6xl">
               {headingLines.map((line: string, i: number) => (
                 <span key={i}>
                   {line}
@@ -60,12 +60,12 @@ export default async function HomePage() {
               ))}
             </h1>
             {hero?.body && (
-              <p className="mx-auto mb-4 max-w-[500px] text-lg text-cream/95 sm:mx-0">
+              <p className="mx-auto mb-3 max-w-[500px] text-lg text-cream/95 sm:mx-0 sm:mb-4">
                 {hero.body}
               </p>
             )}
             {hero?.subBody && (
-              <p className="mx-auto mb-8 max-w-[460px] text-sm text-light-sage/85 sm:mx-0">
+              <p className="mx-auto mb-5 max-w-[460px] text-sm text-light-sage/85 sm:mx-0 sm:mb-8">
                 {hero.subBody}
               </p>
             )}
