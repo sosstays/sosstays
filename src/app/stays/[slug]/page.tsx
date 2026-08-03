@@ -287,7 +287,7 @@ export default async function PropertyPage({ params }: Props) {
       )}
 
       {/* AREAS */}
-      <section id="areas" className="mx-auto max-w-[1100px] px-8 py-14 sm:px-14">
+      <section id="areas" className="mx-auto max-w-4xl px-8 py-14 sm:px-14">
         <p className="mb-2 text-xs tracking-widest text-near-black/55 uppercase">Areas</p>
         <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
           In the area
@@ -340,7 +340,7 @@ export default async function PropertyPage({ params }: Props) {
         )}
       </section>
 
-      <FaqSection heading="Good to know" items={property.faqs} />
+      <FaqSection heading="Good to know" items={property.faqs} maxWidth="56rem" />
 
       {/* FINAL CTA */}
       <section className="mx-auto max-w-4xl px-8 pb-24 text-center sm:px-14">
