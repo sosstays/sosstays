@@ -159,6 +159,7 @@ export const LANDLORD_PAGES_QUERY = defineQuery(`
     heroStatement,
     proofPoints,
     body,
+    faqs,
     ctaLabel,
     ctaUrl,
     ${seoProjection}
