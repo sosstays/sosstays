@@ -78,8 +78,8 @@ export function Footer({ socialLinks }: { socialLinks?: SocialLink[] }) {
             </p>
             <ul className="mt-3 space-y-2 text-sm text-near-black/70">
               <li>
-                <a href="mailto:hello@sosstays.ie" className="hover:text-forest-green">
-                  hello@sosstays.ie
+                <a href="mailto:info@sosstays.ie" className="hover:text-forest-green">
+                  info@sosstays.ie
                 </a>
               </li>
               <li>
