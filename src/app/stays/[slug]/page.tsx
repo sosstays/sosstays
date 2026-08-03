@@ -20,6 +20,7 @@ import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { ReviewScoreCard } from "@/components/ReviewScore";
+import { FaqSection } from "@/components/FaqSection";
 import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: re-fetch at most once a minute
@@ -339,24 +340,7 @@ export default async function PropertyPage({ params }: Props) {
         )}
       </section>
 
-      {/* FAQ */}
-      {property.faqs?.length > 0 && (
-        <section className="mx-auto max-w-[720px] px-8 pb-24 sm:px-14">
-          <h2 className="mb-6 font-serif text-2xl font-bold tracking-tight text-forest-green">
-            Good to know
-          </h2>
-          <div className="border-t border-sage-grey/40">
-            {property.faqs.map((faq: any, i: number) => (
-              <details key={i} className="border-b border-sage-grey/40 py-4.5">
-                <summary className="cursor-pointer text-[15px] font-semibold text-near-black marker:content-none [&::-webkit-details-marker]:hidden">
-                  {faq.question}
-                </summary>
-                <p className="mt-3 text-sm leading-relaxed text-near-black/70">{faq.answer}</p>
-              </details>
-            ))}
-          </div>
-        </section>
-      )}
+      <FaqSection heading="Good to know" items={property.faqs} />
 
       {/* FINAL CTA */}
       <section className="mx-auto max-w-4xl px-8 pb-24 text-center sm:px-14">

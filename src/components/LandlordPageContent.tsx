@@ -5,6 +5,7 @@ import { JsonLd, buildServiceSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
 import { LandlordLeadForm } from "@/components/LandlordLeadForm";
+import { FaqSection } from "@/components/FaqSection";
 
 type LandlordPage = {
   title?: string;
@@ -287,29 +288,15 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         </div>
       </section>
 
-      {/* FAQ */}
-      {page.faqs && page.faqs.length > 0 && (
-        <section id="faq" className="mx-auto max-w-[820px] px-8 pb-24 sm:px-14">
-          <div className="mb-11 text-center">
-            <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">FAQ</p>
-            <h2 className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
-              The finer print, without the fuss
-            </h2>
-          </div>
-          <div className="border-t border-sage-grey/40">
-            {page.faqs.map((faq, i) => (
-              <details key={i} className="border-b border-sage-grey/40 py-5">
-                <summary className="cursor-pointer text-base font-semibold text-near-black marker:content-none [&::-webkit-details-marker]:hidden">
-                  {faq.question}
-                </summary>
-                <p className="mt-3.5 text-sm leading-relaxed text-near-black/70">
-                  {faq.answer}
-                </p>
-              </details>
-            ))}
-          </div>
-        </section>
-      )}
+      <FaqSection
+        id="faq"
+        eyebrow="FAQ"
+        heading="The finer print, without the fuss"
+        items={page.faqs}
+        accent="maroon"
+        centered
+        maxWidth="820px"
+      />
 
       {/* FINAL CTA */}
       <section className="bg-maroon px-8 py-24 text-center sm:px-14 sm:py-28">
