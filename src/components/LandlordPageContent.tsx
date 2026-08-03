@@ -6,6 +6,7 @@ import { HeroNav } from "@/components/HeroNav";
 import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
 import { LandlordLeadForm } from "@/components/LandlordLeadForm";
 import { FaqSection } from "@/components/FaqSection";
+import { PillButton } from "@/components/PillButton";
 
 type LandlordPage = {
   title?: string;
@@ -91,18 +92,20 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             same house, same income going to you, none of the admin.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a
+            <PillButton
               href="#calculator"
-              className="inline-block rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon transition-opacity hover:opacity-85"
+              ink="maroon"
+              className="rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon"
             >
               See what your property could earn →
-            </a>
-            <a
+            </PillButton>
+            <PillButton
               href="#send-sos"
-              className="inline-block rounded-full border border-cream px-8 py-4 text-[15px] font-semibold text-cream transition-opacity hover:opacity-80"
+              ink="maroon"
+              className="rounded-full border border-cream px-8 py-4 text-[15px] font-semibold text-cream"
             >
               Contact us
-            </a>
+            </PillButton>
           </div>
         </div>
       </section>
@@ -238,12 +241,13 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             </div>
           </div>
 
-          <a
+          <PillButton
             href="#send-sos"
-            className="mt-9 inline-block rounded-full bg-maroon px-8 py-4 text-[15px] font-semibold text-cream transition-opacity hover:opacity-85"
+            ink="maroon"
+            className="mt-9 rounded-full bg-maroon px-8 py-4 text-[15px] font-semibold text-cream"
           >
             Get a proper number — talk to us →
-          </a>
+          </PillButton>
         </div>
       </section>
 
@@ -310,12 +314,13 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           <p className="mb-9 text-lg leading-relaxed text-light-sage">
             Two minutes of your time — with or without your numbers to hand.
           </p>
-          <a
+          <PillButton
             href="#calculator"
-            className="inline-block rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon transition-opacity hover:opacity-85"
+            ink="maroon"
+            className="rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon"
           >
             Get my revenue estimate ↑
-          </a>
+          </PillButton>
         </div>
       </section>
     </main>

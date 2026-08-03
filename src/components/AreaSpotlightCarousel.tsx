@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { urlFor } from "@/sanity/image";
 import { portableTextToPlain } from "@/sanity/portableText";
+import { PillButton } from "@/components/PillButton";
 
 type Area = {
   _id: string;
@@ -79,12 +79,13 @@ export function AreaSpotlightCarousel({ areas }: { areas: Area[] }) {
                   {portableTextToPlain(area.introduction, 220)}
                 </p>
               )}
-              <Link
+              <PillButton
                 href={`/areas/${area.slug}`}
-                className="inline-block rounded-full bg-cream px-8 py-4 text-[15px] font-medium text-forest-green transition-opacity hover:opacity-85"
+                ink="forest"
+                className="rounded-full bg-cream px-8 py-4 text-[15px] font-medium text-forest-green"
               >
                 Explore →
-              </Link>
+              </PillButton>
             </div>
           </div>
         </div>
