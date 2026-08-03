@@ -75,14 +75,39 @@ export default async function AreaGuidePage({ params }: Props) {
         </div>
       </section>
 
-      {/* INTRO */}
-      {guide.introduction && (
-        <section className="mx-auto max-w-6xl px-8 pt-16 pb-2 sm:px-14">
-          <div className="prose prose-neutral max-w-[640px] text-lg leading-[1.65] text-near-black [&_p]:m-0">
+      {/* INTRO + MAP */}
+      <section className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-8 pt-16 pb-14 sm:px-14 lg:grid-cols-[1.2fr_1fr] lg:items-start">
+        {guide.introduction && (
+          <div className="prose prose-neutral max-w-none text-lg leading-[1.65] text-near-black [&_p]:m-0">
             <PortableText value={guide.introduction} />
           </div>
-        </section>
-      )}
+        )}
+        <div>
+          <div className="min-h-[320px] overflow-hidden rounded-[10px] border border-sage-grey/40">
+            <iframe
+              src={`https://www.google.com/maps?q=${encodeURIComponent(
+                `${guide.areaName}, Ireland`
+              )}&output=embed`}
+              className="h-full min-h-[320px] w-full border-0"
+              loading="lazy"
+            />
+          </div>
+          {guide.travelNotes?.length > 0 && (
+            <div className="mt-6">
+              <h3 className="mb-4 font-serif text-lg font-bold text-forest-green">
+                Getting here
+              </h3>
+              <div className="flex flex-col gap-3.5">
+                {guide.travelNotes.map((note: any, i: number) => (
+                  <p key={i} className="text-sm text-near-black">
+                    <strong>{note.label}</strong> — {note.description}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* THINGS TO DO */}
       {guide.thingsToDo?.length > 0 && (
@@ -96,33 +121,6 @@ export default async function AreaGuidePage({ params }: Props) {
           <ThingsToDoTabs items={guide.thingsToDo} />
         </section>
       )}
-
-      {/* MAP + GETTING HERE */}
-      <section className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-8 py-14 sm:px-14 lg:grid-cols-[1.4fr_1fr]">
-        <div className="min-h-[320px] overflow-hidden rounded-[10px] border border-sage-grey/40">
-          <iframe
-            src={`https://www.google.com/maps?q=${encodeURIComponent(
-              `${guide.areaName}, Ireland`
-            )}&output=embed`}
-            className="h-full min-h-[320px] w-full border-0"
-            loading="lazy"
-          />
-        </div>
-        {guide.travelNotes?.length > 0 && (
-          <div>
-            <h3 className="mb-4 font-serif text-lg font-bold text-forest-green">
-              Getting here
-            </h3>
-            <div className="flex flex-col gap-3.5">
-              {guide.travelNotes.map((note: any, i: number) => (
-                <p key={i} className="text-sm text-near-black">
-                  <strong>{note.label}</strong> — {note.description}
-                </p>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
 
       {/* STAYS IN THIS AREA */}
       {guide.featuredProperties?.length > 0 && (
