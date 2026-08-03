@@ -89,12 +89,20 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             You handle the calendar, the cleaner, the awkward 11pm messages. Hand it to us —
             same house, same income going to you, none of the admin.
           </p>
-          <a
-            href="#calculator"
-            className="inline-block rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon transition-opacity hover:opacity-85"
-          >
-            See what your property could earn →
-          </a>
+          <div className="flex flex-wrap justify-center gap-4">
+            <a
+              href="#calculator"
+              className="inline-block rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon transition-opacity hover:opacity-85"
+            >
+              See what your property could earn →
+            </a>
+            <a
+              href="#send-sos"
+              className="inline-block rounded-full border border-cream px-8 py-4 text-[15px] font-semibold text-cream transition-opacity hover:opacity-80"
+            >
+              Contact us
+            </a>
+          </div>
         </div>
       </section>
 
