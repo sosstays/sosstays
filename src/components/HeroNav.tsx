@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
-import { PillButton } from "@/components/PillButton";
+import { Button } from "@/components/Button";
 import type { NavLink } from "@/lib/navLinks";
 
 // Next.js's <Link> only scrolls on navigation when the resulting URL
@@ -59,9 +59,9 @@ export function HeroNav({
   const navBorder = isLandlords ? "border-maroon" : "border-[#E2E2DC]";
   const linkColorClass = isLandlords ? "text-cream" : "text-forest-green";
   const logoColorClass = isLandlords ? "text-cream" : "text-forest-green";
-  const ctaClass = isLandlords
-    ? "rounded-full bg-cream px-4 py-2 text-xs font-semibold whitespace-nowrap text-maroon sm:px-5 sm:py-2.5 sm:text-sm"
-    : "rounded-full border border-forest-green/30 px-4 py-2 text-xs font-medium whitespace-nowrap text-forest-green sm:px-5 sm:py-2.5 sm:text-sm";
+  const ctaSizeClass = isLandlords
+    ? "px-4 py-2 text-xs font-semibold sm:px-5 sm:py-2.5 sm:text-sm"
+    : "px-4 py-2 text-xs font-medium sm:px-5 sm:py-2.5 sm:text-sm";
   const iconColor = isLandlords ? "text-cream" : "text-near-black";
   const mobilePanelBg = isLandlords ? "bg-maroon" : "bg-cream";
   const mobilePanelBorder = isLandlords ? "border-cream/20" : "border-[#E2E2DC]";
@@ -88,14 +88,18 @@ export function HeroNav({
             ))}
           </div>
           {ctaHref && ctaLabel && (
-            <PillButton
-              href={ctaHref}
+            <Button
+              link={ctaHref}
               onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleHashNavClick(e, ctaHref)}
-              ink={isLandlords ? "maroon" : "forest"}
-              className={ctaClass}
+              variant={isLandlords ? "primary" : "secondary"}
+              bgColor={isLandlords ? "cream" : undefined}
+              color={isLandlords ? "maroon" : undefined}
+              animateColor={isLandlords ? "maroon" : undefined}
+              size="custom"
+              className={ctaSizeClass}
             >
               {ctaLabel}
-            </PillButton>
+            </Button>
           )}
           <button
             type="button"

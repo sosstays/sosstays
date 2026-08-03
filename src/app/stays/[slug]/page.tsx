@@ -21,7 +21,7 @@ import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { ReviewScoreCard } from "@/components/ReviewScore";
 import { FaqSection } from "@/components/FaqSection";
-import { PillButton } from "@/components/PillButton";
+import { Button, type ButtonColor } from "@/components/Button";
 import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: re-fetch at most once a minute
@@ -31,16 +31,18 @@ const poppins = Poppins({ subsets: ["latin"], weight: ["500", "600", "700"] });
 function BookNowCta({
   bookingUrl,
   className,
-  ink = "forest",
+  bgColor,
+  color,
 }: {
   bookingUrl: string | null;
   className: string;
-  ink?: "forest" | "maroon";
+  bgColor: ButtonColor;
+  color: ButtonColor;
 }) {
   return bookingUrl ? (
-    <PillButton href={bookingUrl} external ink={ink} className={className}>
+    <Button link={bookingUrl} external bgColor={bgColor} color={color} size="custom" className={className}>
       Book now
-    </PillButton>
+    </Button>
   ) : (
     <span className={`${className} cursor-not-allowed opacity-60`}>Booking coming soon</span>
   );
@@ -240,8 +242,9 @@ export default async function PropertyPage({ params }: Props) {
           </div>
           <BookNowCta
             bookingUrl={bookingUrl}
-            ink="forest"
-            className="rounded-full bg-forest-green px-7 py-3.5 text-[15px] font-semibold whitespace-nowrap text-cream"
+            bgColor="forest-green"
+            color="cream"
+            className="px-7 py-3.5 text-[15px] font-semibold"
           />
         </div>
       </section>
@@ -358,8 +361,9 @@ export default async function PropertyPage({ params }: Props) {
           <p className="mb-7 text-[15px] text-light-sage">Check your dates and send it.</p>
           <BookNowCta
             bookingUrl={bookingUrl}
-            ink="forest"
-            className="rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-forest-green"
+            bgColor="cream"
+            color="forest-green"
+            className="px-8 py-4 text-[15px] font-semibold"
           />
         </div>
       </section>

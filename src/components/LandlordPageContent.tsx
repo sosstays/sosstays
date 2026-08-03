@@ -6,7 +6,7 @@ import { HeroNav } from "@/components/HeroNav";
 import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
 import { LandlordLeadForm } from "@/components/LandlordLeadForm";
 import { FaqSection } from "@/components/FaqSection";
-import { PillButton } from "@/components/PillButton";
+import { Button } from "@/components/Button";
 
 type LandlordPage = {
   title?: string;
@@ -92,20 +92,18 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             same house, same income going to you, none of the admin.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <PillButton
-              href="#calculator"
-              ink="maroon"
-              className="rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon"
+            <Button
+              link="#calculator"
+              variant="primary"
+              bgColor="cream"
+              color="maroon"
+              animateColor="maroon"
             >
               See what your property could earn →
-            </PillButton>
-            <PillButton
-              href="#send-sos"
-              ink="maroon"
-              className="rounded-full border border-cream px-8 py-4 text-[15px] font-semibold text-cream"
-            >
+            </Button>
+            <Button link="#send-sos" variant="secondary" color="cream" animateColor="maroon">
               Contact us
-            </PillButton>
+            </Button>
           </div>
         </div>
       </section>
@@ -241,13 +239,16 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             </div>
           </div>
 
-          <PillButton
-            href="#send-sos"
-            ink="maroon"
-            className="mt-9 rounded-full bg-maroon px-8 py-4 text-[15px] font-semibold text-cream"
+          <Button
+            link="#send-sos"
+            variant="primary"
+            bgColor="maroon"
+            color="cream"
+            animateColor="maroon"
+            className="mt-9"
           >
             Get a proper number — talk to us →
-          </PillButton>
+          </Button>
         </div>
       </section>
 
@@ -314,13 +315,15 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           <p className="mb-9 text-lg leading-relaxed text-light-sage">
             Two minutes of your time — with or without your numbers to hand.
           </p>
-          <PillButton
-            href="#calculator"
-            ink="maroon"
-            className="rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon"
+          <Button
+            link="#calculator"
+            variant="primary"
+            bgColor="cream"
+            color="maroon"
+            animateColor="maroon"
           >
             Get my revenue estimate ↑
-          </PillButton>
+          </Button>
         </div>
       </section>
     </main>

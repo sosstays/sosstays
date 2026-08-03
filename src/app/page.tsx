@@ -7,7 +7,7 @@ import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { HOME_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyCard } from "@/components/PropertyCard";
-import { PillButton } from "@/components/PillButton";
+import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 
 export const revalidate = 60;
@@ -71,22 +71,19 @@ export default async function HomePage() {
             )}
             <div className="flex flex-wrap justify-center gap-4 sm:justify-start">
               {hero?.primaryCtaLabel && (
-                <PillButton
-                  href={hero.primaryCtaUrl || "/stays"}
-                  ink="forest"
-                  className="rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-forest-green"
+                <Button
+                  link={hero.primaryCtaUrl || "/stays"}
+                  variant="primary"
+                  bgColor="cream"
+                  color="forest-green"
                 >
                   {hero.primaryCtaLabel}
-                </PillButton>
+                </Button>
               )}
               {hero?.secondaryCtaLabel && (
-                <PillButton
-                  href={hero.secondaryCtaUrl || "/landlords"}
-                  ink="forest"
-                  className="rounded-full border border-cream px-8 py-4 text-[15px] font-semibold text-cream"
-                >
+                <Button link={hero.secondaryCtaUrl || "/landlords"} variant="secondary" color="cream">
                   {hero.secondaryCtaLabel}
-                </PillButton>
+                </Button>
               )}
             </div>
           </div>
@@ -178,13 +175,9 @@ export default async function HomePage() {
             Most self-managing hosts earn 20–35% less than they should. We&apos;ll
             take it fully off your hands — commission-only, no setup fee.
           </p>
-          <PillButton
-            href="/landlords"
-            ink="maroon"
-            className="rounded-full border border-cream px-8 py-4 text-[15px] font-semibold text-cream"
-          >
+          <Button link="/landlords" variant="secondary" color="cream" animateColor="maroon">
             Send your SOS
-          </PillButton>
+          </Button>
         </div>
       </section>
 
@@ -200,14 +193,9 @@ export default async function HomePage() {
             </h2>
           </div>
           {instagramUrl && (
-            <PillButton
-              href={instagramUrl}
-              external
-              ink="forest"
-              className="rounded-full bg-forest-green px-7 py-3.5 text-[15px] font-semibold whitespace-nowrap text-cream"
-            >
+            <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
               Follow us on Instagram
-            </PillButton>
+            </Button>
           )}
         </div>
         <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>

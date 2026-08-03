@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PillButton } from "@/components/PillButton";
+import { Button } from "@/components/Button";
 
 const SITUATION_OPTIONS = [
   "I have an existing Airbnb/STR property I'd like help managing",
@@ -142,13 +142,16 @@ export function LandlordLeadForm() {
             ))}
           </div>
           <div className="mt-1 flex justify-end">
-            <PillButton
+            <Button
               onClick={goNext}
-              ink="maroon"
-              className="rounded-full bg-maroon px-6 py-3 text-sm font-semibold text-cream"
+              variant="primary"
+              bgColor="maroon"
+              color="cream"
+              animateColor="maroon"
+              size="sm"
             >
               Continue →
-            </PillButton>
+            </Button>
           </div>
         </div>
       )}
@@ -176,13 +179,16 @@ export function LandlordLeadForm() {
             >
               ← Back
             </button>
-            <PillButton
+            <Button
               onClick={goNext}
-              ink="maroon"
-              className="rounded-full bg-maroon px-6 py-3 text-sm font-semibold text-cream"
+              variant="primary"
+              bgColor="maroon"
+              color="cream"
+              animateColor="maroon"
+              size="sm"
             >
               Continue →
-            </PillButton>
+            </Button>
           </div>
         </div>
       )}
@@ -234,14 +240,18 @@ export function LandlordLeadForm() {
             >
               ← Back
             </button>
-            <PillButton
+            <Button
               disabled={submitting}
               onClick={submitLeadForm}
-              ink="maroon"
-              className="rounded-full bg-maroon px-7 py-3.5 text-sm font-semibold text-cream disabled:opacity-60"
+              variant="primary"
+              bgColor="maroon"
+              color="cream"
+              animateColor="maroon"
+              size="custom"
+              className="px-7 py-3.5 text-sm font-semibold disabled:opacity-60"
             >
               {submitting ? "Sending…" : "Send your SOS"}
-            </PillButton>
+            </Button>
           </div>
         </div>
       )}
@@ -266,14 +276,17 @@ export function LandlordLeadForm() {
             Sorry about that — send it to us directly instead and we&apos;ll pick it up from
             there.
           </p>
-          <PillButton
-            href={mailtoHref}
+          <Button
+            link={mailtoHref}
             external
-            ink="maroon"
-            className="rounded-full bg-maroon px-6 py-3 text-sm font-semibold text-cream"
+            variant="primary"
+            bgColor="maroon"
+            color="cream"
+            animateColor="maroon"
+            size="sm"
           >
             Email us instead
-          </PillButton>
+          </Button>
         </div>
       )}
     </div>
