@@ -1,3 +1,4 @@
+import { Poppins } from "next/font/google";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
@@ -45,6 +46,8 @@ const MARKET_STATS = [
   { stat: "80%+", caption: "peak-season occupancy across the corridor" },
   { stat: "€150+", caption: "average nightly rate for comparable properties" },
 ];
+
+const poppins = Poppins({ subsets: ["latin"], weight: ["500", "600", "700"] });
 
 const PROCESS_STEPS = [
   { number: "01", title: "A call", description: "Fifteen minutes. We ask about the property, you ask about us." },
@@ -122,7 +125,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {HOW_IT_WORKS_STATS.map((item) => (
               <div key={item.title} className="rounded-[10px] bg-white p-6">
-                <div className="mb-2.5 font-serif text-[28px] font-bold text-maroon">
+                <div className={`mb-2.5 text-[28px] font-bold text-maroon ${poppins.className}`}>
                   {item.stat}
                 </div>
                 <h3 className="mb-2 text-base font-semibold text-near-black">{item.title}</h3>
@@ -168,7 +171,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
           {MARKET_STATS.map((item) => (
             <div key={item.caption} className="px-2 text-center">
-              <div className="font-serif text-3xl font-extrabold text-maroon">{item.stat}</div>
+              <div className={`text-3xl font-extrabold text-maroon ${poppins.className}`}>{item.stat}</div>
               <p className="mt-2 text-[13px] leading-normal text-near-black/60">
                 {item.caption}
               </p>
@@ -195,7 +198,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           </div>
           <div className="flex flex-col gap-4.5">
             <div className="rounded-[10px] border border-cream/15 bg-cream/10 px-6 py-5">
-              <div className="font-serif text-2xl font-extrabold text-cream">
+              <div className={`text-2xl font-extrabold text-cream ${poppins.className}`}>
                 ~24% underpriced
               </div>
               <p className="mt-1.5 text-[13px] text-light-sage/85">
@@ -203,7 +206,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               </p>
             </div>
             <div className="rounded-[10px] border border-cream/15 bg-cream/10 px-6 py-5">
-              <div className="font-serif text-2xl font-extrabold text-cream">
+              <div className={`text-2xl font-extrabold text-cream ${poppins.className}`}>
                 40–50% booking uplift
               </div>
               <p className="mt-1.5 text-[13px] text-light-sage/85">
@@ -278,7 +281,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         <div className="grid grid-cols-1 gap-9 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS_STEPS.map((step) => (
             <div key={step.number}>
-              <div className="mb-3.5 font-serif text-3xl font-extrabold text-light-sage">
+              <div className={`mb-3.5 text-3xl font-extrabold text-light-sage ${poppins.className}`}>
                 {step.number}
               </div>
               <h3 className="mb-2 text-base font-semibold text-near-black">{step.title}</h3>
