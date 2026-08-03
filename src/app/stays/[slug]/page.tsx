@@ -135,7 +135,7 @@ function PropertyOverview({
             <Icon />
             <span className="text-base">{label}</span>
           </div>
-          <span className="text-3xl text-near-black">{value}</span>
+          <span className="text-xl text-near-black">{value}</span>
         </div>
       ))}
     </div>
@@ -278,6 +278,9 @@ export default async function PropertyPage({ params }: Props) {
       {/* REVIEWS */}
       {property.reviewScore && (
         <section className="mx-auto max-w-4xl px-8 pb-14 sm:px-14">
+          <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
+            Reviews
+          </h2>
           <ReviewScoreCard
             score={property.reviewScore}
             reviewCount={property.reviewCount}
@@ -327,7 +330,7 @@ export default async function PropertyPage({ params }: Props) {
                   </h3>
                   {guide.introduction && (
                     <p className="mb-3 text-sm leading-relaxed text-near-black/70">
-                      {portableTextToPlain(guide.introduction, 140)}
+                      {portableTextToPlain(guide.introduction, 80)}
                     </p>
                   )}
                   <span className="text-sm font-semibold text-forest-green">
