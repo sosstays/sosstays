@@ -60,14 +60,9 @@ export function Footer({ socialLinks }: { socialLinks?: SocialLink[] }) {
                 </Link>
               </li>
               <li>
-                <a
-                  href="https://strrevenue.netlify.app"
-                  className="hover:text-forest-green"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <Link href="/landlords#calculator" className="hover:text-forest-green">
                   Free revenue estimate
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

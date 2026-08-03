@@ -23,21 +23,23 @@ export default async function PrivacyPolicyPage() {
   return (
     <>
       <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
-      <main className="mx-auto max-w-3xl px-4 py-12 font-sans">
-        <h1 className="font-serif text-4xl font-semibold text-near-black">{page.title}</h1>
-        {page.lastUpdated && (
-          <p className="mt-2 text-sm text-near-black/60">
-            Last updated{" "}
-            {new Date(page.lastUpdated).toLocaleDateString("en-IE", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-        )}
+      <main className="min-h-screen bg-cream font-sans">
+        <div className="mx-auto max-w-3xl px-4 py-12">
+          <h1 className="font-serif text-4xl font-semibold text-near-black">{page.title}</h1>
+          {page.lastUpdated && (
+            <p className="mt-2 text-sm text-near-black/60">
+              Last updated{" "}
+              {new Date(page.lastUpdated).toLocaleDateString("en-IE", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          )}
 
-        <div className="mt-8">
-          <MarkdownContent source={portableTextToMarkdownSource(page.body)} />
+          <div className="mt-8">
+            <MarkdownContent source={portableTextToMarkdownSource(page.body)} />
+          </div>
         </div>
       </main>
     </>
