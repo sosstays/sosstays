@@ -5,6 +5,7 @@
   --foreground: #1C1C1C;
 
   --forest-green: #4A5D48;   /* primary */
+  --light-forest-green: #F2F5D8; /* lighter tint of primary, for card backgrounds */
   --light-sage: #ACC196;     /* secondary accent */
   --cream: #FEFEE3;          /* page background */
   --maroon: #472D30;         /* owner-context accent */
@@ -19,6 +20,7 @@
   --font-serif: var(--font-playfair);
 
   --color-forest-green: var(--forest-green);
+  --color-light-forest-green: var(--light-forest-green);
   --color-light-sage: var(--light-sage);
   --color-cream: var(--cream);
   --color-maroon: var(--maroon);

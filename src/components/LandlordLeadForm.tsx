@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/Button";
 
 const SITUATION_OPTIONS = [
   "I have an existing Airbnb/STR property I'd like help managing",
@@ -141,13 +142,16 @@ export function LandlordLeadForm() {
             ))}
           </div>
           <div className="mt-1 flex justify-end">
-            <button
-              type="button"
+            <Button
               onClick={goNext}
-              className="rounded-full bg-maroon px-6 py-3 text-sm font-semibold text-cream transition-opacity hover:opacity-85"
+              variant="primary"
+              bgColor="maroon"
+              color="cream"
+              animateColor="maroon"
+              size="sm"
             >
               Continue →
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -175,13 +179,16 @@ export function LandlordLeadForm() {
             >
               ← Back
             </button>
-            <button
-              type="button"
+            <Button
               onClick={goNext}
-              className="rounded-full bg-maroon px-6 py-3 text-sm font-semibold text-cream transition-opacity hover:opacity-85"
+              variant="primary"
+              bgColor="maroon"
+              color="cream"
+              animateColor="maroon"
+              size="sm"
             >
               Continue →
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -233,14 +240,18 @@ export function LandlordLeadForm() {
             >
               ← Back
             </button>
-            <button
-              type="button"
+            <Button
               disabled={submitting}
               onClick={submitLeadForm}
-              className="rounded-full bg-maroon px-7 py-3.5 text-sm font-semibold text-cream transition-opacity hover:opacity-85 disabled:opacity-60"
+              variant="primary"
+              bgColor="maroon"
+              color="cream"
+              animateColor="maroon"
+              size="custom"
+              className="px-7 py-3.5 text-sm font-semibold disabled:opacity-60"
             >
               {submitting ? "Sending…" : "Send your SOS"}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -265,12 +276,17 @@ export function LandlordLeadForm() {
             Sorry about that — send it to us directly instead and we&apos;ll pick it up from
             there.
           </p>
-          <a
-            href={mailtoHref}
-            className="inline-block rounded-full bg-maroon px-6 py-3 text-sm font-semibold text-cream transition-opacity hover:opacity-85"
+          <Button
+            link={mailtoHref}
+            external
+            variant="primary"
+            bgColor="maroon"
+            color="cream"
+            animateColor="maroon"
+            size="sm"
           >
             Email us instead
-          </a>
+          </Button>
         </div>
       )}
     </div>

@@ -44,6 +44,10 @@ export function PropertyCard({
   const singleHeightClass = surface === "framed" ? "h-[220px]" : "h-[260px]";
   const collageHeightClass = surface === "framed" ? "sm:h-[280px]" : "sm:h-[400px]";
 
+  // Shared on every image tile: clips the zoom, and eases it in slower than
+  // the card lift so the photo feels like it's drifting rather than snapping.
+  const imageClass = "object-cover transition-transform duration-700 ease-out group-hover:scale-110";
+
   const card = (
     <>
       {images.length >= 3 ? (
@@ -54,7 +58,7 @@ export function PropertyCard({
               src={urlFor(images[0]).width(700).height(500).url()}
               alt={images[0].alt ?? name}
               fill
-              className="object-cover"
+              className={imageClass}
             />
           </div>
           <div
@@ -65,7 +69,7 @@ export function PropertyCard({
                 src={urlFor(images[0]).width(900).height(800).url()}
                 alt={images[0].alt ?? name}
                 fill
-                className="object-cover"
+                className={imageClass}
               />
             </div>
             <div className="relative overflow-hidden rounded-[10px]">
@@ -73,7 +77,7 @@ export function PropertyCard({
                 src={urlFor(images[1]).width(500).height(390).url()}
                 alt={images[1].alt ?? name}
                 fill
-                className="object-cover"
+                className={imageClass}
               />
             </div>
             <div className="relative overflow-hidden rounded-[10px]">
@@ -81,7 +85,7 @@ export function PropertyCard({
                 src={urlFor(images[2]).width(500).height(390).url()}
                 alt={images[2].alt ?? name}
                 fill
-                className="object-cover"
+                className={imageClass}
               />
             </div>
           </div>
@@ -92,7 +96,7 @@ export function PropertyCard({
             src={urlFor(coverImage).width(1200).height(800).url()}
             alt={coverImage.alt ?? name}
             fill
-            className="object-cover"
+            className={imageClass}
           />
         </div>
       ) : null}
@@ -115,7 +119,7 @@ export function PropertyCard({
         {shortDescription && (
           <p className="mb-6 leading-relaxed text-near-black/70">{shortDescription}</p>
         )}
-        <span className="inline-flex items-center gap-2 rounded-full bg-forest-green px-6 py-3.5 text-[15px] font-semibold text-cream">
+        <span className="inline-flex items-center gap-2 rounded-full bg-forest-green px-6 py-3.5 text-[15px] font-semibold text-cream transition-colors duration-300 group-hover:bg-light-sage group-hover:text-forest-green">
           Have a look →
         </span>
       </div>
@@ -127,8 +131,8 @@ export function PropertyCard({
       href={`/stays/${slug}`}
       className={
         surface === "framed"
-          ? "block rounded-[18px] bg-white p-5 shadow-[0_12px_32px_-18px_rgba(63,82,64,0.2)]"
-          : "block"
+          ? "group block rounded-[18px] bg-white p-5 shadow-[0_12px_32px_-18px_rgba(63,82,64,0.2)] transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_24px_48px_-16px_rgba(63,82,64,0.32)]"
+          : "group block transition-transform duration-300 ease-out hover:-translate-y-1"
       }
     >
       {card}

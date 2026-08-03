@@ -3,7 +3,33 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { Button } from "@/components/Button";
 import type { NavLink } from "@/lib/navLinks";
+
+// Next.js's <Link> only scrolls on navigation when the resulting URL
+// actually changes. If you're already on the target page and its hash
+// already matches (e.g. you scrolled away manually, or clicked the same
+// nav link twice), the URL doesn't change and clicking does nothing. Catch
+// that case and scroll manually instead — every other case (different
+// page, different hash) already works via normal Link navigation.
+function handleHashNavClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
+  const hashIndex = href.indexOf("#");
+  if (hashIndex === -1) return;
+
+  // A bare "#foo" (no path prefix) always targets the current page — e.g.
+  // LANDLORD_NAV_LINKS' "#faq" means "this page" on /landlords, not "/".
+  // Only an explicit path prefix (like SITE_NAV_LINKS' "/#stays") should be
+  // compared against a literal path.
+  const path = href.slice(0, hashIndex) || window.location.pathname;
+  const hash = href.slice(hashIndex);
+  if (path !== window.location.pathname || hash !== window.location.hash) return;
+
+  // Match the instant jump a real (changed) hash navigation already gets
+  // elsewhere on the site, rather than introducing a different, smooth,
+  // animated scroll just for this fallback case.
+  e.preventDefault();
+  document.getElementById(hash.slice(1))?.scrollIntoView();
+}
 
 // The one nav used on every page. On hero pages it's rendered inline inside
 // the hero section as an absolutely-positioned overlay bar (pass nothing for
@@ -33,9 +59,9 @@ export function HeroNav({
   const navBorder = isLandlords ? "border-maroon" : "border-[#E2E2DC]";
   const linkColorClass = isLandlords ? "text-cream" : "text-forest-green";
   const logoColorClass = isLandlords ? "text-cream" : "text-forest-green";
-  const ctaClass = isLandlords
-    ? "rounded-full bg-cream px-4 py-2 text-xs font-semibold whitespace-nowrap text-maroon transition-opacity hover:opacity-80 sm:px-5 sm:py-2.5 sm:text-sm"
-    : "rounded-full border border-forest-green/30 px-4 py-2 text-xs font-medium whitespace-nowrap text-forest-green transition-opacity hover:opacity-70 sm:px-5 sm:py-2.5 sm:text-sm";
+  const ctaSizeClass = isLandlords
+    ? "px-4 py-2 text-xs font-semibold sm:px-5 sm:py-2.5 sm:text-sm"
+    : "px-4 py-2 text-xs font-medium sm:px-5 sm:py-2.5 sm:text-sm";
   const iconColor = isLandlords ? "text-cream" : "text-near-black";
   const mobilePanelBg = isLandlords ? "bg-maroon" : "bg-cream";
   const mobilePanelBorder = isLandlords ? "border-cream/20" : "border-[#E2E2DC]";
@@ -54,6 +80,7 @@ export function HeroNav({
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={(e) => handleHashNavClick(e, link.href)}
                 className={`text-sm font-medium transition-opacity hover:opacity-70 ${linkColorClass}`}
               >
                 {link.label}
@@ -61,9 +88,18 @@ export function HeroNav({
             ))}
           </div>
           {ctaHref && ctaLabel && (
-            <Link href={ctaHref} className={ctaClass}>
+            <Button
+              link={ctaHref}
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleHashNavClick(e, ctaHref)}
+              variant={isLandlords ? "primary" : "secondary"}
+              bgColor={isLandlords ? "cream" : undefined}
+              color={isLandlords ? "maroon" : undefined}
+              animateColor={isLandlords ? "maroon" : undefined}
+              size="custom"
+              className={ctaSizeClass}
+            >
               {ctaLabel}
-            </Link>
+            </Button>
           )}
           <button
             type="button"
@@ -101,7 +137,10 @@ export function HeroNav({
             <Link
               key={link.href}
               href={link.href}
-              onClick={() => setOpen(false)}
+              onClick={(e) => {
+                handleHashNavClick(e, link.href);
+                setOpen(false);
+              }}
               className={`rounded-[6px] px-3 py-3 text-sm font-medium transition-opacity hover:opacity-70 ${linkColorClass}`}
             >
               {link.label}
