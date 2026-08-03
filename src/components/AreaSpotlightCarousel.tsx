@@ -51,7 +51,8 @@ export function AreaSpotlightCarousel({ areas }: { areas: Area[] }) {
         <div
           key={area._id}
           className="absolute inset-0 transition-opacity duration-1000"
-          style={{ opacity: i === index ? 1 : 0 }}
+          style={{ opacity: i === index ? 1 : 0, pointerEvents: i === index ? "auto" : "none" }}
+          aria-hidden={i !== index}
         >
           {area.heroImage && (
             <Image
