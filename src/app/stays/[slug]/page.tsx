@@ -13,7 +13,6 @@ import {
   buildFaqSchema,
 } from "@/sanity/jsonld";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
-import { toVideoEmbedSrc } from "@/lib/videoEmbed";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
@@ -188,7 +187,6 @@ export default async function PropertyPage({ params }: Props) {
   ]);
   const faqSchema = buildFaqSchema(property.faqs);
   const mapEmbedSrc = await toGoogleMapsEmbedSrc(property.locationLink, `${property.location}, Ireland`);
-  const videoEmbedSrc = toVideoEmbedSrc(property.videoUrl);
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
@@ -292,19 +290,15 @@ export default async function PropertyPage({ params }: Props) {
               </div>
             )}
 
-            {videoEmbedSrc && (
+            {property.videoUrl && (
               <div className="mt-10">
                 <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
                   Take a video tour
                 </h2>
                 <div className="aspect-video overflow-hidden rounded-[10px] border border-sage-grey/40">
-                  <iframe
-                    src={videoEmbedSrc}
-                    className="h-full w-full border-0"
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  <video controls playsInline className="h-full w-full object-cover">
+                    <source src={property.videoUrl} type={property.videoMimeType ?? undefined} />
+                  </video>
                 </div>
               </div>
             )}
