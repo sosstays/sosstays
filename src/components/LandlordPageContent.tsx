@@ -64,11 +64,6 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <JsonLd data={buildServiceSchema(page, siteSettings)} />
 
-      {/* Netlify Forms detection form lives at public/__forms.html, not
-          here — @netlify/plugin-nextjs v5 requires it as a genuinely
-          static file rather than rendered inside the app. See
-          LandlordLeadForm.tsx and https://opennext.js.org/netlify/forms */}
-
       {/* HERO */}
       <section className="relative bg-maroon px-8 pt-[180px] pb-24 sm:px-14 sm:pt-[200px]">
         <HeroNav
