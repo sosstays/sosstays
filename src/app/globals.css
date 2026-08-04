@@ -11,6 +11,7 @@
   --maroon: #472D30;         /* owner-context accent */
   --sage-grey: #A6B0A6;      /* border/divider */
   --near-black: #171917;     /* body text */
+  --error-red: #C0392B;      /* form validation errors — never --maroon, too dark to read as an error */
 }
 
 @theme inline {
@@ -26,6 +27,7 @@
   --color-maroon: var(--maroon);
   --color-sage-grey: var(--sage-grey);
   --color-near-black: var(--near-black);
+  --color-error-red: var(--error-red);
 }
 
 body {

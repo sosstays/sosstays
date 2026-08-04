@@ -35,11 +35,20 @@ export const BLOG_POST_QUERY = defineQuery(`
     coverImage,
     body,
     publishedAt,
+    author,
+    tags,
     relatedAreaGuides[]-> {
       _id,
       areaName,
       "slug": slug.current,
       heroImage
+    },
+    "relatedPosts": *[_type == "blogPost" && defined(slug.current) && _id != ^._id] | order(publishedAt desc) [0...3] {
+      _id,
+      title,
+      "slug": slug.current,
+      coverImage,
+      publishedAt
     },
     ${seoProjection}
   }

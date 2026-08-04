@@ -41,11 +41,11 @@ export function Footer({ socialLinks }: { socialLinks?: SocialLink[] }) {
                   Explore areas
                 </Link>
               </li>
-              {/* <li>
+              <li>
                 <Link href="/blog" className="hover:text-forest-green">
                   Blog
                 </Link>
-              </li> */}
+              </li>
             </ul>
           </div>
 

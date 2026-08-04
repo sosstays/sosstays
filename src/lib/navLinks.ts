@@ -7,12 +7,14 @@ export type NavLink = { href: string; label: string };
 export const HOME_NAV_LINKS: NavLink[] = [
   { href: "#stays", label: "Stays" },
   { href: "/areas", label: "Area guides" },
+  { href: "/blog", label: "Blog" },
   { href: "/landlords", label: "For landlords" },
 ];
 
 export const SITE_NAV_LINKS: NavLink[] = [
   { href: "/#stays", label: "Stays" },
   { href: "/areas", label: "Area guides" },
+  { href: "/blog", label: "Blog" },
   { href: "/landlords", label: "For landlords" },
 ];
 
