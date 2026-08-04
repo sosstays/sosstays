@@ -13,6 +13,7 @@ import { HeroNav } from "@/components/HeroNav";
 import { Button } from "@/components/Button";
 import { SocialIcons } from "@/components/SocialIcons";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
+import { DisqusComments } from "@/components/DisqusComments";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import type { Metadata } from "next";
 
@@ -148,6 +149,12 @@ export default async function BlogPostPage({ params }: Props) {
                 )}
               </div>
             </div>
+
+            <DisqusComments
+              url={`${SITE_URL}/blog/${slug}`}
+              identifier={post._id}
+              title={post.title}
+            />
           </div>
 
           {/* RIGHT: sidebar */}
