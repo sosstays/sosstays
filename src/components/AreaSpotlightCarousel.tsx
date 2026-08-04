@@ -87,12 +87,25 @@ export function AreaSpotlightCarousel({ areas }: { areas: Area[] }) {
                 size="custom"
                 className="px-8 py-4 text-[15px] font-medium"
               >
-                Explore →
+                Explore
               </Button>
             </div>
           </div>
         </div>
       ))}
+
+      <div className="absolute top-6 right-6 z-10 sm:top-8 sm:right-8">
+        <Button
+          link="/areas"
+          variant="primary"
+          bgColor="cream"
+          color="forest-green"
+          size="custom"
+          className="px-6 py-3 text-sm font-medium"
+        >
+          View all areas
+        </Button>
+      </div>
 
       {areas.length > 1 && (
         <>

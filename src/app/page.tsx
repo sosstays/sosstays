@@ -120,21 +120,7 @@ export default async function HomePage() {
       )}
 
       {/* AREA SPOTLIGHT */}
-      <section className="mx-auto max-w-6xl px-8 pt-24 sm:px-14 sm:pt-28">
-        <div className="mb-10 flex flex-wrap items-baseline justify-between gap-4">
-          <div>
-            <h2 className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
-              Area guides
-            </h2>
-            <p className="mt-2 max-w-[420px] text-near-black/60">
-              Get to know the places we love, from the coast to the mountains.
-            </p>
-          </div>
-          <Button link="/areas" variant="secondary" color="forest-green">
-            View all areas
-          </Button>
-        </div>
-      </section>
+      
       <AreaSpotlightCarousel areas={areas} />
 
       {/* BLOG TEASER */}
