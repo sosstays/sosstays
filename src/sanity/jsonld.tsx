@@ -162,6 +162,7 @@ type BlogPostForSchema = {
   excerpt?: string;
   coverImage?: any;
   publishedAt?: string;
+  author?: { name?: string };
 };
 
 export function buildArticleSchema(post: BlogPostForSchema, settings?: SiteSettings) {
@@ -177,7 +178,9 @@ export function buildArticleSchema(post: BlogPostForSchema, settings?: SiteSetti
       ? { image: urlFor(post.coverImage).width(1200).height(675).url() }
       : {}),
     ...(post.publishedAt ? { datePublished: post.publishedAt } : {}),
-    author: organizationRef(settings),
+    author: post.author?.name
+      ? { "@type": "Person", name: post.author.name }
+      : organizationRef(settings),
     publisher: {
       ...organizationRef(settings),
       logo: { "@type": "ImageObject", url: DEFAULT_LOGO_URL },
