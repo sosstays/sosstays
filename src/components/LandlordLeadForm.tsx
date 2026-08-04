@@ -10,13 +10,7 @@ const SITUATION_OPTIONS = [
   "I'm exploring setting up an Airbnb in a property/land I own",
 ];
 
-const CONTACT_EMAIL = "hello@sosstays.ie";
-
-function encodeForm(data: Record<string, string>) {
-  return Object.keys(data)
-    .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(data[k] ?? ""))
-    .join("&");
-}
+const CONTACT_EMAIL = "info@sosstays.ie";
 
 type Stage = "form" | "done" | "error";
 
@@ -46,26 +40,10 @@ export function LandlordLeadForm() {
     setStep2Error(false);
     setSubmitting(true);
     try {
-      // Netlify Forms AJAX pattern, targeting the static detection file
-      // at public/__forms.html rather than a Next.js route — required by
-      // @netlify/plugin-nextjs v5, which errors at build time if a form
-      // is rendered inside the app itself instead of a genuinely static
-      // file. See https://opennext.js.org/netlify/forms. If this site
-      // isn't deployed on Netlify, this POST will fail and the error
-      // branch below offers a mailto fallback so the lead isn't silently
-      // lost.
-      const res = await fetch("/__forms.html", {
+      const res = await fetch("/api/mailerlite-subscribe", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encodeForm({
-          "form-name": "landlord-leads",
-          name,
-          email,
-          mobile,
-          situation,
-          propertyDescription,
-          "bot-field": "",
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, mobile, situation, propertyDescription }),
       });
       if (!res.ok) throw new Error(`Form submission failed: ${res.status}`);
       setStage("done");
