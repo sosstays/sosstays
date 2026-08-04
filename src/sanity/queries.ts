@@ -22,7 +22,9 @@ export const BLOG_POSTS_QUERY = defineQuery(`
     "slug": slug.current,
     excerpt,
     coverImage,
-    publishedAt
+    publishedAt,
+    author,
+    tags
   }
 `);
 
