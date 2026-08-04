@@ -6,14 +6,14 @@ import { urlFor } from "@/sanity/image";
 
 type Activity = {
   title: string;
-  category: "Explore" | "Food" | "Transport";
+  category: "Explore" | "Things to Do" | "Food" | "Transport";
   tag?: string;
   description?: string;
   image?: any;
   link?: string;
 };
 
-const CATEGORIES: Activity["category"][] = ["Explore", "Food", "Transport"];
+const CATEGORIES: Activity["category"][] = ["Explore", "Things to Do", "Food", "Transport"];
 
 export function ThingsToDoTabs({ items }: { items: Activity[] }) {
   const availableCategories = useMemo(

@@ -45,6 +45,15 @@ export const BLOG_POST_QUERY = defineQuery(`
       "slug": slug.current,
       heroImage
     },
+    promotedProperty-> {
+      _id,
+      name,
+      "slug": slug.current,
+      location,
+      shortDescription,
+      priceLabel,
+      "coverImage": gallery[0]
+    },
     "relatedPosts": *[_type == "blogPost" && defined(slug.current) && _id != ^._id] | order(publishedAt desc) [0...3] {
       _id,
       title,
@@ -79,6 +88,9 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     shortDescription,
     fullDescription,
     gallery,
+    "videoUrl": video.asset->url,
+    "videoMimeType": video.asset->mimeType,
+    roomTypes,
     amenities,
     sleeps,
     priceLabel,

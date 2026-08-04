@@ -6,11 +6,11 @@ import { Button } from "@/components/Button";
 const SITUATION_OPTIONS = [
   "I have an existing Airbnb/STR property I'd like help managing",
   "I have a property in long-term rental which I'm considering moving to STR and would want management",
-  "I'm not sure — I just need to speak to someone",
   "I'm exploring setting up an Airbnb in a property/land I own",
+  "I'm not sure — I just need to speak to someone",
 ];
 
-const CONTACT_EMAIL = "info@sosstays.ie";
+const CONTACT_EMAIL = "info@sosstays.com";
 
 type Stage = "form" | "done" | "error";
 
@@ -22,6 +22,7 @@ export function LandlordLeadForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
+  const [step0Error, setStep0Error] = useState(false);
   const [step2Error, setStep2Error] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -29,11 +30,16 @@ export function LandlordLeadForm() {
     setStep((s) => Math.max(0, s - 1));
   }
   function goNext() {
+    if (step === 0 && !situation) {
+      setStep0Error(true);
+      return;
+    }
+    setStep0Error(false);
     setStep((s) => Math.min(2, s + 1));
   }
 
   async function submitLeadForm() {
-    if (!name.trim() || !email.trim() || !mobile.trim()) {
+    if (!name.trim() || !email.trim()) {
       setStep2Error(true);
       return;
     }
@@ -100,7 +106,7 @@ export function LandlordLeadForm() {
       {stage === "form" && step === 0 && (
         <div className="flex flex-col gap-4.5">
           <h3 className="font-serif text-lg font-bold text-near-black sm:text-xl">
-            Which best describes you?
+            Which best describes you? <span className="text-error-red">*</span>
           </h3>
           <div className="flex flex-col gap-2.5">
             {SITUATION_OPTIONS.map((option) => (
@@ -119,6 +125,9 @@ export function LandlordLeadForm() {
               </button>
             ))}
           </div>
+          {step0Error && (
+            <p className="text-[13px] text-error-red">Pick an option to continue.</p>
+          )}
           <div className="mt-1 flex justify-end">
             <Button
               onClick={goNext}
@@ -177,7 +186,9 @@ export function LandlordLeadForm() {
             Almost there
           </h3>
           <label className="flex flex-col gap-1.5 text-sm text-near-black">
-            Name
+            <span>
+              Name <span className="text-error-red">*</span>
+            </span>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -186,7 +197,9 @@ export function LandlordLeadForm() {
             />
           </label>
           <label className="flex flex-col gap-1.5 text-sm text-near-black">
-            Email
+            <span>
+              Email <span className="text-error-red">*</span>
+            </span>
             <input
               type="email"
               value={email}
@@ -196,7 +209,7 @@ export function LandlordLeadForm() {
             />
           </label>
           <label className="flex flex-col gap-1.5 text-sm text-near-black">
-            Mobile number
+            Mobile number (optional)
             <input
               type="tel"
               value={mobile}
@@ -206,8 +219,8 @@ export function LandlordLeadForm() {
             />
           </label>
           {step2Error && (
-            <p className="text-[13px] text-maroon">
-              Name, email, and mobile are all needed to send your SOS.
+            <p className="text-[13px] text-error-red">
+              Name and email are needed to send your SOS.
             </p>
           )}
           <div className="mt-1 flex justify-between">

@@ -120,6 +120,7 @@ export default async function HomePage() {
       )}
 
       {/* AREA SPOTLIGHT */}
+      
       <AreaSpotlightCarousel areas={areas} />
 
       {/* BLOG TEASER */}
