@@ -159,6 +159,47 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* RIGHT: sidebar */}
           <aside className="h-fit rounded-lg bg-light-forest-green p-7 lg:sticky lg:top-24">
+            {post.promotedProperty && (
+              <div className="mb-9 border-b border-sage-grey/30 pb-9">
+                <p className="mb-4 text-[13px] font-semibold text-forest-green">Featured stay</p>
+                <Link
+                  href={`/stays/${post.promotedProperty.slug}`}
+                  className="group block overflow-hidden rounded-lg bg-cream"
+                >
+                  {post.promotedProperty.coverImage ? (
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <Image
+                        src={urlFor(post.promotedProperty.coverImage).width(600).height(450).url()}
+                        alt={post.promotedProperty.coverImage.alt || post.promotedProperty.name}
+                        fill
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-[4/3] bg-light-sage/25" />
+                  )}
+                  <div className="p-4">
+                    {post.promotedProperty.location && (
+                      <p className="mb-1 text-[11px] font-medium tracking-widest text-forest-green uppercase">
+                        {post.promotedProperty.location}
+                      </p>
+                    )}
+                    <p className="mb-1.5 text-[15px] font-semibold text-[#1C1C1C] group-hover:text-forest-green">
+                      {post.promotedProperty.name}
+                    </p>
+                    {post.promotedProperty.shortDescription && (
+                      <p className="mb-3 line-clamp-2 text-[13px] leading-relaxed text-near-black/65">
+                        {post.promotedProperty.shortDescription}
+                      </p>
+                    )}
+                    <span className="text-[13px] font-semibold text-forest-green underline underline-offset-2">
+                      View stay →
+                    </span>
+                  </div>
+                </Link>
+              </div>
+            )}
+
             {siteSettings?.socialLinks?.length > 0 && (
               <div className="mb-9">
                 <p className="mb-4 text-[13px] font-semibold text-forest-green">Share on social media</p>
