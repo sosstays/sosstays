@@ -1,9 +1,12 @@
 import { Poppins } from "next/font/google";
+import Image from "next/image";
+import { urlFor } from "@/sanity/image";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["600"] });
 
 type RoomType = {
   name: string;
+  image?: ({ alt?: string } & Record<string, unknown>) | null;
   bedConfiguration?: string | null;
   guests: number;
 };
@@ -41,12 +44,26 @@ export function RoomTypesTable({ roomTypes }: { roomTypes?: RoomType[] | null })
           {roomTypes.map((room, i) => (
             <tr key={i} className={i !== 0 ? "border-t border-sage-grey/40" : undefined}>
               <td className="px-6 py-5">
-                <p className={`mb-1.5 text-base font-semibold text-forest-green ${poppins.className}`}>
-                  {room.name}
-                </p>
-                {room.bedConfiguration && (
-                  <p className="text-sm text-near-black/70">{room.bedConfiguration}</p>
-                )}
+                <div className="flex items-center gap-4">
+                  {room.image && (
+                    <div className="relative h-16 w-20 flex-none overflow-hidden rounded-[8px]">
+                      <Image
+                        src={urlFor(room.image).width(200).height(160).url()}
+                        alt={room.image.alt ?? room.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <p className={`mb-1.5 text-base font-semibold text-forest-green ${poppins.className}`}>
+                      {room.name}
+                    </p>
+                    {room.bedConfiguration && (
+                      <p className="text-sm text-near-black/70">{room.bedConfiguration}</p>
+                    )}
+                  </div>
+                </div>
               </td>
               <td className="border-l border-sage-grey/40 px-6 py-5 text-near-black">
                 {room.guests <= 2 ? (
