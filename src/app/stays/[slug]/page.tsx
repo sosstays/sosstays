@@ -289,19 +289,6 @@ export default async function PropertyPage({ params }: Props) {
                 <PortableText value={property.fullDescription} />
               </div>
             )}
-
-            {property.videoUrl && (
-              <div className="mt-10">
-                <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
-                  Take a video tour
-                </h2>
-                <div className="aspect-video overflow-hidden rounded-[10px] border border-sage-grey/40">
-                  <video controls playsInline className="h-full w-full object-cover">
-                    <source src={property.videoUrl} type={property.videoMimeType ?? undefined} />
-                  </video>
-                </div>
-              </div>
-            )}
           </div>
 
           {property.reviewScore && (
@@ -319,6 +306,20 @@ export default async function PropertyPage({ params }: Props) {
           )}
         </div>
       </section>
+
+      {/* VIDEO TOUR */}
+      {property.videoUrl && (
+        <section className="mx-auto max-w-6xl px-8 pb-14 sm:px-14">
+          <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
+            Take a video tour
+          </h2>
+          <div className="aspect-video overflow-hidden rounded-[10px] border border-sage-grey/40">
+            <video controls playsInline className="h-full w-full object-cover">
+              <source src={property.videoUrl} type={property.videoMimeType ?? undefined} />
+            </video>
+          </div>
+        </section>
+      )}
 
       {/* ROOM TYPES */}
       {property.roomTypes?.length > 0 && (

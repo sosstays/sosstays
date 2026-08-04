@@ -21,7 +21,7 @@ type SiteSettings = {
 } | null | undefined;
 
 const DEFAULT_SITE_NAME = "Sos Stays";
-const DEFAULT_CONTACT_EMAIL = "hello@sosstays.ie";
+const DEFAULT_CONTACT_EMAIL = "info@sosstays.com";
 const DEFAULT_LOGO_URL = `${SITE_URL}/logo.svg`;
 
 function organizationRef(settings?: SiteSettings) {

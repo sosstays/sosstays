@@ -10,7 +10,7 @@ const SITUATION_OPTIONS = [
   "I'm exploring setting up an Airbnb in a property/land I own",
 ];
 
-const CONTACT_EMAIL = "info@sosstays.ie";
+const CONTACT_EMAIL = "info@sosstays.com";
 
 type Stage = "form" | "done" | "error";
 
