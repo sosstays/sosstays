@@ -86,16 +86,18 @@ export function ReviewScoreCard({
   score,
   reviewCount,
   categories,
+  compact = false,
 }: {
   score?: number | null;
   reviewCount?: number | null;
   categories?: { label: string; value: number }[] | null;
+  compact?: boolean;
 }) {
   if (!score) return null;
 
   return (
     <div className="rounded-[10px] border border-sage-grey/40 p-6 sm:p-8">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className={`flex flex-wrap items-center gap-4 ${compact ? "" : "justify-between"}`}>
         <div className="flex items-center gap-4">
           <span className="flex h-11 min-w-11 items-center justify-center rounded-[8px] bg-forest-green px-2.5 text-lg font-bold text-cream">
             {score.toFixed(1)}
@@ -129,7 +131,9 @@ export function ReviewScoreCard({
         <>
           <div className="my-6 border-t border-sage-grey/40" />
           <p className="mb-5 text-sm font-semibold text-near-black">Categories:</p>
-          <div className="grid grid-cols-1 gap-x-10 gap-y-6 sm:grid-cols-3">
+          <div
+            className={`grid grid-cols-1 gap-x-10 gap-y-6 ${compact ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}
+          >
             {categories.map((category) => (
               <RatingBar key={category.label} title={category.label} value={category.value} />
             ))}

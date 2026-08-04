@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { Poppins } from "next/font/google";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
@@ -12,12 +13,14 @@ import {
   buildFaqSchema,
 } from "@/sanity/jsonld";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
+import { toVideoEmbedSrc } from "@/lib/videoEmbed";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { ReviewScoreCard } from "@/components/ReviewScore";
 import { FaqSection } from "@/components/FaqSection";
 import { AreaGuideCard } from "@/components/AreaGuideCard";
+import { RoomTypesTable } from "@/components/RoomTypesTable";
 import { Button, type ButtonColor } from "@/components/Button";
 import type { Metadata } from "next";
 
@@ -133,11 +136,11 @@ function PropertyOverview({
     <div className={`${poppins.className} mb-10 flex flex-wrap gap-x-14 gap-y-8 border-b border-sage-grey/40 pb-10`}>
       {items.map(({ label, value, Icon }) => (
         <div key={label} className="flex flex-col gap-2.5">
-          <div className="flex items-center gap-3 text-near-black/55">
+          <div className="flex items-center gap-3">
             <Icon />
-            <span className="text-base">{label}</span>
+            <span className="text-base text-near-black">{value}</span>
           </div>
-          <span className="text-xl text-near-black">{value}</span>
+          <span className="text-base text-near-black/55">{label}</span>
         </div>
       ))}
     </div>
@@ -185,6 +188,7 @@ export default async function PropertyPage({ params }: Props) {
   ]);
   const faqSchema = buildFaqSchema(property.faqs);
   const mapEmbedSrc = await toGoogleMapsEmbedSrc(property.locationLink, `${property.location}, Ireland`);
+  const videoEmbedSrc = toVideoEmbedSrc(property.videoUrl);
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
@@ -192,14 +196,22 @@ export default async function PropertyPage({ params }: Props) {
       <JsonLd data={breadcrumbSchema} />
       {faqSchema && <JsonLd data={faqSchema} />}
 
-      {/* HERO GALLERY */}
-      <section className="relative">
-        <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" />
+      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
+
+      {/* GALLERY */}
+      <section className="mx-auto max-w-6xl px-8 pt-6 sm:px-14">
+        <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-2 text-sm text-near-black/55">
+          <Link href="/" className="hover:text-near-black">
+            Home
+          </Link>
+          <span aria-hidden="true">›</span>
+          <span className="font-medium text-near-black">{property.name}</span>
+        </nav>
         <PropertyGallery images={property.gallery ?? []} alt={property.name} />
       </section>
 
       {/* TITLE BLOCK */}
-      <section className="mx-auto max-w-4xl px-8 pt-9 sm:px-14">
+      <section className="mx-auto max-w-6xl px-8 pt-9 sm:px-14">
         <p className="mb-3 text-xs font-medium tracking-widest text-forest-green uppercase">
           {property.location}
         </p>
@@ -216,7 +228,7 @@ export default async function PropertyPage({ params }: Props) {
       </section>
 
       {/* AVAILABILITY BAR */}
-      <section className="mx-auto max-w-4xl px-8 pt-7 sm:px-14">
+      <section className="mx-auto max-w-6xl px-8 pt-7 sm:px-14">
         <div className="flex flex-wrap items-center justify-between gap-5 rounded-[10px] border border-sage-grey/40 px-6 py-5">
           <div className="flex items-center gap-3.5">
             <svg
@@ -246,55 +258,86 @@ export default async function PropertyPage({ params }: Props) {
         </div>
       </section>
 
-      {/* STORY */}
-      <section className="mx-auto max-w-4xl px-8 pt-12 pb-14 sm:px-14">
-        {property.amenities?.length > 0 && (
-          <div className="mb-5 flex flex-wrap gap-2.5">
-            {property.amenities.map((amenity: string) => (
-              <span
-                key={amenity}
-                className="rounded-full bg-light-sage/25 px-4 py-2 text-[13px] text-near-black"
-              >
-                {amenity}
-              </span>
-            ))}
+      {/* STORY + REVIEWS */}
+      <section className="mx-auto max-w-6xl px-8 pt-12 pb-14 sm:px-14">
+        <div className="lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-14">
+          <div>
+            {property.amenities?.length > 0 && (
+              <div className="mb-5 flex flex-wrap gap-2.5">
+                {property.amenities.map((amenity: string) => (
+                  <span
+                    key={amenity}
+                    className="rounded-full bg-light-sage/25 px-4 py-2 text-[13px] text-near-black"
+                  >
+                    {amenity}
+                  </span>
+                ))}
+              </div>
+            )}
+            {property.shortDescription && (
+              <p className="mb-5 text-lg leading-[1.65] text-near-black">
+                {property.shortDescription}
+              </p>
+            )}
+            <PropertyOverview
+              guests={property.sleeps}
+              beds={property.beds}
+              bedrooms={property.bedrooms}
+              bathrooms={property.bathrooms}
+              type={property.propertyType}
+            />
+            {property.fullDescription && (
+              <div className="prose prose-neutral max-w-none text-near-black/80 [&_p]:my-3">
+                <PortableText value={property.fullDescription} />
+              </div>
+            )}
+
+            {videoEmbedSrc && (
+              <div className="mt-10">
+                <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
+                  Take a video tour
+                </h2>
+                <div className="aspect-video overflow-hidden rounded-[10px] border border-sage-grey/40">
+                  <iframe
+                    src={videoEmbedSrc}
+                    className="h-full w-full border-0"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            )}
           </div>
-        )}
-        {property.shortDescription && (
-          <p className="mb-5 max-w-[720px] text-lg leading-[1.65] text-near-black">
-            {property.shortDescription}
-          </p>
-        )}
-        <PropertyOverview
-          guests={property.sleeps}
-          beds={property.beds}
-          bedrooms={property.bedrooms}
-          bathrooms={property.bathrooms}
-          type={property.propertyType}
-        />
-        {property.fullDescription && (
-          <div className="prose prose-neutral max-w-[720px] text-near-black/80 [&_p]:my-3">
-            <PortableText value={property.fullDescription} />
-          </div>
-        )}
+
+          {property.reviewScore && (
+            <div className="mt-14 lg:sticky lg:top-24 lg:mt-0">
+              {/* <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
+                Reviews
+              </h2> */}
+              <ReviewScoreCard
+                score={property.reviewScore}
+                reviewCount={property.reviewCount}
+                categories={property.reviewCategories}
+                compact
+              />
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* REVIEWS */}
-      {property.reviewScore && (
-        <section className="mx-auto max-w-4xl px-8 pb-14 sm:px-14">
+      {/* ROOM TYPES */}
+      {property.roomTypes?.length > 0 && (
+        <section className="mx-auto max-w-6xl px-8 pb-14 sm:px-14">
           <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
-            Reviews
+            Room types
           </h2>
-          <ReviewScoreCard
-            score={property.reviewScore}
-            reviewCount={property.reviewCount}
-            categories={property.reviewCategories}
-          />
+          <RoomTypesTable roomTypes={property.roomTypes} />
         </section>
       )}
 
       {/* AREAS */}
-      <section id="areas" className="mx-auto max-w-4xl px-8 py-14 sm:px-14">
+      <section id="areas" className="mx-auto max-w-6xl px-8 py-14 sm:px-14">
         <p className="mb-2 text-xs tracking-widest text-near-black/55 uppercase">Areas</p>
         <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
           In the area
@@ -317,10 +360,10 @@ export default async function PropertyPage({ params }: Props) {
         )}
       </section>
 
-      <FaqSection heading="Good to know" items={property.faqs} maxWidth="56rem" />
+      <FaqSection heading="Good to know" items={property.faqs} maxWidth="72rem" />
 
       {/* FINAL CTA */}
-      <section className="mx-auto max-w-4xl px-8 pb-24 text-center sm:px-14">
+      <section className="mx-auto max-w-6xl px-8 pb-24 text-center sm:px-14">
         <div className="rounded-[18px] bg-forest-green px-8 py-14">
           <h2 className="mb-3 font-serif text-2xl font-bold tracking-tight text-cream">
             Ready to stay at {property.name}?

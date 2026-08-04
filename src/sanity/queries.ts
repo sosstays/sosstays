@@ -79,6 +79,8 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     shortDescription,
     fullDescription,
     gallery,
+    videoUrl,
+    roomTypes,
     amenities,
     sleeps,
     priceLabel,
