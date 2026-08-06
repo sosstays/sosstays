@@ -64,7 +64,7 @@ export default function CalculatorPage() {
         </p>
       </section>
 
-      <div className="px-8 py-16 sm:px-14 sm:py-20">
+      <div className="mx-auto max-w-6xl px-8 py-16 sm:px-14 sm:py-20">
         <RevenueCalculator />
       </div>
 

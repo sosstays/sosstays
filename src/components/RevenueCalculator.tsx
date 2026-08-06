@@ -69,6 +69,7 @@ type Stage = "form" | "results" | "error";
 export function RevenueCalculator({
   initialName,
   initialEmail,
+  onResultsShown,
 }: {
   /** Carried in from the contact form (e.g. the post-submit "what's next"
    *  page) so the results can be attributed and saved without asking the
@@ -76,6 +77,10 @@ export function RevenueCalculator({
    *  /calculator page), results are shown but nothing is saved anywhere. */
   initialName?: string;
   initialEmail?: string;
+  /** Fires once the results are computed and shown — lets a page hosting
+   *  this inline (e.g. alongside intro copy in a two-column layout) switch
+   *  to a full-width layout for the results. */
+  onResultsShown?: () => void;
 } = {}) {
   const name = initialName?.trim() ?? "";
   const email = initialEmail?.trim() ?? "";
@@ -162,6 +167,7 @@ export function RevenueCalculator({
     if (!hasContact) {
       setSubmitting(false);
       setStage("results");
+      onResultsShown?.();
       return;
     }
 
@@ -193,6 +199,7 @@ export function RevenueCalculator({
       setStage("results");
     } finally {
       setSubmitting(false);
+      onResultsShown?.();
     }
   }
 
@@ -204,7 +211,7 @@ export function RevenueCalculator({
   }));
 
   return (
-    <div id="calculator" className="mx-auto max-w-[760px]">
+    <div id="calculator" className={stage === "results" ? "w-full" : "mx-auto max-w-[760px]"}>
       {stage === "form" && (
         <div className="rounded-[18px] bg-white p-8 sm:p-11">
           <div className="mb-9 flex items-center gap-2.5">
@@ -619,7 +626,7 @@ function ResultsPanel({
         <h4 className="mb-2.5 text-[13px] font-bold tracking-wide text-forest-green uppercase">
           What Sos Stays handles for you — at no extra cost
         </h4>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {WHAT_WE_DO.map((item) => (
             <div key={item} className="flex items-start gap-2 text-[13px] text-near-black">
               <span className="mt-0.5 text-forest-green">✓</span>
@@ -647,7 +654,7 @@ function ResultsPanel({
         </Button>
       </div>
 
-      <p className="mt-6 text-center text-[11px] leading-relaxed text-near-black/55">
+      <p className="mx-auto mt-6 max-w-[640px] text-center text-[11px] leading-relaxed text-near-black/55">
         Projections are estimates based on market data for the Louth–Meath–Newry corridor and
         typical performance uplifts from professional STR management. Actual results will vary by
         property, location, season, and market conditions. This calculator does not constitute a

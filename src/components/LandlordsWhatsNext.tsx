@@ -137,6 +137,7 @@ const WHAT_YOU_GET: { title: string; description: string; icon: ReactNode }[] = 
 export function LandlordsWhatsNext() {
   const [contact, setContact] = useState<LandlordContact | null>(null);
   const [checked, setChecked] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
   // sessionStorage only exists client-side, so reading it during render
   // would break SSR/hydration — this effect is the one legitimate case for
@@ -162,8 +163,17 @@ export function LandlordsWhatsNext() {
       </div>
 
       <section className="bg-maroon/8 px-8 py-20 sm:px-14 sm:py-24">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 lg:grid-cols-[1fr_0.8fr] lg:gap-16">
-          <div className="lg:pt-2">
+        <div
+          className={
+            showResults
+              ? "mx-auto max-w-6xl"
+              : "mx-auto grid max-w-6xl grid-cols-1 gap-12 lg:grid-cols-[1fr_0.8fr] lg:gap-16"
+          }
+        >
+          {/* Kept mounted (just hidden) rather than conditionally removed, so
+              hiding it on results doesn't shift the calculator to a new
+              sibling position and force React to remount it mid-flow. */}
+          <div className={showResults ? "hidden" : "lg:pt-2"}>
             <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">Start here</p>
             <h2 className="mb-5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               Get your estimate
@@ -179,7 +189,15 @@ export function LandlordsWhatsNext() {
             </p>
           </div>
 
-          <div>{checked && <RevenueCalculator initialName={contact?.name} initialEmail={contact?.email} />}</div>
+          <div>
+            {checked && (
+              <RevenueCalculator
+                initialName={contact?.name}
+                initialEmail={contact?.email}
+                onResultsShown={() => setShowResults(true)}
+              />
+            )}
+          </div>
         </div>
       </section>
 
