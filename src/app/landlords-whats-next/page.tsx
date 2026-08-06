@@ -32,8 +32,8 @@ export default async function LandlordsWhatsNextPage() {
       <HeroNav
         links={NAV_LINKS}
         variant="landlords"
-        ctaHref="mailto:info@sosstays.com"
-        ctaLabel="Contact us"
+        ctaHref="#calculator"
+        ctaLabel="Get estimate"
         sticky
       />
       <LandlordsWhatsNext
