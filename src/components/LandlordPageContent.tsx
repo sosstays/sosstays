@@ -91,16 +91,13 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button
-              link="#calculator"
+              link="#send-sos"
               variant="primary"
               bgColor="cream"
               color="maroon"
               animateColor="maroon"
             >
-              See what your property could earn →
-            </Button>
-            <Button link="#send-sos" variant="secondary" color="cream" animateColor="maroon">
-              Contact us
+              Contact us →
             </Button>
           </div>
         </div>
@@ -213,43 +210,6 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         </div>
       </section>
 
-      {/* REVENUE CALCULATOR — the embedded strrevenue.netlify.app tool */}
-      <section id="calculator" className="bg-light-sage/15 px-8 py-24 sm:px-14 sm:py-28">
-        <div className="mx-auto max-w-[760px] text-center">
-          <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
-            Revenue calculator
-          </p>
-          <h2 className="mb-4 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
-            See what your property could earn
-          </h2>
-          <p className="mx-auto mb-11 max-w-[520px] text-sm text-near-black/60">
-            Free estimate — no sign-up required.
-          </p>
-
-          <div className="overflow-hidden rounded-[18px] bg-white p-3">
-            <div className="overflow-hidden rounded-[10px] border border-sage-grey/40">
-              <iframe
-                src="https://strrevenue.netlify.app"
-                title="Short-term rental revenue calculator"
-                className="h-[900px] w-full"
-                loading="lazy"
-              />
-            </div>
-          </div>
-
-          <Button
-            link="#send-sos"
-            variant="primary"
-            bgColor="maroon"
-            color="cream"
-            animateColor="maroon"
-            className="mt-9"
-          >
-            Get a proper number — talk to us →
-          </Button>
-        </div>
-      </section>
-
       {/* SEND YOUR SOS */}
       <section id="send-sos" className="px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-[640px]">
@@ -261,7 +221,8 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               Tell us about your place
             </h2>
             <p className="mx-auto max-w-[480px] text-sm text-near-black/60">
-              Three quick steps — we&apos;ll be in touch within a day or two.
+              Three quick steps — we&apos;ll be in touch within a day or two. Right after, you can
+              run a free revenue estimate for your property.
             </p>
           </div>
           <LandlordLeadForm />
@@ -314,13 +275,13 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             Two minutes of your time — with or without your numbers to hand.
           </p>
           <Button
-            link="#calculator"
+            link="#send-sos"
             variant="primary"
             bgColor="cream"
             color="maroon"
             animateColor="maroon"
           >
-            Get my revenue estimate ↑
+            Send your SOS ↑
           </Button>
         </div>
       </section>

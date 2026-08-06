@@ -60,7 +60,7 @@ export function Footer({ socialLinks }: { socialLinks?: SocialLink[] }) {
                 </Link>
               </li>
               <li>
-                <Link href="/landlords#calculator" className="hover:text-forest-green">
+                <Link href="/calculator" className="hover:text-forest-green">
                   Free revenue estimate
                 </Link>
               </li>

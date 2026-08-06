@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
+import { saveLandlordContact } from "@/lib/landlordHandoff";
 
 const SITUATION_OPTIONS = [
   "I have an existing Airbnb/STR property I'd like help managing",
@@ -12,9 +14,10 @@ const SITUATION_OPTIONS = [
 
 const CONTACT_EMAIL = "info@sosstays.com";
 
-type Stage = "form" | "done" | "error";
+type Stage = "form" | "error";
 
 export function LandlordLeadForm() {
+  const router = useRouter();
   const [stage, setStage] = useState<Stage>("form");
   const [step, setStep] = useState(0);
   const [situation, setSituation] = useState("");
@@ -52,7 +55,8 @@ export function LandlordLeadForm() {
         body: JSON.stringify({ name, email, mobile, situation, propertyDescription }),
       });
       if (!res.ok) throw new Error(`Form submission failed: ${res.status}`);
-      setStage("done");
+      saveLandlordContact({ name: name.trim(), email: email.trim() });
+      router.push("/landlords-whats-next");
     } catch {
       setStage("error");
     } finally {
@@ -244,17 +248,6 @@ export function LandlordLeadForm() {
               {submitting ? "Sending…" : "Send your SOS"}
             </Button>
           </div>
-        </div>
-      )}
-
-      {stage === "done" && (
-        <div>
-          <p className="mb-2 text-base font-semibold text-near-black">
-            Got it — we&apos;ll be in touch shortly.
-          </p>
-          <p className="text-sm leading-relaxed text-near-black/70">
-            We read every one of these ourselves, {name}.
-          </p>
         </div>
       )}
 
