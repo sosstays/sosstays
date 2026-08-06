@@ -299,7 +299,7 @@ export function RevenueCalculator({
 
               <div className="flex flex-col gap-2 text-sm text-near-black">
                 Currently listed on
-                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                <div className="flex flex-wrap gap-2.5">
                   {PLATFORM_OPTIONS.map((p) => {
                     const active = platforms.includes(p.label);
                     return (
@@ -307,17 +307,13 @@ export function RevenueCalculator({
                         key={p.id}
                         type="button"
                         onClick={() => togglePlatform(p.label)}
-                        className="flex cursor-pointer items-center gap-2 rounded-[10px] border px-3.5 py-2.5 text-[13px] font-medium"
+                        className="cursor-pointer rounded-full border px-4 py-2 text-[13px] font-medium whitespace-nowrap"
                         style={{
                           background: active ? "var(--light-forest-green)" : "white",
                           borderColor: active ? "var(--forest-green)" : "var(--sage-grey)",
                           color: active ? "var(--forest-green)" : "var(--near-black)",
                         }}
                       >
-                        <span
-                          className="h-2 w-2 flex-none rounded-full"
-                          style={{ background: "currentColor" }}
-                        />
                         {p.label}
                       </button>
                     );
