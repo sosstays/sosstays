@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
 import { RevenueCalculator } from "@/components/RevenueCalculator";
@@ -200,19 +201,30 @@ export function LandlordsWhatsNext({
 
   return (
     <main className="min-h-screen bg-cream font-sans text-near-black">
-      <section className="bg-maroon px-8 py-16 text-center sm:px-14 sm:py-24">
-        <p className="mb-2.5 text-xs tracking-widest text-light-sage uppercase">
-          Thanks for sending your SOS
-        </p>
-        <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
-          Right, we&apos;ve got your details. Let&apos;s start building your numbers.
-        </h1>
-        <p className="mx-auto mb-7 max-w-[520px] text-[15px] leading-relaxed text-cream/80">
-          One of the team will be in touch shortly — but you can get started straightaway.
-        </p>
-        <Button link="#calculator" variant="primary" bgColor="cream" color="maroon" animateColor="maroon">
-          Get your estimate →
-        </Button>
+      <section className="relative overflow-hidden bg-maroon px-8 py-16 text-center sm:px-14 sm:py-24">
+        <Image
+          src="/whats-next.png"
+          alt=""
+          fill
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-maroon/80" />
+
+        <div className="relative z-10">
+          <p className="mb-2.5 text-xs tracking-widest text-light-sage uppercase">
+            Thanks for sending your SOS
+          </p>
+          <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
+            Right, we&apos;ve got your details. Let&apos;s start building your numbers.
+          </h1>
+          <p className="mx-auto mb-7 max-w-[520px] text-[15px] leading-relaxed text-cream/80">
+            One of the team will be in touch shortly — but you can get started straightaway.
+          </p>
+          <Button link="#calculator" variant="primary" bgColor="cream" color="maroon" animateColor="maroon">
+            Get your estimate →
+          </Button>
+        </div>
       </section>
 
       <section className="bg-cream px-8 py-16 sm:px-14 sm:py-24">

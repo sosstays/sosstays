@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
@@ -65,40 +66,51 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       <JsonLd data={buildServiceSchema(page, siteSettings)} />
 
       {/* HERO */}
-      <section className="relative bg-maroon px-8 pt-[180px] pb-24 sm:px-14 sm:pt-[200px]">
-        <HeroNav
-          links={LANDLORD_NAV_LINKS}
-          variant="landlords"
-          ctaHref="#send-sos"
-          ctaLabel="Contact us"
+      <section className="relative overflow-hidden bg-maroon px-8 pt-[180px] pb-24 sm:px-14 sm:pt-[200px]">
+        <Image
+          src="/landlord.png"
+          alt=""
+          fill
+          priority
+          className="object-cover"
         />
-        <div className="mx-auto max-w-[760px] text-center">
-          <span className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
-            For property owners
-          </span>
-          <p className="mx-auto mb-4.5 max-w-[560px] text-sm text-light-sage/85">
-            Self-managing hosts in this corridor typically leave 20–35% of revenue on the
-            table. That&apos;s a market benchmark, not a guess — and it&apos;s the gap we close.
-          </p>
-          <h1 className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl">
-            You&apos;re already doing this yourself.
-            <br />
-            Let&apos;s do it better.
-          </h1>
-          <p className="mx-auto mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
-            You handle the calendar, the cleaner, the awkward 11pm messages. Hand it to us —
-            same house, same income going to you, none of the admin.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button
-              link="#send-sos"
-              variant="primary"
-              bgColor="cream"
-              color="maroon"
-              animateColor="maroon"
-            >
-              Contact us →
-            </Button>
+        <div className="absolute inset-0 bg-maroon/80" />
+
+        <div className="relative z-10">
+          <HeroNav
+            links={LANDLORD_NAV_LINKS}
+            variant="landlords"
+            ctaHref="#send-sos"
+            ctaLabel="Contact us"
+          />
+          <div className="mx-auto max-w-[760px] text-center">
+            <span className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
+              For property owners
+            </span>
+            <p className="mx-auto mb-4.5 max-w-[560px] text-sm text-light-sage/85">
+              Self-managing hosts in this corridor typically leave 20–35% of revenue on the
+              table. That&apos;s a market benchmark, not a guess — and it&apos;s the gap we close.
+            </p>
+            <h1 className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl">
+              You&apos;re already doing this yourself.
+              <br />
+              Let&apos;s do it better.
+            </h1>
+            <p className="mx-auto mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
+              You handle the calendar, the cleaner, the awkward 11pm messages. Hand it to us —
+              same house, same income going to you, none of the admin.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button
+                link="#send-sos"
+                variant="primary"
+                bgColor="cream"
+                color="maroon"
+                animateColor="maroon"
+              >
+                Contact us →
+              </Button>
+            </div>
           </div>
         </div>
       </section>
