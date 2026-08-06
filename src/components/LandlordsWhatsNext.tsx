@@ -182,7 +182,7 @@ export function LandlordsWhatsNext() {
         </p>
       </section>
 
-      <section className="bg-white px-8 py-16 sm:px-14 sm:py-24">
+      <section className="bg-cream px-8 py-16 sm:px-14 sm:py-24">
         <div className="mx-auto max-w-6xl">
           {checked && (
             <RevenueCalculator

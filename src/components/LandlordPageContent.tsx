@@ -117,7 +117,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {HOW_IT_WORKS_STATS.map((item) => (
-              <div key={item.title} className="rounded-[10px] bg-white p-6">
+              <div key={item.title} className="rounded-[10px] p-6">
                 <div className={`mb-2.5 text-[28px] font-bold text-maroon ${poppins.className}`}>
                   {item.stat}
                 </div>
@@ -129,7 +129,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             ))}
           </div>
 
-          <div className="mt-7 rounded-[18px] bg-white px-8 py-7">
+          <div className="mt-7 rounded-[18px] px-8 py-7">
             <h3 className="mb-1.5 text-base font-semibold text-near-black">
               Still your property
             </h3>

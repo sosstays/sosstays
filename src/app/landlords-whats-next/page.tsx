@@ -22,7 +22,13 @@ export const metadata: Metadata = {
 export default function LandlordsWhatsNextPage() {
   return (
     <>
-      <HeroNav links={NAV_LINKS} ctaHref="mailto:info@sosstays.com" ctaLabel="Contact us" sticky />
+      <HeroNav
+        links={NAV_LINKS}
+        variant="landlords"
+        ctaHref="mailto:info@sosstays.com"
+        ctaLabel="Contact us"
+        sticky
+      />
       <LandlordsWhatsNext />
     </>
   );
