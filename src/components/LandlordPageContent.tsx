@@ -80,8 +80,8 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           <HeroNav
             links={LANDLORD_NAV_LINKS}
             variant="landlords"
-            ctaHref="#send-sos"
-            ctaLabel="Contact us"
+            ctaHref="/calculator"
+            ctaLabel="Get estimate"
           />
           <div className="mx-auto max-w-[760px] text-center">
             <span className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
@@ -108,7 +108,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 color="maroon"
                 animateColor="maroon"
               >
-                Contact us →
+                Get started →
               </Button>
             </div>
           </div>
