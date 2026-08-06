@@ -211,9 +211,9 @@ export function RevenueCalculator({
   }));
 
   return (
-    <div id="calculator" className={stage === "results" ? "w-full" : "mx-auto max-w-[760px]"}>
+    <div id="calculator" className="w-full">
       {stage === "form" && (
-        <div className="rounded-[18px] bg-white p-8 sm:p-11">
+        <div className="rounded-[18px] border border-sage-grey/30 bg-white p-8 shadow-sm sm:p-11">
           <div className="mb-9 flex items-center gap-2.5">
             {progressSegments.map((seg) => (
               <div key={seg.number} className={`flex items-center gap-2.5 ${seg.grow ? "flex-1" : ""}`}>

@@ -150,7 +150,7 @@ export function LandlordsWhatsNext() {
 
   return (
     <main className="min-h-screen bg-cream font-sans text-near-black">
-      <section className="bg-maroon/8 px-8 py-16 sm:px-14 sm:py-24">
+      <section className="bg-white px-8 py-16 sm:px-14 sm:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14 text-center">
             <p className="mb-2.5 text-xs tracking-widest text-maroon uppercase">
@@ -164,37 +164,31 @@ export function LandlordsWhatsNext() {
             </p>
           </div>
 
-          <div
-            className={showResults ? "" : "grid grid-cols-1 gap-12 lg:grid-cols-[1fr_0.8fr] lg:gap-16"}
-          >
-            {/* Kept mounted (just hidden) rather than conditionally removed, so
-                hiding it on results doesn't shift the calculator to a new
-                sibling position and force React to remount it mid-flow. */}
-            <div className={showResults ? "hidden" : "lg:pt-2"}>
-              <h2 className="mb-5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
-                Get your estimate
-              </h2>
-              <p className="mb-4 text-[15px] leading-relaxed text-near-black/70">
-                Pop in your occupancy and current annual revenue and the calculator will give you a
-                quick, honest estimate of what your property could be earning.
-              </p>
-              <p className="text-[15px] leading-relaxed text-near-black/70">
-                This is a basic estimation tool to give you a starting point. Once we have your
-                details, we&apos;ll come back with a proper custom proposal — projected figures based
-                on your actual property, area and season, not just the averages.
-              </p>
-            </div>
-
-            <div>
-              {checked && (
-                <RevenueCalculator
-                  initialName={contact?.name}
-                  initialEmail={contact?.email}
-                  onResultsShown={() => setShowResults(true)}
-                />
-              )}
-            </div>
+          {/* Kept mounted (just hidden) rather than conditionally removed, so
+              hiding it on results doesn't shift the calculator to a new
+              sibling position and force React to remount it mid-flow. */}
+          <div className={showResults ? "hidden" : "mx-auto mb-10 max-w-[640px] text-center"}>
+            <h2 className="mb-5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+              Get your estimate
+            </h2>
+            <p className="mb-4 text-[15px] leading-relaxed text-near-black/70">
+              Pop in your occupancy and current annual revenue and the calculator will give you a
+              quick, honest estimate of what your property could be earning.
+            </p>
+            <p className="text-[15px] leading-relaxed text-near-black/70">
+              This is a basic estimation tool to give you a starting point. Once we have your
+              details, we&apos;ll come back with a proper custom proposal — projected figures based
+              on your actual property, area and season, not just the averages.
+            </p>
           </div>
+
+          {checked && (
+            <RevenueCalculator
+              initialName={contact?.name}
+              initialEmail={contact?.email}
+              onResultsShown={() => setShowResults(true)}
+            />
+          )}
         </div>
       </section>
 
