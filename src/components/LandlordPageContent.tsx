@@ -76,13 +76,20 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         />
         <div className="absolute inset-0 bg-maroon/80" />
 
+        {/* HeroNav carries its own absolute inset-x-0 + z-20, positioned
+            against the section itself — it must stay a direct child of the
+            section (not nested in the z-10 wrapper below), otherwise its
+            inset-x-0 resolves against that wrapper's padded box instead of
+            the section's true edges and the bar renders inset from both
+            sides instead of full-bleed. */}
+        <HeroNav
+          links={LANDLORD_NAV_LINKS}
+          variant="landlords"
+          ctaHref="/landlords-whats-next"
+          ctaLabel="Get estimate"
+        />
+
         <div className="relative z-10">
-          <HeroNav
-            links={LANDLORD_NAV_LINKS}
-            variant="landlords"
-            ctaHref="/landlords-whats-next"
-            ctaLabel="Get estimate"
-          />
           <div className="mx-auto max-w-[760px] text-center">
             <span className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
               For property owners
