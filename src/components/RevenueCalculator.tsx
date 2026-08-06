@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Button } from "@/components/Button";
 import { calculateRevenue, formatEuro, type CalculatorResult } from "@/lib/revenueCalculator";
 
@@ -70,6 +70,7 @@ export function RevenueCalculator({
   initialName,
   initialEmail,
   onResultsShown,
+  formIntro,
 }: {
   /** Carried in from the contact form (e.g. the post-submit "what's next"
    *  page) so the results can be attributed and saved without asking the
@@ -81,6 +82,10 @@ export function RevenueCalculator({
    *  this inline (e.g. alongside intro copy in a two-column layout) switch
    *  to a full-width layout for the results. */
   onResultsShown?: () => void;
+  /** Optional content rendered inside the form card, above the step
+   *  progress bar — for callers that want page-specific intro copy to live
+   *  inside the card rather than as a separate block above it. */
+  formIntro?: ReactNode;
 } = {}) {
   const name = initialName?.trim() ?? "";
   const email = initialEmail?.trim() ?? "";
@@ -214,6 +219,7 @@ export function RevenueCalculator({
     <div id="calculator" className="w-full">
       {stage === "form" && (
         <div className="rounded-[18px] border border-sage-grey/30 bg-white p-8 shadow-sm sm:p-11">
+          {formIntro && <div className="mb-9">{formIntro}</div>}
           <div className="mb-9 flex items-center gap-2.5">
             {progressSegments.map((seg) => (
               <div key={seg.number} className={`flex items-center gap-2.5 ${seg.grow ? "flex-1" : ""}`}>
