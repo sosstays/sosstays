@@ -218,7 +218,7 @@ export function RevenueCalculator({
   return (
     <div id="calculator" className="w-full">
       {stage === "form" && (
-        <div className="rounded-[18px] border border-sage-grey/30 bg-white p-8 shadow-sm sm:p-11">
+        <div className="rounded-[18px] border border-sage-grey/30 bg-cream p-8 shadow-sm sm:p-11">
           {formIntro && <div className="mb-9">{formIntro}</div>}
           <div className="mb-9 flex items-center gap-2.5">
             {progressSegments.map((seg) => (

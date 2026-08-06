@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { client } from "@/sanity/client";
+import { LANDLORD_BLOG_POSTS_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { HeroNav } from "@/components/HeroNav";
 import { LandlordsWhatsNext } from "@/components/LandlordsWhatsNext";
 import type { NavLink } from "@/lib/navLinks";
@@ -19,7 +21,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function LandlordsWhatsNextPage() {
+export default async function LandlordsWhatsNextPage() {
+  const [posts, siteSettings] = await Promise.all([
+    client.fetch(LANDLORD_BLOG_POSTS_QUERY),
+    client.fetch(SITE_SETTINGS_QUERY),
+  ]);
+
   return (
     <>
       <HeroNav
@@ -29,7 +36,11 @@ export default function LandlordsWhatsNextPage() {
         ctaLabel="Contact us"
         sticky
       />
-      <LandlordsWhatsNext />
+      <LandlordsWhatsNext
+        posts={posts}
+        socialLinks={siteSettings?.socialLinks}
+        fallbackAuthorName={siteSettings?.businessName || "Sos Stays"}
+      />
     </>
   );
 }

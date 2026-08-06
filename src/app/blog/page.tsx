@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { client } from "@/sanity/client";
 import { BLOG_POSTS_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { HeroNav } from "@/components/HeroNav";
@@ -11,12 +12,20 @@ export const metadata = {
   description: "Stories, guides, and inspiration for your next break in Louth, Meath, and the Mournes.",
 };
 
-export default async function BlogIndexPage() {
-  const [posts, siteSettings] = await Promise.all([
+export default async function BlogIndexPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tag?: string }>;
+}) {
+  const { tag } = await searchParams;
+  const [allPosts, siteSettings] = await Promise.all([
     client.fetch(BLOG_POSTS_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
   ]);
   const fallbackAuthorName = siteSettings?.businessName || "Sos Stays";
+  const posts = tag
+    ? allPosts.filter((post: any) => post.tags?.includes(tag))
+    : allPosts;
 
   return (
     <>
@@ -25,7 +34,16 @@ export default async function BlogIndexPage() {
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8">
           <h1 className="font-serif text-4xl font-semibold text-forest-green">The Blog</h1>
           <p className="mt-2 text-[#555550]">
-            Stories, guides, and inspiration for your next break.
+            {tag ? (
+              <>
+                Posts tagged &ldquo;{tag}&rdquo; —{" "}
+                <Link href="/blog" className="underline">
+                  view all posts
+                </Link>
+              </>
+            ) : (
+              "Stories, guides, and inspiration for your next break."
+            )}
           </p>
 
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

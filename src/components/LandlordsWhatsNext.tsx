@@ -2,8 +2,26 @@
 
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import Link from "next/link";
+import Script from "next/script";
 import { RevenueCalculator } from "@/components/RevenueCalculator";
+import { BlogPostCard } from "@/components/BlogPostCard";
 import { readLandlordContact, type LandlordContact } from "@/lib/landlordHandoff";
+
+type BlogPost = {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  coverImage?: any;
+  publishedAt?: string;
+  author?: { name?: string; avatar?: any };
+  tags?: string[];
+};
+
+type SocialLink = { platform: string; url: string };
+
+const BEHOLD_FEED_ID = "WcXQ8APwHKWEf2AxzA0R";
 
 function Icon({ paths }: { paths: string[] }) {
   return (
@@ -134,7 +152,18 @@ const WHAT_YOU_GET: { title: string; description: string; icon: ReactNode }[] = 
   },
 ];
 
-export function LandlordsWhatsNext() {
+export function LandlordsWhatsNext({
+  posts = [],
+  socialLinks,
+  fallbackAuthorName = "Sos Stays",
+}: {
+  posts?: BlogPost[];
+  socialLinks?: SocialLink[];
+  fallbackAuthorName?: string;
+}) {
+  const instagramUrl = socialLinks?.find((l) => l.platform === "instagram")?.url;
+  const facebookUrl = socialLinks?.find((l) => l.platform === "facebook")?.url;
+
   const [contact, setContact] = useState<LandlordContact | null>(null);
   const [checked, setChecked] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -245,6 +274,96 @@ export function LandlordsWhatsNext() {
             ))}
           </div>
         </div>
+      </section>
+
+      {posts.length > 0 && (
+        <section className="px-8 py-20 sm:px-14 sm:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-11 flex flex-wrap items-end justify-between gap-5">
+              <div>
+                <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
+                  Read more
+                </p>
+                <h2 className="mb-2 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+                  Worth a read while you wait
+                </h2>
+                <p className="text-sm text-near-black/65">
+                  A few posts on getting more from your short-term let.
+                </p>
+              </div>
+              <Link
+                href="/blog?tag=landlord"
+                className="text-sm font-semibold whitespace-nowrap text-maroon hover:underline"
+              >
+                See all landlord articles →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {posts.map((post) => (
+                <BlogPostCard key={post._id} post={post} fallbackAuthorName={fallbackAuthorName} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="bg-maroon/8 px-8 py-20 sm:px-14 sm:py-24">
+        <div className="mx-auto max-w-6xl text-center">
+          <h2 className="mb-4 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+            Follow along
+          </h2>
+          <p className="mx-auto mb-11 max-w-[560px] text-[15px] leading-relaxed text-near-black/70">
+            Real stays, real properties, real Louth/Meath/Mourne scenery — follow us for more.
+          </p>
+
+          <div className="mx-auto max-w-4xl overflow-hidden rounded-[18px] border border-sage-grey/40 bg-white p-3">
+            <behold-widget feed-id={BEHOLD_FEED_ID}></behold-widget>
+          </div>
+          <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
+
+          <div className="mt-9 flex flex-wrap justify-center gap-4">
+            {instagramUrl && (
+              <a
+                href={instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-full border border-sage-grey/50 bg-white px-5 py-2.5 text-sm font-semibold text-maroon"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="2" width="20" height="20" rx="5" stroke="var(--maroon)" strokeWidth="1.8" />
+                  <circle cx="12" cy="12" r="4" stroke="var(--maroon)" strokeWidth="1.8" />
+                  <circle cx="17.5" cy="6.5" r="1" fill="var(--maroon)" />
+                </svg>
+                Instagram
+              </a>
+            )}
+            {facebookUrl && (
+              <a
+                href={facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-full border border-sage-grey/50 bg-white px-5 py-2.5 text-sm font-semibold text-maroon"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                    stroke="var(--maroon)"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Facebook
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-maroon px-8 py-12 text-center sm:px-14">
+        <p className="font-serif text-xl font-bold text-cream">
+          Send your SOS. We&apos;ll sort the stay.
+        </p>
       </section>
     </main>
   );

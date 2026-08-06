@@ -28,6 +28,21 @@ export const BLOG_POSTS_QUERY = defineQuery(`
   }
 `);
 
+// 3 most recent posts tagged "landlord" — used by the landlord-facing
+// "worth a read while you wait" section, not the general blog index.
+export const LANDLORD_BLOG_POSTS_QUERY = defineQuery(`
+  *[_type == "blogPost" && defined(slug.current) && "landlord" in tags] | order(publishedAt desc) [0...3] {
+    _id,
+    title,
+    "slug": slug.current,
+    excerpt,
+    coverImage,
+    publishedAt,
+    author,
+    tags
+  }
+`);
+
 export const BLOG_POST_QUERY = defineQuery(`
   *[_type == "blogPost" && slug.current == $slug][0] {
     _id,
