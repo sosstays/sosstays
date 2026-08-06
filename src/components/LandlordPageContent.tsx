@@ -80,7 +80,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           <HeroNav
             links={LANDLORD_NAV_LINKS}
             variant="landlords"
-            ctaHref="/calculator"
+            ctaHref="/landlords-whats-next"
             ctaLabel="Get estimate"
           />
           <div className="mx-auto max-w-[760px] text-center">

@@ -212,15 +212,31 @@ export function LandlordsWhatsNext({
         <div className="absolute inset-0 bg-maroon/80" />
 
         <div className="relative z-10">
-          <p className="mb-2.5 text-xs tracking-widest text-light-sage uppercase">
-            Thanks for sending your SOS
-          </p>
-          <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
-            Right, we&apos;ve got your details. Let&apos;s start building your numbers.
-          </h1>
-          <p className="mx-auto mb-7 max-w-[520px] text-[15px] leading-relaxed text-cream/80">
-            One of the team will be in touch shortly — but you can get started straightaway.
-          </p>
+          {contact ? (
+            <>
+              <p className="mb-2.5 text-xs tracking-widest text-light-sage uppercase">
+                Thanks for sending your SOS
+              </p>
+              <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
+                Right, we&apos;ve got your details. Let&apos;s start building your numbers.
+              </h1>
+              <p className="mx-auto mb-7 max-w-[520px] text-[15px] leading-relaxed text-cream/80">
+                One of the team will be in touch shortly — but you can get started straightaway.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mb-2.5 text-xs tracking-widest text-light-sage uppercase">
+                Free revenue estimate
+              </p>
+              <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
+                See what your property could be earning.
+              </h1>
+              <p className="mx-auto mb-7 max-w-[520px] text-[15px] leading-relaxed text-cream/80">
+                Pop in a few details below — takes about a minute, no commitment.
+              </p>
+            </>
+          )}
           <Button link="#calculator" variant="primary" bgColor="cream" color="maroon" animateColor="maroon">
             Get your estimate →
           </Button>
