@@ -150,53 +150,50 @@ export function LandlordsWhatsNext() {
 
   return (
     <main className="min-h-screen bg-cream font-sans text-near-black">
-      <div className="px-8 pt-16 pb-14 text-center sm:px-14 sm:pt-24">
-        <p className="mb-2.5 text-xs tracking-widest text-maroon uppercase">
-          Thanks for sending your SOS
-        </p>
-        <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-near-black sm:text-4xl">
-          Right, we&apos;ve got your details. Let&apos;s start building your numbers.
-        </h1>
-        <p className="mx-auto max-w-[520px] text-[15px] leading-relaxed text-near-black/65">
-          One of the team will be in touch shortly — but you can get started straightaway.
-        </p>
-      </div>
-
-      <section className="bg-maroon/8 px-8 py-20 sm:px-14 sm:py-24">
-        <div
-          className={
-            showResults
-              ? "mx-auto max-w-6xl"
-              : "mx-auto grid max-w-6xl grid-cols-1 gap-12 lg:grid-cols-[1fr_0.8fr] lg:gap-16"
-          }
-        >
-          {/* Kept mounted (just hidden) rather than conditionally removed, so
-              hiding it on results doesn't shift the calculator to a new
-              sibling position and force React to remount it mid-flow. */}
-          <div className={showResults ? "hidden" : "lg:pt-2"}>
-            <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">Start here</p>
-            <h2 className="mb-5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
-              Get your estimate
-            </h2>
-            <p className="mb-4 text-[15px] leading-relaxed text-near-black/70">
-              Pop in your occupancy and current annual revenue and the calculator will give you a
-              quick, honest estimate of what your property could be earning.
+      <section className="bg-maroon/8 px-8 py-16 sm:px-14 sm:py-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-14 text-center">
+            <p className="mb-2.5 text-xs tracking-widest text-maroon uppercase">
+              Thanks for sending your SOS
             </p>
-            <p className="text-[15px] leading-relaxed text-near-black/70">
-              This is a basic estimation tool to give you a starting point. Once we have your
-              details, we&apos;ll come back with a proper custom proposal — projected figures based
-              on your actual property, area and season, not just the averages.
+            <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-near-black sm:text-4xl">
+              Right, we&apos;ve got your details. Let&apos;s start building your numbers.
+            </h1>
+            <p className="mx-auto max-w-[520px] text-[15px] leading-relaxed text-near-black/65">
+              One of the team will be in touch shortly — but you can get started straightaway.
             </p>
           </div>
 
-          <div>
-            {checked && (
-              <RevenueCalculator
-                initialName={contact?.name}
-                initialEmail={contact?.email}
-                onResultsShown={() => setShowResults(true)}
-              />
-            )}
+          <div
+            className={showResults ? "" : "grid grid-cols-1 gap-12 lg:grid-cols-[1fr_0.8fr] lg:gap-16"}
+          >
+            {/* Kept mounted (just hidden) rather than conditionally removed, so
+                hiding it on results doesn't shift the calculator to a new
+                sibling position and force React to remount it mid-flow. */}
+            <div className={showResults ? "hidden" : "lg:pt-2"}>
+              <h2 className="mb-5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+                Get your estimate
+              </h2>
+              <p className="mb-4 text-[15px] leading-relaxed text-near-black/70">
+                Pop in your occupancy and current annual revenue and the calculator will give you a
+                quick, honest estimate of what your property could be earning.
+              </p>
+              <p className="text-[15px] leading-relaxed text-near-black/70">
+                This is a basic estimation tool to give you a starting point. Once we have your
+                details, we&apos;ll come back with a proper custom proposal — projected figures based
+                on your actual property, area and season, not just the averages.
+              </p>
+            </div>
+
+            <div>
+              {checked && (
+                <RevenueCalculator
+                  initialName={contact?.name}
+                  initialEmail={contact?.email}
+                  onResultsShown={() => setShowResults(true)}
+                />
+              )}
+            </div>
           </div>
         </div>
       </section>
