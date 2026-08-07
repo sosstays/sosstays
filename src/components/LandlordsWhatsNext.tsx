@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import Image from "next/image";
+import whatsNextHeroImage from "@/assets/images/whats-next.png";
 import Link from "next/link";
 import Script from "next/script";
 import { RevenueCalculator } from "@/components/RevenueCalculator";
@@ -203,7 +204,7 @@ export function LandlordsWhatsNext({
     <main className="min-h-screen bg-cream font-sans text-near-black">
       <section className="relative overflow-hidden bg-maroon px-8 py-16 text-center sm:px-14 sm:py-24">
         <Image
-          src="/whats-next.png"
+          src={whatsNextHeroImage}
           alt=""
           fill
           priority

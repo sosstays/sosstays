@@ -1,4 +1,5 @@
 import Image from "next/image";
+import landlordHeroImage from "@/assets/images/landlord.png";
 import { Poppins } from "next/font/google";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
@@ -68,7 +69,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       {/* HERO */}
       <section className="relative overflow-hidden bg-maroon px-8 pt-[180px] pb-24 sm:px-14 sm:pt-[200px]">
         <Image
-          src="/landlord.png"
+          src={landlordHeroImage}
           alt=""
           fill
           priority
