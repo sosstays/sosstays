@@ -202,15 +202,15 @@ export function LandlordsWhatsNext({
 
   return (
     <main className="min-h-screen bg-cream font-sans text-near-black">
-      <section className="relative overflow-hidden bg-maroon px-8 py-16 text-center sm:px-14 sm:py-24">
+      <section className="relative flex min-h-[560px] items-center overflow-hidden bg-maroon px-8 py-24 text-left sm:px-14 sm:py-32">
         <Image
           src={whatsNextHeroImage}
           alt=""
           fill
           priority
-          className="object-cover"
+          className="object-cover object-top"
         />
-        <div className="absolute inset-0 bg-maroon/80" />
+        <div className="absolute inset-0 bg-maroon/45" />
 
         <div className="relative z-10">
           {contact ? (
@@ -218,10 +218,10 @@ export function LandlordsWhatsNext({
               <p className="mb-2.5 text-xs tracking-widest text-light-sage uppercase">
                 Thanks for sending your SOS
               </p>
-              <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
+              <h1 className="mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
                 Right, we&apos;ve got your details. Let&apos;s start building your numbers.
               </h1>
-              <p className="mx-auto mb-7 max-w-[520px] text-[15px] leading-relaxed text-cream/80">
+              <p className="mb-7 max-w-[520px] text-[15px] leading-relaxed text-cream/80">
                 One of the team will be in touch shortly — but you can get started straightaway.
               </p>
             </>
@@ -230,10 +230,10 @@ export function LandlordsWhatsNext({
               <p className="mb-2.5 text-xs tracking-widest text-light-sage uppercase">
                 Free revenue estimate
               </p>
-              <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
+              <h1 className="mb-4 max-w-[640px] font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
                 See what your property could be earning.
               </h1>
-              <p className="mx-auto mb-7 max-w-[520px] text-[15px] leading-relaxed text-cream/80">
+              <p className="mb-7 max-w-[520px] text-[15px] leading-relaxed text-cream/80">
                 Pop in a few details below — takes about a minute, no commitment.
               </p>
             </>

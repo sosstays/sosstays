@@ -67,57 +67,57 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       <JsonLd data={buildServiceSchema(page, siteSettings)} />
 
       {/* HERO */}
-      <section className="relative overflow-hidden bg-maroon px-8 pt-[180px] pb-24 sm:px-14 sm:pt-[200px]">
-        <Image
-          src={landlordHeroImage}
-          alt=""
-          fill
-          priority
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-maroon/80" />
-
-        {/* HeroNav carries its own absolute inset-x-0 + z-20, positioned
-            against the section itself — it must stay a direct child of the
-            section (not nested in the z-10 wrapper below), otherwise its
-            inset-x-0 resolves against that wrapper's padded box instead of
-            the section's true edges and the bar renders inset from both
-            sides instead of full-bleed. */}
+      <section className="relative flex flex-col overflow-hidden bg-maroon">
+        {/* Nav renders in normal flow here (not as an absolute overlay), so
+            it occupies its own space at the top of the section and the
+            image below never sits underneath it. */}
         <HeroNav
           links={LANDLORD_NAV_LINKS}
           variant="landlords"
           ctaHref="/landlords-whats-next"
           ctaLabel="Get estimate"
+          sticky
         />
 
-        <div className="relative z-10">
-          <div className="mx-auto max-w-[760px] text-center">
-            <span className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
-              For property owners
-            </span>
-            <p className="mx-auto mb-4.5 max-w-[560px] text-sm text-light-sage/85">
-              Self-managing hosts in this corridor typically leave 20–35% of revenue on the
-              table. That&apos;s a market benchmark, not a guess — and it&apos;s the gap we close.
-            </p>
-            <h1 className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl">
-              You&apos;re already doing this yourself.
-              <br />
-              Let&apos;s do it better.
-            </h1>
-            <p className="mx-auto mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
-              You handle the calendar, the cleaner, the awkward 11pm messages. Hand it to us —
-              same house, same income going to you, none of the admin.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button
-                link="#send-sos"
-                variant="primary"
-                bgColor="cream"
-                color="maroon"
-                animateColor="maroon"
-              >
-                Get started →
-              </Button>
+        <div className="relative flex-1 px-8 py-16 sm:px-14 sm:py-24">
+          <Image
+            src={landlordHeroImage}
+            alt=""
+            fill
+            priority
+            className="object-cover object-top"
+          />
+          <div className="absolute inset-0 bg-maroon/45" />
+
+          <div className="relative z-10">
+            <div className="max-w-[600px] text-left">
+              <span className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
+                For property owners
+              </span>
+              <p className="mb-4.5 max-w-[560px] text-sm text-light-sage/85">
+                Self-managing hosts in this corridor typically leave 20–35% of revenue on the
+                table. That&apos;s a market benchmark, not a guess — and it&apos;s the gap we close.
+              </p>
+              <h1 className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl">
+                You&apos;re already doing this yourself.
+                <br />
+                Let&apos;s do it better.
+              </h1>
+              <p className="mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
+                You handle the calendar, the cleaner, the awkward 11pm messages. Hand it to us —
+                same house, same income going to you, none of the admin.
+              </p>
+              <div className="flex flex-wrap justify-start gap-4">
+                <Button
+                  link="#send-sos"
+                  variant="primary"
+                  bgColor="cream"
+                  color="maroon"
+                  animateColor="maroon"
+                >
+                  Get started →
+                </Button>
+              </div>
             </div>
           </div>
         </div>
