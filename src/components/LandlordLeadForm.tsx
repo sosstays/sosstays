@@ -42,7 +42,7 @@ export function LandlordLeadForm() {
   }
 
   async function submitLeadForm() {
-    if (!name.trim() || !email.trim()) {
+    if (!name.trim() || !email.trim() || !mobile.trim()) {
       setStep2Error(true);
       return;
     }
@@ -213,7 +213,9 @@ export function LandlordLeadForm() {
             />
           </label>
           <label className="flex flex-col gap-1.5 text-sm text-near-black">
-            Mobile number (optional)
+            <span>
+              Mobile number <span className="text-error-red">*</span>
+            </span>
             <input
               type="tel"
               value={mobile}
@@ -224,7 +226,7 @@ export function LandlordLeadForm() {
           </label>
           {step2Error && (
             <p className="text-[13px] text-error-red">
-              Name and email are needed to send your SOS.
+              Name, email and mobile number are needed to send your SOS.
             </p>
           )}
           <div className="mt-1 flex justify-between">
