@@ -24,28 +24,35 @@ const HOW_IT_WORKS_STATS = [
   {
     stat: "20–30%",
     title: "Commission only",
-    description: "Of gross booking revenue. Cleaning fees excluded. No setup fee, no monthly retainer.",
+    description:
+      "Of gross booking revenue. Cleaning fees excluded. No setup fee, no monthly retainer.",
   },
   {
     stat: "€0",
     title: "No booking, no fee",
-    description: "We only get paid when your property does. Nothing owed on empty nights.",
+    description:
+      "We only get paid when your property does. Nothing owed on empty nights.",
   },
   {
     stat: "€250",
     title: "Maintenance authority",
-    description: "We handle anything up to €250 without bothering you. Above that, we call first.",
+    description:
+      "We handle anything up to €250 without bothering you. Above that, we call first.",
   },
   {
     stat: "Your call",
     title: "Cleaning",
-    description: "Keep your existing cleaner, or we source one from our network. Either way, it's covered.",
+    description:
+      "Keep your existing cleaner, or we source one from our network. Either way, it's covered.",
   },
 ];
 
 const MARKET_STATS = [
   { stat: "20–35%", caption: "typical underearning for hosts managing solo" },
-  { stat: "2–3×", caption: "revenue potential vs. a long-term let, corridor-wide" },
+  {
+    stat: "2–3×",
+    caption: "revenue potential vs. a long-term let, corridor-wide",
+  },
   { stat: "80%+", caption: "peak-season occupancy across the corridor" },
   { stat: "€150+", caption: "average nightly rate for comparable properties" },
 ];
@@ -53,10 +60,29 @@ const MARKET_STATS = [
 const poppins = Poppins({ subsets: ["latin"], weight: ["500", "600", "700"] });
 
 const PROCESS_STEPS = [
-  { number: "01", title: "A call", description: "Fifteen minutes. We ask about the property, you ask about us." },
-  { number: "02", title: "A walkthrough", description: "We come see the place in person and work out what it needs." },
-  { number: "03", title: "An agreement", description: "Plain terms, commission rate confirmed, nothing buried in small print." },
-  { number: "04", title: "Handover", description: "Listing goes live, calendar's ours to run, you go back to just owning the place." },
+  {
+    number: "01",
+    title: "A call",
+    description:
+      "Fifteen minutes. We ask about the property, you ask about us.",
+  },
+  {
+    number: "02",
+    title: "A walkthrough",
+    description: "We come see the place in person and work out what it needs.",
+  },
+  {
+    number: "03",
+    title: "An agreement",
+    description:
+      "Plain terms, commission rate confirmed, nothing buried in small print.",
+  },
+  {
+    number: "04",
+    title: "Handover",
+    description:
+      "Listing goes live, calendar's ours to run, you go back to just owning the place.",
+  },
 ];
 
 export async function LandlordPageContent({ page }: { page: LandlordPage }) {
@@ -95,8 +121,9 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 For property owners
               </span>
               <p className="mb-4.5 max-w-[560px] text-sm text-light-sage/85">
-                Self-managing hosts in this corridor typically leave 20–35% of revenue on the
-                table. That&apos;s a market benchmark, not a guess — and it&apos;s the gap we close.
+                Self-managing hosts in this corridor typically leave 20–35% of
+                revenue on the table. That&apos;s a market benchmark, not a
+                guess — and it&apos;s the gap we close.
               </p>
               <h1 className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl">
                 You&apos;re already doing this yourself.
@@ -104,8 +131,9 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 Let&apos;s do it better.
               </h1>
               <p className="mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
-                You handle the calendar, the cleaner, the awkward 11pm messages. Hand it to us —
-                same house, same income going to you, none of the admin.
+                You handle the calendar, the cleaner, the awkward 11pm messages.
+                Hand it to us — same house, same income going to you, none of
+                the admin.
               </p>
               <div className="flex flex-wrap justify-start gap-4">
                 <Button
@@ -124,40 +152,62 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       </section>
 
       {/* HOW IT WORKS */}
-      <section id="how-it-works" className="bg-light-sage/15 px-8 py-24 sm:px-14 sm:py-28">
+      <section
+        id="how-it-works"
+        className="bg-light-sage/15 px-8 py-24 sm:px-14 sm:py-28"
+      >
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
             <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
               How it works
             </p>
-            <h2 className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+            <h2 className="mb-5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               Exactly what handing off looks like
             </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {HOW_IT_WORKS_STATS.map((item) => (
-              <div key={item.title} className="rounded-[10px] bg-white p-6">
-                <div className={`mb-2.5 text-[28px] font-bold text-maroon ${poppins.className}`}>
+              <div
+                key={item.title}
+                className="rounded-[10px] border border-sage-grey/40 p-6"
+              >
+                <div
+                  className={`mb-2.5 text-[28px] font-bold text-maroon ${poppins.className}`}
+                >
                   {item.stat}
                 </div>
-                <h3 className="mb-2 text-base font-semibold text-near-black">{item.title}</h3>
+                <h3 className="mb-2 text-base font-semibold text-near-black">
+                  {item.title}
+                </h3>
                 <p className="text-[13px] leading-relaxed text-near-black/65">
                   {item.description}
                 </p>
               </div>
             ))}
           </div>
-
-          <div className="mt-7 rounded-[18px] bg-white px-8 py-7">
+          <div className="mt-7 rounded-[18px] px-8 py-7 border border-sage-grey/40">
             <h3 className="mb-1.5 text-base font-semibold text-near-black">
               Still your property
             </h3>
             <p className="text-sm leading-relaxed text-near-black/65">
-              Block off personal-use dates any time you like. No minimum commitment — stay as
-              long as it&apos;s working for you, leave when it isn&apos;t.
+              Block off personal-use dates any time you like. No minimum
+              commitment — stay as long as it&apos;s working for you, leave when
+              it isn&apos;t.
             </p>
           </div>
+          
+          <p className="mx-auto mt-9 max-w-[720px] text-[15px] leading-relaxed text-near-black/70">
+            We take that off your hands. Full property management — guest
+            communication, pricing, cleaning coordination, maintenance — for a
+            single commission on what you actually earn per night. No setup fee,
+            no monthly retainer, no contract that locks you in if it&apos;s not
+            working. <br></br> This isn&apos;t a marketing agency bolt-on. We run the
+            entire operation end to end, not just your listing photos or pricing
+            calendar — every guest message, every check-in, every cleaner
+            handoff, every repair call. You stay in control of the property; we
+            handle everything that isn&apos;t the property itself.
+          </p>
 
           {page.body && (
             <div className="prose prose-neutral mt-10 max-w-[720px] text-near-black/80 [&_h2]:mt-8 [&_h2]:mb-2 [&_h2]:font-serif [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-maroon [&_p]:my-3 [&_p]:leading-relaxed">
@@ -177,14 +227,18 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             What this corridor is actually doing
           </h2>
           <p className="mx-auto max-w-[560px] text-sm text-near-black/60">
-            Industry benchmarks for the area — not a claim about our own portfolio, which is
-            still one house deep.
+            Industry benchmarks for the area — not a claim about our own
+            portfolio, which is still one house deep.
           </p>
         </div>
         <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
           {MARKET_STATS.map((item) => (
             <div key={item.caption} className="px-2 text-center">
-              <div className={`text-3xl font-extrabold text-maroon ${poppins.className}`}>{item.stat}</div>
+              <div
+                className={`text-3xl font-extrabold text-maroon ${poppins.className}`}
+              >
+                {item.stat}
+              </div>
               <p className="mt-2 text-[13px] leading-normal text-near-black/60">
                 {item.caption}
               </p>
@@ -204,26 +258,32 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               What we found on our first property
             </h3>
             <p className="text-[15px] leading-relaxed text-light-sage/90">
-              This is our own case, not a stand-in for what every owner should expect —
-              we&apos;ve managed Rathescar Grove for a matter of weeks. But the numbers are
-              real, and specific.
+              This is our own case, not a stand-in for what every owner should
+              expect — we&apos;ve managed Rathescar Grove for a matter of weeks.
+              But the numbers are real, and specific.
             </p>
           </div>
           <div className="flex flex-col gap-4.5">
             <div className="rounded-[10px] border border-cream/15 bg-cream/10 px-6 py-5">
-              <div className={`text-2xl font-extrabold text-cream ${poppins.className}`}>
+              <div
+                className={`text-2xl font-extrabold text-cream ${poppins.className}`}
+              >
                 ~24% underpriced
               </div>
               <p className="mt-1.5 text-[13px] text-light-sage/85">
-                vs. the local market average, at the rate the previous listing was using
+                vs. the local market average, at the rate the previous listing
+                was using
               </p>
             </div>
             <div className="rounded-[10px] border border-cream/15 bg-cream/10 px-6 py-5">
-              <div className={`text-2xl font-extrabold text-cream ${poppins.className}`}>
+              <div
+                className={`text-2xl font-extrabold text-cream ${poppins.className}`}
+              >
                 40–50% booking uplift
               </div>
               <p className="mt-1.5 text-[13px] text-light-sage/85">
-                the minimum increase we&apos;re targeting after repricing — still playing out
+                the minimum increase we&apos;re targeting after repricing —
+                still playing out
               </p>
             </div>
           </div>
@@ -241,8 +301,9 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               Tell us about your place
             </h2>
             <p className="mx-auto max-w-[480px] text-sm text-near-black/60">
-              Three quick steps — we&apos;ll be in touch within a day or two. Right after, you can
-              run a free revenue estimate for your property.
+              Three quick steps — we&apos;ll be in touch within a day or two.
+              Right after, you can run a free revenue estimate for your
+              property.
             </p>
           </div>
           <LandlordLeadForm />
@@ -262,11 +323,17 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         <div className="grid grid-cols-1 gap-9 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS_STEPS.map((step) => (
             <div key={step.number}>
-              <div className={`mb-3.5 text-3xl font-extrabold text-light-sage ${poppins.className}`}>
+              <div
+                className={`mb-3.5 text-3xl font-extrabold text-light-sage ${poppins.className}`}
+              >
                 {step.number}
               </div>
-              <h3 className="mb-2 text-base font-semibold text-near-black">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-near-black/65">{step.description}</p>
+              <h3 className="mb-2 text-base font-semibold text-near-black">
+                {step.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-near-black/65">
+                {step.description}
+              </p>
             </div>
           ))}
         </div>

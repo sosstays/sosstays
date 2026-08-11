@@ -131,7 +131,7 @@ export function PropertyCard({
       href={`/stays/${slug}`}
       className={
         surface === "framed"
-          ? "group block rounded-[18px] bg-white p-5 shadow-[0_12px_32px_-18px_rgba(63,82,64,0.2)] transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_24px_48px_-16px_rgba(63,82,64,0.32)]"
+          ? "group block rounded-[18px] border border-sage-grey/40 p-5 shadow-[0_12px_32px_-18px_rgba(63,82,64,0.2)] transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_24px_48px_-16px_rgba(63,82,64,0.32)]"
           : "group block transition-transform duration-300 ease-out hover:-translate-y-1"
       }
     >

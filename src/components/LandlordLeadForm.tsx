@@ -81,7 +81,7 @@ export function LandlordLeadForm() {
   });
 
   return (
-    <div className="rounded-[18px] bg-white p-8 text-left sm:p-11">
+    <div className="rounded-[18px] border border-sage-grey/40 p-8 text-left sm:p-11">
       {stage === "form" && (
         <div className="mb-9 flex items-center gap-2.5">
           {progressSegments.map((seg) => (

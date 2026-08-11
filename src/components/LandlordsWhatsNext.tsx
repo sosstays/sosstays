@@ -298,7 +298,7 @@ export function LandlordsWhatsNext({
             {WHAT_YOU_GET.map((item) => (
               <div
                 key={item.title}
-                className="flex flex-col gap-3 rounded-[18px] border border-sage-grey/40 bg-white p-6 shadow-sm"
+                className="flex flex-col gap-3 rounded-[18px] border border-sage-grey/40 bg-cream p-6 shadow-sm"
               >
                 {item.icon}
                 <h3 className="text-base font-semibold text-maroon">{item.title}</h3>
@@ -349,7 +349,7 @@ export function LandlordsWhatsNext({
             Real stays, real properties, real Louth/Meath/Mourne scenery — follow us for more.
           </p>
 
-          <div className="mx-auto max-w-4xl overflow-hidden rounded-[18px] border border-sage-grey/40 bg-white p-3">
+          <div className="mx-auto max-w-4xl overflow-hidden rounded-[18px] border border-sage-grey/40 bg-cream p-3">
             <behold-widget feed-id={BEHOLD_FEED_ID}></behold-widget>
           </div>
           <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
@@ -360,7 +360,7 @@ export function LandlordsWhatsNext({
                 href={instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-full border border-sage-grey/50 bg-white px-5 py-2.5 text-sm font-semibold text-maroon"
+                className="flex items-center gap-2 rounded-full border border-sage-grey/50 bg-cream px-5 py-2.5 text-sm font-semibold text-maroon"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <rect x="2" y="2" width="20" height="20" rx="5" stroke="var(--maroon)" strokeWidth="1.8" />
@@ -375,7 +375,7 @@ export function LandlordsWhatsNext({
                 href={facebookUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-full border border-sage-grey/50 bg-white px-5 py-2.5 text-sm font-semibold text-maroon"
+                className="flex items-center gap-2 rounded-full border border-sage-grey/50 bg-cream px-5 py-2.5 text-sm font-semibold text-maroon"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <path

@@ -564,7 +564,7 @@ function ResultsPanel({
       </div>
 
       <div className="mb-7 grid grid-cols-1 gap-3.5 sm:grid-cols-3">
-        <div className="rounded-[10px] border border-sage-grey/40 bg-white p-5 text-center">
+        <div className="rounded-[10px] border border-sage-grey/40 p-5 text-center">
           <p className="mb-2 text-[11px] font-medium tracking-wide text-near-black/60 uppercase">
             Your current monthly
           </p>
@@ -578,7 +578,7 @@ function ResultsPanel({
           <p className="font-serif text-4xl text-maroon">{formatEuro(result.net)}</p>
           <p className="mt-1 text-[11px] text-near-black/60">per month</p>
         </div>
-        <div className="rounded-[10px] border border-sage-grey/40 bg-white p-5 text-center">
+        <div className="rounded-[10px] border border-sage-grey/40 p-5 text-center">
           <p className="mb-2 text-[11px] font-medium tracking-wide text-near-black/60 uppercase">
             Extra per month
           </p>
