@@ -253,6 +253,17 @@ export const PRIVACY_POLICY_QUERY = defineQuery(`
   }
 `);
 
+// ---- Terms & conditions (singleton) ----
+
+export const TERMS_PAGE_QUERY = defineQuery(`
+  *[_id == "termsPage"][0] {
+    title,
+    lastUpdated,
+    body,
+    ${seoProjection}
+  }
+`);
+
 // ---- Homepage hero (singleton) ----
 
 export const HERO_SECTION_QUERY = defineQuery(`

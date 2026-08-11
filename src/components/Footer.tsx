@@ -82,6 +82,11 @@ export function Footer({ socialLinks }: { socialLinks?: SocialLink[] }) {
                   Privacy policy
                 </Link>
               </li>
+              <li>
+                <Link href="/terms-and-conditions" className="hover:text-forest-green">
+                  Terms &amp; conditions
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
