@@ -44,9 +44,9 @@ export function RoomTypesTable({ roomTypes }: { roomTypes?: RoomType[] | null })
           {roomTypes.map((room, i) => (
             <tr key={i} className={i !== 0 ? "border-t border-sage-grey/40" : undefined}>
               <td className="px-6 py-5">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
                   {room.image && (
-                    <div className="relative h-16 w-20 flex-none overflow-hidden rounded-[8px]">
+                    <div className="relative h-32 w-full flex-none overflow-hidden rounded-[8px] sm:h-16 sm:w-20">
                       <Image
                         src={urlFor(room.image).width(200).height(160).url()}
                         alt={room.image.alt ?? room.name}

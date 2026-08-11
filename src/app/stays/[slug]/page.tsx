@@ -205,7 +205,35 @@ export default async function PropertyPage({ params }: Props) {
           <span aria-hidden="true">›</span>
           <span className="font-medium text-near-black">{property.name}</span>
         </nav>
-        <PropertyGallery images={property.gallery ?? []} alt={property.name} />
+        <PropertyGallery
+          images={property.gallery ?? []}
+          alt={property.name}
+          promo={
+            property.galleryPromotion?.enabled && property.galleryPromotion.highlights?.length === 3
+              ? {
+                  highlights: property.galleryPromotion.highlights.map(
+                    (highlight: {
+                      headline: string;
+                      description: string;
+                      image?: Record<string, unknown>;
+                      supportingImages?: Record<string, unknown>[];
+                      ctaLabel?: string;
+                      ctaHref?: string;
+                    }) => ({
+                      headline: highlight.headline,
+                      description: highlight.description,
+                      image: highlight.image,
+                      supportingImages: highlight.supportingImages ?? [],
+                      ctaLabel: highlight.ctaLabel || "Book Now",
+                      ctaHref: highlight.ctaHref ?? bookingUrl ?? undefined,
+                    }),
+                  ),
+                  delayMs: (property.galleryPromotion.delaySeconds ?? 2.5) * 1000,
+                  autoplayMs: (property.galleryPromotion.autoplaySeconds ?? 4) * 1000,
+                }
+              : undefined
+          }
+        />
       </section>
 
       {/* TITLE BLOCK */}

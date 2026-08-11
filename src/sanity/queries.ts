@@ -103,6 +103,25 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     shortDescription,
     fullDescription,
     gallery,
+    galleryPromotion {
+      enabled,
+      highlights[] {
+        headline,
+        description,
+        image {
+          ...,
+          alt
+        },
+        supportingImages[] {
+          ...,
+          alt
+        },
+        ctaLabel,
+        ctaHref
+      },
+      delaySeconds,
+      autoplaySeconds
+    },
     "videoUrl": video.asset->url,
     "videoMimeType": video.asset->mimeType,
     roomTypes,
