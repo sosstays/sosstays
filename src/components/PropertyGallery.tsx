@@ -196,7 +196,6 @@ export function PropertyGallery({
 
         <span
           ref={pillRef}
-          onClick={(e) => e.stopPropagation()}
           className="absolute right-5 bottom-5 overflow-hidden rounded-full bg-cream px-5 py-2.5 shadow-md transition-[width] duration-500 ease-out"
           style={{
             width:
