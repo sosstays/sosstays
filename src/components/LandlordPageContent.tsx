@@ -1,7 +1,6 @@
 import Image from "next/image";
 import landlordHeroImage from "@/assets/images/landlord.png";
 import { Poppins } from "next/font/google";
-import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { JsonLd, buildServiceSchema } from "@/sanity/jsonld";
@@ -208,12 +207,6 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             handoff, every repair call. You stay in control of the property; we
             handle everything that isn&apos;t the property itself.
           </p>
-
-          {page.body && (
-            <div className="prose prose-neutral mt-10 max-w-[720px] text-near-black/80 [&_h2]:mt-8 [&_h2]:mb-2 [&_h2]:font-serif [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-maroon [&_p]:my-3 [&_p]:leading-relaxed">
-              <PortableText value={page.body} />
-            </div>
-          )}
         </div>
       </section>
 
