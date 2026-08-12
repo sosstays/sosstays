@@ -149,7 +149,7 @@ export function PropertyGallery({
               className="absolute inset-0 transition-opacity duration-700 ease-out"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(74,93,72,0.88) 0%, rgba(74,93,72,0.75) 45%, rgba(74,93,72,0.55) 100%)",
+                  "linear-gradient(180deg, rgba(74,93,72,0.88) 0%, rgba(74,93,72,0.55) 35%, rgba(74,93,72,0) 62%)",
                 opacity: promoActive ? 1 : 0,
               }}
             />
