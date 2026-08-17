@@ -282,7 +282,7 @@ export function SearchBar() {
       <div className="hidden h-10 w-px bg-sage-grey/40 sm:block" />
 
       {/* Guests */}
-      <div ref={guestsRef} className="relative flex-1 sm:pr-6 sm:pl-6">
+      <div ref={guestsRef} className="relative sm:px-6">
         <label className={FIELD_LABEL}>Guests</label>
         <button
           type="button"
