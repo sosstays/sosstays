@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const LOCATIONS = ["Louth", "Meath", "The Mournes"];
+const LOCATIONS = ["Drogheda", "Meath", "The Mournes"];
 const WEEKDAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
-const FIELD_LABEL = "mb-1 block text-[11px] font-semibold tracking-widest text-near-black/50 uppercase";
+const FIELD_LABEL = "mb-1 block truncate text-[11px] font-semibold tracking-widest text-near-black/50 uppercase";
 const POPOVER = "absolute top-[calc(100%+12px)] z-20 rounded-2xl bg-cream shadow-[0_16px_40px_-12px_rgba(23,25,23,0.3)]";
 
 function startOfDay(date: Date) {
@@ -31,6 +31,13 @@ function toISODate(date: Date) {
   return `${y}-${m}-${d}`;
 }
 
+function parseISODate(iso?: string): Date | null {
+  if (!iso) return null;
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return null;
+  return new Date(y, m - 1, d);
+}
+
 function buildMonthGrid(month: Date) {
   const year = month.getFullYear();
   const m = month.getMonth();
@@ -43,7 +50,13 @@ function buildMonthGrid(month: Date) {
 
 function PinIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="h-5 w-5 shrink-0">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      className="h-5 w-5 shrink-0 text-forest-green"
+    >
       <path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z" />
       <circle cx="12" cy="9.5" r="2.25" />
     </svg>
@@ -58,7 +71,7 @@ function ChevronIcon({ direction = "down" }: { direction?: "down" | "left" | "ri
       fill="none"
       stroke="currentColor"
       strokeWidth="1.75"
-      className={`h-4 w-4 shrink-0 ${rotation}`}
+      className={`h-4 w-4 shrink-0 text-forest-green ${rotation}`}
     >
       <path d="m6 9 6 6 6-6" />
     </svg>
@@ -67,7 +80,13 @@ function ChevronIcon({ direction = "down" }: { direction?: "down" | "left" | "ri
 
 function CalendarIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="h-5 w-5 shrink-0">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      className="h-5 w-5 shrink-0 text-forest-green"
+    >
       <rect x="3.5" y="5" width="17" height="16" rx="2.5" />
       <path d="M3.5 9.5h17M8 3v4M16 3v4" strokeLinecap="round" />
     </svg>
@@ -76,7 +95,13 @@ function CalendarIcon() {
 
 function GuestsIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="h-5 w-5 shrink-0">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      className="h-5 w-5 shrink-0 text-forest-green"
+    >
       <circle cx="9" cy="8.5" r="3" />
       <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" strokeLinecap="round" />
       <path d="M16 8.75a2.75 2.75 0 1 0 0-5.5M20.5 20c0-2.8-2-5.1-4.7-5.7" strokeLinecap="round" />
@@ -93,18 +118,31 @@ function SearchIcon() {
   );
 }
 
-export function SearchBar() {
+type SearchBarProps = {
+  /** Prefills the bar — used on /search so refining a search keeps what was already picked. */
+  initialLocation?: string;
+  initialCheckIn?: string; // YYYY-MM-DD
+  initialCheckOut?: string; // YYYY-MM-DD
+  initialGuests?: number;
+};
+
+export function SearchBar({
+  initialLocation = "",
+  initialCheckIn,
+  initialCheckOut,
+  initialGuests = 1,
+}: SearchBarProps = {}) {
   const today = startOfDay(new Date());
 
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(initialLocation);
   const [showLocations, setShowLocations] = useState(false);
 
-  const [checkIn, setCheckIn] = useState<Date | null>(null);
-  const [checkOut, setCheckOut] = useState<Date | null>(null);
+  const [checkIn, setCheckIn] = useState<Date | null>(() => parseISODate(initialCheckIn));
+  const [checkOut, setCheckOut] = useState<Date | null>(() => parseISODate(initialCheckOut));
   const [showCalendar, setShowCalendar] = useState(false);
-  const [viewMonth, setViewMonth] = useState(startOfMonth(today));
+  const [viewMonth, setViewMonth] = useState(() => startOfMonth(parseISODate(initialCheckIn) ?? today));
 
-  const [guests, setGuests] = useState(1);
+  const [guests, setGuests] = useState(initialGuests);
   const [showGuests, setShowGuests] = useState(false);
 
   const locationRef = useRef<HTMLDivElement>(null);
@@ -154,7 +192,7 @@ export function SearchBar() {
       <input type="hidden" name="guests" value={guests} />
 
       {/* Location */}
-      <div ref={locationRef} className="relative flex-1 sm:pr-6">
+      <div ref={locationRef} className="relative min-w-0 flex-1 sm:pr-6">
         <label className={FIELD_LABEL}>Location</label>
         <button
           type="button"
@@ -162,8 +200,10 @@ export function SearchBar() {
           className="flex w-full items-center gap-2 text-left text-near-black"
         >
           <PinIcon />
-          <span className={location ? "" : "text-near-black/40"}>{location || "Where are you going?"}</span>
-          <span className="ml-auto text-near-black/50">
+          <span className={`min-w-0 truncate ${location ? "" : "text-near-black/40"}`}>
+            {location || "Where are you going?"}
+          </span>
+          <span className="ml-auto shrink-0 text-near-black/50">
             <ChevronIcon />
           </span>
         </button>
@@ -192,32 +232,36 @@ export function SearchBar() {
       <div className="hidden h-10 w-px bg-sage-grey/40 sm:block" />
 
       {/* Dates */}
-      <div ref={calendarRef} className="relative flex flex-1">
-        <button
-          type="button"
-          onClick={() => setShowCalendar((v) => !v)}
-          className="flex flex-1 items-center gap-2 text-left text-near-black sm:px-6"
-        >
-          <CalendarIcon />
-          <span className="flex flex-col">
-            <span className={FIELD_LABEL}>Check-in</span>
-            <span className={checkIn ? "" : "text-near-black/40"}>{formatShort(checkIn) || "Add date"}</span>
-          </span>
-        </button>
+      <div ref={calendarRef} className="relative flex min-w-0 flex-1 flex-col gap-4 sm:flex-[2] sm:flex-row sm:gap-0">
+        <div className="min-w-0 flex-1 sm:px-6">
+          <label className={FIELD_LABEL}>Check-in</label>
+          <button
+            type="button"
+            onClick={() => setShowCalendar((v) => !v)}
+            className="flex w-full items-center gap-2 text-left text-near-black"
+          >
+            <CalendarIcon />
+            <span className={`min-w-0 truncate ${checkIn ? "" : "text-near-black/40"}`}>
+              {formatShort(checkIn) || "Add date"}
+            </span>
+          </button>
+        </div>
 
         <div className="hidden h-10 w-px bg-sage-grey/40 sm:block" />
 
-        <button
-          type="button"
-          onClick={() => setShowCalendar((v) => !v)}
-          className="flex flex-1 items-center gap-2 text-left text-near-black sm:px-6"
-        >
-          <CalendarIcon />
-          <span className="flex flex-col">
-            <span className={FIELD_LABEL}>Check-out</span>
-            <span className={checkOut ? "" : "text-near-black/40"}>{formatShort(checkOut) || "Add date"}</span>
-          </span>
-        </button>
+        <div className="min-w-0 flex-1 sm:px-6">
+          <label className={FIELD_LABEL}>Check-out</label>
+          <button
+            type="button"
+            onClick={() => setShowCalendar((v) => !v)}
+            className="flex w-full items-center gap-2 text-left text-near-black"
+          >
+            <CalendarIcon />
+            <span className={`min-w-0 truncate ${checkOut ? "" : "text-near-black/40"}`}>
+              {formatShort(checkOut) || "Add date"}
+            </span>
+          </button>
+        </div>
 
         {showCalendar && (
           <div className={`${POPOVER} right-0 w-[320px] p-5 sm:left-1/2 sm:right-auto sm:-translate-x-1/2`}>
