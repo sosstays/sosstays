@@ -123,7 +123,7 @@ export default async function SearchPage({
   return (
     <>
       <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
-      <main className="bg-cream">
+      <main className="flex-1 bg-cream">
         <div className="mx-auto max-w-6xl px-8 py-8 sm:px-14">
           <SearchBar
             initialLocation={location}
