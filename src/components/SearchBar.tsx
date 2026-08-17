@@ -6,7 +6,7 @@ const LOCATIONS = ["Drogheda", "Meath", "The Mournes"];
 const WEEKDAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
 const FIELD_LABEL = "mb-1 block truncate text-[11px] font-semibold tracking-widest text-near-black/50 uppercase";
-const POPOVER = "absolute top-[calc(100%+12px)] z-20 rounded-2xl bg-cream shadow-[0_16px_40px_-12px_rgba(23,25,23,0.3)]";
+const POPOVER = "absolute top-[calc(100%+12px)] z-20 mt-[10px] rounded-2xl bg-cream shadow-[0_16px_40px_-12px_rgba(23,25,23,0.3)]";
 
 function startOfDay(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -184,7 +184,7 @@ export function SearchBar({
     <form
       action="/search"
       method="GET"
-      className="flex w-full flex-col gap-4 rounded-[28px] bg-cream p-5 shadow-[0_24px_48px_-16px_rgba(23,25,23,0.28)] sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:p-3 sm:pl-7"
+      className="mx-auto flex w-full max-w-6xl flex-col gap-7 rounded-[28px] bg-cream p-5 shadow-[0_24px_48px_-16px_rgba(23,25,23,0.28)] sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:p-3 sm:pl-7"
     >
       <input type="hidden" name="location" value={location} />
       <input type="hidden" name="check_in" value={checkIn ? toISODate(checkIn) : ""} />
@@ -232,39 +232,21 @@ export function SearchBar({
       <div className="hidden h-10 w-px bg-sage-grey/40 sm:block" />
 
       {/* Dates */}
-      <div ref={calendarRef} className="relative flex min-w-0 flex-1 flex-col gap-4 sm:flex-[2] sm:flex-row sm:gap-0">
-        <div className="min-w-0 flex-1 sm:px-6">
-          <label className={FIELD_LABEL}>Check-in</label>
-          <button
-            type="button"
-            onClick={() => setShowCalendar((v) => !v)}
-            className="flex w-full items-center gap-2 text-left text-near-black"
-          >
-            <CalendarIcon />
-            <span className={`min-w-0 truncate ${checkIn ? "" : "text-near-black/40"}`}>
-              {formatShort(checkIn) || "Add date"}
-            </span>
-          </button>
-        </div>
-
-        <div className="hidden h-10 w-px bg-sage-grey/40 sm:block" />
-
-        <div className="min-w-0 flex-1 sm:px-6">
-          <label className={FIELD_LABEL}>Check-out</label>
-          <button
-            type="button"
-            onClick={() => setShowCalendar((v) => !v)}
-            className="flex w-full items-center gap-2 text-left text-near-black"
-          >
-            <CalendarIcon />
-            <span className={`min-w-0 truncate ${checkOut ? "" : "text-near-black/40"}`}>
-              {formatShort(checkOut) || "Add date"}
-            </span>
-          </button>
-        </div>
+      <div ref={calendarRef} className="relative min-w-0 flex-1 sm:px-6">
+        <label className={FIELD_LABEL}>Check-in – Check-out</label>
+        <button
+          type="button"
+          onClick={() => setShowCalendar((v) => !v)}
+          className="flex w-full items-center gap-2 text-left text-near-black"
+        >
+          <CalendarIcon />
+          <span className={`min-w-0 truncate ${checkIn ? "" : "text-near-black/40"}`}>
+            {checkIn ? `${formatShort(checkIn)} – ${formatShort(checkOut) || "Add date"}` : "Add dates"}
+          </span>
+        </button>
 
         {showCalendar && (
-          <div className={`${POPOVER} right-0 w-[320px] p-5 sm:left-1/2 sm:right-auto sm:-translate-x-1/2`}>
+          <div className={`${POPOVER} left-1/2 w-[320px] -translate-x-1/2 p-5`}>
             <div className="mb-4 flex items-center justify-between">
               <button
                 type="button"

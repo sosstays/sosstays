@@ -91,7 +91,14 @@ export const PROPERTY_PAGES_QUERY = defineQuery(`
     shortDescription,
     sleeps,
     "coverImage": gallery[0],
-    uplistingPropertySlug
+    uplistingPropertySlug,
+    roomTypes[] {
+      name,
+      roomId,
+      image,
+      bedConfiguration,
+      guests
+    }
   }
 `);
 
