@@ -3,6 +3,7 @@ import { PROPERTY_PAGES_QUERY } from "@/sanity/queries";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyCard } from "@/components/PropertyCard";
+import { SearchBar } from "@/components/SearchBar";
 import { Button } from "@/components/Button";
 import { searchUplistingAvailability, type UplistingAvailableRoom } from "@/lib/uplisting/client";
 
@@ -122,52 +123,58 @@ export default async function SearchPage({
   return (
     <>
       <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
-      <main className="mx-auto max-w-6xl px-8 py-12 sm:px-14">
-        <h1 className="font-serif text-4xl font-semibold text-near-black">
-          {criteriaBits.length > 0 ? "Available rooms" : "All stays"}
-        </h1>
-        <p className="mt-2 text-near-black/60">
-          {criteriaBits.length > 0
-            ? criteriaBits.join(" · ")
-            : "Book direct — no Airbnb fees, and you'll always know exactly who to call."}
-        </p>
+      <main className="bg-cream">
+        <div className="mx-auto max-w-6xl px-8 py-8 sm:px-14">
+          <SearchBar />
+        </div>
 
-        {hasSearchCriteria && !availability && (
-          <p className="mt-6 rounded-xl bg-light-forest-green px-5 py-3.5 text-sm text-near-black/80">
-            We couldn&apos;t check live availability just now, so here&apos;s every stay — get in touch and
-            we&apos;ll confirm dates directly.
+        <div className="mx-auto max-w-6xl px-8 pb-12 sm:px-14">
+          <h1 className="font-serif text-4xl font-semibold text-near-black">
+            {criteriaBits.length > 0 ? "Available rooms" : "All stays"}
+          </h1>
+          <p className="mt-2 text-near-black/60">
+            {criteriaBits.length > 0
+              ? criteriaBits.join(" · ")
+              : "Book direct — no Airbnb fees, and you'll always know exactly who to call."}
           </p>
-        )}
 
-        {showRooms ? (
-          <>
+          {hasSearchCriteria && !availability && (
+            <p className="mt-6 rounded-xl bg-light-forest-green px-5 py-3.5 text-sm text-near-black/80">
+              We couldn&apos;t check live availability just now, so here&apos;s every stay — get in touch
+              and we&apos;ll confirm dates directly.
+            </p>
+          )}
+
+          {showRooms ? (
+            <>
+              <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {availability!.map((room) => (
+                  <RoomCard key={room.id} room={room} />
+                ))}
+              </div>
+              {availability!.length === 0 && (
+                <p className="mt-8 text-near-black/60">
+                  Nothing available for those dates — try a different range, or check back soon.
+                </p>
+              )}
+            </>
+          ) : (
             <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {availability!.map((room) => (
-                <RoomCard key={room.id} room={room} />
+              {properties.map((property) => (
+                <PropertyCard
+                  key={property._id}
+                  slug={property.slug}
+                  name={property.name}
+                  location={property.location}
+                  shortDescription={property.shortDescription}
+                  sleeps={property.sleeps}
+                  coverImage={property.coverImage}
+                  surface="framed"
+                />
               ))}
             </div>
-            {availability!.length === 0 && (
-              <p className="mt-8 text-near-black/60">
-                Nothing available for those dates — try a different range, or check back soon.
-              </p>
-            )}
-          </>
-        ) : (
-          <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((property) => (
-              <PropertyCard
-                key={property._id}
-                slug={property.slug}
-                name={property.name}
-                location={property.location}
-                shortDescription={property.shortDescription}
-                sleeps={property.sleeps}
-                coverImage={property.coverImage}
-                surface="framed"
-              />
-            ))}
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </>
   );
