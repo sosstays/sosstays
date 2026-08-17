@@ -4,7 +4,8 @@ export type UplistingCalendarDay = {
   minStay?: number;
 };
 
-export type UplistingCalendarResponse = {
-  propertyId: string;
-  days: UplistingCalendarDay[];
+export type UplistingProperty = {
+  id: string; // Uplisting's numeric property ID — used for calendar/webhook lookups
+  slug: string; // property_slug — matches Sanity's uplistingPropertySlug field
+  name: string;
 };

@@ -9,13 +9,17 @@ import { fetchUplistingCalendar } from "../uplisting/client";
  *
  * Call this from the "Book Now" action only — not from calendar
  * rendering, search, or anything else that runs on every page view.
+ *
+ * `uplistingPropertyId` is Uplisting's numeric property ID (not the
+ * property_slug stored in Sanity) — resolve it via
+ * resolveSyncableProperties or cache it alongside the property page.
  */
 export async function isLiveAvailable(
-  propertyId: string,
+  uplistingPropertyId: string,
   checkIn: string, // YYYY-MM-DD
   checkOut: string // YYYY-MM-DD
 ): Promise<boolean> {
-  const days = await fetchUplistingCalendar(propertyId, checkIn, checkOut);
+  const days = await fetchUplistingCalendar(uplistingPropertyId, checkIn, checkOut);
   if (days.length === 0) return false;
 
   // checkOut night itself isn't occupied by this stay, so exclude it.
