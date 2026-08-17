@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 
 const LOCATIONS = ["Louth", "Meath", "The Mournes"];
 const WEEKDAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
@@ -95,7 +94,6 @@ function SearchIcon() {
 }
 
 export function SearchBar() {
-  const router = useRouter();
   const today = startOfDay(new Date());
 
   const [location, setLocation] = useState("");
@@ -142,19 +140,19 @@ export function SearchBar() {
     }
   }
 
-  function handleSearch() {
-    const params = new URLSearchParams();
-    if (location) params.set("location", location);
-    if (checkIn) params.set("checkIn", toISODate(checkIn));
-    if (checkOut) params.set("checkOut", toISODate(checkOut));
-    params.set("guests", String(guests));
-    router.push(`/stays?${params.toString()}`);
-  }
-
   const monthGrid = buildMonthGrid(viewMonth);
 
   return (
-    <div className="flex w-full flex-col gap-4 rounded-[28px] bg-cream p-5 shadow-[0_24px_48px_-16px_rgba(23,25,23,0.28)] sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:p-3 sm:pl-7">
+    <form
+      action="/search"
+      method="GET"
+      className="flex w-full flex-col gap-4 rounded-[28px] bg-cream p-5 shadow-[0_24px_48px_-16px_rgba(23,25,23,0.28)] sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:p-3 sm:pl-7"
+    >
+      <input type="hidden" name="location" value={location} />
+      <input type="hidden" name="check_in" value={checkIn ? toISODate(checkIn) : ""} />
+      <input type="hidden" name="check_out" value={checkOut ? toISODate(checkOut) : ""} />
+      <input type="hidden" name="guests" value={guests} />
+
       {/* Location */}
       <div ref={locationRef} className="relative flex-1 sm:pr-6">
         <label className={FIELD_LABEL}>Location</label>
@@ -325,13 +323,12 @@ export function SearchBar() {
       </div>
 
       <button
-        type="button"
-        onClick={handleSearch}
+        type="submit"
         className="flex items-center justify-center gap-2 rounded-full bg-forest-green px-8 py-4 text-[15px] font-semibold whitespace-nowrap text-cream transition-colors duration-300 hover:bg-light-sage hover:text-forest-green"
       >
         <SearchIcon />
         Search
       </button>
-    </div>
+    </form>
   );
 }

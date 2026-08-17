@@ -89,7 +89,9 @@ export const PROPERTY_PAGES_QUERY = defineQuery(`
     "slug": slug.current,
     location,
     shortDescription,
-    "coverImage": gallery[0]
+    sleeps,
+    "coverImage": gallery[0],
+    uplistingPropertySlug
   }
 `);
 
