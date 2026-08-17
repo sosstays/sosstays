@@ -93,6 +93,16 @@ export const PROPERTY_PAGES_QUERY = defineQuery(`
   }
 `);
 
+// Minimal projection for the calendar sync job — just enough to know
+// which Uplisting listings exist. Not for rendering.
+export const SYNCABLE_PROPERTIES_QUERY = defineQuery(`
+  *[_type == "propertyPage" && defined(uplistingPropertySlug)] {
+    _id,
+    name,
+    uplistingPropertySlug
+  }
+`);
+
 export const PROPERTY_PAGE_QUERY = defineQuery(`
   *[_type == "propertyPage" && slug.current == $slug][0] {
     _id,
