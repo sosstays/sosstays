@@ -1,6 +1,11 @@
-// Uplisting's legacy public API (connect.uplisting.io) — auth is a plain
-// API key, Base64-encoded into a Basic Authorization header. Requires
-// UPLISTING_API_KEY to be set; there is no OAuth flow for this endpoint.
+// Endpoint and query params follow Uplisting's OAuth API docs ("Search
+// availability" under Endpoints > Properties) rather than the older
+// top-level "Availability" page — same URL and response shape either way,
+// but the OAuth section is the maintained one. Auth is the exception: the
+// OAuth docs show `Authorization: Bearer <token>`, but our API key is a
+// legacy-style key, and the API only accepts it Basic-encoded (a raw
+// Bearer send gets a 401 "Authorization header is missing or malformed" —
+// confirmed against the live API).
 
 const API_BASE_URL = process.env.UPLISTING_API_BASE_URL || "https://connect.uplisting.io";
 
