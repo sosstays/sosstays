@@ -9,6 +9,7 @@ import { HOME_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
+import { SearchBar } from "@/components/SearchBar";
 
 export const revalidate = 60;
 
@@ -44,8 +45,8 @@ export default async function HomePage() {
         <HeroNav links={HOME_NAV_LINKS} ctaHref="#stays" ctaLabel="Find your break" />
 
         {/* hero content */}
-        <div className="absolute inset-x-8 top-24 bottom-16 z-10 flex flex-col items-center justify-end gap-10 overflow-hidden text-center sm:inset-x-14 sm:top-auto sm:flex-row sm:items-end sm:justify-between sm:overflow-visible sm:text-left">
-          <div className="max-w-2xl">
+        <div className="absolute inset-x-8 top-24 bottom-16 z-10 flex w-[calc(100%-4rem)] flex-col items-center justify-center gap-10 text-center sm:inset-x-14 sm:w-[calc(100%-7rem)]">
+          <div className="w-full">
             {hero?.eyebrow && (
               <p className="mb-3 text-xs font-semibold tracking-widest text-light-sage uppercase sm:mb-5">
                 {hero.eyebrow}
@@ -59,38 +60,18 @@ export default async function HomePage() {
                 </span>
               ))}
             </h1>
-            {hero?.body && (
-              <p className="mx-auto mb-3 max-w-[500px] text-lg text-cream/95 sm:mx-0 sm:mb-4">
-                {hero.body}
-              </p>
-            )}
+            {hero?.body && <p className="mx-auto mb-3 text-lg text-cream/95 sm:mb-4">{hero.body}</p>}
             {hero?.subBody && (
-              <p className="mx-auto mb-5 max-w-[460px] text-sm text-light-sage/85 sm:mx-0 sm:mb-8">
-                {hero.subBody}
-              </p>
+              <p className="mx-auto mb-5 text-sm text-light-sage/85 sm:mb-8">{hero.subBody}</p>
             )}
-            <div className="flex flex-wrap justify-center gap-4 sm:justify-start">
-              {hero?.primaryCtaLabel && (
-                <Button
-                  link={hero.primaryCtaUrl || "/stays"}
-                  variant="primary"
-                  bgColor="cream"
-                  color="forest-green"
-                >
-                  {hero.primaryCtaLabel}
-                </Button>
-              )}
-              {hero?.secondaryCtaLabel && (
-                <Button link={hero.secondaryCtaUrl || "/landlords"} variant="secondary" color="cream">
-                  {hero.secondaryCtaLabel}
-                </Button>
-              )}
-            </div>
           </div>
+
+          <div className="w-full">
+            <SearchBar />
+          </div>
+
           {hero?.image?.alt && (
-            <div className="text-sm whitespace-nowrap text-cream/75 sm:text-right">
-              {hero.image.alt}
-            </div>
+            <div className="text-sm whitespace-nowrap text-cream/75">{hero.image.alt}</div>
           )}
         </div>
       </section>
