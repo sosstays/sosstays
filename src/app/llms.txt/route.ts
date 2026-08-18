@@ -47,12 +47,16 @@ export async function GET() {
 
   const stays = byType.get("propertyPage") ?? [];
   const landlordPages = byType.get("landlordPage") ?? [];
+  const areas = byType.get("areaGuide") ?? [];
+  const blogPosts = byType.get("blogPost") ?? [];
 
   const guestLines = [
     `- [Browse stays](${SITE_URL}/#stays)`,
     ...stays.map((s) => linkLine(s.title, s.href, s.summary)),
     `- [Area guides](${SITE_URL}/areas) — local guides to the regions Sos Stays covers`,
+    ...areas.map((a) => linkLine(a.title, a.href, a.summary)),
     `- [Blog](${SITE_URL}/blog) — stories and guides for the region`,
+    ...blogPosts.map((p) => linkLine(p.title, p.href, p.summary)),
   ].join("\n");
 
   const landlordLines = [

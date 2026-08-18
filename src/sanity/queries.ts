@@ -333,7 +333,7 @@ export const LLMS_TXT_QUERY = defineQuery(`
       slug.current
     ),
     "title": coalesce(name, title, areaName, ""),
-    "summary": coalesce(shortDescription, excerpt, heroStatement, "")
+    "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")
   }
 }
 `);
