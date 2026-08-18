@@ -57,6 +57,97 @@ body {
   }
 }
 
+/* ContactPromiseBubble — pops in like an arriving chat message, with a
+   slight overshoot before settling. See components/ContactPromiseBubble.tsx */
+@keyframes sos-bubble-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.82);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.sos-bubble-pop {
+  animation: sos-bubble-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
+  transform-origin: bottom right;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sos-bubble-pop {
+    animation: none;
+  }
+}
+
+/* Classic CSS speech-bubble tail: an absolutely-positioned zero-size box
+   whose only visible edge is its (colour) top border, the rest transparent
+   or removed — the browser's own border-mitre triangles do the drawing.
+   Sits on .sos-speech-bubble, which must stay `position: relative` since
+   the tail positions itself against it. */
+.sos-speech-bubble {
+  position: relative;
+  border-radius: 20px;
+}
+.sos-speech-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 90%;
+  width: 0;
+  height: 0;
+  border: 16px solid transparent;
+  border-top-color: var(--cream);
+  border-bottom: 0;
+  border-right: 0;
+  margin-left: -8px;
+  margin-bottom: -16px;
+}
+
+/* Generic mount-in stagger: each direct child fades and slides up,
+   staggered by source order. Used on ContactForm's fields (see
+   components/ContactForm.tsx) and reused on the contact page's "Based
+   in"/"Contact"/social-icons column (see app/contact/page.tsx). */
+@keyframes sos-field-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.sos-form-stagger > * {
+  animation: sos-field-in 0.9s ease-in-out both;
+}
+.sos-form-stagger > *:nth-child(1) {
+  animation-delay: 0.08s;
+}
+.sos-form-stagger > *:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.sos-form-stagger > *:nth-child(3) {
+  animation-delay: 0.32s;
+}
+.sos-form-stagger > *:nth-child(4) {
+  animation-delay: 0.44s;
+}
+.sos-form-stagger > *:nth-child(5) {
+  animation-delay: 0.56s;
+}
+.sos-form-stagger > *:nth-child(6) {
+  animation-delay: 0.68s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sos-form-stagger > * {
+    animation: none;
+  }
+}
+
 /* Revenue calculator sliders — Tailwind can't reach the thumb
    pseudo-elements, so this is plain CSS scoped to the one component. */
 .calc-slider {
