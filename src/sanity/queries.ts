@@ -309,3 +309,31 @@ export const SITEMAP_QUERY = defineQuery(`
     _updatedAt
   }
 `);
+
+// ---- llms.txt ----
+// Same shape as the sitemap query, but keeps a title + one-line summary
+// per entry so llms.txt can render human/LLM-readable link descriptions
+// instead of bare URLs.
+export const LLMS_TXT_QUERY = defineQuery(`
+{
+  "settings": *[_id == "siteSettings"][0] {
+    siteName,
+    defaultSeoDescription,
+    businessName,
+    contactEmail,
+    socialLinks
+  },
+  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage"] && defined(slug.current) && noIndex != true] {
+    _type,
+    "href": select(
+      _type == "blogPost" => "/blog/" + slug.current,
+      _type == "propertyPage" => "/stays/" + slug.current,
+      _type == "areaGuide" => "/areas/" + slug.current,
+      _type == "landlordPage" => "/landlords/" + slug.current,
+      slug.current
+    ),
+    "title": coalesce(name, title, areaName, ""),
+    "summary": coalesce(shortDescription, excerpt, heroStatement, "")
+  }
+}
+`);
