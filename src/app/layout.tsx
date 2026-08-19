@@ -41,7 +41,7 @@ export default async function RootLayout({
 
   return (
     <html
-      lang="en"
+      lang="en-IE"
       className={`${playfair.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#FAFAF8] font-sans text-[#1C1C1C]">

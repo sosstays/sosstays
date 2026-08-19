@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { name, email, topic, message } = body ?? {};
+  const { name, email, topic, property, message } = body ?? {};
 
   if (typeof email !== "string" || !email.trim()) {
     return NextResponse.json({ error: "Email is required" }, { status: 400 });
@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
       fields: {
         name: name || undefined,
         topic: topic || undefined,
+        property_listing: property || undefined,
         message: message || undefined,
       },
       groups: groupId ? [groupId] : undefined,

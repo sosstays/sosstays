@@ -3,7 +3,6 @@ import { Poppins, Bricolage_Grotesque } from "next/font/google";
 import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { HeroNav } from "@/components/HeroNav";
-import { SocialIcons } from "@/components/SocialIcons";
 import { ContactForm } from "@/components/ContactForm";
 import { ContactPromiseBubble } from "@/components/ContactPromiseBubble";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
@@ -59,34 +58,8 @@ export default async function ContactPage() {
               Contact Us
             </h1>
 
-            <div className="grid grid-cols-1 gap-8 border-t border-sage-grey/50 pt-12 sm:grid-cols-2">
+            <div className="border-t border-sage-grey/50 pt-12">
               <ContactForm contactEmail={siteSettings?.contactEmail} />
-
-              <div className="sos-form-stagger flex flex-col gap-5">
-                <div>
-                  <h2 className="mb-1 text-base font-semibold text-near-black">Based in</h2>
-                  <p className="text-sm leading-snug text-near-black/75">
-                    The Mill Enterprise Centre <br />
-                    Drogheda, Co. Louth, A92 CD3D
-                    <br />
-                    Ireland
-                  </p>
-                </div>
-                <div>
-                  <h2 className="mb-1 text-base font-semibold text-near-black">Contact</h2>
-                  <a
-                    href={`mailto:${siteSettings?.contactEmail || "info@sosstays.com"}`}
-                    className="text-sm text-near-black/75 transition-opacity hover:opacity-70"
-                  >
-                    {siteSettings?.contactEmail || "info@sosstays.com"}
-                  </a>
-                </div>
-
-                <SocialIcons
-                  links={siteSettings?.socialLinks}
-                  className="bg-near-black text-cream hover:bg-forest-green"
-                />
-              </div>
             </div>
           </div>
         </div>

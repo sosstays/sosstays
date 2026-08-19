@@ -15,8 +15,18 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // page — its background, highlight colour and option padding can't be
 // themed with CSS. This is a plain button + listbox instead, so it can
 // actually match the site (cream background, forest-green highlight,
-// real padding).
-function TopicDropdown({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+// real padding). Used by the "What's this about?" field.
+function Dropdown({
+  value,
+  onChange,
+  options,
+  placeholder = "Select one",
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+  placeholder?: string;
+}) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +52,7 @@ function TopicDropdown({ value, onChange }: { value: string; onChange: (value: s
           value ? "text-near-black" : "text-near-black/35"
         }`}
       >
-        {value || "Select one"}
+        <span className="truncate">{value || placeholder}</span>
         <svg
           aria-hidden="true"
           viewBox="0 0 20 20"
@@ -56,9 +66,9 @@ function TopicDropdown({ value, onChange }: { value: string; onChange: (value: s
       {open && (
         <ul
           role="listbox"
-          className="absolute z-20 mt-2 w-full overflow-hidden rounded-[10px] border border-sage-grey/40 bg-cream py-1.5 shadow-[0_12px_24px_rgba(23,25,23,0.12)]"
+          className="absolute z-20 mt-2 max-h-60 w-full overflow-auto rounded-[10px] border border-sage-grey/40 bg-cream py-1.5 shadow-[0_12px_24px_rgba(23,25,23,0.12)]"
         >
-          {TOPIC_OPTIONS.map((option) => (
+          {options.map((option) => (
             <li key={option} role="option" aria-selected={value === option}>
               <button
                 type="button"
@@ -86,6 +96,7 @@ export function ContactForm({ contactEmail }: { contactEmail?: string }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [topic, setTopic] = useState("");
+  const [property, setProperty] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
@@ -95,7 +106,8 @@ export function ContactForm({ contactEmail }: { contactEmail?: string }) {
 
   function openMailtoFallback() {
     const subject = `${topic} — message from ${name.trim()}`;
-    const body = `${message.trim()}\n\n— ${name.trim()} (${email.trim()})`;
+    const propertyLine = property.trim() ? `Property: ${property.trim()}\n` : "";
+    const body = `${propertyLine}${message.trim()}\n\n— ${name.trim()} (${email.trim()})`;
     const mailtoHref = `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoHref;
   }
@@ -128,6 +140,7 @@ export function ContactForm({ contactEmail }: { contactEmail?: string }) {
           name: name.trim(),
           email: email.trim(),
           topic,
+          property: property.trim(),
           message: message.trim(),
         }),
       });
@@ -173,14 +186,23 @@ export function ContactForm({ contactEmail }: { contactEmail?: string }) {
 
       {/* relative z-20: the stagger animation puts a `transform` on every
           field, which makes each one its own stacking context — without an
-          explicit z-index here, this field's open dropdown panel would
-          paint *behind* the later Message/Button fields instead of over
-          them. */}
+          explicit z-index here, this dropdown's open panel would paint
+          *behind* the later fields instead of over them. */}
       <label className="relative z-20 flex flex-col gap-1.5">
         <span className="text-sm text-near-black">
           What&apos;s this about? <span className="text-error-red">*</span>
         </span>
-        <TopicDropdown value={topic} onChange={setTopic} />
+        <Dropdown value={topic} onChange={setTopic} options={TOPIC_OPTIONS} />
+      </label>
+
+      <label className="flex flex-col gap-1.5">
+        <span className="text-sm text-near-black">Have a property you&apos;d like us to manage?</span>
+        <input
+          value={property}
+          onChange={(e) => setProperty(e.target.value)}
+          placeholder="Property name"
+          className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
+        />
       </label>
 
       <label className="flex flex-col gap-1.5">
