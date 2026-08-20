@@ -3,28 +3,14 @@ import Script from "next/script";
 import { client } from "@/sanity/client";
 import { HERO_SECTION_QUERY, HOMEPAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
-import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { HOME_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
-import type { Metadata } from "next";
 
 export const revalidate = 60;
-
-export async function generateMetadata(): Promise<Metadata> {
-  const siteSettings = await client.fetch(SITE_SETTINGS_QUERY);
-  return buildMetadata(
-    {
-      title: siteSettings?.defaultSeoTitle ?? "",
-      description: siteSettings?.defaultSeoDescription ?? "",
-      image: siteSettings?.defaultSeoImage,
-    },
-    "",
-  );
-}
 
 export default async function HomePage() {
   const [hero, { properties, areas, posts }, siteSettings] = await Promise.all([
