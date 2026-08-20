@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { urlFor } from "@/sanity/image";
+import { client } from "@/sanity/client";
+import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 
 type SeoData = {
   title: string;
@@ -14,12 +16,16 @@ const DEFAULT_DESCRIPTION =
   "Book direct holiday homes across the Boyne Valley, Louth, and the Mournes — no Airbnb fees. Own a property? We manage it for you and grow your income. Send your SOS.";
 
 // Every page calls this with its `seo` projection from Sanity (see
-// queries.ts). Falls back to site-wide defaults if fields are empty,
-// so nothing ever ships with blank metadata.
-export function buildMetadata(seo: SeoData, path: string = ""): Metadata {
-  const title = seo?.title || DEFAULT_TITLE;
-  const description = seo?.description || DEFAULT_DESCRIPTION;
-  const imageUrl = seo?.image ? urlFor(seo.image).width(1200).height(630).url() : undefined;
+// queries.ts). Falls back to the site settings' default SEO title/
+// description/image, then hardcoded defaults, so nothing ever ships
+// with blank metadata or a missing share image.
+export async function buildMetadata(seo: SeoData, path: string = ""): Promise<Metadata> {
+  const siteSettings = await client.fetch(SITE_SETTINGS_QUERY);
+
+  const title = seo?.title || siteSettings?.defaultSeoTitle || DEFAULT_TITLE;
+  const description = seo?.description || siteSettings?.defaultSeoDescription || DEFAULT_DESCRIPTION;
+  const image = seo?.image || siteSettings?.defaultSeoImage;
+  const imageUrl = image ? urlFor(image).width(1200).height(630).url() : undefined;
 
   return {
     title,
