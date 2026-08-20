@@ -3,15 +3,22 @@ import Link from "next/link";
 import { client } from "@/sanity/client";
 import { PROPERTY_PAGES_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
+import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import type { Metadata } from "next";
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Stays | Sos Stays",
-  description: "Holiday homes across Louth, Meath, and the Mournes — book direct, no Airbnb fees.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildMetadata(
+    {
+      title: "Stays | Sos Stays",
+      description: "Holiday homes across Louth, Meath, and the Mournes — book direct, no Airbnb fees.",
+    },
+    "/stays",
+  );
+}
 
 export default async function StaysIndexPage() {
   const properties = await client.fetch(PROPERTY_PAGES_QUERY);

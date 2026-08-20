@@ -1,15 +1,22 @@
 import { client } from "@/sanity/client";
 import { AREA_GUIDES_QUERY } from "@/sanity/queries";
+import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { AreaGuideCard } from "@/components/AreaGuideCard";
+import type { Metadata } from "next";
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Areas | Sos Stays",
-  description: "Explore the Boyne Valley, the Mournes, and the Louth coastline.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildMetadata(
+    {
+      title: "Areas | Sos Stays",
+      description: "Explore the Boyne Valley, the Mournes, and the Louth coastline.",
+    },
+    "/areas",
+  );
+}
 
 export default async function AreasIndexPage() {
   const areas = await client.fetch(AREA_GUIDES_QUERY);

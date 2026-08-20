@@ -2,10 +2,12 @@ import Image from "next/image";
 import { Poppins, Bricolage_Grotesque } from "next/font/google";
 import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { ContactForm } from "@/components/ContactForm";
 import { ContactPromiseBubble } from "@/components/ContactPromiseBubble";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import type { Metadata } from "next";
 
 // This page recreates a specific reference design that calls for Poppins
 // throughout — scoped to just this route rather than swapping the site's
@@ -24,10 +26,15 @@ const bricolage = Bricolage_Grotesque({
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Contact Us | Sos Stays",
-  description: "Get in touch with Sos Stays — questions about a stay, or want us to manage your property.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildMetadata(
+    {
+      title: "Contact Us | Sos Stays",
+      description: "Get in touch with Sos Stays — questions about a stay, or want us to manage your property.",
+    },
+    "/contact",
+  );
+}
 
 export default async function ContactPage() {
   const siteSettings = await client.fetch(SITE_SETTINGS_QUERY);

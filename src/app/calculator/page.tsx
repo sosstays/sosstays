@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_URL } from "@/sanity/metadata";
+import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildFaqSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { FaqSection } from "@/components/FaqSection";
@@ -19,24 +19,9 @@ const TITLE = "Airbnb Revenue Calculator Ireland — Sos Stays Property Manageme
 const DESCRIPTION =
   "Find out how much more your Airbnb or holiday let in Louth, Meath or Newry could earn with professional management. Free revenue calculator — results in 2 minutes.";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  alternates: { canonical: `${SITE_URL}/calculator` },
-  openGraph: {
-    title: TITLE,
-    description: DESCRIPTION,
-    url: `${SITE_URL}/calculator`,
-    siteName: "Sos Stays",
-    locale: "en_IE",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: TITLE,
-    description: DESCRIPTION,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildMetadata({ title: TITLE, description: DESCRIPTION }, "/calculator");
+}
 
 export default function CalculatorPage() {
   const faqSchema = buildFaqSchema(CALCULATOR_FAQS);

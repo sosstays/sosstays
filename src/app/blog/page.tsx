@@ -1,16 +1,23 @@
 import Link from "next/link";
 import { client } from "@/sanity/client";
 import { BLOG_POSTS_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { BlogPostCard } from "@/components/BlogPostCard";
+import type { Metadata } from "next";
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Blog | Sos Stays",
-  description: "Stories, guides, and inspiration for your next break in Louth, Meath, and the Mournes.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildMetadata(
+    {
+      title: "Blog | Sos Stays",
+      description: "Stories, guides, and inspiration for your next break in Louth, Meath, and the Mournes.",
+    },
+    "/blog",
+  );
+}
 
 export default async function BlogIndexPage({
   searchParams,
