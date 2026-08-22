@@ -10,6 +10,7 @@ import { HOME_NAV_LINKS } from "@/lib/navLinks";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
+import { HostsModule } from "@/components/HostsModule";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -168,6 +169,9 @@ export default async function HomePage() {
           </div>
         </section>
       )} */}
+
+      {/* HOSTS MODULE — property-owner services overview + pricing */}
+      <HostsModule />
 
       {/* LANDLORD CTA — maroon per the owner-context accent color */}
       <section id="landlords" className="bg-maroon px-8 py-28 text-center sm:px-14">
