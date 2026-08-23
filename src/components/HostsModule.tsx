@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import Image from "next/image";
 import { Button } from "@/components/Button";
 import { Logo } from "@/components/Logo";
@@ -70,14 +70,58 @@ const CARD_REVEAL_DELAYS_MS = STEPS.map(
   (_, i) => Math.round((STEPPER_REVEAL_MS * i) / (STEPS.length - 1)) + CARD_REVEAL_LAG_MS,
 );
 
+// Fires `onEnter` once, the first time `ref`'s element crosses `threshold`
+// into the viewport. Reduced-motion users skip straight to the "entered"
+// state — no observer, no animation to wait on.
+function useRevealOnce<T extends HTMLElement>(
+  ref: RefObject<T | null>,
+  threshold: number,
+  onEnter: () => void,
+) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      onEnter();
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          onEnter();
+          observer.disconnect();
+        }
+      },
+      { threshold },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+}
+
 export function HostsModule() {
   const [active, setActive] = useState(0);
   const [hover, setHover] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
 
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [sectionInView, setSectionInView] = useState(false);
+  useRevealOnce(sectionRef, 0.15, () => setSectionInView(true));
+
   const stepperRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [revealed, setRevealed] = useState<boolean[]>(() => STEPS.map(() => false));
+  useRevealOnce(stepperRef, 0.3, () => {
+    setInView(true);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setRevealed(STEPS.map(() => true));
+    }
+  });
+
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const [marqueeInView, setMarqueeInView] = useState(false);
+  useRevealOnce(marqueeRef, 0.4, () => setMarqueeInView(true));
 
   useEffect(() => {
     if (paused) return;
@@ -86,28 +130,6 @@ export function HostsModule() {
     }, AUTO_ADVANCE_MS);
     return () => clearInterval(timer);
   }, [paused]);
-
-  useEffect(() => {
-    const el = stepperRef.current;
-    if (!el) return;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) {
-      setInView(true);
-      setRevealed(STEPS.map(() => true));
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.3 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     if (!inView) return;
@@ -128,10 +150,16 @@ export function HostsModule() {
 
   return (
     <section className="bg-maroon px-8 py-24 sm:px-14 sm:py-28">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10 sm:gap-12">
+      <div ref={sectionRef} className="mx-auto flex max-w-6xl flex-col gap-10 sm:gap-12">
         {/* INTRO + PRICING */}
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1.35fr_1fr] lg:gap-12">
-          <div className="flex flex-col gap-5">
+          <div
+            className="flex flex-col gap-5 transition-[opacity,transform] duration-700 ease-out"
+            style={{
+              opacity: sectionInView ? 1 : 0,
+              transform: sectionInView ? "translateY(0)" : "translateY(20px)",
+            }}
+          >
             <div className="flex items-center gap-2.5">
               <span className="block h-px w-6 bg-light-sage" />
               <span className="text-xs font-semibold tracking-widest text-light-sage uppercase">
@@ -148,7 +176,14 @@ export function HostsModule() {
             </p>
           </div>
 
-          <div className="flex flex-col rounded-[18px] bg-cream p-8 text-near-black">
+          <div
+            className="flex flex-col rounded-[18px] bg-cream p-8 text-near-black transition-[opacity,transform] duration-700 ease-out"
+            style={{
+              opacity: sectionInView ? 1 : 0,
+              transform: sectionInView ? "translateY(0)" : "translateY(20px)",
+              transitionDelay: sectionInView ? "150ms" : "0ms",
+            }}
+          >
             <span className="text-xs font-semibold tracking-widest text-maroon uppercase">
               Commission-based pricing
             </span>
@@ -179,7 +214,14 @@ export function HostsModule() {
 
         {/* STEPPER */}
         <div ref={stepperRef} className="flex flex-col gap-7" onMouseLeave={() => setPaused(false)}>
-          <div className="flex flex-col gap-1.5">
+          <div
+            className="flex flex-col gap-1.5 transition-[opacity,transform] duration-700 ease-out"
+            style={{
+              opacity: sectionInView ? 1 : 0,
+              transform: sectionInView ? "translateY(0)" : "translateY(20px)",
+              transitionDelay: sectionInView ? "300ms" : "0ms",
+            }}
+          >
             <span className="text-xs font-semibold tracking-widest text-light-sage uppercase">
               How it works
             </span>
@@ -291,7 +333,14 @@ export function HostsModule() {
         </div>
 
         {/* MULTI-PLATFORM MARQUEE — below the "Earn more" copy, not beside it */}
-        <div className="flex flex-col gap-6 border-t border-cream/20 pt-7">
+        <div
+          ref={marqueeRef}
+          className="flex flex-col gap-6 border-t border-cream/20 pt-7 transition-[opacity,transform] duration-700 ease-out"
+          style={{
+            opacity: marqueeInView ? 1 : 0,
+            transform: marqueeInView ? "translateY(0)" : "translateY(20px)",
+          }}
+        >
           <div className="flex flex-col gap-1">
             <span className="font-serif text-[22px] font-semibold text-cream">
               Earn more with multiple platforms
