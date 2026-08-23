@@ -126,8 +126,11 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* HOSTS MODULE — property-owner services overview + pricing */}
+      <HostsModule />
+
       {/* AREA SPOTLIGHT */}
-      
+
       <AreaSpotlightCarousel areas={areas} />
 
       {/* BLOG TEASER */}
@@ -170,28 +173,6 @@ export default async function HomePage() {
         </section>
       )} */}
 
-      {/* HOSTS MODULE — property-owner services overview + pricing */}
-      <HostsModule />
-
-      {/* LANDLORD CTA — maroon per the owner-context accent color */}
-      <section id="landlords" className="bg-maroon px-8 py-28 text-center sm:px-14">
-        <div className="mx-auto max-w-xl">
-          <p className="mb-4 text-xs font-medium tracking-widest text-light-sage uppercase">
-            For landlords
-          </p>
-          <h2 className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
-            Already self-managing your Airbnb?
-          </h2>
-          <p className="mb-9 text-lg leading-relaxed text-cream/85">
-            Most self-managing hosts earn 20–35% less than they should. We&apos;ll
-            take it fully off your hands — commission-only, no setup fee.
-          </p>
-          <Button link="/landlords" variant="secondary" color="cream" animateColor="maroon">
-            Send your SOS
-          </Button>
-        </div>
-      </section>
-
       {/* INSTAGRAM FEED */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
@@ -212,6 +193,25 @@ export default async function HomePage() {
         <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
       </section>
       <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
+
+      {/* LANDLORD CTA — maroon per the owner-context accent color */}
+      <section id="landlords" className="bg-maroon px-8 py-28 text-center sm:px-14">
+        <div className="mx-auto max-w-xl">
+          <p className="mb-4 text-xs font-medium tracking-widest text-light-sage uppercase">
+            For landlords
+          </p>
+          <h2 className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
+            Already self-managing your Airbnb?
+          </h2>
+          <p className="mb-9 text-lg leading-relaxed text-cream/85">
+            Most self-managing hosts earn 20–35% less than they should. We&apos;ll
+            take it fully off your hands — commission-only, no setup fee.
+          </p>
+          <Button link="/landlords" variant="secondary" color="cream" animateColor="maroon">
+            Send your SOS
+          </Button>
+        </div>
+      </section>
     </main>
   );
 }
