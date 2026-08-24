@@ -281,7 +281,7 @@ export function RevenueCalculator({
                         onClick={() => togglePlatform(p.label)}
                         className="cursor-pointer rounded-full border px-4 py-2 text-[13px] font-medium whitespace-nowrap"
                         style={{
-                          background: active ? "var(--light-forest-green)" : "white",
+                          background: active ? "var(--light-forest-green)" : "transparent",
                           borderColor: active ? "var(--forest-green)" : "var(--sage-grey)",
                           color: active ? "var(--forest-green)" : "var(--near-black)",
                         }}
@@ -365,7 +365,7 @@ export function RevenueCalculator({
                     onClick={() => setRevenueMode("known")}
                     className="cursor-pointer rounded-full border px-4 py-2 text-[13px] font-medium whitespace-nowrap"
                     style={{
-                      background: revenueMode === "known" ? "var(--light-forest-green)" : "white",
+                      background: revenueMode === "known" ? "var(--light-forest-green)" : "transparent",
                       borderColor: revenueMode === "known" ? "var(--forest-green)" : "var(--sage-grey)",
                       color: revenueMode === "known" ? "var(--forest-green)" : "var(--near-black)",
                     }}
@@ -377,7 +377,7 @@ export function RevenueCalculator({
                     onClick={() => setRevenueMode("estimate")}
                     className="cursor-pointer rounded-full border px-4 py-2 text-[13px] font-medium whitespace-nowrap"
                     style={{
-                      background: revenueMode === "estimate" ? "var(--light-forest-green)" : "white",
+                      background: revenueMode === "estimate" ? "var(--light-forest-green)" : "transparent",
                       borderColor: revenueMode === "estimate" ? "var(--forest-green)" : "var(--sage-grey)",
                       color: revenueMode === "estimate" ? "var(--forest-green)" : "var(--near-black)",
                     }}
