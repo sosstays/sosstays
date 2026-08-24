@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Script from "next/script";
 import { client } from "@/sanity/client";
-import { HERO_SECTION_QUERY, HOMEPAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { HERO_SECTION_QUERY, HOMEPAGE_QUERY, HOSTS_MODULE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
@@ -20,10 +20,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [hero, { properties, areas, posts }, siteSettings] = await Promise.all([
+  const [hero, { properties, areas, posts }, siteSettings, hostsModule] = await Promise.all([
     client.fetch(HERO_SECTION_QUERY),
     client.fetch(HOMEPAGE_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
+    client.fetch(HOSTS_MODULE_QUERY),
   ]);
   const featuredProperty = properties[0];
   const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
@@ -127,7 +128,7 @@ export default async function HomePage() {
       )}
 
       {/* HOSTS MODULE — property-owner services overview + pricing */}
-      <HostsModule />
+      <HostsModule data={hostsModule} />
 
       {/* AREA SPOTLIGHT */}
 

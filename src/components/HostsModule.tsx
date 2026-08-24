@@ -1,51 +1,40 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import Image from "next/image";
 import { Button } from "@/components/Button";
 import { Logo } from "@/components/Logo";
 import { PlatformIcon, type Platform } from "@/components/PlatformIcons";
+import { urlFor } from "@/sanity/image";
 
-type Step = {
+type SanityImageWithAlt = { alt?: string } & Record<string, unknown>;
+
+export type HostsModuleStep = {
   title: string;
   bullets: string[];
-  image: string;
+  image: SanityImageWithAlt;
 };
 
-const STEPS: Step[] = [
-  {
-    title: "Listing & pricing",
-    bullets: [
-      "Multi-platform listings, written and photographed",
-      "Dynamic pricing tuned to local demand",
-      "Calendar and minimum-stay strategy",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1525182008055-f88b95ff7980?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "Guest experience",
-    bullets: [
-      "Guest screening and verified check-in",
-      "Cross-sell to local experiences and tours",
-      "Local-area guides written for each stay",
-      "Review recovery and repeat-guest offers",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1698399480539-327a5f6975f3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "Property management",
-    bullets: [
-      "Cleaning and turnover coordination",
-      "Maintenance callouts and trusted trades",
-      "Linen, consumables and restocking",
-      "Monthly owner statements and payouts",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1737442886747-9fb768b96ed2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-];
+// Shape of the `hostsModule` singleton, as returned by HOSTS_MODULE_QUERY.
+// The platform logos in the marquee are bespoke SVG components (see
+// PlatformIcons.tsx), not editorial content, so they aren't part of this —
+// PLATFORMS below stays hardcoded.
+export type HostsModuleData = {
+  eyebrow?: string;
+  heading?: string;
+  body?: string;
+  commissionRate?: number;
+  commissionLabel?: string;
+  commissionSuffix?: string;
+  commissionNote?: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+  stepperEyebrow?: string;
+  stepperHeading?: string;
+  steps?: HostsModuleStep[];
+  marqueeHeading?: string;
+  marqueeSubtext?: string;
+};
 
 const PLATFORMS: { label: string; platform: Platform | "sosStays" }[] = [
   { label: "Airbnb", platform: "airbnb" },
@@ -56,7 +45,6 @@ const PLATFORMS: { label: string; platform: Platform | "sosStays" }[] = [
   { label: "Sos Stays direct", platform: "sosStays" },
 ];
 
-const COMMISSION_RATE = 15;
 const AUTO_ADVANCE_MS = 4200;
 
 // Scroll-entrance timing: the stepper wipes open left-to-right over
@@ -66,9 +54,6 @@ const AUTO_ADVANCE_MS = 4200;
 // so the image visibly follows the line rather than appearing with it).
 const STEPPER_REVEAL_MS = 2200;
 const CARD_REVEAL_LAG_MS = 200;
-const CARD_REVEAL_DELAYS_MS = STEPS.map(
-  (_, i) => Math.round((STEPPER_REVEAL_MS * i) / (STEPS.length - 1)) + CARD_REVEAL_LAG_MS,
-);
 
 // Fires `onEnter` once, the first time `ref`'s element crosses `threshold`
 // into the viewport. Reduced-motion users skip straight to the "entered"
@@ -100,7 +85,9 @@ function useRevealOnce<T extends HTMLElement>(
   }, []);
 }
 
-export function HostsModule() {
+export function HostsModule({ data }: { data: HostsModuleData | null }) {
+  const steps = data?.steps ?? [];
+
   const [active, setActive] = useState(0);
   const [hover, setHover] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
@@ -111,11 +98,11 @@ export function HostsModule() {
 
   const stepperRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
-  const [revealed, setRevealed] = useState<boolean[]>(() => STEPS.map(() => false));
+  const [revealed, setRevealed] = useState<boolean[]>(() => steps.map(() => false));
   useRevealOnce(stepperRef, 0.3, () => {
     setInView(true);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setRevealed(STEPS.map(() => true));
+      setRevealed(steps.map(() => true));
     }
   });
 
@@ -123,17 +110,25 @@ export function HostsModule() {
   const [marqueeInView, setMarqueeInView] = useState(false);
   useRevealOnce(marqueeRef, 0.4, () => setMarqueeInView(true));
 
+  const cardRevealDelaysMs = useMemo(
+    () =>
+      steps.map(
+        (_, i) => Math.round((STEPPER_REVEAL_MS * i) / Math.max(steps.length - 1, 1)) + CARD_REVEAL_LAG_MS,
+      ),
+    [steps.length],
+  );
+
   useEffect(() => {
-    if (paused) return;
+    if (paused || steps.length === 0) return;
     const timer = setInterval(() => {
-      setActive((a) => (a + 1) % STEPS.length);
+      setActive((a) => (a + 1) % steps.length);
     }, AUTO_ADVANCE_MS);
     return () => clearInterval(timer);
-  }, [paused]);
+  }, [paused, steps.length]);
 
   useEffect(() => {
     if (!inView) return;
-    const timers = STEPS.map((_, i) =>
+    const timers = steps.map((_, i) =>
       setTimeout(() => {
         setRevealed((r) => {
           if (r[i]) return r;
@@ -141,10 +136,13 @@ export function HostsModule() {
           next[i] = true;
           return next;
         });
-      }, CARD_REVEAL_DELAYS_MS[i]),
+      }, cardRevealDelaysMs[i]),
     );
     return () => timers.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
+
+  if (!data || steps.length === 0) return null;
 
   const current = hover ?? active;
 
@@ -160,20 +158,24 @@ export function HostsModule() {
               transform: sectionInView ? "translateY(0)" : "translateY(20px)",
             }}
           >
-            <div className="flex items-center gap-2.5">
-              <span className="block h-px w-6 bg-light-sage" />
-              <span className="text-xs font-semibold tracking-widest text-light-sage uppercase">
-                For property owners
-              </span>
-            </div>
-            <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-tight text-cream text-balance sm:text-5xl">
-              We sell the break, not just the booking
-            </h2>
-            <p className="max-w-[52ch] text-[16.5px] leading-relaxed text-cream/85 text-pretty">
-              Sos Stays builds a guest-facing brand around your property — promoting Ireland and the
-              local area, driving direct bookings, and turning one-off stays into repeat guests. Most
-              Airbnb management companies simply list and wait. We market the break itself.
-            </p>
+            {data.eyebrow && (
+              <div className="flex items-center gap-2.5">
+                <span className="block h-px w-6 bg-light-sage" />
+                <span className="text-xs font-semibold tracking-widest text-light-sage uppercase">
+                  {data.eyebrow}
+                </span>
+              </div>
+            )}
+            {data.heading && (
+              <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-tight text-cream text-balance sm:text-5xl">
+                {data.heading}
+              </h2>
+            )}
+            {data.body && (
+              <p className="max-w-[52ch] text-[16.5px] leading-relaxed text-cream/85 text-pretty">
+                {data.body}
+              </p>
+            )}
           </div>
 
           <div
@@ -184,54 +186,65 @@ export function HostsModule() {
               transitionDelay: sectionInView ? "150ms" : "0ms",
             }}
           >
-            <span className="text-xs font-semibold tracking-widest text-maroon uppercase">
-              Commission-based pricing
-            </span>
+            {data.commissionLabel && (
+              <span className="text-xs font-semibold tracking-widest text-maroon uppercase">
+                {data.commissionLabel}
+              </span>
+            )}
             <div className="mt-5 flex items-baseline gap-2.5">
               <span className="font-serif text-6xl leading-[0.9] font-semibold text-maroon sm:text-7xl">
-                From {COMMISSION_RATE}%
+                From {data.commissionRate ?? 0}%
               </span>
             </div>
-            <span className="mt-2.5 text-sm font-medium text-forest-green">of your rental revenue</span>
+            {data.commissionSuffix && (
+              <span className="mt-2.5 text-sm font-medium text-forest-green">{data.commissionSuffix}</span>
+            )}
             <div className="my-6 h-px bg-sage-grey/50" />
-            <p className="text-sm leading-relaxed text-near-black/75">
-              Your exact commission depends on property type and location — coastal cottages, city
-              apartments and multi-unit portfolios are priced differently.
-            </p>
-            <Button
-              link="/landlords-whats-next"
-              variant="secondary"
-              color="maroon"
-              animateBgColor="maroon"
-              animateColor="cream"
-              size="custom"
-              className="mt-6 self-start px-6.5 py-3.5 text-sm font-semibold"
-            >
-              Get an estimate
-            </Button>
+            {data.commissionNote && (
+              <p className="text-sm leading-relaxed text-near-black/75">{data.commissionNote}</p>
+            )}
+            {data.ctaLabel && (
+              <Button
+                link={data.ctaUrl || "/landlords-whats-next"}
+                variant="secondary"
+                color="maroon"
+                animateBgColor="maroon"
+                animateColor="cream"
+                size="custom"
+                className="mt-6 self-start px-6.5 py-3.5 text-sm font-semibold"
+              >
+                {data.ctaLabel}
+              </Button>
+            )}
           </div>
         </div>
 
         {/* STEPPER */}
         <div ref={stepperRef} className="flex flex-col gap-7" onMouseLeave={() => setPaused(false)}>
-          <div
-            className="flex flex-col gap-1.5 transition-[opacity,transform] duration-700 ease-out"
-            style={{
-              opacity: sectionInView ? 1 : 0,
-              transform: sectionInView ? "translateY(0)" : "translateY(20px)",
-              transitionDelay: sectionInView ? "300ms" : "0ms",
-            }}
-          >
-            <span className="text-xs font-semibold tracking-widest text-light-sage uppercase">
-              How it works
-            </span>
-            <h3 className="font-serif text-2xl font-semibold text-cream sm:text-[28px]">
-              What we take care of, start to finish
-            </h3>
-          </div>
+          {(data.stepperEyebrow || data.stepperHeading) && (
+            <div
+              className="flex flex-col gap-1.5 transition-[opacity,transform] duration-700 ease-out"
+              style={{
+                opacity: sectionInView ? 1 : 0,
+                transform: sectionInView ? "translateY(0)" : "translateY(20px)",
+                transitionDelay: sectionInView ? "300ms" : "0ms",
+              }}
+            >
+              {data.stepperEyebrow && (
+                <span className="text-xs font-semibold tracking-widest text-light-sage uppercase">
+                  {data.stepperEyebrow}
+                </span>
+              )}
+              {data.stepperHeading && (
+                <h3 className="font-serif text-2xl font-semibold text-cream sm:text-[28px]">
+                  {data.stepperHeading}
+                </h3>
+              )}
+            </div>
+          )}
 
           <div className="flex items-center gap-2 sm:gap-3.5">
-            {STEPS.map((step, i) => {
+            {steps.map((step, i) => {
               const isOn = current === i;
               const isDone = current > i;
               return (
@@ -262,7 +275,7 @@ export function HostsModule() {
                       {step.title}
                     </span>
                   </button>
-                  {i < STEPS.length - 1 && (
+                  {i < steps.length - 1 && (
                     <div className="relative h-px flex-1 border-t border-dashed border-cream/30">
                       <span
                         className="absolute -top-px left-0 h-px bg-light-sage transition-all duration-500 ease-out"
@@ -276,7 +289,7 @@ export function HostsModule() {
           </div>
 
           <div className="grid grid-cols-1 items-start gap-4.5 lg:grid-cols-3">
-            {STEPS.map((step, i) => {
+            {steps.map((step, i) => {
               const isOn = current === i;
               return (
                 <div
@@ -301,8 +314,8 @@ export function HostsModule() {
                   }}
                 >
                   <Image
-                    src={step.image}
-                    alt={step.title}
+                    src={urlFor(step.image).width(800).height(800).url()}
+                    alt={step.image.alt ?? step.title}
                     fill
                     sizes="(min-width: 1024px) 380px, (min-width: 640px) 33vw, 50vw"
                     className="object-cover"
@@ -341,14 +354,18 @@ export function HostsModule() {
             transform: marqueeInView ? "translateY(0)" : "translateY(20px)",
           }}
         >
-          <div className="flex flex-col gap-1">
-            <span className="font-serif text-[22px] font-semibold text-cream">
-              Earn more with multiple platforms
-            </span>
-            <span className="text-[13.5px] text-cream/70">
-              One calendar, synced across every channel your guests book on.
-            </span>
-          </div>
+          {(data.marqueeHeading || data.marqueeSubtext) && (
+            <div className="flex flex-col gap-1">
+              {data.marqueeHeading && (
+                <span className="font-serif text-[22px] font-semibold text-cream">
+                  {data.marqueeHeading}
+                </span>
+              )}
+              {data.marqueeSubtext && (
+                <span className="text-[13.5px] text-cream/70">{data.marqueeSubtext}</span>
+              )}
+            </div>
+          )}
           <div
             className="relative min-w-0 overflow-hidden"
             style={{
