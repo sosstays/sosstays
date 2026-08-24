@@ -224,6 +224,20 @@ export const LANDLORD_PAGES_QUERY = defineQuery(`
   }
 `);
 
+// ---- Landlord audience tabs (singleton) ----
+
+export const AUDIENCE_TABS_QUERY = defineQuery(`
+  *[_id == "audienceTabs"][0] {
+    eyebrow,
+    tabs[] {
+      label,
+      heading,
+      body,
+      checklist
+    }
+  }
+`);
+
 // ---- Site settings (singleton) ----
 
 export const SITE_SETTINGS_QUERY = defineQuery(`

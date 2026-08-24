@@ -2,7 +2,7 @@ import Image from "next/image";
 import landlordHeroImage from "@/assets/images/landlord.png";
 import { Poppins } from "next/font/google";
 import { client } from "@/sanity/client";
-import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { SITE_SETTINGS_QUERY, AUDIENCE_TABS_QUERY } from "@/sanity/queries";
 import { JsonLd, buildServiceSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
@@ -86,7 +86,10 @@ const PROCESS_STEPS = [
 ];
 
 export async function LandlordPageContent({ page }: { page: LandlordPage }) {
-  const siteSettings = await client.fetch(SITE_SETTINGS_QUERY);
+  const [siteSettings, audienceTabs] = await Promise.all([
+    client.fetch(SITE_SETTINGS_QUERY),
+    client.fetch(AUDIENCE_TABS_QUERY),
+  ]);
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
@@ -211,7 +214,9 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         </div>
       </section>
 
-      <AudienceTabs />
+      {audienceTabs?.tabs?.length === 4 && (
+        <AudienceTabs eyebrow={audienceTabs.eyebrow} tabs={audienceTabs.tabs} />
+      )}
 
       {/* PROOF POINTS / MARKET DATA */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
