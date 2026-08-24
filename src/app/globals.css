@@ -197,3 +197,30 @@ body {
   cursor: pointer;
   border: 3px solid var(--cream);
 }
+
+/* AudienceTabs map — pulsing ring around the central marker.
+   See components/AudienceTabs.tsx */
+@keyframes sos-audience-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+.sos-audience-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sos-audience-pulse 2.8s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sos-audience-pulse {
+    animation: none;
+  }
+}
