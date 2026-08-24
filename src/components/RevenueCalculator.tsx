@@ -5,14 +5,6 @@ import { Button } from "@/components/Button";
 import { AddressAutocomplete, type AddressAutocompleteValue } from "@/components/AddressAutocomplete";
 import { calculateRevenue, formatEuro, type CalculatorResult } from "@/lib/revenueCalculator";
 
-const NUM_PROPERTIES_OPTIONS = [
-  { value: "1", label: "1 property" },
-  { value: "2", label: "2 properties" },
-  { value: "3", label: "3 properties" },
-  { value: "4", label: "4 properties" },
-  { value: "5", label: "5 or more" },
-];
-
 const BEDROOM_OPTIONS = [
   { value: "studio", label: "Studio / 1 bedroom" },
   { value: "2", label: "2 bedrooms" },
@@ -83,13 +75,13 @@ export function RevenueCalculator({
 
   // Step 1
   const [area, setArea] = useState("");
-  const [numProperties, setNumProperties] = useState("1");
   const [bedrooms, setBedrooms] = useState("2");
   const [platforms, setPlatforms] = useState<string[]>(["Airbnb"]);
 
   // Step 2
   const [occupancy, setOccupancy] = useState(42);
   const [adr, setAdr] = useState(110);
+  const [revenueMode, setRevenueMode] = useState<"known" | "estimate">("known");
   const [currentRevenue, setCurrentRevenue] = useState("");
 
   // Step 3
@@ -102,6 +94,10 @@ export function RevenueCalculator({
   const [consentError, setConsentError] = useState(false);
 
   const [result, setResult] = useState<CalculatorResult | null>(null);
+
+  // Rough monthly revenue from the occupancy/rate sliders above — used when
+  // the owner doesn't know their actual figure.
+  const estimatedRevenue = Math.round(adr * (occupancy / 100) * 30.4);
 
   function handleAreaSelect(value: AddressAutocompleteValue) {
     setArea(value.formattedAddress);
@@ -129,6 +125,10 @@ export function RevenueCalculator({
   }
 
   function validateStep2() {
+    if (revenueMode === "estimate") {
+      setStep2Error(false);
+      return true;
+    }
     const revenue = parseFloat(currentRevenue);
     const valid = Boolean(currentRevenue) && revenue > 0;
     setStep2Error(!valid);
@@ -147,7 +147,7 @@ export function RevenueCalculator({
     setConsentError(false);
     setSubmitting(true);
 
-    const current = parseFloat(currentRevenue) || 0;
+    const current = revenueMode === "estimate" ? estimatedRevenue : parseFloat(currentRevenue) || 0;
     const calc = calculateRevenue({
       occupancy,
       adr,
@@ -174,7 +174,6 @@ export function RevenueCalculator({
           name,
           email,
           area,
-          numProperties,
           bedrooms,
           platforms: platforms.join(", "),
           occupancy: `${occupancy}%`,
@@ -255,36 +254,20 @@ export function RevenueCalculator({
                 <p className="text-[13px] text-error-red">Please enter your property address.</p>
               )}
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <label className="flex flex-col gap-1.5 text-sm text-near-black">
-                  Number of properties
-                  <select
-                    value={numProperties}
-                    onChange={(e) => setNumProperties(e.target.value)}
-                    className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
-                  >
-                    {NUM_PROPERTIES_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="flex flex-col gap-1.5 text-sm text-near-black">
-                  Bedrooms per property
-                  <select
-                    value={bedrooms}
-                    onChange={(e) => setBedrooms(e.target.value)}
-                    className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
-                  >
-                    {BEDROOM_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
+              <label className="flex flex-col gap-1.5 text-sm text-near-black">
+                Bedrooms per property
+                <select
+                  value={bedrooms}
+                  onChange={(e) => setBedrooms(e.target.value)}
+                  className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+                >
+                  {BEDROOM_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
               <div className="flex flex-col gap-2 text-sm text-near-black">
                 Currently listed on
@@ -372,22 +355,61 @@ export function RevenueCalculator({
                 </div>
               </div>
 
-              <label className="flex flex-col gap-1.5 text-sm text-near-black">
+              <div className="flex flex-col gap-2 text-sm text-near-black">
                 <span>
                   Your current monthly revenue (€ or £) <span className="text-error-red">*</span>
                 </span>
-                <input
-                  type="number"
-                  min={0}
-                  value={currentRevenue}
-                  onChange={(e) => setCurrentRevenue(e.target.value)}
-                  placeholder="e.g. 1800"
-                  className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
-                />
-                <span className="text-[11px] text-near-black/60">
-                  What actually lands in your account each month from your property/properties
-                </span>
-              </label>
+                <div className="flex flex-wrap gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setRevenueMode("known")}
+                    className="cursor-pointer rounded-full border px-4 py-2 text-[13px] font-medium whitespace-nowrap"
+                    style={{
+                      background: revenueMode === "known" ? "var(--light-forest-green)" : "white",
+                      borderColor: revenueMode === "known" ? "var(--forest-green)" : "var(--sage-grey)",
+                      color: revenueMode === "known" ? "var(--forest-green)" : "var(--near-black)",
+                    }}
+                  >
+                    I know the number
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRevenueMode("estimate")}
+                    className="cursor-pointer rounded-full border px-4 py-2 text-[13px] font-medium whitespace-nowrap"
+                    style={{
+                      background: revenueMode === "estimate" ? "var(--light-forest-green)" : "white",
+                      borderColor: revenueMode === "estimate" ? "var(--forest-green)" : "var(--sage-grey)",
+                      color: revenueMode === "estimate" ? "var(--forest-green)" : "var(--near-black)",
+                    }}
+                  >
+                    Not sure — estimate it for me
+                  </button>
+                </div>
+
+                {revenueMode === "known" ? (
+                  <>
+                    <input
+                      type="number"
+                      min={0}
+                      value={currentRevenue}
+                      onChange={(e) => setCurrentRevenue(e.target.value)}
+                      placeholder="e.g. 1800"
+                      className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+                    />
+                    <span className="text-[11px] text-near-black/60">
+                      What actually lands in your account each month from your property/properties
+                    </span>
+                  </>
+                ) : (
+                  <div className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3">
+                    <p className="font-serif text-2xl text-maroon">{formatEuro(estimatedRevenue)}</p>
+                    <p className="mt-1 text-[11px] text-near-black/60">
+                      Based on the occupancy and nightly rate you set above — we&apos;ll use this as
+                      your starting point instead.
+                    </p>
+                  </div>
+                )}
+              </div>
               {step2Error && (
                 <p className="text-[13px] text-error-red">Please enter your monthly revenue.</p>
               )}
@@ -499,7 +521,7 @@ export function RevenueCalculator({
       {stage === "results" && result && (
         <ResultsPanel
           name={name}
-          currentRevenue={parseFloat(currentRevenue) || 0}
+          currentRevenue={revenueMode === "estimate" ? estimatedRevenue : parseFloat(currentRevenue) || 0}
           hoursPerWeek={hoursPerWeek}
           platformCount={platforms.length}
           occupancy={occupancy}
