@@ -9,6 +9,7 @@ import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
 import { LandlordLeadForm } from "@/components/LandlordLeadForm";
 import { FaqSection } from "@/components/FaqSection";
 import { Button } from "@/components/Button";
+import { AudienceTabs } from "@/components/AudienceTabs";
 
 type LandlordPage = {
   title?: string;
@@ -209,6 +210,8 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           </p>
         </div>
       </section>
+
+      <AudienceTabs />
 
       {/* PROOF POINTS / MARKET DATA */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
