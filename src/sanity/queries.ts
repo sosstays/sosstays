@@ -280,6 +280,31 @@ export const HERO_SECTION_QUERY = defineQuery(`
   }
 `);
 
+// ---- Homepage hosts module (singleton) ----
+
+export const HOSTS_MODULE_QUERY = defineQuery(`
+  *[_id == "hostsModule"][0] {
+    eyebrow,
+    heading,
+    body,
+    commissionRate,
+    commissionLabel,
+    commissionSuffix,
+    commissionNote,
+    ctaLabel,
+    ctaUrl,
+    stepperEyebrow,
+    stepperHeading,
+    steps[] {
+      title,
+      bullets,
+      image
+    },
+    marqueeHeading,
+    marqueeSubtext
+  }
+`);
+
 // ---- Homepage feed ----
 
 export const HOMEPAGE_QUERY = defineQuery(`{

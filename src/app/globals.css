@@ -148,6 +148,26 @@ body {
   }
 }
 
+/* HostsModule multi-platform strip — scrolls a doubled list of platform
+   pills leftward by exactly half its width so the loop seam is invisible.
+   See components/HostsModule.tsx */
+@keyframes sos-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 5px));
+  }
+}
+.sos-marquee {
+  animation: sos-marquee 26s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sos-marquee {
+    animation: none;
+  }
+}
+
 /* Revenue calculator sliders — Tailwind can't reach the thumb
    pseudo-elements, so this is plain CSS scoped to the one component. */
 .calc-slider {
