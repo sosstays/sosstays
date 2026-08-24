@@ -52,8 +52,8 @@ export function RevenueCalculator({
 }: {
   /** Carried in from the contact form (e.g. the post-submit "what's next"
    *  page) so the results can be attributed and saved without asking the
-   *  visitor for their details again. When absent (the standalone
-   *  /calculator page), results are shown but nothing is saved anywhere. */
+   *  visitor for their details again. When absent, results are shown but
+   *  nothing is saved anywhere. */
   initialName?: string;
   initialEmail?: string;
   /** Fires once the results are computed and shown — lets a page hosting
