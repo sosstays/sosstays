@@ -2,22 +2,8 @@
 
 import { useState, type ReactNode } from "react";
 import { Button } from "@/components/Button";
+import { AddressAutocomplete, type AddressAutocompleteValue } from "@/components/AddressAutocomplete";
 import { calculateRevenue, formatEuro, type CalculatorResult } from "@/lib/revenueCalculator";
-
-const AREA_OPTIONS = [
-  "Drogheda",
-  "Dundalk",
-  "Ardee / South Louth",
-  "Carlingford / Omeath",
-  "Bettystown / Laytown",
-  "Navan / Trim",
-  "Ashbourne / North Meath",
-  "Newry",
-  "Mourne Mountains / Annalong",
-  "Other — Co. Louth",
-  "Other — Co. Meath",
-  "Other — Co. Down / NI",
-];
 
 const NUM_PROPERTIES_OPTIONS = [
   { value: "1", label: "1 property" },
@@ -117,6 +103,10 @@ export function RevenueCalculator({
 
   const [result, setResult] = useState<CalculatorResult | null>(null);
 
+  function handleAreaSelect(value: AddressAutocompleteValue) {
+    setArea(value.formattedAddress);
+  }
+
   function togglePlatform(label: string) {
     setPlatforms((prev) =>
       prev.includes(label) ? prev.filter((p) => p !== label) : [...prev, label]
@@ -133,7 +123,7 @@ export function RevenueCalculator({
   }
 
   function validateStep1() {
-    const valid = Boolean(area);
+    const valid = Boolean(area.trim());
     setStep1Error(!valid);
     return valid;
   }
@@ -253,23 +243,16 @@ export function RevenueCalculator({
                 the most useful results.
               </p>
 
-              <label className="flex flex-col gap-1.5 text-sm text-near-black">
-                <span>
-                  Where is your property? <span className="text-error-red">*</span>
-                </span>
-                <select
-                  value={area}
-                  onChange={(e) => setArea(e.target.value)}
-                  className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
-                >
-                  <option value="">— Select area —</option>
-                  {AREA_OPTIONS.map((a) => (
-                    <option key={a}>{a}</option>
-                  ))}
-                </select>
-              </label>
+              <AddressAutocomplete
+                label="Where is your property?"
+                required
+                placeholder="Start typing your address…"
+                value={area}
+                onChange={setArea}
+                onSelect={handleAreaSelect}
+              />
               {step1Error && (
-                <p className="text-[13px] text-error-red">Please select an area to continue.</p>
+                <p className="text-[13px] text-error-red">Please enter your property address.</p>
               )}
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
