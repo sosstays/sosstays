@@ -88,12 +88,13 @@ export function AudienceTabs({
     return {
       fontSize: 13.5,
       fontWeight: 500,
-      border: 0,
+      border: on ? "1px solid var(--maroon)" : "1px solid var(--sage-grey)",
       cursor: "pointer",
       borderRadius: 999,
       padding: "10px 18px",
       whiteSpace: "nowrap",
-      transition: "background 220ms ease-out, color 220ms ease-out",
+      transition:
+        "background 220ms ease-out, color 220ms ease-out, border-color 220ms ease-out",
       background: on ? "var(--maroon)" : "transparent",
       color: on ? "var(--cream)" : "var(--forest-green)",
     };
@@ -164,7 +165,7 @@ export function AudienceTabs({
         <p className="mb-5 text-xs tracking-widest text-near-black/55 uppercase">
           {eyebrow}
         </p>
-        <div className="mx-auto flex w-fit flex-wrap justify-center gap-2 rounded-full border border-sage-grey/40 p-1.5">
+        <div className="mx-auto flex w-fit flex-wrap justify-center gap-2">
           {tabs.map((t, i) => (
             <button
               key={t.label}
