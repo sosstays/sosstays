@@ -48,7 +48,7 @@ export function CitySelectDropdown({ counties: allCounties }: { counties: County
       </button>
 
       {open && (
-        <div className="absolute top-full left-1/2 z-30 mt-3 w-[320px] -translate-x-1/2 overflow-hidden rounded-[14px] border border-sage-grey/40 bg-cream text-left shadow-[0_16px_36px_rgba(23,25,23,0.25)] sm:w-[380px]">
+        <div className="absolute top-full left-1/2 z-30 mt-3 w-[calc(100vw-2rem)] max-w-[320px] -translate-x-1/2 overflow-hidden rounded-[14px] border border-sage-grey/40 bg-cream text-left shadow-[0_16px_36px_rgba(23,25,23,0.25)] sm:max-w-[380px]">
           <div className="flex border-b border-sage-grey/30">
             {REGION_TABS.map((tab) => {
               const active = region === tab.value;

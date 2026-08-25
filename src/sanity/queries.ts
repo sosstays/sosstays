@@ -387,8 +387,10 @@ export const COUNTY_PRICING_STATS_QUERY = defineQuery(`
     county,
     adr,
     occupancy,
-    monthlyRevenue,
-    bestMonth,
-    uplift
+    annualRevenue,
+    statsSourceNote,
+    realExample,
+    drivers,
+    faqs
   }
 `);

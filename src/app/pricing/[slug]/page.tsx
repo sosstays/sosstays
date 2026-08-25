@@ -1,10 +1,8 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
-import { CitySelectDropdown } from "@/components/pricing/CitySelectDropdown";
-import { CountyResult } from "@/components/pricing/PricingCountyResult";
+import { CountyPageContent } from "@/components/pricing/CountyPageContent";
 import { getPricingCounties } from "@/lib/fetchPricingCounties";
 import type { NavLink } from "@/lib/navLinks";
 
@@ -33,6 +31,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildMetadata({ title, description }, `/pricing/${slug}`);
 }
 
+// Every county — live, expanding, or Northern Ireland — uses the same
+// template (CountyPageContent), which conditionally renders each section
+// based on what data actually exists for that county. See the
+// honesty-in-projections principle: no county gets a fabricated version
+// of a section it doesn't have real content for.
 export default async function PricingCountyPage({ params }: Props) {
   const { slug } = await params;
   const counties = await getPricingCounties();
@@ -41,30 +44,9 @@ export default async function PricingCountyPage({ params }: Props) {
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
-      <section className="relative bg-maroon px-8 pt-[180px] pb-16 text-center sm:px-14 sm:pt-[200px]">
-        <HeroNav
-          links={NAV_LINKS}
-          variant="landlords"
-          ctaHref="mailto:info@sosstays.com"
-          ctaLabel="Contact us"
-        />
-        <Link
-          href="/pricing"
-          className="mb-4 inline-block text-xs font-medium tracking-widest text-light-sage uppercase"
-        >
-          ← All counties
-        </Link>
-        <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-4xl leading-[1.15] font-bold tracking-tight text-cream sm:text-5xl">
-          Pricing in <em className="text-light-sage italic">{county.name}</em>
-        </h1>
-        <p className="mx-auto mb-8 max-w-[480px] text-[15px] leading-relaxed text-cream/75">
-          Commission-only — from 15%, no setup fee, no monthly retainer.
-        </p>
-        <CitySelectDropdown counties={counties} />
-      </section>
-
-      <div className="mx-auto max-w-5xl px-8 py-16 sm:px-14">
-        <CountyResult county={county} />
+      <HeroNav links={NAV_LINKS} sticky ctaHref="mailto:info@sosstays.com" ctaLabel="Contact us" />
+      <div className="mx-auto flex max-w-[1120px] flex-col px-6 pt-20 pb-16 sm:px-10 sm:pt-24 sm:pb-[104px]">
+        <CountyPageContent county={county} />
       </div>
     </main>
   );

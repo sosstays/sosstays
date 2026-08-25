@@ -1,12 +1,26 @@
 export type Region = "roi" | "ni";
 export type CountyState = "live" | "expanding";
 
+export type RealExample = {
+  propertyName: string;
+  propertyLocation: string;
+  beforeLabel: string;
+  beforeOccupancy: number;
+  afterLabel: string;
+  afterOccupancy: number;
+  note: string;
+};
+
+export type CountyFaq = { question: string; answer: string };
+
 export type CountyStats = {
   adr: number;
   occupancy: number;
-  monthlyRevenue: number;
-  bestMonth: string;
-  uplift: string;
+  annualRevenue: number;
+  statsSourceNote: string;
+  realExample: RealExample;
+  drivers: string[];
+  faqs: CountyFaq[];
 };
 
 export type County = {
