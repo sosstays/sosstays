@@ -15,11 +15,11 @@ type BlogPost = {
   _id: string;
   title: string;
   slug: string;
-  excerpt?: string;
+  excerpt?: string | null;
   coverImage?: any;
   publishedAt?: string;
-  author?: { name?: string; avatar?: any };
-  tags?: string[];
+  author?: { name?: string; avatar?: any } | null;
+  tags?: string[] | null;
 };
 
 type SocialLink = { platform: string; url: string };
@@ -161,7 +161,7 @@ export function LandlordsWhatsNext({
   fallbackAuthorName = "Sos Stays",
 }: {
   posts?: BlogPost[];
-  socialLinks?: SocialLink[];
+  socialLinks?: SocialLink[] | null;
   fallbackAuthorName?: string;
 }) {
   const instagramUrl = socialLinks?.find((l) => l.platform === "instagram")?.url;

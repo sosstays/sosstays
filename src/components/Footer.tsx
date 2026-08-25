@@ -3,12 +3,20 @@ import Link from "next/link";
 import { SocialIcons } from "@/components/SocialIcons";
 
 type SocialLink = {
-  platform: "instagram" | "facebook" | "tiktok" | "linkedin" | "x" | "youtube";
+  platform:
+    | "instagram"
+    | "facebook"
+    | "tiktok"
+    | "linkedin"
+    | "x"
+    | "youtube"
+    | "tripadvisor"
+    | "whatsapp";
   url: string;
 };
 
 // The one footer used on every page.
-export function Footer({ socialLinks }: { socialLinks?: SocialLink[] }) {
+export function Footer({ socialLinks }: { socialLinks?: SocialLink[] | null }) {
   return (
     <footer className="border-t border-sage-grey/40 bg-cream font-sans text-near-black">
       <div className="mx-auto max-w-6xl px-4 py-12">

@@ -92,7 +92,7 @@ export default async function AreaGuidePage({ params }: Props) {
               loading="lazy"
             />
           </div>
-          {guide.travelNotes?.length > 0 && (
+          {guide.travelNotes && guide.travelNotes.length > 0 && (
             <div className="mt-6">
               <h3 className="mb-4 font-serif text-lg font-bold text-forest-green">
                 Getting here
@@ -110,7 +110,7 @@ export default async function AreaGuidePage({ params }: Props) {
       </section>
 
       {/* THINGS TO DO */}
-      {guide.thingsToDo?.length > 0 && (
+      {guide.thingsToDo && guide.thingsToDo.length > 0 && (
         <section className="mx-auto max-w-6xl px-8 pt-14 pb-5 sm:px-14">
           <h2 className="mb-2 font-serif text-[26px] font-bold tracking-tight text-forest-green">
             A few things worth knowing
@@ -123,7 +123,7 @@ export default async function AreaGuidePage({ params }: Props) {
       )}
 
       {/* STAYS IN THIS AREA */}
-      {guide.featuredProperties?.length > 0 && (
+      {guide.featuredProperties && guide.featuredProperties.length > 0 && (
         <section className="mx-auto max-w-6xl px-8 pt-5 pb-20 sm:px-14">
           <h2 className="mb-6 font-serif text-[26px] font-bold tracking-tight text-forest-green">
             Stay here

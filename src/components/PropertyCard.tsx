@@ -8,8 +8,8 @@ export type PropertyCardProps = {
   slug: string;
   name: string;
   location: string;
-  shortDescription?: string;
-  sleeps?: number;
+  shortDescription?: string | null;
+  sleeps?: number | null;
   /**
    * Formatted price string, e.g. "From €150/night". Not currently sourced
    * from Sanity — pricing lives in Uplisting, never in the CMS (see
@@ -17,8 +17,8 @@ export type PropertyCardProps = {
    * caller can pass one in without changing this component.
    */
   price?: string;
-  coverImage?: SanityImageWithAlt;
-  gallery?: SanityImageWithAlt[];
+  coverImage?: SanityImageWithAlt | null;
+  gallery?: SanityImageWithAlt[] | null;
   /**
    * "plain" sits directly on the page background (homepage's featured
    * stay). "framed" wraps it in a white surface + shadow (area guide's

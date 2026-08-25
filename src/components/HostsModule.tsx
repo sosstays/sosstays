@@ -20,20 +20,20 @@ export type HostsModuleStep = {
 // PlatformIcons.tsx), not editorial content, so they aren't part of this —
 // PLATFORMS below stays hardcoded.
 export type HostsModuleData = {
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
-  commissionRate?: number;
-  commissionLabel?: string;
-  commissionSuffix?: string;
-  commissionNote?: string;
-  ctaLabel?: string;
-  ctaUrl?: string;
-  stepperEyebrow?: string;
-  stepperHeading?: string;
-  steps?: HostsModuleStep[];
-  marqueeHeading?: string;
-  marqueeSubtext?: string;
+  eyebrow?: string | null;
+  heading?: string | null;
+  body?: string | null;
+  commissionRate?: number | null;
+  commissionLabel?: string | null;
+  commissionSuffix?: string | null;
+  commissionNote?: string | null;
+  ctaLabel?: string | null;
+  ctaUrl?: string | null;
+  stepperEyebrow?: string | null;
+  stepperHeading?: string | null;
+  steps?: HostsModuleStep[] | null;
+  marqueeHeading?: string | null;
+  marqueeSubtext?: string | null;
 };
 
 const PLATFORMS: { label: string; platform: Platform | "sosStays" }[] = [

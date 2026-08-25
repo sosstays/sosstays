@@ -200,7 +200,7 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             )}
 
-            {siteSettings?.socialLinks?.length > 0 && (
+            {siteSettings?.socialLinks && siteSettings.socialLinks.length > 0 && (
               <div className="mb-9">
                 <p className="mb-4 text-[13px] font-semibold text-forest-green">Share on social media</p>
                 <SocialIcons
@@ -214,7 +214,7 @@ export default async function BlogPostPage({ params }: Props) {
               <NewsletterSignup />
             </div>
 
-            {post.tags?.length > 0 && (
+            {post.tags && post.tags.length > 0 && (
               <div className="mb-9">
                 <p className="mb-4 text-[13px] font-semibold text-forest-green">All tags</p>
                 <div className="flex flex-wrap gap-2.5">
@@ -268,7 +268,7 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             )}
 
-            {post.relatedAreaGuides?.length > 0 && (
+            {post.relatedAreaGuides && post.relatedAreaGuides.length > 0 && (
               <div>
                 <p className="mb-4 text-[13px] font-semibold text-forest-green">Explore more</p>
                 <ul className="flex flex-col gap-2.5">

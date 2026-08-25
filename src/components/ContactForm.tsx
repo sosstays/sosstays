@@ -92,7 +92,7 @@ function Dropdown({
   );
 }
 
-export function ContactForm({ contactEmail }: { contactEmail?: string }) {
+export function ContactForm({ contactEmail }: { contactEmail?: string | null }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [topic, setTopic] = useState("");
