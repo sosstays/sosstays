@@ -334,6 +334,61 @@ export const HOMEPAGE_QUERY = defineQuery(`{
   }
 }`);
 
+// ---- Landing pages (standalone marketing/campaign pages, site root) ----
+
+export const LANDING_PAGE_QUERY = defineQuery(`
+  *[_type == "landingPage" && slug.current == $slug][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    heroEyebrow,
+    heroHeadline,
+    heroSubtext,
+    heroTags,
+    heroImage,
+    primaryCtaLabel,
+    primaryCtaUrl,
+    secondaryCtaLabel,
+    secondaryCtaUrl,
+    distanceStat,
+    distanceLabel,
+    distanceText,
+    directBookingBadge,
+    directBookingHeadline,
+    directBookingText,
+    featuredProperty-> {
+      _id,
+      name,
+      "slug": slug.current,
+      location,
+      shortDescription,
+      sleeps,
+      "coverImage": gallery[0],
+      "gallery": gallery[0...3],
+      uplistingPropertySlug
+    },
+    infoSections[] {
+      eyebrow,
+      heading,
+      body,
+      items[] {
+        title,
+        description,
+        tag,
+        link
+      }
+    },
+    relatedAreaGuide-> {
+      areaName,
+      "slug": slug.current,
+      thingsToDo
+    },
+    finalCtaHeadline,
+    finalCtaText,
+    ${seoProjection}
+  }
+`);
+
 // ---- Sitemap ----
 
 export const SITEMAP_QUERY = defineQuery(`
