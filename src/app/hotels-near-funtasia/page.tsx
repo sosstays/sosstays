@@ -83,7 +83,7 @@ export default async function HotelsNearFuntasiaPage() {
             <p className="mt-5 max-w-2xl text-lg text-cream/85">{page.heroSubtext}</p>
           )}
 
-          {page.heroTags?.length > 0 && (
+          {page.heroTags && page.heroTags.length > 0 && (
             <div className="mt-6 flex flex-wrap gap-2">
               {page.heroTags.map((tag: string) => (
                 <span
@@ -226,7 +226,7 @@ export default async function HotelsNearFuntasiaPage() {
 
       {/* RELATED AREA GUIDE CONTENT — "while you're here", sourced from
           the referenced areaGuide rather than duplicated content */}
-      {page.relatedAreaGuide?.thingsToDo?.length > 0 && (
+      {page.relatedAreaGuide?.thingsToDo && page.relatedAreaGuide.thingsToDo.length > 0 && (
         <section className="mx-auto max-w-6xl px-8 pt-14 pb-5 sm:px-14">
           <h2 className="mb-2 font-serif text-[26px] font-bold tracking-tight text-forest-green">
             While you&apos;re in the area

@@ -215,14 +215,14 @@ export default async function PropertyPage({ params }: Props) {
                     (highlight: {
                       headline: string;
                       description: string;
-                      image?: Record<string, unknown>;
-                      supportingImages?: Record<string, unknown>[];
-                      ctaLabel?: string;
-                      ctaHref?: string;
+                      image?: Record<string, unknown> | null;
+                      supportingImages?: Record<string, unknown>[] | null;
+                      ctaLabel?: string | null;
+                      ctaHref?: string | null;
                     }) => ({
                       headline: highlight.headline,
                       description: highlight.description,
-                      image: highlight.image,
+                      image: highlight.image ?? undefined,
                       supportingImages: highlight.supportingImages ?? [],
                       ctaLabel: highlight.ctaLabel || "Book Now",
                       ctaHref: highlight.ctaHref ?? bookingUrl ?? undefined,
@@ -288,7 +288,7 @@ export default async function PropertyPage({ params }: Props) {
       <section className="mx-auto max-w-6xl px-8 pt-12 pb-14 sm:px-14">
         <div className="lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-14">
           <div>
-            {property.amenities?.length > 0 && (
+            {property.amenities && property.amenities.length > 0 && (
               <div className="mb-5 flex flex-wrap gap-2.5">
                 {property.amenities.map((amenity: string) => (
                   <span
@@ -350,7 +350,7 @@ export default async function PropertyPage({ params }: Props) {
       )}
 
       {/* ROOM TYPES */}
-      {property.roomTypes?.length > 0 && (
+      {property.roomTypes && property.roomTypes.length > 0 && (
         <section className="mx-auto max-w-6xl px-8 pb-14 sm:px-14">
           <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
             Room types
@@ -374,7 +374,7 @@ export default async function PropertyPage({ params }: Props) {
           />
         </div>
 
-        {property.relatedAreaGuides?.length > 0 && (
+        {property.relatedAreaGuides && property.relatedAreaGuides.length > 0 && (
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {property.relatedAreaGuides.map((guide: any) => (
               <AreaGuideCard key={guide._id} guide={guide} />

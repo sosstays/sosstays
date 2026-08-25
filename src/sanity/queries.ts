@@ -227,7 +227,7 @@ export const LANDLORD_PAGES_QUERY = defineQuery(`
 // ---- Landlord audience tabs (singleton) ----
 
 export const AUDIENCE_TABS_QUERY = defineQuery(`
-  *[_id == "audienceTabs"][0] {
+  *[_type == "audienceTabs" && _id == "audienceTabs"][0] {
     eyebrow,
     tabs[] {
       label,
@@ -241,7 +241,7 @@ export const AUDIENCE_TABS_QUERY = defineQuery(`
 // ---- Site settings (singleton) ----
 
 export const SITE_SETTINGS_QUERY = defineQuery(`
-  *[_id == "siteSettings"][0] {
+  *[_type == "siteSettings" && _id == "siteSettings"][0] {
     siteName,
     defaultSeoTitle,
     defaultSeoDescription,
@@ -259,7 +259,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
 // ---- Privacy policy (singleton) ----
 
 export const PRIVACY_POLICY_QUERY = defineQuery(`
-  *[_id == "privacyPolicyPage"][0] {
+  *[_type == "privacyPolicyPage" && _id == "privacyPolicyPage"][0] {
     title,
     lastUpdated,
     body,
@@ -270,7 +270,7 @@ export const PRIVACY_POLICY_QUERY = defineQuery(`
 // ---- Terms & conditions (singleton) ----
 
 export const TERMS_PAGE_QUERY = defineQuery(`
-  *[_id == "termsPage"][0] {
+  *[_type == "termsPage" && _id == "termsPage"][0] {
     title,
     lastUpdated,
     body,
@@ -281,7 +281,7 @@ export const TERMS_PAGE_QUERY = defineQuery(`
 // ---- Homepage hero (singleton) ----
 
 export const HERO_SECTION_QUERY = defineQuery(`
-  *[_id == "heroSection"][0] {
+  *[_type == "heroSection" && _id == "heroSection"][0] {
     eyebrow,
     heading,
     body,
@@ -297,7 +297,7 @@ export const HERO_SECTION_QUERY = defineQuery(`
 // ---- Homepage hosts module (singleton) ----
 
 export const HOSTS_MODULE_QUERY = defineQuery(`
-  *[_id == "hostsModule"][0] {
+  *[_type == "hostsModule" && _id == "hostsModule"][0] {
     eyebrow,
     heading,
     body,
@@ -410,7 +410,7 @@ export const SITEMAP_QUERY = defineQuery(`
 // instead of bare URLs.
 export const LLMS_TXT_QUERY = defineQuery(`
 {
-  "settings": *[_id == "siteSettings"][0] {
+  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {
     siteName,
     defaultSeoDescription,
     businessName,

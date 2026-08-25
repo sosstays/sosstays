@@ -59,7 +59,7 @@ export function SocialIcons({
   links,
   className = "text-[#555550] hover:bg-[#0F6E56] hover:text-white",
 }: {
-  links?: SocialLink[];
+  links?: SocialLink[] | null;
   className?: string;
 }) {
   if (!links || links.length === 0) return null;

@@ -15,7 +15,9 @@ type Activity = {
 
 const CATEGORIES: Activity["category"][] = ["Explore", "Things to Do", "Food", "Transport"];
 
-export function ThingsToDoTabs({ items }: { items: Activity[] }) {
+export function ThingsToDoTabs({ items: itemsProp }: { items: Activity[] | null }) {
+  // GROQ returns `null` (not `undefined`) for an empty array field.
+  const items = useMemo(() => itemsProp ?? [], [itemsProp]);
   const availableCategories = useMemo(
     () => CATEGORIES.filter((category) => items.some((item) => item.category === category)),
     [items]

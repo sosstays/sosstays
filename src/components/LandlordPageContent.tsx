@@ -15,9 +15,9 @@ type LandlordPage = {
   title?: string;
   slug?: string;
   heroStatement?: string;
-  proofPoints?: string[];
+  proofPoints?: string[] | null;
   body?: any;
-  faqs?: { question: string; answer: string }[];
+  faqs?: { question: string; answer: string }[] | null;
 };
 
 const HOW_IT_WORKS_STATS = [

@@ -12,12 +12,12 @@ export function JsonLd({ data }: { data: object | object[] }) {
   );
 }
 
-type SocialLink = { platform?: string; url?: string };
+type SocialLink = { platform?: string | null; url?: string | null };
 type SiteSettings = {
-  siteName?: string;
-  businessName?: string;
-  contactEmail?: string;
-  socialLinks?: SocialLink[];
+  siteName?: string | null;
+  businessName?: string | null;
+  contactEmail?: string | null;
+  socialLinks?: SocialLink[] | null;
 } | null | undefined;
 
 const DEFAULT_SITE_NAME = "Sos Stays";
@@ -56,12 +56,12 @@ export function buildOrganizationSchema(settings?: SiteSettings) {
 type PropertyForSchema = {
   name: string;
   slug: string;
-  location?: string;
-  shortDescription?: string;
-  gallery?: any[];
-  amenities?: string[];
-  sleeps?: number;
-  bedrooms?: number;
+  location?: string | null;
+  shortDescription?: string | null;
+  gallery?: any[] | null;
+  amenities?: string[] | null;
+  sleeps?: number | null;
+  bedrooms?: number | null;
 };
 
 export function buildLodgingBusinessSchema(
@@ -108,8 +108,8 @@ export function buildLodgingBusinessSchema(
 
 type ThingToDo = {
   title: string;
-  category?: "Explore" | "Food" | "Transport";
-  description?: string;
+  category?: "Explore" | "Things to Do" | "Food" | "Transport" | null;
+  description?: string | null;
   image?: any;
 };
 
@@ -118,7 +118,7 @@ type AreaGuideForSchema = {
   slug: string;
   heroImage?: any;
   introduction?: any;
-  thingsToDo?: ThingToDo[];
+  thingsToDo?: ThingToDo[] | null;
 };
 
 function thingToDoType(category?: ThingToDo["category"]) {
@@ -159,10 +159,10 @@ export function buildAreaGuideSchema(guide: AreaGuideForSchema) {
 type BlogPostForSchema = {
   title: string;
   slug: string;
-  excerpt?: string;
+  excerpt?: string | null;
   coverImage?: any;
-  publishedAt?: string;
-  author?: { name?: string };
+  publishedAt?: string | null;
+  author?: { name?: string | null } | null;
 };
 
 export function buildArticleSchema(post: BlogPostForSchema, settings?: SiteSettings) {
@@ -191,10 +191,10 @@ export function buildArticleSchema(post: BlogPostForSchema, settings?: SiteSetti
 // ---- Service (landlord page) ----
 
 type LandlordPageForSchema = {
-  title?: string;
-  heroStatement?: string;
-  proofPoints?: string[];
-  slug?: string;
+  title?: string | null;
+  heroStatement?: string | null;
+  proofPoints?: string[] | null;
+  slug?: string | null;
 };
 
 export function buildServiceSchema(page: LandlordPageForSchema, settings?: SiteSettings) {
@@ -230,7 +230,7 @@ export function buildBreadcrumbSchema(items: { name: string; url: string }[]) {
 
 // ---- FAQPage (shared) ----
 
-export function buildFaqSchema(faqs: { question: string; answer: string }[] | undefined) {
+export function buildFaqSchema(faqs: { question: string; answer: string }[] | null | undefined) {
   if (!faqs || faqs.length === 0) return null;
   return {
     "@context": "https://schema.org",

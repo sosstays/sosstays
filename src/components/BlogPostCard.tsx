@@ -6,11 +6,11 @@ type BlogPost = {
   _id: string;
   slug: string;
   title: string;
-  excerpt?: string;
+  excerpt?: string | null;
   coverImage?: any;
   publishedAt?: string;
-  author?: { name?: string; avatar?: any };
-  tags?: string[];
+  author?: { name?: string; avatar?: any } | null;
+  tags?: string[] | null;
 };
 
 const dateFormatter = new Intl.DateTimeFormat("en-IE", {
