@@ -224,3 +224,41 @@ body {
     animation: none;
   }
 }
+
+/* CountyPageContent — rotating decorative mark blob (hero + pricing band)
+   and the pulsing "live data" dot. See components/pricing/CountyPageContent.tsx */
+@keyframes sos-mark-spin {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes sos-mark-spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0);
+  }
+}
+@keyframes sos-live-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  80% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [style*="sos-mark-spin"],
+  [style*="sos-live-ping"] {
+    animation: none !important;
+  }
+}

@@ -431,3 +431,21 @@ export const LLMS_TXT_QUERY = defineQuery(`
   }
 }
 `);
+
+// ---- Pricing page ----
+// Only counties with `live == true` get real stats + the "live data"
+// badge on /pricing — everything else falls back to the "expanding"
+// state in src/lib/pricingCounties.ts. See the honesty-in-projections
+// principle: never fabricate these figures in code.
+export const COUNTY_PRICING_STATS_QUERY = defineQuery(`
+  *[_type == "countyPricingStats" && live == true] {
+    county,
+    adr,
+    occupancy,
+    annualRevenue,
+    statsSourceNote,
+    realExample,
+    drivers,
+    faqs
+  }
+`);
