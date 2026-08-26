@@ -65,7 +65,6 @@ export async function GET() {
     `- Maintenance authority up to €${MAINTENANCE_AUTHORITY_EUR} per instance without owner approval`,
     `- Owners can block off personal-use dates at any time, with no minimum commitment`,
     ...landlordPages.map((l) => linkLine(l.title, l.href, l.summary)),
-    `- [Free revenue estimate](${SITE_URL}/calculator)`,
   ].join("\n");
 
   const socialLines = socialLinks
