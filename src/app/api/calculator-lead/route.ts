@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const MAILERLITE_API_URL = "https://connect.mailerlite.com/api/subscribers";
+import { isValidEmail, subscribeToMailerLite } from "@/lib/mailerlite";
 
 export async function POST(request: NextRequest) {
-  const apiKey = process.env.MAILERLITE_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ error: "MailerLite is not configured" }, { status: 500 });
-  }
-
   const body = await request.json();
   const {
     name,
@@ -26,46 +20,27 @@ export async function POST(request: NextRequest) {
     upliftPercent,
   } = body ?? {};
 
-  if (typeof email !== "string" || !email.trim()) {
-    return NextResponse.json({ error: "Email is required" }, { status: 400 });
+  if (!isValidEmail(email)) {
+    return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
   }
 
-  const groupId = process.env.MAILERLITE_CALCULATOR_GROUP_ID;
-
-  const res = await fetch(MAILERLITE_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+  return subscribeToMailerLite({
+    email,
+    fields: {
+      name,
+      area,
+      num_properties: numProperties,
+      bedrooms,
+      platforms,
+      occupancy,
+      adr,
+      current_revenue: currentRevenue,
+      hours_per_week: hoursPerWeek,
+      biggest_challenge: biggestChallenge,
+      estimated_potential: estimatedPotential,
+      estimated_uplift: estimatedUplift,
+      uplift_percent: upliftPercent,
     },
-    body: JSON.stringify({
-      email,
-      fields: {
-        name: name || undefined,
-        area: area || undefined,
-        num_properties: numProperties || undefined,
-        bedrooms: bedrooms || undefined,
-        platforms: platforms || undefined,
-        occupancy: occupancy || undefined,
-        adr: adr || undefined,
-        current_revenue: currentRevenue || undefined,
-        hours_per_week: hoursPerWeek || undefined,
-        biggest_challenge: biggestChallenge || undefined,
-        estimated_potential: estimatedPotential ?? undefined,
-        estimated_uplift: estimatedUplift ?? undefined,
-        uplift_percent: upliftPercent ?? undefined,
-      },
-      groups: groupId ? [groupId] : undefined,
-    }),
+    groupId: process.env.MAILERLITE_CALCULATOR_GROUP_ID,
   });
-
-  if (!res.ok) {
-    const detail = await res.text();
-    return NextResponse.json(
-      { error: "MailerLite request failed", detail },
-      { status: res.status }
-    );
-  }
-
-  return NextResponse.json({ ok: true });
 }

@@ -12,12 +12,12 @@ export const CALCULATOR_FAQS = [
   {
     question: "Do I lose control of my property if Sos Stays manages it?",
     answer:
-      "Not at all. You retain full ownership. Through your real-time owner portal you can see every booking, all revenue, and guest details at any time. You block dates for personal use whenever you like. Any maintenance spend above €150 requires your approval before we proceed. You receive a full monthly financial statement and bank transfer of net income. Our management agreement gives you a 60-day exit after the initial 12-month term — you are never locked in permanently.",
+      "Not at all. You retain full ownership. Through your real-time owner portal you can see every booking, all revenue, and guest details at any time. You block dates for personal use whenever you like. Any maintenance spend above €250 requires your approval before we proceed. You receive a full monthly financial statement and bank transfer of net income. Our management agreement gives you a 60-day exit after the initial 12-month term — you are never locked in permanently.",
   },
   {
     question: "What does Sos Stays actually do for the commission?",
     answer:
-      "Everything. Listing creation and professional photography coordination, daily dynamic pricing, all guest communications from enquiry to checkout, cleaning and turnover scheduling, maintenance coordination (with your approval above €150), review management and responses, multi-platform calendar sync, monthly owner statements with net income bank transfer, and Fáilte Ireland compliance guidance. There is no setup fee, no monthly retainer, and no charge during void periods. We only earn when your property earns.",
+      "Everything. Listing creation and professional photography coordination, daily dynamic pricing, all guest communications from enquiry to checkout, cleaning and turnover scheduling, maintenance coordination (with your approval above €250), review management and responses, multi-platform calendar sync, monthly owner statements with net income bank transfer, and Fáilte Ireland compliance guidance. There is no setup fee, no monthly retainer, and no charge during void periods. We only earn when your property earns.",
   },
   {
     question: "Why does being on multiple platforms make such a difference?",

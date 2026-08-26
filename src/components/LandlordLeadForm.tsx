@@ -13,6 +13,7 @@ const SITUATION_OPTIONS = [
 ];
 
 const CONTACT_EMAIL = "info@sosstays.com";
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type Stage = "form" | "error";
 
@@ -26,7 +27,7 @@ export function LandlordLeadForm() {
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [step0Error, setStep0Error] = useState(false);
-  const [step2Error, setStep2Error] = useState(false);
+  const [step2Error, setStep2Error] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   function goBack() {
@@ -43,10 +44,14 @@ export function LandlordLeadForm() {
 
   async function submitLeadForm() {
     if (!name.trim() || !email.trim() || !mobile.trim()) {
-      setStep2Error(true);
+      setStep2Error("Name, email and mobile number are needed to send your SOS.");
       return;
     }
-    setStep2Error(false);
+    if (!EMAIL_PATTERN.test(email.trim())) {
+      setStep2Error("Enter a valid email address.");
+      return;
+    }
+    setStep2Error(null);
     setSubmitting(true);
     try {
       const res = await fetch("/api/mailerlite-subscribe", {
@@ -224,11 +229,7 @@ export function LandlordLeadForm() {
               className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
             />
           </label>
-          {step2Error && (
-            <p className="text-[13px] text-error-red">
-              Name, email and mobile number are needed to send your SOS.
-            </p>
-          )}
+          {step2Error && <p className="text-[13px] text-error-red">{step2Error}</p>}
           <div className="mt-1 flex justify-between">
             <button
               type="button"
