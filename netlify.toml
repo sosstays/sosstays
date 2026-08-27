@@ -7,8 +7,15 @@
   # the build on finding this one in the output, treating it as a leak.
   # The Google Maps JS API key is secured via HTTP-referrer restrictions in
   # Google Cloud Console, not by being kept out of client-side code.
+  #
+  # SECRETS_SCAN_OMIT_KEYS only covers the named-env-var scan. Netlify also
+  # runs a separate "smart detection" pass that pattern-matches
+  # secret-looking strings (e.g. "AIza..." Google API keys) anywhere in the
+  # build output regardless of variable name, so it still flags this key —
+  # omit the generated output paths it's expected to land in instead.
   [build.environment]
     SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY"
+    SECRETS_SCAN_OMIT_PATHS = ".netlify/**"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
