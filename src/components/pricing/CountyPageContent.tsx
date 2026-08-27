@@ -7,6 +7,7 @@ import { Button } from "@/components/Button";
 import { FaqSection } from "@/components/FaqSection";
 import { CountyRevenueEstimator } from "@/components/pricing/CountyRevenueEstimator";
 import { formatEuro } from "@/lib/revenueCalculator";
+import { buildGenericCountyFaqs, mergeCountyFaqs } from "@/lib/countyFaqs";
 import type { County } from "@/lib/pricingCounties";
 
 // This design was approved with Poppins as the body font — a deliberate
@@ -87,7 +88,10 @@ export function CountyPageContent({ county }: { county: County }) {
   const stats = county.stats;
   const hasDrivers = Boolean(stats?.drivers && stats.drivers.length > 0);
   const hasExample = Boolean(stats?.realExample);
-  const hasFaqs = Boolean(stats?.faqs && stats.faqs.length > 0);
+  // The generic template always applies — a county-specific Sanity faqs
+  // list adds to it rather than replacing it, so a county never loses the
+  // baseline questions just for having its own addition.
+  const faqs = mergeCountyFaqs(buildGenericCountyFaqs(county.name, county.region), stats?.faqs ?? []);
 
   return (
     <div className={`${poppins.className} flex flex-col gap-16 sm:gap-20 lg:gap-[84px]`}>
@@ -103,16 +107,14 @@ export function CountyPageContent({ county }: { county: County }) {
         />
       )}
       {isRoi ? <RulesTimeline shown={shown} /> : <NiRulesNote />}
-      {hasFaqs && (
-        <div className="-mx-6 sm:-mx-10">
-          <FaqSection
-            heading={`Co. ${county.name} hosting questions, answered`}
-            items={stats!.faqs}
-            accent="forest-green"
-            maxWidth="100%"
-          />
-        </div>
-      )}
+      <div className="-mx-6 sm:-mx-10">
+        <FaqSection
+          heading={`Co. ${county.name} hosting questions, answered`}
+          items={faqs}
+          accent="forest-green"
+          maxWidth="100%"
+        />
+      </div>
       <CountyRevenueEstimator countyName={county.name} />
     </div>
   );
