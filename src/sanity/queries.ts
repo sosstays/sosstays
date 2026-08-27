@@ -82,17 +82,6 @@ export const BLOG_POST_QUERY = defineQuery(`
 
 // ---- Property pages ----
 
-export const PROPERTY_PAGES_QUERY = defineQuery(`
-  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {
-    _id,
-    name,
-    "slug": slug.current,
-    location,
-    shortDescription,
-    "coverImage": gallery[0]
-  }
-`);
-
 export const PROPERTY_PAGE_QUERY = defineQuery(`
   *[_type == "propertyPage" && slug.current == $slug][0] {
     _id,

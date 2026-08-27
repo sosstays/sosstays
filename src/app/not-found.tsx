@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const LINKS = [
-  { label: "Browse stays", href: "/stays" },
+  { label: "Browse stays", href: "/#stays" },
   { label: "Read the blog", href: "/blog" },
   { label: "Talk to us about your property", href: "/landlords" },
 ];

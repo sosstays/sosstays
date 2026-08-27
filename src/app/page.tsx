@@ -80,7 +80,7 @@ export default async function HomePage() {
             <div className="flex flex-wrap justify-center gap-4 sm:justify-start">
               {hero?.primaryCtaLabel && (
                 <Button
-                  link={hero.primaryCtaUrl || "/stays"}
+                  link={hero.primaryCtaUrl || "#stays"}
                   variant="primary"
                   bgColor="cream"
                   color="forest-green"
