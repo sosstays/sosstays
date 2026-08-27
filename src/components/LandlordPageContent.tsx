@@ -22,7 +22,7 @@ type LandlordPage = {
 
 const HOW_IT_WORKS_STATS = [
   {
-    stat: "15–30%",
+    stat: "20–30%",
     title: "Commission only",
     description:
       "Of gross booking revenue. Cleaning fees excluded. No setup fee, no monthly retainer.",
