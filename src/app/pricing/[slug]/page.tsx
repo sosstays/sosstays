@@ -3,7 +3,12 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { CountyPageContent } from "@/components/pricing/CountyPageContent";
+import { OnboardingTimeline } from "@/components/pricing/OnboardingTimeline";
+import { StrVsLongTermTable } from "@/components/pricing/StrVsLongTermTable";
+import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
 import { getPricingCounties } from "@/lib/fetchPricingCounties";
+import { client } from "@/sanity/client";
+import { LANDLORD_BLOG_POSTS_QUERY } from "@/sanity/queries";
 import type { NavLink } from "@/lib/navLinks";
 
 export const revalidate = 60;
@@ -38,7 +43,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // of a section it doesn't have real content for.
 export default async function PricingCountyPage({ params }: Props) {
   const { slug } = await params;
-  const counties = await getPricingCounties();
+  const [counties, landlordPosts] = await Promise.all([
+    getPricingCounties(),
+    client.fetch(LANDLORD_BLOG_POSTS_QUERY),
+  ]);
   const county = counties.find((c) => c.slug === slug);
   if (!county) notFound();
 
@@ -48,6 +56,9 @@ export default async function PricingCountyPage({ params }: Props) {
       <div className="mx-auto flex max-w-[1120px] flex-col px-6 pt-20 pb-16 sm:px-10 sm:pt-24 sm:pb-[104px]">
         <CountyPageContent county={county} />
       </div>
+      <OnboardingTimeline />
+      <StrVsLongTermTable />
+      <RelatedBlogsSection posts={landlordPosts} />
     </main>
   );
 }

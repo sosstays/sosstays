@@ -2,12 +2,7 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { CitySelectDropdown } from "@/components/pricing/CitySelectDropdown";
-import { OnboardingTimeline } from "@/components/pricing/OnboardingTimeline";
-import { StrVsLongTermTable } from "@/components/pricing/StrVsLongTermTable";
-import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
 import { getPricingCounties } from "@/lib/fetchPricingCounties";
-import { client } from "@/sanity/client";
-import { LANDLORD_BLOG_POSTS_QUERY } from "@/sanity/queries";
 import type { NavLink } from "@/lib/navLinks";
 
 export const revalidate = 60;
@@ -25,14 +20,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PricingPage() {
-  const [counties, landlordPosts] = await Promise.all([
-    getPricingCounties(),
-    client.fetch(LANDLORD_BLOG_POSTS_QUERY),
-  ]);
+  const counties = await getPricingCounties();
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
-      <section className="relative bg-maroon px-8 pt-[180px] pb-20 text-center sm:px-14 sm:pt-[200px]">
+      <section className="relative flex min-h-screen flex-col items-center justify-center bg-maroon px-8 pt-[180px] pb-20 text-center sm:px-14 sm:pt-[200px]">
         <HeroNav
           links={NAV_LINKS}
           variant="landlords"
@@ -51,10 +43,6 @@ export default async function PricingPage() {
         </p>
         <CitySelectDropdown counties={counties} />
       </section>
-
-      <OnboardingTimeline />
-      <StrVsLongTermTable />
-      <RelatedBlogsSection posts={landlordPosts} />
     </main>
   );
 }
