@@ -306,3 +306,12 @@ body {
     animation: none;
   }
 }
+
+/* Google Places autocomplete dropdown (AddressAutocomplete, used in the
+   revenue calculator's "get estimate" form) — .pac-container is injected
+   into <body> by the Maps JS library with its own stylesheet, so it can't
+   be styled from the component; override its default box-shadow here. */
+.pac-container {
+  box-shadow: none !important;
+  border: 1px solid var(--sage-grey);
+}
