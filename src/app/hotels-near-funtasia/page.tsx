@@ -477,8 +477,12 @@ export default async function HotelsNearFuntasiaPage() {
         <section className="mx-auto max-w-6xl px-8 pt-28 sm:px-14">
           <Reveal className="relative overflow-hidden rounded-[18px] bg-maroon px-8 py-14 sm:px-16">
             <div
-              className="absolute inset-0 opacity-[0.06]"
-              style={{ backgroundImage: "url('/images/swirl-pattern-sage.png')", backgroundSize: "320px" }}
+              className="absolute inset-0 opacity-10"
+              style={{
+                backgroundImage: "url('/images/sos-mark-pattern.svg')",
+                backgroundSize: "150px",
+                backgroundRepeat: "repeat",
+              }}
             />
             <div className="relative mx-auto max-w-2xl">
               {page.directBookingBadge && (
@@ -751,7 +755,11 @@ export default async function HotelsNearFuntasiaPage() {
           <Reveal className="relative overflow-hidden rounded-[18px] bg-deep-forest px-8 py-20 text-center sm:px-16">
             <div
               className="absolute inset-0 opacity-10"
-              style={{ backgroundImage: "url('/images/swirl-pattern-sage.png')", backgroundSize: "340px" }}
+              style={{
+                backgroundImage: "url('/images/sos-mark-pattern.svg')",
+                backgroundSize: "150px",
+                backgroundRepeat: "repeat",
+              }}
             />
             <div className="relative mx-auto max-w-[660px]">
               <h2 className="font-serif text-[clamp(2rem,3.8vw,3.25rem)] leading-[1.06] font-bold tracking-tight text-cream">
