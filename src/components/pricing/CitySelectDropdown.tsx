@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { countiesForRegion, type County, type Region } from "@/lib/pricingCounties";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const REGION_TABS: { value: Region; label: string }[] = [
   { value: "roi", label: "Republic of Ireland" },
@@ -49,26 +50,19 @@ export function CitySelectDropdown({ counties: allCounties }: { counties: County
 
       {open && (
         <div className="absolute top-full left-1/2 z-30 mt-3 w-[calc(100vw-2rem)] max-w-[320px] -translate-x-1/2 overflow-hidden rounded-[14px] border border-sage-grey/40 bg-cream text-left shadow-[0_16px_36px_rgba(23,25,23,0.25)] sm:max-w-[380px]">
-          <div className="flex border-b border-sage-grey/30">
-            {REGION_TABS.map((tab) => {
-              const active = region === tab.value;
-              return (
-                <button
+          <Tabs value={region} onValueChange={(v) => setRegion(v as Region)}>
+            <TabsList className="flex border-b border-sage-grey/30">
+              {REGION_TABS.map((tab) => (
+                <TabsTrigger
                   key={tab.value}
-                  type="button"
-                  onClick={() => setRegion(tab.value)}
-                  className="flex-1 cursor-pointer px-3 py-3 text-[13px] font-semibold whitespace-nowrap transition-colors"
-                  style={{
-                    color: active ? "var(--maroon)" : "var(--near-black)",
-                    background: active ? "var(--light-forest-green)" : "transparent",
-                    opacity: active ? 1 : 0.65,
-                  }}
+                  value={tab.value}
+                  className="flex-1 px-3 py-3 text-[13px] font-semibold whitespace-nowrap text-near-black opacity-65 transition-colors data-[state=active]:bg-light-forest-green data-[state=active]:text-maroon data-[state=active]:opacity-100"
                 >
                   {tab.label}
-                </button>
-              );
-            })}
-          </div>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
           <ul className="max-h-72 overflow-auto py-1.5">
             {counties.map((county) => (
               <li key={county.slug}>

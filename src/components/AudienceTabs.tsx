@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export type AudienceTabContent = {
   label: string;
@@ -83,23 +84,6 @@ export function AudienceTabs({
   const tab = tabs[active];
   const animation = TAB_ANIMATIONS[active];
 
-  const tabStyle = (i: number): CSSProperties => {
-    const on = active === i;
-    return {
-      fontSize: 13.5,
-      fontWeight: 500,
-      border: on ? "1px solid var(--maroon)" : "1px solid var(--sage-grey)",
-      cursor: "pointer",
-      borderRadius: 999,
-      padding: "10px 18px",
-      whiteSpace: "nowrap",
-      transition:
-        "background 220ms ease-out, color 220ms ease-out, border-color 220ms ease-out",
-      background: on ? "var(--maroon)" : "transparent",
-      color: on ? "var(--cream)" : "var(--forest-green)",
-    };
-  };
-
   const markerStyle = (i: number): CSSProperties => {
     const on = animation.markers.includes(i);
     const delay = on ? 90 + animation.markers.indexOf(i) * 110 : 0;
@@ -161,53 +145,56 @@ export function AudienceTabs({
       id="who-we-work-with"
       className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28"
     >
-      <div className="mb-12 text-center">
-        <p className="mb-5 text-xs tracking-widest text-near-black/55 uppercase">
-          {eyebrow}
-        </p>
-        <div className="mx-auto flex w-fit flex-wrap justify-center gap-2">
-          {tabs.map((t, i) => (
-            <button
-              key={t.label}
-              type="button"
-              onClick={() => setActive(i)}
-              style={tabStyle(i)}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-11">
-        <div className="flex flex-col gap-5.5 pt-1.5">
-          <h2 className="min-h-[54px] text-balance font-serif text-2xl leading-[1.08] font-bold tracking-tight text-forest-green sm:min-h-[66px] sm:text-3xl lg:min-h-[92px] lg:text-4xl">
-            {tab.heading}
-          </h2>
-          <p className="max-w-[56ch] text-base leading-relaxed text-near-black">
-            {tab.body}
+      <Tabs value={String(active)} onValueChange={(v) => setActive(Number(v))}>
+        <div className="mb-12 text-center">
+          <p className="mb-5 text-xs tracking-widest text-near-black/55 uppercase">
+            {eyebrow}
           </p>
-          <ul className="mt-1.5 list-none">
-            {tab.checklist.map((item, i) => (
-              <li
-                key={item}
-                className={`flex items-start gap-3 py-2.75 ${i === 0 ? "" : "border-t border-sage-grey/40"}`}
+          <TabsList className="mx-auto flex w-fit flex-wrap justify-center gap-2">
+            {tabs.map((t, i) => (
+              <TabsTrigger
+                key={t.label}
+                value={String(i)}
+                className="rounded-full border border-sage-grey px-[18px] py-2.5 text-[13.5px] font-medium whitespace-nowrap text-forest-green transition-colors duration-200 data-[state=active]:border-maroon data-[state=active]:bg-maroon data-[state=active]:text-cream"
               >
-                <span className="relative mt-0.75 h-4.5 w-4.5 flex-none">
-                  <span className="absolute inset-0 block rounded-full border border-light-sage" />
-                  <span className="absolute inset-[5px] block rounded-full bg-maroon" />
-                </span>
-                <span className="text-[15px] leading-relaxed text-near-black">
-                  {item}
-                </span>
-              </li>
+                {t.label}
+              </TabsTrigger>
             ))}
-          </ul>
+          </TabsList>
         </div>
 
-        <div className="mx-auto flex w-full max-w-md flex-col rounded-2xl border border-light-sage bg-light-forest-green p-6.5 lg:max-w-none">
-          <div className="flex min-h-0 flex-1 items-center justify-center">
-            <svg
+        <TabsContent
+          value={String(active)}
+          className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-11"
+        >
+          <div className="flex flex-col gap-5.5 pt-1.5">
+            <h2 className="min-h-[54px] text-balance font-serif text-2xl leading-[1.08] font-bold tracking-tight text-forest-green sm:min-h-[66px] sm:text-3xl lg:min-h-[92px] lg:text-4xl">
+              {tab.heading}
+            </h2>
+            <p className="max-w-[56ch] text-base leading-relaxed text-near-black">
+              {tab.body}
+            </p>
+            <ul className="mt-1.5 list-none">
+              {tab.checklist.map((item, i) => (
+                <li
+                  key={item}
+                  className={`flex items-start gap-3 py-2.75 ${i === 0 ? "" : "border-t border-sage-grey/40"}`}
+                >
+                  <span className="relative mt-0.75 h-4.5 w-4.5 flex-none">
+                    <span className="absolute inset-0 block rounded-full border border-light-sage" />
+                    <span className="absolute inset-[5px] block rounded-full bg-maroon" />
+                  </span>
+                  <span className="text-[15px] leading-relaxed text-near-black">
+                    {item}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mx-auto flex w-full max-w-md flex-col rounded-2xl border border-light-sage bg-light-forest-green p-6.5 lg:max-w-none">
+            <div className="flex min-h-0 flex-1 items-center justify-center">
+              <svg
               viewBox="0 0 460 420"
               className="block w-full overflow-visible"
               style={{ height: "auto" }}
@@ -319,8 +306,9 @@ export function AudienceTabs({
               </g>
             </svg>
           </div>
-        </div>
-      </div>
+          </div>
+        </TabsContent>
+      </Tabs>
     </section>
   );
 }
