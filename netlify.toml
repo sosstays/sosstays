@@ -2,5 +2,13 @@
   command = "npm run build"
   publish = ".next"
 
+  # NEXT_PUBLIC_ vars are meant to ship in the client bundle — that's what
+  # the prefix means in Next.js. Netlify's secrets scanner otherwise fails
+  # the build on finding this one in the output, treating it as a leak.
+  # The Google Maps JS API key is secured via HTTP-referrer restrictions in
+  # Google Cloud Console, not by being kept out of client-side code.
+  [build.environment]
+    SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
