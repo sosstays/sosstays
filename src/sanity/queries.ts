@@ -353,6 +353,7 @@ export const LANDING_PAGE_QUERY = defineQuery(`
     marqueeItems,
     distanceStat,
     distanceLabel,
+    destinationName,
     distanceText,
     geographyHeading,
     proximityStats[] {
@@ -362,6 +363,8 @@ export const LANDING_PAGE_QUERY = defineQuery(`
     directBookingBadge,
     directBookingHeadline,
     directBookingText,
+    directBookingSavingsPercent,
+    directBookingComparisonNote,
     featuredProperty-> {
       _id,
       name,
@@ -384,11 +387,12 @@ export const LANDING_PAGE_QUERY = defineQuery(`
       eyebrow,
       heading,
       body,
+      layout,
       items[] {
         title,
         description,
         tag,
-        imageUrl,
+        image,
         link
       }
     },

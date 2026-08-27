@@ -63,6 +63,7 @@ export type LandingPage = {
   marqueeItems?: Array<string>;
   distanceStat?: string;
   distanceLabel?: string;
+  destinationName?: string;
   distanceText?: string;
   geographyHeading?: string;
   proximityStats?: Array<{
@@ -74,16 +75,26 @@ export type LandingPage = {
   directBookingBadge?: string;
   directBookingHeadline?: string;
   directBookingText?: string;
+  directBookingSavingsPercent?: number;
+  directBookingComparisonNote?: string;
   featuredProperty?: PropertyPageReference;
   infoSections?: Array<{
     eyebrow?: string;
     heading?: string;
     body?: string;
+    layout?: "cards" | "photoGrid";
     items?: Array<{
       title?: string;
       description?: string;
       tag?: string;
-      imageUrl?: string;
+      image?: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+      };
       link?: string;
       _type: "infoItem";
       _key: string;
@@ -1764,7 +1775,7 @@ export type HOMEPAGE_QUERY_RESULT = {
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: LANDING_PAGE_QUERY
-// Query: *[_type == "landingPage" && slug.current == $slug][0] {    _id,    title,    "slug": slug.current,    heroEyebrow,    heroHeadline,    heroSubtext,    heroTags,    heroImage,    primaryCtaLabel,    primaryCtaUrl,    secondaryCtaLabel,    secondaryCtaUrl,    marqueeItems,    distanceStat,    distanceLabel,    distanceText,    geographyHeading,    proximityStats[] {      value,      label    },    directBookingBadge,    directBookingHeadline,    directBookingText,    featuredProperty-> {      _id,      name,      "slug": slug.current,      location,      shortDescription,      sleeps,      bedrooms,      beds,      bathrooms,      reviewScore,      reviewCount,      amenities,      roomTypes,      "coverImage": gallery[0],      "gallery": gallery[0...3],      uplistingPropertySlug    },    infoSections[] {      eyebrow,      heading,      body,      items[] {        title,        description,        tag,        imageUrl,        link      }    },    pricingTiers[] {      amount,      label    },    pricingNote,    pricingLink,    pricingLinkLabel,    itineraryEyebrow,    itineraryHeading,    itineraryText,    itineraryDays[] {      dayLabel,      items[] {        time,        title,        description      }    },    relatedAreaGuide-> {      areaName,      "slug": slug.current,      thingsToDo    },    finalCtaHeadline,    finalCtaText,    finalCtaSecondaryLabel,    finalCtaSecondaryUrl,    stickyBarEnabled,      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
+// Query: *[_type == "landingPage" && slug.current == $slug][0] {    _id,    title,    "slug": slug.current,    heroEyebrow,    heroHeadline,    heroSubtext,    heroTags,    heroImage,    primaryCtaLabel,    primaryCtaUrl,    secondaryCtaLabel,    secondaryCtaUrl,    marqueeItems,    distanceStat,    distanceLabel,    destinationName,    distanceText,    geographyHeading,    proximityStats[] {      value,      label    },    directBookingBadge,    directBookingHeadline,    directBookingText,    directBookingSavingsPercent,    directBookingComparisonNote,    featuredProperty-> {      _id,      name,      "slug": slug.current,      location,      shortDescription,      sleeps,      bedrooms,      beds,      bathrooms,      reviewScore,      reviewCount,      amenities,      roomTypes,      "coverImage": gallery[0],      "gallery": gallery[0...3],      uplistingPropertySlug    },    infoSections[] {      eyebrow,      heading,      body,      layout,      items[] {        title,        description,        tag,        image,        link      }    },    pricingTiers[] {      amount,      label    },    pricingNote,    pricingLink,    pricingLinkLabel,    itineraryEyebrow,    itineraryHeading,    itineraryText,    itineraryDays[] {      dayLabel,      items[] {        time,        title,        description      }    },    relatedAreaGuide-> {      areaName,      "slug": slug.current,      thingsToDo    },    finalCtaHeadline,    finalCtaText,    finalCtaSecondaryLabel,    finalCtaSecondaryUrl,    stickyBarEnabled,      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
 export type LANDING_PAGE_QUERY_RESULT = {
   _id: string;
   title: string;
@@ -1788,6 +1799,7 @@ export type LANDING_PAGE_QUERY_RESULT = {
   marqueeItems: Array<string> | null;
   distanceStat: string | null;
   distanceLabel: string | null;
+  destinationName: string | null;
   distanceText: string | null;
   geographyHeading: string | null;
   proximityStats: Array<{
@@ -1797,6 +1809,8 @@ export type LANDING_PAGE_QUERY_RESULT = {
   directBookingBadge: string | null;
   directBookingHeadline: string | null;
   directBookingText: string | null;
+  directBookingSavingsPercent: number | null;
+  directBookingComparisonNote: string | null;
   featuredProperty: {
     _id: string;
     name: string;
@@ -1850,11 +1864,19 @@ export type LANDING_PAGE_QUERY_RESULT = {
     eyebrow: string | null;
     heading: string | null;
     body: string | null;
+    layout: "cards" | "photoGrid" | null;
     items: Array<{
       title: string | null;
       description: string | null;
       tag: string | null;
-      imageUrl: string | null;
+      image: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+      } | null;
       link: string | null;
     }> | null;
   }> | null;
@@ -2055,7 +2077,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "heroSection" && _id == "heroSection"][0] {\n    eyebrow,\n    heading,\n    body,\n    subBody,\n    image,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl\n  }\n': HERO_SECTION_QUERY_RESULT;
     '\n  *[_type == "hostsModule" && _id == "hostsModule"][0] {\n    eyebrow,\n    heading,\n    body,\n    commissionRate,\n    commissionLabel,\n    commissionSuffix,\n    commissionNote,\n    ctaLabel,\n    ctaUrl,\n    stepperEyebrow,\n    stepperHeading,\n    steps[] {\n      title,\n      bullets,\n      image\n    },\n    marqueeHeading,\n    marqueeSubtext\n  }\n': HOSTS_MODULE_QUERY_RESULT;
     '{\n  "properties": *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...3] {\n    _id, name, "slug": slug.current, location, shortDescription, sleeps,\n    "coverImage": gallery[0], "gallery": gallery[0...3]\n  },\n  "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {\n    _id, areaName, "slug": slug.current, heroImage, introduction\n  },\n  "posts": *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) [0...3] {\n    _id, title, "slug": slug.current, excerpt, coverImage\n  }\n}': HOMEPAGE_QUERY_RESULT;
-    '\n  *[_type == "landingPage" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    heroEyebrow,\n    heroHeadline,\n    heroSubtext,\n    heroTags,\n    heroImage,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl,\n    marqueeItems,\n    distanceStat,\n    distanceLabel,\n    distanceText,\n    geographyHeading,\n    proximityStats[] {\n      value,\n      label\n    },\n    directBookingBadge,\n    directBookingHeadline,\n    directBookingText,\n    featuredProperty-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      sleeps,\n      bedrooms,\n      beds,\n      bathrooms,\n      reviewScore,\n      reviewCount,\n      amenities,\n      roomTypes,\n      "coverImage": gallery[0],\n      "gallery": gallery[0...3],\n      uplistingPropertySlug\n    },\n    infoSections[] {\n      eyebrow,\n      heading,\n      body,\n      items[] {\n        title,\n        description,\n        tag,\n        imageUrl,\n        link\n      }\n    },\n    pricingTiers[] {\n      amount,\n      label\n    },\n    pricingNote,\n    pricingLink,\n    pricingLinkLabel,\n    itineraryEyebrow,\n    itineraryHeading,\n    itineraryText,\n    itineraryDays[] {\n      dayLabel,\n      items[] {\n        time,\n        title,\n        description\n      }\n    },\n    relatedAreaGuide-> {\n      areaName,\n      "slug": slug.current,\n      thingsToDo\n    },\n    finalCtaHeadline,\n    finalCtaText,\n    finalCtaSecondaryLabel,\n    finalCtaSecondaryUrl,\n    stickyBarEnabled,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': LANDING_PAGE_QUERY_RESULT;
+    '\n  *[_type == "landingPage" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    heroEyebrow,\n    heroHeadline,\n    heroSubtext,\n    heroTags,\n    heroImage,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl,\n    marqueeItems,\n    distanceStat,\n    distanceLabel,\n    destinationName,\n    distanceText,\n    geographyHeading,\n    proximityStats[] {\n      value,\n      label\n    },\n    directBookingBadge,\n    directBookingHeadline,\n    directBookingText,\n    directBookingSavingsPercent,\n    directBookingComparisonNote,\n    featuredProperty-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      sleeps,\n      bedrooms,\n      beds,\n      bathrooms,\n      reviewScore,\n      reviewCount,\n      amenities,\n      roomTypes,\n      "coverImage": gallery[0],\n      "gallery": gallery[0...3],\n      uplistingPropertySlug\n    },\n    infoSections[] {\n      eyebrow,\n      heading,\n      body,\n      layout,\n      items[] {\n        title,\n        description,\n        tag,\n        image,\n        link\n      }\n    },\n    pricingTiers[] {\n      amount,\n      label\n    },\n    pricingNote,\n    pricingLink,\n    pricingLinkLabel,\n    itineraryEyebrow,\n    itineraryHeading,\n    itineraryText,\n    itineraryDays[] {\n      dayLabel,\n      items[] {\n        time,\n        title,\n        description\n      }\n    },\n    relatedAreaGuide-> {\n      areaName,\n      "slug": slug.current,\n      thingsToDo\n    },\n    finalCtaHeadline,\n    finalCtaText,\n    finalCtaSecondaryLabel,\n    finalCtaSecondaryUrl,\n    stickyBarEnabled,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': LANDING_PAGE_QUERY_RESULT;
     '\n  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage"] && defined(slug.current) && noIndex != true] {\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      slug.current\n    ),\n    _updatedAt\n  }\n': SITEMAP_QUERY_RESULT;
     '\n{\n  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {\n    siteName,\n    defaultSeoDescription,\n    businessName,\n    contactEmail,\n    socialLinks\n  },\n  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage"] && defined(slug.current) && noIndex != true] {\n    _type,\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      slug.current\n    ),\n    "title": coalesce(name, title, areaName, ""),\n    "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")\n  }\n}\n': LLMS_TXT_QUERY_RESULT;
     '\n  *[_type == "countyPricingStats" && live == true] {\n    county,\n    adr,\n    occupancy,\n    annualRevenue,\n    statsSourceNote,\n    realExample,\n    drivers,\n    faqs\n  }\n': COUNTY_PRICING_STATS_QUERY_RESULT;
