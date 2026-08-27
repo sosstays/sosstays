@@ -79,7 +79,7 @@ export default async function HotelsNearFuntasiaPage() {
   const property = page.featuredProperty;
   const gallery = property?.gallery ?? [];
   const marqueeItems = page.marqueeItems?.length ? page.marqueeItems : page.heroTags ?? [];
-  const activitySection = page.infoSections?.find((s) => s.items?.some((i) => i.imageUrl));
+  const activitySection = page.infoSections?.find((s) => s.layout === "photoGrid");
   const otherSections = page.infoSections?.filter((s) => s !== activitySection) ?? [];
   const mapQuery = property ? `${property.name}, ${property.location}` : page.distanceLabel;
 
@@ -264,7 +264,9 @@ export default async function HotelsNearFuntasiaPage() {
                 <div className="text-xs font-semibold tracking-[0.18em] text-forest-green/80 uppercase">
                   You play here
                 </div>
-                <div className="mt-2.5 font-serif text-xl font-bold text-deep-forest">Funtasia Drogheda</div>
+                <div className="mt-2.5 font-serif text-xl font-bold text-deep-forest">
+                  {page.destinationName || "Funtasia"}
+                </div>
                 {page.distanceLabel && (
                   <div className="mt-1.5 text-[15px] leading-relaxed text-near-black/62">{page.distanceLabel}</div>
                 )}
@@ -511,8 +513,8 @@ export default async function HotelsNearFuntasiaPage() {
         </section>
       )}
 
-      {/* FUNTASIA ACTIVITIES — magazine photo grid, only for the info section
-          whose items carry an image (see infoItem.imageUrl in the schema) */}
+      {/* FUNTASIA ACTIVITIES — magazine photo grid, for the info section
+          explicitly marked layout: "photoGrid" in Sanity (see landingPage.ts) */}
       {activitySection && (
         <section className="mx-auto max-w-6xl px-8 pt-28 sm:px-14">
           {activitySection.eyebrow && (
@@ -551,10 +553,10 @@ export default async function HotelsNearFuntasiaPage() {
                         : "col-span-12 sm:col-span-6 lg:col-span-5"
                   }`}
                 >
-                  {item.imageUrl && (
+                  {item.image && (
                     <Image
-                      src={item.imageUrl}
-                      alt={item.title ?? ""}
+                      src={urlFor(item.image).width(1200).height(900).url()}
+                      alt={item.image.alt ?? item.title ?? ""}
                       fill
                       className="object-cover transition-transform duration-1000 group-hover:scale-110"
                       style={wide ? { objectPosition: "center 40%" } : undefined}
@@ -623,7 +625,7 @@ export default async function HotelsNearFuntasiaPage() {
         </section>
       )}
 
-      {/* OTHER INFO SECTIONS — generic fallback for any section without imageUrl items */}
+      {/* OTHER INFO SECTIONS — generic fallback for any section not using layout: "photoGrid" */}
       {otherSections.map((section, i) => (
         <section key={i} className="mx-auto max-w-6xl px-8 pt-16 sm:px-14">
           {section.eyebrow && (

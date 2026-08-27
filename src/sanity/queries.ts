@@ -353,6 +353,7 @@ export const LANDING_PAGE_QUERY = defineQuery(`
     marqueeItems,
     distanceStat,
     distanceLabel,
+    destinationName,
     distanceText,
     geographyHeading,
     proximityStats[] {
@@ -384,11 +385,12 @@ export const LANDING_PAGE_QUERY = defineQuery(`
       eyebrow,
       heading,
       body,
+      layout,
       items[] {
         title,
         description,
         tag,
-        imageUrl,
+        image,
         link
       }
     },
