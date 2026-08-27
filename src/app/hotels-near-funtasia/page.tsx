@@ -181,6 +181,18 @@ export default async function HotelsNearFuntasiaPage() {
             </div>
           </Reveal>
         )}
+
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <svg width="22" height="30" viewBox="0 0 22 30" fill="none" aria-hidden="true">
+            <path
+              d="M11 2v22M4 17l7 7 7-7"
+              stroke="rgba(254,254,227,0.62)"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
       </section>
 
       {/* MARQUEE TICKER */}
@@ -278,6 +290,18 @@ export default async function HotelsNearFuntasiaPage() {
                     </div>
                   ))}
                 </div>
+              )}
+              {property && (
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
+                    `${property.name}, ${property.location}`
+                  )}&destination=${encodeURIComponent("Funtasia, Drogheda")}&travelmode=driving`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-semibold text-forest-green"
+                >
+                  Get driving directions to Funtasia →
+                </a>
               )}
             </Reveal>
           </div>
