@@ -28,7 +28,7 @@ export default async function PricingPage() {
         <HeroNav
           links={NAV_LINKS}
           variant="landlords"
-          ctaHref="mailto:info@sosstays.com"
+          ctaHref="/contact"
           ctaLabel="Contact us"
         />
         <span className="mb-4 inline-block text-xs font-medium tracking-widest text-light-sage uppercase">
