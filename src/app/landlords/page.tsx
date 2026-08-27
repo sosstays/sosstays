@@ -31,15 +31,15 @@ export default async function LandlordsIndexPage() {
           <HeroNav
             links={LANDLORD_NAV_LINKS}
             variant="landlords"
-            ctaHref="mailto:info@sosstays.com"
+            ctaHref="/contact"
             ctaLabel="Contact us"
           />
           <h1 className="font-serif text-4xl font-bold text-cream">For landlords</h1>
           <p className="mt-4 text-light-sage">
             Details coming soon —{" "}
-            <a href="mailto:info@sosstays.com" className="text-cream underline">
+            <Link href="/contact" className="text-cream underline">
               get in touch
-            </a>{" "}
+            </Link>{" "}
             in the meantime.
           </p>
         </section>
@@ -54,7 +54,7 @@ export default async function LandlordsIndexPage() {
         <HeroNav
           links={LANDLORD_NAV_LINKS}
           variant="landlords"
-          ctaHref="mailto:info@sosstays.com"
+          ctaHref="/contact"
           ctaLabel="Contact us"
         />
         <div className="mx-auto max-w-3xl">

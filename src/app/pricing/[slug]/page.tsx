@@ -52,7 +52,7 @@ export default async function PricingCountyPage({ params }: Props) {
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
-      <HeroNav links={NAV_LINKS} sticky ctaHref="mailto:info@sosstays.com" ctaLabel="Contact us" />
+      <HeroNav links={NAV_LINKS} sticky ctaHref="/contact" ctaLabel="Contact us" />
       <div className="mx-auto flex max-w-[1120px] flex-col px-6 pt-20 pb-16 sm:px-10 sm:pt-24 sm:pb-[104px]">
         <CountyPageContent county={county} />
       </div>

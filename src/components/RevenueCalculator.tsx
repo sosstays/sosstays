@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import Link from "next/link";
 import { Button } from "@/components/Button";
 import { AddressAutocomplete, type AddressAutocompleteValue } from "@/components/AddressAutocomplete";
 import { calculateRevenue, formatEuro, type CalculatorResult } from "@/lib/revenueCalculator";
@@ -650,8 +651,7 @@ function ResultsPanel({
           and confirm what we can achieve together.
         </p>
         <Button
-          link="mailto:info@sosstays.com?subject=Revenue Calculator — I want to find out more"
-          external
+          link="/contact"
           variant="primary"
           bgColor="cream"
           color="maroon"
@@ -666,9 +666,9 @@ function ResultsPanel({
         typical performance uplifts from professional STR management. Actual results will vary by
         property, location, season, and market conditions. This calculator does not constitute a
         contractual commitment.{" "}
-        <a href="mailto:info@sosstays.com" className="underline">
-          info@sosstays.com
-        </a>
+        <Link href="/contact" className="underline">
+          Get in touch
+        </Link>
       </p>
     </div>
   );
