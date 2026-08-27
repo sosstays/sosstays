@@ -11,6 +11,7 @@ import type { NavLink } from "@/lib/navLinks";
 // explicitly instead.
 const NAV_LINKS: NavLink[] = [
   { href: "/landlords#how-it-works", label: "How it works" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/landlords#faq", label: "FAQ" },
 ];
 
