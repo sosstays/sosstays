@@ -24,5 +24,6 @@ export const SITE_NAV_LINKS: NavLink[] = [
 // plain nav link, so it's kept out of this list.
 export const LANDLORD_NAV_LINKS: NavLink[] = [
   { href: "#how-it-works", label: "How it works" },
+  { href: "/pricing", label: "Pricing" },
   { href: "#faq", label: "FAQ" },
 ];
