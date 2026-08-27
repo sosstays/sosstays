@@ -281,6 +281,10 @@ function StatStrip({
 }
 
 function PricingBandLive({ countyName, shown }: { countyName: string; shown: boolean }) {
+  // Dublin's higher property values put it on a wider commission band than
+  // the rest of the counties — everywhere else quotes the same 20–30%.
+  const commissionRange = countyName === "Dublin" ? "15–30%" : "20–30%";
+
   return (
     <div
       className="relative isolate grid grid-cols-1 items-center gap-8 overflow-hidden rounded-[18px] bg-maroon p-6 sm:grid-cols-[1.25fr_1fr] sm:gap-[52px] sm:p-14"
@@ -334,6 +338,14 @@ function PricingBandLive({ countyName, shown }: { countyName: string; shown: boo
         >
           Get my free earnings estimate
         </Button>
+        <div className="flex flex-col gap-1">
+          <p className="m-0 text-[11.5px] leading-relaxed text-cream/60">
+            {commissionRange} commission, depending on property type and location.
+          </p>
+          <p className="m-0 text-[11.5px] leading-relaxed text-cream/60">
+            Hosts typically see up to a 40% revenue uplift after switching to full management.
+          </p>
+        </div>
         <Link href="/landlords" className="text-[13px] text-cream/80 underline underline-offset-[3px]">
           See everything included in full management →
         </Link>
