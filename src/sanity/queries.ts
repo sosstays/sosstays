@@ -350,9 +350,15 @@ export const LANDING_PAGE_QUERY = defineQuery(`
     primaryCtaUrl,
     secondaryCtaLabel,
     secondaryCtaUrl,
+    marqueeItems,
     distanceStat,
     distanceLabel,
     distanceText,
+    geographyHeading,
+    proximityStats[] {
+      value,
+      label
+    },
     directBookingBadge,
     directBookingHeadline,
     directBookingText,
@@ -363,6 +369,13 @@ export const LANDING_PAGE_QUERY = defineQuery(`
       location,
       shortDescription,
       sleeps,
+      bedrooms,
+      beds,
+      bathrooms,
+      reviewScore,
+      reviewCount,
+      amenities,
+      roomTypes,
       "coverImage": gallery[0],
       "gallery": gallery[0...3],
       uplistingPropertySlug
@@ -375,7 +388,26 @@ export const LANDING_PAGE_QUERY = defineQuery(`
         title,
         description,
         tag,
+        imageUrl,
         link
+      }
+    },
+    pricingTiers[] {
+      amount,
+      label
+    },
+    pricingNote,
+    pricingLink,
+    pricingLinkLabel,
+    itineraryEyebrow,
+    itineraryHeading,
+    itineraryText,
+    itineraryDays[] {
+      dayLabel,
+      items[] {
+        time,
+        title,
+        description
       }
     },
     relatedAreaGuide-> {
@@ -385,6 +417,9 @@ export const LANDING_PAGE_QUERY = defineQuery(`
     },
     finalCtaHeadline,
     finalCtaText,
+    finalCtaSecondaryLabel,
+    finalCtaSecondaryUrl,
+    stickyBarEnabled,
     ${seoProjection}
   }
 `);

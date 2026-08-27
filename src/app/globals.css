@@ -12,6 +12,13 @@
   --sage-grey: #A6B0A6;      /* border/divider */
   --near-black: #171917;     /* body text */
   --error-red: #C0392B;      /* form validation errors — never --maroon, too dark to read as an error */
+
+  /* Deeper/lighter variants added for the hotels-near-funtasia redesign's
+     richer editorial layout — sit alongside the core palette above rather
+     than replacing it. */
+  --deep-forest: #3F5240;    /* darker than --forest-green, used for hero/CTA bands */
+  --pale-sage: #E3ECD8;      /* lighter than --light-sage, used for sunken card fills */
+  --bright-cream: #FFFEF2;   /* near-white cream, used for raised stat tiles on --cream */
 }
 
 @theme inline {
@@ -28,6 +35,9 @@
   --color-sage-grey: var(--sage-grey);
   --color-near-black: var(--near-black);
   --color-error-red: var(--error-red);
+  --color-deep-forest: var(--deep-forest);
+  --color-pale-sage: var(--pale-sage);
+  --color-bright-cream: var(--bright-cream);
 }
 
 body {
@@ -260,5 +270,39 @@ body {
   [style*="sos-mark-spin"],
   [style*="sos-live-ping"] {
     animation: none !important;
+  }
+}
+
+/* hotels-near-funtasia hero — slow Ken Burns drift on the background image,
+   and a soft pulsing dot on the distance badge. See app/hotels-near-funtasia. */
+@keyframes sos-hero-ken-burns {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.16) translate3d(-1.5%, -1%, 0);
+  }
+}
+.sos-hero-ken-burns {
+  animation: sos-hero-ken-burns 26s ease-in-out infinite alternate;
+}
+@keyframes sos-distance-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.sos-distance-pulse {
+  animation: sos-distance-pulse 2.6s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sos-hero-ken-burns,
+  .sos-distance-pulse {
+    animation: none;
   }
 }
