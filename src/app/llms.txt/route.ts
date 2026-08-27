@@ -34,7 +34,7 @@ export async function GET() {
   const { settings, entries } = await client.fetch(LLMS_TXT_QUERY);
 
   const siteName = settings?.siteName || "Sos Stays";
-  const businessName = settings?.businessName || "Power Rangers Limited";
+  const businessName = settings?.businessName || "Sos Stays";
   const contactEmail = settings?.contactEmail || "info@sosstays.com";
   const socialLinks: { platform: string; url: string }[] = settings?.socialLinks || [];
 

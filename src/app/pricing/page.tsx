@@ -4,7 +4,10 @@ import { HeroNav } from "@/components/HeroNav";
 import { CitySelectDropdown } from "@/components/pricing/CitySelectDropdown";
 import { OnboardingTimeline } from "@/components/pricing/OnboardingTimeline";
 import { StrVsLongTermTable } from "@/components/pricing/StrVsLongTermTable";
+import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
 import { getPricingCounties } from "@/lib/fetchPricingCounties";
+import { client } from "@/sanity/client";
+import { LANDLORD_BLOG_POSTS_QUERY } from "@/sanity/queries";
 import type { NavLink } from "@/lib/navLinks";
 
 export const revalidate = 60;
@@ -22,7 +25,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PricingPage() {
-  const counties = await getPricingCounties();
+  const [counties, landlordPosts] = await Promise.all([
+    getPricingCounties(),
+    client.fetch(LANDLORD_BLOG_POSTS_QUERY),
+  ]);
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
@@ -48,6 +54,7 @@ export default async function PricingPage() {
 
       <OnboardingTimeline />
       <StrVsLongTermTable />
+      <RelatedBlogsSection posts={landlordPosts} />
     </main>
   );
 }

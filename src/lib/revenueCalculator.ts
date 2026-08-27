@@ -32,9 +32,9 @@ export function calculateRevenue({
   platformCount,
   hoursPerWeek,
 }: CalculatorInputs): CalculatorResult {
-  const targetOccupancy = Math.min(
-    78,
-    occupancy + (occupancy < 45 ? 28 : occupancy < 60 ? 16 : occupancy < 70 ? 8 : 3)
+  const targetOccupancy = Math.max(
+    occupancy,
+    Math.min(78, occupancy + (occupancy < 45 ? 28 : occupancy < 60 ? 16 : occupancy < 70 ? 8 : 3))
   );
   const occUpliftRatio = (targetOccupancy - occupancy) / occupancy;
   const occGain = currentRevenue * occUpliftRatio;

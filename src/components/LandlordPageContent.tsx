@@ -2,7 +2,7 @@ import Image from "next/image";
 import landlordHeroImage from "@/assets/images/landlord.png";
 import { Poppins } from "next/font/google";
 import { client } from "@/sanity/client";
-import { SITE_SETTINGS_QUERY, AUDIENCE_TABS_QUERY } from "@/sanity/queries";
+import { SITE_SETTINGS_QUERY, AUDIENCE_TABS_QUERY, LANDLORD_BLOG_POSTS_QUERY } from "@/sanity/queries";
 import { JsonLd, buildServiceSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
@@ -10,6 +10,7 @@ import { LandlordLeadForm } from "@/components/LandlordLeadForm";
 import { FaqSection } from "@/components/FaqSection";
 import { Button } from "@/components/Button";
 import { AudienceTabs } from "@/components/AudienceTabs";
+import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
 
 type LandlordPage = {
   title?: string;
@@ -22,7 +23,7 @@ type LandlordPage = {
 
 const HOW_IT_WORKS_STATS = [
   {
-    stat: "15–30%",
+    stat: "20–30%",
     title: "Commission only",
     description:
       "Of gross booking revenue. Cleaning fees excluded. No setup fee, no monthly retainer.",
@@ -86,9 +87,10 @@ const PROCESS_STEPS = [
 ];
 
 export async function LandlordPageContent({ page }: { page: LandlordPage }) {
-  const [siteSettings, audienceTabs] = await Promise.all([
+  const [siteSettings, audienceTabs, landlordPosts] = await Promise.all([
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(AUDIENCE_TABS_QUERY),
+    client.fetch(LANDLORD_BLOG_POSTS_QUERY),
   ]);
 
   return (
@@ -373,6 +375,8 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           </Button>
         </div>
       </section>
+
+      <RelatedBlogsSection posts={landlordPosts} heading="Worth a read before you send your SOS" />
     </main>
   );
 }

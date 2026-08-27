@@ -14,6 +14,7 @@ import { Button } from "@/components/Button";
 import { SocialIcons } from "@/components/SocialIcons";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { DisqusComments } from "@/components/DisqusComments";
+import { BlogPostListItem } from "@/components/BlogPostListItem";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import type { Metadata } from "next";
 
@@ -235,34 +236,7 @@ export default async function BlogPostPage({ params }: Props) {
                 <p className="mb-4 text-[13px] font-semibold text-forest-green">Related blogs</p>
                 <div className="flex flex-col gap-4">
                   {relatedPosts.map((related: any) => (
-                    <Link
-                      key={related._id}
-                      href={`/blog/${related.slug}`}
-                      className="group flex gap-3"
-                    >
-                      {related.coverImage ? (
-                        <div className="relative h-16 w-16 flex-none overflow-hidden rounded-lg">
-                          <Image
-                            src={urlFor(related.coverImage).width(128).height(128).url()}
-                            alt={related.coverImage.alt || related.title}
-                            fill
-                            className="object-cover transition-transform group-hover:scale-105"
-                          />
-                        </div>
-                      ) : (
-                        <div className="h-16 w-16 flex-none rounded-lg bg-cream" />
-                      )}
-                      <div className="min-w-0">
-                        {related.publishedAt && (
-                          <p className="mb-1.5 text-[11px] text-near-black/50">
-                            {dateFormatter.format(new Date(related.publishedAt))}
-                          </p>
-                        )}
-                        <p className="text-[13px] leading-snug font-semibold text-[#1C1C1C] group-hover:text-forest-green">
-                          {related.title}
-                        </p>
-                      </div>
-                    </Link>
+                    <BlogPostListItem key={related._id} post={related} />
                   ))}
                 </div>
               </div>

@@ -54,6 +54,11 @@ export function Footer({ socialLinks }: { socialLinks?: SocialLink[] | null }) {
                   Blog
                 </Link>
               </li>
+              <li>
+                <Link href="/hotels-near-funtasia" className="hover:text-forest-green">
+                  Hotels near Funtasia
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -65,6 +70,11 @@ export function Footer({ socialLinks }: { socialLinks?: SocialLink[] | null }) {
               <li>
                 <Link href="/landlords" className="hover:text-forest-green">
                   Partner with us
+                </Link>
+              </li>
+              <li>
+                <Link href="/pricing" className="hover:text-forest-green">
+                  Pricing
                 </Link>
               </li>
             </ul>
