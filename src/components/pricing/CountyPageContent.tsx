@@ -123,7 +123,11 @@ export function CountyPageContent({ county }: { county: County }) {
 function Hero({ county, shown }: { county: County; shown: boolean }) {
   const isLive = county.state === "live";
   return (
-    <div className="relative isolate overflow-hidden pt-2">
+    // No overflow-hidden here — the decorative mark below bleeds up and
+    // right into the page's own top padding (see [slug]/page.tsx's
+    // pt-20/pt-24), which has nothing else in it. Clipping to this div's
+    // own box (barely taller than its text) cut off most of the mark.
+    <div className="relative isolate pt-2">
       <div
         aria-hidden
         className="absolute -top-[70px] -right-5 h-[220px] w-[220px] opacity-50 [animation:sos-mark-spin_90s_linear_infinite] sm:-top-[140px] sm:h-[420px] sm:w-[420px]"
