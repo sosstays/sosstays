@@ -4,6 +4,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { AreaGuideCard } from "@/components/AreaGuideCard";
+import { Button } from "@/components/Button";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -40,6 +41,20 @@ export default async function AreasIndexPage() {
           {areas.length === 0 && (
             <p className="mt-8 text-[#555550]">Area guides coming soon.</p>
           )}
+
+          <div className="mt-12 flex flex-col items-start gap-4 rounded-[14px] border border-sage-grey/40 bg-light-forest-green/25 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-forest-green">
+                Visiting Funtasia?
+              </h2>
+              <p className="mt-1 text-sm text-near-black/70">
+                Skip the hotel — see our stays near Funtasia in Drogheda instead.
+              </p>
+            </div>
+            <Button link="/hotels-near-funtasia" variant="primary" bgColor="forest-green" color="cream">
+              Hotels near Funtasia →
+            </Button>
+          </div>
         </div>
       </main>
     </>
