@@ -100,6 +100,7 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
+  const [usedMailtoFallback, setUsedMailtoFallback] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const toEmail = contactEmail || CONTACT_EMAIL_FALLBACK;
@@ -149,8 +150,10 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
     } catch {
       // MailerLite is down, misconfigured, or the network request failed —
       // fall back to opening the visitor's own mail client rather than
-      // silently losing the message.
+      // silently losing the message. Flag it so we don't claim the message
+      // reached us when it actually didn't.
       openMailtoFallback();
+      setUsedMailtoFallback(true);
       setSent(true);
     } finally {
       setSubmitting(false);
@@ -219,13 +222,25 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
       </label>
 
       {error && (
-        <p className="-mt-2 animate-[sos-highlight-fade-in_0.6s_ease-in-out_both] text-[13px] text-error-red">
+        <p
+          role="alert"
+          className="-mt-2 animate-[sos-highlight-fade-in_0.6s_ease-in-out_both] text-[13px] text-error-red"
+        >
           {error}
         </p>
       )}
-      {sent && !error && (
+      {sent && !error && !usedMailtoFallback && (
         <p className="-mt-2 animate-[sos-highlight-fade-in_0.6s_ease-in-out_both] text-[13px] text-forest-green">
           Thanks — we&apos;ll get back to you shortly.
+        </p>
+      )}
+      {sent && !error && usedMailtoFallback && (
+        <p
+          role="alert"
+          className="-mt-2 animate-[sos-highlight-fade-in_0.6s_ease-in-out_both] text-[13px] text-error-red"
+        >
+          We couldn&apos;t reach our server, so we&apos;ve opened your email client instead — please hit
+          send there to get your message to us.
         </p>
       )}
 

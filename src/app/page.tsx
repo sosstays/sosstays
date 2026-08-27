@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [hero, { properties, areas, posts }, siteSettings, hostsModule] = await Promise.all([
+  const [hero, { properties, areas }, siteSettings, hostsModule] = await Promise.all([
     client.fetch(HERO_SECTION_QUERY),
     client.fetch(HOMEPAGE_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
@@ -133,46 +133,6 @@ export default async function HomePage() {
       {/* AREA SPOTLIGHT */}
 
       <AreaSpotlightCarousel areas={areas} />
-
-      {/* BLOG TEASER */}
-      {/* {posts.length > 0 && (
-        <section id="blog" className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
-          <div className="mb-12">
-            <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
-              From the blog
-            </p>
-            <h2 className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
-              A few things worth reading
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
-            {posts.map((post: any) => (
-              <Link key={post._id} href={`/blog/${post.slug}`} className="flex gap-4.5">
-                {post.coverImage ? (
-                  <div className="relative h-24 w-24 flex-none overflow-hidden rounded-[10px]">
-                    <Image
-                      src={urlFor(post.coverImage).width(200).height(200).url()}
-                      alt={post.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="h-24 w-24 flex-none rounded-[10px] bg-sage-grey/25" />
-                )}
-                <div>
-                  <h3 className="mb-2 font-serif text-base leading-tight font-bold text-near-black">
-                    {post.title}
-                  </h3>
-                  {post.excerpt && (
-                    <p className="text-sm text-near-black/60">{post.excerpt}</p>
-                  )}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )} */}
 
       {/* INSTAGRAM FEED */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">

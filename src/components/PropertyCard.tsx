@@ -10,13 +10,6 @@ export type PropertyCardProps = {
   location: string;
   shortDescription?: string | null;
   sleeps?: number | null;
-  /**
-   * Formatted price string, e.g. "From €150/night". Not currently sourced
-   * from Sanity — pricing lives in Uplisting, never in the CMS (see
-   * propertyPage.ts) — but kept as a prop so a future Uplisting-backed
-   * caller can pass one in without changing this component.
-   */
-  price?: string;
   coverImage?: SanityImageWithAlt | null;
   gallery?: SanityImageWithAlt[] | null;
   /**
@@ -33,7 +26,6 @@ export function PropertyCard({
   location,
   shortDescription,
   sleeps,
-  price,
   coverImage,
   gallery,
   surface = "plain",
@@ -105,12 +97,7 @@ export function PropertyCard({
         <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{location}</p>
         <div className="mb-3.5 flex flex-wrap items-center gap-3.5">
           <h3 className="font-serif text-lg font-bold text-near-black sm:text-2xl">{name}</h3>
-          {price && (
-            <span className="rounded-full bg-light-sage/35 px-3.5 py-1.5 text-sm font-semibold whitespace-nowrap text-forest-green">
-              {price}
-            </span>
-          )}
-          {!price && sleeps && (
+          {sleeps && (
             <span className="rounded-full bg-light-sage/35 px-3.5 py-1.5 text-sm font-semibold whitespace-nowrap text-forest-green">
               Sleeps {sleeps}
             </span>

@@ -9,6 +9,7 @@ import { getPricingCounties } from "@/lib/fetchPricingCounties";
 import { client } from "@/sanity/client";
 import { LANDLORD_BLOG_POSTS_QUERY } from "@/sanity/queries";
 import type { NavLink } from "@/lib/navLinks";
+import { COMMISSION_FROM } from "@/lib/businessFacts";
 
 export const revalidate = 60;
 
@@ -17,8 +18,7 @@ const NAV_LINKS: NavLink[] = [
 ];
 
 const TITLE = "Airbnb & Short-Term Rental Management Pricing — Sos Stays";
-const DESCRIPTION =
-  "Commission-only Airbnb and short-term rental management pricing across Ireland — from 15%, no setup fee, no retainer. Find pricing and rules for your county.";
+const DESCRIPTION = `Commission-only Airbnb and short-term rental management pricing across Ireland — from ${COMMISSION_FROM}, no setup fee, no retainer. Find pricing and rules for your county.`;
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({ title: TITLE, description: DESCRIPTION }, "/pricing");
@@ -43,7 +43,8 @@ export default async function PricingPage() {
           Sos Stays · Pricing
         </span>
         <h1 className="mx-auto mb-4 max-w-[640px] font-serif text-4xl leading-[1.15] font-bold tracking-tight text-cream sm:text-5xl">
-          Simple, commission-only pricing — <em className="text-light-sage italic">from 15%</em>
+          Simple, commission-only pricing —{" "}
+          <em className="text-light-sage italic">from {COMMISSION_FROM}</em>
         </h1>
         <p className="mx-auto mb-8 max-w-[520px] text-[15px] leading-relaxed text-cream/75">
           No setup fee, no monthly retainer — you only pay when your property earns. Select your

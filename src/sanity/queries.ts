@@ -328,9 +328,6 @@ export const HOMEPAGE_QUERY = defineQuery(`{
   },
   "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {
     _id, areaName, "slug": slug.current, heroImage, introduction
-  },
-  "posts": *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) [0...3] {
-    _id, title, "slug": slug.current, excerpt, coverImage
   }
 }`);
 

@@ -10,6 +10,7 @@ import { RevenueCalculator } from "@/components/RevenueCalculator";
 import { BlogPostCard } from "@/components/BlogPostCard";
 import { Button } from "@/components/Button";
 import { readLandlordContact, type LandlordContact } from "@/lib/landlordHandoff";
+import { COMMISSION_RANGE } from "@/lib/businessFacts";
 
 type BlogPost = {
   _id: string;
@@ -109,7 +110,7 @@ const WHAT_YOU_GET: { title: string; description: string; icon: ReactNode }[] = 
   },
   {
     title: "Commission-only",
-    description: "20–30% of your nightly rate, only when you get paid. No booking, no fee.",
+    description: `${COMMISSION_RANGE} of your nightly rate, only when you get paid. No booking, no fee.`,
     icon: <SmallIcon paths={["M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"]} />,
   },
   {
