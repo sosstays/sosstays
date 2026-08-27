@@ -363,6 +363,8 @@ export const LANDING_PAGE_QUERY = defineQuery(`
     directBookingBadge,
     directBookingHeadline,
     directBookingText,
+    directBookingSavingsPercent,
+    directBookingComparisonNote,
     featuredProperty-> {
       _id,
       name,

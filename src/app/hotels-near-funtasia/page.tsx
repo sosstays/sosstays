@@ -12,6 +12,7 @@ import { Reveal } from "@/components/Reveal";
 import { CountUp } from "@/components/CountUp";
 import { ItineraryTimeline } from "@/components/ItineraryTimeline";
 import { StickyBookingBar } from "@/components/StickyBookingBar";
+import { ComparisonBars } from "@/components/ComparisonBars";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -486,27 +487,39 @@ export default async function HotelsNearFuntasiaPage() {
                 backgroundRepeat: "repeat",
               }}
             />
-            <div className="relative mx-auto max-w-2xl">
-              {page.directBookingBadge && (
-                <span className="inline-block rounded-full bg-cream/14 px-4 py-2 text-xs font-semibold tracking-[0.16em] text-cream uppercase">
-                  {page.directBookingBadge}
-                </span>
-              )}
-              <h2 className="mt-5 max-w-[20ch] font-serif text-[clamp(1.9rem,3.2vw,2.75rem)] leading-[1.06] font-bold tracking-tight text-cream">
-                {page.directBookingHeadline}
-              </h2>
-              {page.directBookingText && (
-                <p className="mt-5 text-[17px] leading-relaxed text-cream/78">{page.directBookingText}</p>
-              )}
-              {bookingUrl && (
-                <a
-                  href={bookingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-7.5 inline-flex items-center rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(0,0,0,0.3)]"
-                >
-                  {page.primaryCtaLabel || "Book direct"} →
-                </a>
+            <div
+              className={`relative mx-auto grid gap-14 ${
+                page.directBookingSavingsPercent != null ? "max-w-5xl md:grid-cols-2 md:items-center" : "max-w-2xl"
+              }`}
+            >
+              <div>
+                {page.directBookingBadge && (
+                  <span className="inline-block rounded-full bg-cream/14 px-4 py-2 text-xs font-semibold tracking-[0.16em] text-cream uppercase">
+                    {page.directBookingBadge}
+                  </span>
+                )}
+                <h2 className="mt-5 max-w-[20ch] font-serif text-[clamp(1.9rem,3.2vw,2.75rem)] leading-[1.06] font-bold tracking-tight text-cream">
+                  {page.directBookingHeadline}
+                </h2>
+                {page.directBookingText && (
+                  <p className="mt-5 text-[17px] leading-relaxed text-cream/78">{page.directBookingText}</p>
+                )}
+                {bookingUrl && (
+                  <a
+                    href={bookingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-7.5 inline-flex items-center rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(0,0,0,0.3)]"
+                  >
+                    {page.primaryCtaLabel || "Book direct"} →
+                  </a>
+                )}
+              </div>
+              {page.directBookingSavingsPercent != null && (
+                <ComparisonBars
+                  savingsPercent={page.directBookingSavingsPercent}
+                  note={page.directBookingComparisonNote}
+                />
               )}
             </div>
           </Reveal>
