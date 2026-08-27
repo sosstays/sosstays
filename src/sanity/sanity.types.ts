@@ -60,9 +60,17 @@ export type LandingPage = {
   primaryCtaUrl?: string;
   secondaryCtaLabel?: string;
   secondaryCtaUrl?: string;
+  marqueeItems?: Array<string>;
   distanceStat?: string;
   distanceLabel?: string;
   distanceText?: string;
+  geographyHeading?: string;
+  proximityStats?: Array<{
+    value: string;
+    label: string;
+    _type: "proximityStat";
+    _key: string;
+  }>;
   directBookingBadge?: string;
   directBookingHeadline?: string;
   directBookingText?: string;
@@ -75,6 +83,7 @@ export type LandingPage = {
       title?: string;
       description?: string;
       tag?: string;
+      imageUrl?: string;
       link?: string;
       _type: "infoItem";
       _key: string;
@@ -82,9 +91,36 @@ export type LandingPage = {
     _type: "infoSection";
     _key: string;
   }>;
+  pricingTiers?: Array<{
+    amount: string;
+    label: string;
+    _type: "pricingTier";
+    _key: string;
+  }>;
+  pricingNote?: string;
+  pricingLink?: string;
+  pricingLinkLabel?: string;
+  itineraryEyebrow?: string;
+  itineraryHeading?: string;
+  itineraryText?: string;
+  itineraryDays?: Array<{
+    dayLabel: string;
+    items?: Array<{
+      time?: string;
+      title: string;
+      description?: string;
+      _type: "itineraryItem";
+      _key: string;
+    }>;
+    _type: "itineraryDay";
+    _key: string;
+  }>;
   relatedAreaGuide?: AreaGuideReference;
   finalCtaHeadline?: string;
   finalCtaText?: string;
+  finalCtaSecondaryLabel?: string;
+  finalCtaSecondaryUrl?: string;
+  stickyBarEnabled?: boolean;
   seoTitle?: string;
   seoDescription?: string;
   seoImage?: {
@@ -1728,7 +1764,7 @@ export type HOMEPAGE_QUERY_RESULT = {
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: LANDING_PAGE_QUERY
-// Query: *[_type == "landingPage" && slug.current == $slug][0] {    _id,    title,    "slug": slug.current,    heroEyebrow,    heroHeadline,    heroSubtext,    heroTags,    heroImage,    primaryCtaLabel,    primaryCtaUrl,    secondaryCtaLabel,    secondaryCtaUrl,    distanceStat,    distanceLabel,    distanceText,    directBookingBadge,    directBookingHeadline,    directBookingText,    featuredProperty-> {      _id,      name,      "slug": slug.current,      location,      shortDescription,      sleeps,      "coverImage": gallery[0],      "gallery": gallery[0...3],      uplistingPropertySlug    },    infoSections[] {      eyebrow,      heading,      body,      items[] {        title,        description,        tag,        link      }    },    relatedAreaGuide-> {      areaName,      "slug": slug.current,      thingsToDo    },    finalCtaHeadline,    finalCtaText,      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
+// Query: *[_type == "landingPage" && slug.current == $slug][0] {    _id,    title,    "slug": slug.current,    heroEyebrow,    heroHeadline,    heroSubtext,    heroTags,    heroImage,    primaryCtaLabel,    primaryCtaUrl,    secondaryCtaLabel,    secondaryCtaUrl,    marqueeItems,    distanceStat,    distanceLabel,    distanceText,    geographyHeading,    proximityStats[] {      value,      label    },    directBookingBadge,    directBookingHeadline,    directBookingText,    featuredProperty-> {      _id,      name,      "slug": slug.current,      location,      shortDescription,      sleeps,      bedrooms,      beds,      bathrooms,      reviewScore,      reviewCount,      amenities,      roomTypes,      "coverImage": gallery[0],      "gallery": gallery[0...3],      uplistingPropertySlug    },    infoSections[] {      eyebrow,      heading,      body,      items[] {        title,        description,        tag,        imageUrl,        link      }    },    pricingTiers[] {      amount,      label    },    pricingNote,    pricingLink,    pricingLinkLabel,    itineraryEyebrow,    itineraryHeading,    itineraryText,    itineraryDays[] {      dayLabel,      items[] {        time,        title,        description      }    },    relatedAreaGuide-> {      areaName,      "slug": slug.current,      thingsToDo    },    finalCtaHeadline,    finalCtaText,    finalCtaSecondaryLabel,    finalCtaSecondaryUrl,    stickyBarEnabled,      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
 export type LANDING_PAGE_QUERY_RESULT = {
   _id: string;
   title: string;
@@ -1749,9 +1785,15 @@ export type LANDING_PAGE_QUERY_RESULT = {
   primaryCtaUrl: string | null;
   secondaryCtaLabel: string | null;
   secondaryCtaUrl: string | null;
+  marqueeItems: Array<string> | null;
   distanceStat: string | null;
   distanceLabel: string | null;
   distanceText: string | null;
+  geographyHeading: string | null;
+  proximityStats: Array<{
+    value: string;
+    label: string;
+  }> | null;
   directBookingBadge: string | null;
   directBookingHeadline: string | null;
   directBookingText: string | null;
@@ -1762,6 +1804,28 @@ export type LANDING_PAGE_QUERY_RESULT = {
     location: string;
     shortDescription: string | null;
     sleeps: number | null;
+    bedrooms: number | null;
+    beds: number | null;
+    bathrooms: number | null;
+    reviewScore: number | null;
+    reviewCount: number | null;
+    amenities: Array<string> | null;
+    roomTypes: Array<{
+      name: string;
+      roomId?: string;
+      image?: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+      };
+      bedConfiguration?: string;
+      guests: number;
+      _type: "roomType";
+      _key: string;
+    }> | null;
     coverImage: {
       asset?: SanityImageAssetReference;
       media?: unknown;
@@ -1790,7 +1854,26 @@ export type LANDING_PAGE_QUERY_RESULT = {
       title: string | null;
       description: string | null;
       tag: string | null;
+      imageUrl: string | null;
       link: string | null;
+    }> | null;
+  }> | null;
+  pricingTiers: Array<{
+    amount: string;
+    label: string;
+  }> | null;
+  pricingNote: string | null;
+  pricingLink: string | null;
+  pricingLinkLabel: string | null;
+  itineraryEyebrow: string | null;
+  itineraryHeading: string | null;
+  itineraryText: string | null;
+  itineraryDays: Array<{
+    dayLabel: string;
+    items: Array<{
+      time: string | null;
+      title: string;
+      description: string | null;
     }> | null;
   }> | null;
   relatedAreaGuide: {
@@ -1816,6 +1899,9 @@ export type LANDING_PAGE_QUERY_RESULT = {
   } | null;
   finalCtaHeadline: string | null;
   finalCtaText: string | null;
+  finalCtaSecondaryLabel: string | null;
+  finalCtaSecondaryUrl: string | null;
+  stickyBarEnabled: boolean | null;
   seo: {
     title: string;
     description: string | "";
@@ -1890,6 +1976,65 @@ export type LLMS_TXT_QUERY_RESULT = {
   >;
 };
 
+// Source: ../web/src/sanity/queries.ts
+// Variable: COUNTY_PRICING_STATS_QUERY
+// Query: *[_type == "countyPricingStats" && live == true] {    county,    adr,    occupancy,    annualRevenue,    statsSourceNote,    realExample,    drivers,    faqs  }
+export type COUNTY_PRICING_STATS_QUERY_RESULT = Array<{
+  county:
+    | "Antrim"
+    | "Armagh"
+    | "Carlow"
+    | "Cavan"
+    | "Clare"
+    | "Cork"
+    | "Derry / Londonderry"
+    | "Donegal"
+    | "Down"
+    | "Dublin"
+    | "Fermanagh"
+    | "Galway"
+    | "Kerry"
+    | "Kildare"
+    | "Kilkenny"
+    | "Laois"
+    | "Leitrim"
+    | "Limerick"
+    | "Longford"
+    | "Louth"
+    | "Mayo"
+    | "Meath"
+    | "Monaghan"
+    | "Offaly"
+    | "Roscommon"
+    | "Sligo"
+    | "Tipperary"
+    | "Tyrone"
+    | "Waterford"
+    | "Westmeath"
+    | "Wexford"
+    | "Wicklow";
+  adr: number;
+  occupancy: number;
+  annualRevenue: number;
+  statsSourceNote: string;
+  realExample: {
+    propertyName: string;
+    propertyLocation: string;
+    beforeLabel: string;
+    beforeOccupancy: number;
+    afterLabel: string;
+    afterOccupancy: number;
+    note: string;
+  };
+  drivers: Array<string>;
+  faqs: Array<{
+    question: string;
+    answer: string;
+    _type: "faq";
+    _key: string;
+  }> | null;
+}>;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -1910,8 +2055,9 @@ declare module "@sanity/client" {
     '\n  *[_type == "heroSection" && _id == "heroSection"][0] {\n    eyebrow,\n    heading,\n    body,\n    subBody,\n    image,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl\n  }\n': HERO_SECTION_QUERY_RESULT;
     '\n  *[_type == "hostsModule" && _id == "hostsModule"][0] {\n    eyebrow,\n    heading,\n    body,\n    commissionRate,\n    commissionLabel,\n    commissionSuffix,\n    commissionNote,\n    ctaLabel,\n    ctaUrl,\n    stepperEyebrow,\n    stepperHeading,\n    steps[] {\n      title,\n      bullets,\n      image\n    },\n    marqueeHeading,\n    marqueeSubtext\n  }\n': HOSTS_MODULE_QUERY_RESULT;
     '{\n  "properties": *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...3] {\n    _id, name, "slug": slug.current, location, shortDescription, sleeps,\n    "coverImage": gallery[0], "gallery": gallery[0...3]\n  },\n  "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {\n    _id, areaName, "slug": slug.current, heroImage, introduction\n  },\n  "posts": *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) [0...3] {\n    _id, title, "slug": slug.current, excerpt, coverImage\n  }\n}': HOMEPAGE_QUERY_RESULT;
-    '\n  *[_type == "landingPage" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    heroEyebrow,\n    heroHeadline,\n    heroSubtext,\n    heroTags,\n    heroImage,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl,\n    distanceStat,\n    distanceLabel,\n    distanceText,\n    directBookingBadge,\n    directBookingHeadline,\n    directBookingText,\n    featuredProperty-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      sleeps,\n      "coverImage": gallery[0],\n      "gallery": gallery[0...3],\n      uplistingPropertySlug\n    },\n    infoSections[] {\n      eyebrow,\n      heading,\n      body,\n      items[] {\n        title,\n        description,\n        tag,\n        link\n      }\n    },\n    relatedAreaGuide-> {\n      areaName,\n      "slug": slug.current,\n      thingsToDo\n    },\n    finalCtaHeadline,\n    finalCtaText,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': LANDING_PAGE_QUERY_RESULT;
+    '\n  *[_type == "landingPage" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    heroEyebrow,\n    heroHeadline,\n    heroSubtext,\n    heroTags,\n    heroImage,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl,\n    marqueeItems,\n    distanceStat,\n    distanceLabel,\n    distanceText,\n    geographyHeading,\n    proximityStats[] {\n      value,\n      label\n    },\n    directBookingBadge,\n    directBookingHeadline,\n    directBookingText,\n    featuredProperty-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      sleeps,\n      bedrooms,\n      beds,\n      bathrooms,\n      reviewScore,\n      reviewCount,\n      amenities,\n      roomTypes,\n      "coverImage": gallery[0],\n      "gallery": gallery[0...3],\n      uplistingPropertySlug\n    },\n    infoSections[] {\n      eyebrow,\n      heading,\n      body,\n      items[] {\n        title,\n        description,\n        tag,\n        imageUrl,\n        link\n      }\n    },\n    pricingTiers[] {\n      amount,\n      label\n    },\n    pricingNote,\n    pricingLink,\n    pricingLinkLabel,\n    itineraryEyebrow,\n    itineraryHeading,\n    itineraryText,\n    itineraryDays[] {\n      dayLabel,\n      items[] {\n        time,\n        title,\n        description\n      }\n    },\n    relatedAreaGuide-> {\n      areaName,\n      "slug": slug.current,\n      thingsToDo\n    },\n    finalCtaHeadline,\n    finalCtaText,\n    finalCtaSecondaryLabel,\n    finalCtaSecondaryUrl,\n    stickyBarEnabled,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': LANDING_PAGE_QUERY_RESULT;
     '\n  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage"] && defined(slug.current) && noIndex != true] {\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      slug.current\n    ),\n    _updatedAt\n  }\n': SITEMAP_QUERY_RESULT;
     '\n{\n  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {\n    siteName,\n    defaultSeoDescription,\n    businessName,\n    contactEmail,\n    socialLinks\n  },\n  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage"] && defined(slug.current) && noIndex != true] {\n    _type,\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      slug.current\n    ),\n    "title": coalesce(name, title, areaName, ""),\n    "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")\n  }\n}\n': LLMS_TXT_QUERY_RESULT;
+    '\n  *[_type == "countyPricingStats" && live == true] {\n    county,\n    adr,\n    occupancy,\n    annualRevenue,\n    statsSourceNote,\n    realExample,\n    drivers,\n    faqs\n  }\n': COUNTY_PRICING_STATS_QUERY_RESULT;
   }
 }

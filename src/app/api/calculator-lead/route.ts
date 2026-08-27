@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
     name,
     email,
     area,
-    numProperties,
     bedrooms,
     platforms,
     occupancy,
@@ -43,7 +42,6 @@ export async function POST(request: NextRequest) {
       fields: {
         name: name || undefined,
         area: area || undefined,
-        num_properties: numProperties || undefined,
         bedrooms: bedrooms || undefined,
         platforms: platforms || undefined,
         occupancy: occupancy || undefined,

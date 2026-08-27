@@ -67,11 +67,6 @@ export function Footer({ socialLinks }: { socialLinks?: SocialLink[] | null }) {
                   Partner with us
                 </Link>
               </li>
-              <li>
-                <Link href="/calculator" className="hover:text-forest-green">
-                  Free revenue estimate
-                </Link>
-              </li>
             </ul>
           </div>
 

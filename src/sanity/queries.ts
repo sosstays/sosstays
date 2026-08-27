@@ -350,9 +350,15 @@ export const LANDING_PAGE_QUERY = defineQuery(`
     primaryCtaUrl,
     secondaryCtaLabel,
     secondaryCtaUrl,
+    marqueeItems,
     distanceStat,
     distanceLabel,
     distanceText,
+    geographyHeading,
+    proximityStats[] {
+      value,
+      label
+    },
     directBookingBadge,
     directBookingHeadline,
     directBookingText,
@@ -363,6 +369,13 @@ export const LANDING_PAGE_QUERY = defineQuery(`
       location,
       shortDescription,
       sleeps,
+      bedrooms,
+      beds,
+      bathrooms,
+      reviewScore,
+      reviewCount,
+      amenities,
+      roomTypes,
       "coverImage": gallery[0],
       "gallery": gallery[0...3],
       uplistingPropertySlug
@@ -375,7 +388,26 @@ export const LANDING_PAGE_QUERY = defineQuery(`
         title,
         description,
         tag,
+        imageUrl,
         link
+      }
+    },
+    pricingTiers[] {
+      amount,
+      label
+    },
+    pricingNote,
+    pricingLink,
+    pricingLinkLabel,
+    itineraryEyebrow,
+    itineraryHeading,
+    itineraryText,
+    itineraryDays[] {
+      dayLabel,
+      items[] {
+        time,
+        title,
+        description
       }
     },
     relatedAreaGuide-> {
@@ -385,6 +417,9 @@ export const LANDING_PAGE_QUERY = defineQuery(`
     },
     finalCtaHeadline,
     finalCtaText,
+    finalCtaSecondaryLabel,
+    finalCtaSecondaryUrl,
+    stickyBarEnabled,
     ${seoProjection}
   }
 `);
@@ -430,4 +465,22 @@ export const LLMS_TXT_QUERY = defineQuery(`
     "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")
   }
 }
+`);
+
+// ---- Pricing page ----
+// Only counties with `live == true` get real stats + the "live data"
+// badge on /pricing — everything else falls back to the "expanding"
+// state in src/lib/pricingCounties.ts. See the honesty-in-projections
+// principle: never fabricate these figures in code.
+export const COUNTY_PRICING_STATS_QUERY = defineQuery(`
+  *[_type == "countyPricingStats" && live == true] {
+    county,
+    adr,
+    occupancy,
+    annualRevenue,
+    statsSourceNote,
+    realExample,
+    drivers,
+    faqs
+  }
 `);
