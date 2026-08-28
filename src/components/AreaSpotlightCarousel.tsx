@@ -113,7 +113,7 @@ export function AreaSpotlightCarousel({ areas }: { areas: Area[] }) {
             type="button"
             onClick={() => advance(-1)}
             aria-label="Previous area"
-            className="absolute top-1/2 left-5 z-10 hidden h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-forest-green/55 text-xl text-cream sm:flex"
+            className="absolute top-1/2 left-5 z-10 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-forest-green/55 text-xl text-cream sm:h-11 sm:w-11"
           >
             ‹
           </button>
@@ -121,7 +121,7 @@ export function AreaSpotlightCarousel({ areas }: { areas: Area[] }) {
             type="button"
             onClick={() => advance(1)}
             aria-label="Next area"
-            className="absolute top-1/2 right-5 z-10 hidden h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-forest-green/55 text-xl text-cream sm:flex"
+            className="absolute top-1/2 right-5 z-10 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-forest-green/55 text-xl text-cream sm:h-11 sm:w-11"
           >
             ›
           </button>

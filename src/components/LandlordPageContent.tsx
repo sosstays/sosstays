@@ -11,6 +11,7 @@ import { FaqSection } from "@/components/FaqSection";
 import { Button } from "@/components/Button";
 import { AudienceTabs } from "@/components/AudienceTabs";
 import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
+import { COMMISSION_RANGE, MAINTENANCE_AUTHORITY_EUR } from "@/lib/businessFacts";
 
 type LandlordPage = {
   title?: string;
@@ -23,7 +24,7 @@ type LandlordPage = {
 
 const HOW_IT_WORKS_STATS = [
   {
-    stat: "20–30%",
+    stat: COMMISSION_RANGE,
     title: "Commission only",
     description:
       "Of gross booking revenue. Cleaning fees excluded. No setup fee, no monthly retainer.",
@@ -35,10 +36,9 @@ const HOW_IT_WORKS_STATS = [
       "We only get paid when your property does. Nothing owed on empty nights.",
   },
   {
-    stat: "€250",
+    stat: `€${MAINTENANCE_AUTHORITY_EUR}`,
     title: "Maintenance authority",
-    description:
-      "We handle anything up to €250 without bothering you. Above that, we call first.",
+    description: `We handle anything up to €${MAINTENANCE_AUTHORITY_EUR} without bothering you. Above that, we call first.`,
   },
   {
     stat: "Your call",

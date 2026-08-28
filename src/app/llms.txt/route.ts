@@ -1,13 +1,12 @@
 import { client } from "@/sanity/client";
 import { LLMS_TXT_QUERY } from "@/sanity/queries";
+import { COMMISSION_RANGE_FULL, MAINTENANCE_AUTHORITY_EUR } from "@/lib/businessFacts";
 
 const SITE_URL = "https://sosstays.com";
 
 // Legal/commercial facts that live in the real world, not the CMS —
 // update here if they change, no Sanity field for these.
 const CRO_NUMBER = "746631";
-const COMMISSION_RANGE = "20–30% of gross booking revenue (nightly rate only, cleaning fees excluded)";
-const MAINTENANCE_AUTHORITY_EUR = 250;
 const REGISTER_OPEN_DATE = "1 December 2026";
 const REGISTER_DEADLINE = "31 December 2026";
 
@@ -60,7 +59,7 @@ export async function GET() {
   ].join("\n");
 
   const landlordLines = [
-    `- Commission: ${COMMISSION_RANGE}`,
+    `- Commission: ${COMMISSION_RANGE_FULL}`,
     `- No setup fee, no monthly retainer — commission-only, paid only when the property earns`,
     `- Maintenance authority up to €${MAINTENANCE_AUTHORITY_EUR} per instance without owner approval`,
     `- Owners can block off personal-use dates at any time, with no minimum commitment`,

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { urlFor } from "@/sanity/image";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 type Activity = {
   title: string;
@@ -28,25 +29,20 @@ export function ThingsToDoTabs({ items: itemsProp }: { items: Activity[] | null 
   if (availableCategories.length === 0) return null;
 
   return (
-    <div>
-      <div className="mb-7 flex flex-wrap gap-x-8 gap-y-1 border-b border-sage-grey/40">
+    <Tabs value={tab} onValueChange={(v) => setTab(v as Activity["category"])}>
+      <TabsList className="mb-7 flex flex-wrap gap-x-8 gap-y-1 border-b border-sage-grey/40">
         {availableCategories.map((category) => (
-          <button
+          <TabsTrigger
             key={category}
-            onClick={() => setTab(category)}
-            className="cursor-pointer border-b-[3px] bg-transparent px-1 py-3.5 font-sans text-[15px] font-medium"
-            style={{
-              color: tab === category ? "var(--forest-green)" : "var(--near-black)",
-              opacity: tab === category ? 1 : 0.6,
-              borderBottomColor: tab === category ? "var(--forest-green)" : "transparent",
-            }}
+            value={category}
+            className="border-b-[3px] border-transparent bg-transparent px-1 py-3.5 font-sans text-[15px] font-medium text-near-black opacity-60 data-[state=active]:border-forest-green data-[state=active]:text-forest-green data-[state=active]:opacity-100"
           >
             {category}
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
+      </TabsList>
 
-      <div className="grid grid-cols-1 gap-4.5 sm:grid-cols-2 lg:grid-cols-4">
+      <TabsContent value={tab} className="grid grid-cols-1 gap-4.5 sm:grid-cols-2 lg:grid-cols-4">
         {activeItems.map((item, i) => (
           <div
             key={i}
@@ -95,7 +91,7 @@ export function ThingsToDoTabs({ items: itemsProp }: { items: Activity[] | null 
             </div>
           </div>
         ))}
-      </div>
-    </div>
+      </TabsContent>
+    </Tabs>
   );
 }

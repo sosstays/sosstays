@@ -78,7 +78,6 @@ const VARIANT_DEFAULTS: Record<
 };
 
 type BaseProps = {
-  text?: ReactNode;
   children?: ReactNode;
   variant?: Variant;
   bgColor?: ButtonColor;
@@ -120,10 +119,10 @@ export function Button(props: LinkProps | ButtonElProps) {
   const animate = props.animate ?? true;
   const size = props.size ?? "md";
   const isOutline = bgColor === "transparent";
-  const content = props.children ?? props.text;
+  const content = props.children;
 
   const baseClass = [
-    "rounded-full whitespace-nowrap",
+    "rounded-full whitespace-nowrap focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-green",
     SIZE_CLASS[size],
     BG_CLASS[bgColor],
     TEXT_CLASS[color],

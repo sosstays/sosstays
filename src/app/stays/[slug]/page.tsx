@@ -321,9 +321,6 @@ export default async function PropertyPage({ params }: Props) {
 
           {property.reviewScore && (
             <div className="mt-14 lg:sticky lg:top-24 lg:mt-0">
-              {/* <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
-                Reviews
-              </h2> */}
               <ReviewScoreCard
                 score={property.reviewScore}
                 reviewCount={property.reviewCount}

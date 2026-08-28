@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/Button";
+import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 
 const CONTACT_EMAIL_FALLBACK = "info@sosstays.com";
 
@@ -11,87 +12,6 @@ const TOPIC_OPTIONS = ["Media query", "About a booking", "Hiring", "Partnership"
 // "forgot the domain" typos without rejecting real addresses.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// A native <select>'s open listbox is drawn by the OS/browser, not the
-// page — its background, highlight colour and option padding can't be
-// themed with CSS. This is a plain button + listbox instead, so it can
-// actually match the site (cream background, forest-green highlight,
-// real padding). Used by the "What's this about?" field.
-function Dropdown({
-  value,
-  onChange,
-  options,
-  placeholder = "Select one",
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  options: string[];
-  placeholder?: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    function handleClickOutside(e: MouseEvent) {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
-
-  return (
-    <div ref={rootRef} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        className={`flex w-full cursor-pointer items-center justify-between border-b border-sage-grey/60 bg-transparent pb-1.5 text-left text-[15px] focus:border-forest-green focus:outline-none ${
-          value ? "text-near-black" : "text-near-black/35"
-        }`}
-      >
-        <span className="truncate">{value || placeholder}</span>
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 20 20"
-          fill="none"
-          className={`h-3.5 w-3.5 flex-none text-near-black/50 transition-transform ${open ? "rotate-180" : ""}`}
-        >
-          <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-
-      {open && (
-        <ul
-          role="listbox"
-          className="absolute z-20 mt-2 max-h-60 w-full overflow-auto rounded-[10px] border border-sage-grey/40 bg-cream py-1.5 shadow-[0_12px_24px_rgba(23,25,23,0.12)]"
-        >
-          {options.map((option) => (
-            <li key={option} role="option" aria-selected={value === option}>
-              <button
-                type="button"
-                onClick={() => {
-                  onChange(option);
-                  setOpen(false);
-                }}
-                className={`block w-full px-4 py-2.5 text-left text-[15px] transition-colors ${
-                  value === option
-                    ? "bg-forest-green/10 font-medium text-forest-green"
-                    : "text-near-black hover:bg-forest-green/10"
-                }`}
-              >
-                {option}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
 export function ContactForm({ contactEmail }: { contactEmail?: string | null }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -100,6 +20,7 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
+  const [usedMailtoFallback, setUsedMailtoFallback] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const toEmail = contactEmail || CONTACT_EMAIL_FALLBACK;
@@ -149,8 +70,10 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
     } catch {
       // MailerLite is down, misconfigured, or the network request failed —
       // fall back to opening the visitor's own mail client rather than
-      // silently losing the message.
+      // silently losing the message. Flag it so we don't claim the message
+      // reached us when it actually didn't.
       openMailtoFallback();
+      setUsedMailtoFallback(true);
       setSent(true);
     } finally {
       setSubmitting(false);
@@ -192,7 +115,18 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
         <span className="text-sm text-near-black">
           What&apos;s this about? <span className="text-error-red">*</span>
         </span>
-        <Dropdown value={topic} onChange={setTopic} options={TOPIC_OPTIONS} />
+        <Select value={topic} onValueChange={setTopic}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select one" />
+          </SelectTrigger>
+          <SelectContent>
+            {TOPIC_OPTIONS.map((option) => (
+              <SelectItem key={option} value={option}>
+                {option}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </label>
 
       <label className="flex flex-col gap-1.5">
@@ -219,13 +153,25 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
       </label>
 
       {error && (
-        <p className="-mt-2 animate-[sos-highlight-fade-in_0.6s_ease-in-out_both] text-[13px] text-error-red">
+        <p
+          role="alert"
+          className="-mt-2 animate-[sos-highlight-fade-in_0.6s_ease-in-out_both] text-[13px] text-error-red"
+        >
           {error}
         </p>
       )}
-      {sent && !error && (
+      {sent && !error && !usedMailtoFallback && (
         <p className="-mt-2 animate-[sos-highlight-fade-in_0.6s_ease-in-out_both] text-[13px] text-forest-green">
           Thanks — we&apos;ll get back to you shortly.
+        </p>
+      )}
+      {sent && !error && usedMailtoFallback && (
+        <p
+          role="alert"
+          className="-mt-2 animate-[sos-highlight-fade-in_0.6s_ease-in-out_both] text-[13px] text-error-red"
+        >
+          We couldn&apos;t reach our server, so we&apos;ve opened your email client instead — please hit
+          send there to get your message to us.
         </p>
       )}
 

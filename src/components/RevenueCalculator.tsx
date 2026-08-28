@@ -252,7 +252,9 @@ export function RevenueCalculator({
                 onSelect={handleAreaSelect}
               />
               {step1Error && (
-                <p className="text-[13px] text-error-red">Please enter your property address.</p>
+                <p role="alert" className="text-[13px] text-error-red">
+                  Please enter your property address.
+                </p>
               )}
 
               <label className="flex flex-col gap-1.5 text-sm text-near-black">
@@ -412,7 +414,9 @@ export function RevenueCalculator({
                 )}
               </div>
               {step2Error && (
-                <p className="text-[13px] text-error-red">Please enter your monthly revenue.</p>
+                <p role="alert" className="text-[13px] text-error-red">
+                  Please enter your monthly revenue.
+                </p>
               )}
 
               <div className="mt-1 flex justify-between">
@@ -490,7 +494,9 @@ export function RevenueCalculator({
                 </label>
               </div>
               {consentError && (
-                <p className="text-[13px] text-error-red">Please tick the box to continue.</p>
+                <p role="alert" className="text-[13px] text-error-red">
+                  Please tick the box to continue.
+                </p>
               )}
 
               <div className="mt-1 flex justify-between">

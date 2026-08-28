@@ -114,14 +114,16 @@ export function LandlordLeadForm() {
 
       {stage === "form" && step === 0 && (
         <div className="flex flex-col gap-4.5">
-          <h3 className="font-serif text-lg font-bold text-near-black sm:text-xl">
+          <h3 id="situation-label" className="font-serif text-lg font-bold text-near-black sm:text-xl">
             Which best describes you? <span className="text-error-red">*</span>
           </h3>
-          <div className="flex flex-col gap-2.5">
+          <div role="radiogroup" aria-labelledby="situation-label" className="flex flex-col gap-2.5">
             {SITUATION_OPTIONS.map((option) => (
               <button
                 key={option}
                 type="button"
+                role="radio"
+                aria-checked={situation === option}
                 onClick={() => setSituation(option)}
                 className="cursor-pointer rounded-[10px] border px-4.5 py-4 text-left text-sm leading-snug font-medium"
                 style={{
@@ -135,7 +137,9 @@ export function LandlordLeadForm() {
             ))}
           </div>
           {step0Error && (
-            <p className="text-[13px] text-error-red">Pick an option to continue.</p>
+            <p role="alert" className="text-[13px] text-error-red">
+              Pick an option to continue.
+            </p>
           )}
           <div className="mt-1 flex justify-end">
             <Button
@@ -229,7 +233,11 @@ export function LandlordLeadForm() {
               className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
             />
           </label>
-          {step2Error && <p className="text-[13px] text-error-red">{step2Error}</p>}
+          {step2Error && (
+            <p role="alert" className="text-[13px] text-error-red">
+              {step2Error}
+            </p>
+          )}
           <div className="mt-1 flex justify-between">
             <button
               type="button"

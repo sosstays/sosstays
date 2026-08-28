@@ -72,10 +72,12 @@ export function NewsletterSignup() {
           className="rounded-full border border-sage-grey/50 bg-cream px-4 py-2.5 font-sans text-sm text-near-black"
         />
         {validationError && (
-          <p className="text-[12px] text-error-red">Enter a valid email address.</p>
+          <p role="alert" className="text-[12px] text-error-red">
+            Enter a valid email address.
+          </p>
         )}
         {stage === "error" && (
-          <p className="text-[12px] text-error-red">
+          <p role="alert" className="text-[12px] text-error-red">
             That didn&apos;t go through — try again in a moment.
           </p>
         )}
