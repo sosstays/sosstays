@@ -19,6 +19,10 @@
   --deep-forest: #3F5240;    /* darker than --forest-green, used for hero/CTA bands */
   --pale-sage: #E3ECD8;      /* lighter than --light-sage, used for sunken card fills */
   --bright-cream: #FFFEF2;   /* near-white cream, used for raised stat tiles on --cream */
+
+  /* Landlords landing redesign — see components/LandlordPageContent.tsx */
+  --warm-cream: #F7EFE9;     /* deeper than --cream, used for the "11pm problem"/spotlight card fills */
+  --muted-maroon: #8A5F52;   /* warmer, lighter than --maroon, used for those sections' eyebrow labels */
 }
 
 @theme inline {
@@ -38,6 +42,8 @@
   --color-deep-forest: var(--deep-forest);
   --color-pale-sage: var(--pale-sage);
   --color-bright-cream: var(--bright-cream);
+  --color-warm-cream: var(--warm-cream);
+  --color-muted-maroon: var(--muted-maroon);
 }
 
 body {
@@ -303,6 +309,25 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .sos-hero-ken-burns,
   .sos-distance-pulse {
+    animation: none;
+  }
+}
+
+/* "The 11pm problem" reply bubble — three dots bobbing in sequence,
+   like a typing indicator. See components/LandlordPageContent.tsx */
+@keyframes sos-typing-dot {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+.sos-typing-dot {
+  animation: sos-typing-dot 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sos-typing-dot {
     animation: none;
   }
 }
