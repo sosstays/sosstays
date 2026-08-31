@@ -6,6 +6,8 @@ export async function POST(request: NextRequest) {
   const {
     name,
     email,
+    phone,
+    marketingConsent,
     area,
     bedrooms,
     platforms,
@@ -27,6 +29,8 @@ export async function POST(request: NextRequest) {
     email,
     fields: {
       name,
+      phone,
+      marketing_consent: marketingConsent === undefined ? undefined : String(marketingConsent),
       area,
       bedrooms,
       platforms,

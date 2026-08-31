@@ -100,8 +100,15 @@ export function RevenueCalculator({
   // calculator, e.g. on /pricing) — the numbers render blurred until they
   // hand over contact details, which is when we actually save the lead.
   const [revealed, setRevealed] = useState(hasContact);
+  // Tracks specifically that the gate itself was just submitted (as
+  // opposed to `revealed` starting true because contact was already
+  // known) — used to swap the closing CTA for a "we'll be in touch"
+  // message once a lead has actually come through the gate.
+  const [gateSubmitted, setGateSubmitted] = useState(false);
   const [gateName, setGateName] = useState("");
   const [gateEmail, setGateEmail] = useState("");
+  const [gatePhone, setGatePhone] = useState("");
+  const [gateMarketingConsent, setGateMarketingConsent] = useState(true);
   const [gateSubmitting, setGateSubmitting] = useState(false);
   const [gateError, setGateError] = useState<string | null>(null);
 
@@ -191,11 +198,15 @@ export function RevenueCalculator({
   function submitLead({
     name: leadName,
     email: leadEmail,
+    phone,
+    marketingConsent,
     current,
     calc,
   }: {
     name: string;
     email: string;
+    phone?: string;
+    marketingConsent?: boolean;
     current: number;
     calc: CalculatorResult;
   }) {
@@ -205,6 +216,8 @@ export function RevenueCalculator({
       body: JSON.stringify({
         name: leadName,
         email: leadEmail,
+        phone,
+        marketingConsent,
         area,
         bedrooms,
         platforms: platforms.join(", "),
@@ -223,9 +236,16 @@ export function RevenueCalculator({
   async function handleGateSubmit() {
     const trimmedName = gateName.trim();
     const trimmedEmail = gateEmail.trim();
+    const trimmedPhone = gatePhone.trim();
     const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail);
-    if (!trimmedName || !validEmail) {
-      setGateError(!trimmedName ? "Please enter your name." : "Please enter a valid email address.");
+    if (!trimmedName || !validEmail || !trimmedPhone) {
+      setGateError(
+        !trimmedName
+          ? "Please enter your name."
+          : !validEmail
+            ? "Please enter a valid email address."
+            : "Please enter your phone number."
+      );
       return;
     }
     setGateError(null);
@@ -233,12 +253,20 @@ export function RevenueCalculator({
 
     const current = revenueMode === "estimate" ? estimatedRevenue : parseFloat(currentRevenue) || 0;
     try {
-      await submitLead({ name: trimmedName, email: trimmedEmail, current, calc: result! });
+      await submitLead({
+        name: trimmedName,
+        email: trimmedEmail,
+        phone: trimmedPhone,
+        marketingConsent: gateMarketingConsent,
+        current,
+        calc: result!,
+      });
     } finally {
       // Reveal regardless of whether the save succeeded — the estimate
       // itself doesn't depend on MailerLite being reachable.
       setGateSubmitting(false);
       setRevealed(true);
+      setGateSubmitted(true);
     }
   }
 
@@ -578,12 +606,17 @@ export function RevenueCalculator({
           occupancy={occupancy}
           result={result}
           revealed={revealed}
+          gateSubmitted={gateSubmitted}
           gateName={gateName}
           gateEmail={gateEmail}
+          gatePhone={gatePhone}
+          gateMarketingConsent={gateMarketingConsent}
           gateSubmitting={gateSubmitting}
           gateError={gateError}
           onGateNameChange={setGateName}
           onGateEmailChange={setGateEmail}
+          onGatePhoneChange={setGatePhone}
+          onGateMarketingConsentChange={setGateMarketingConsent}
           onGateSubmit={handleGateSubmit}
         />
       )}
@@ -599,12 +632,17 @@ function ResultsPanel({
   occupancy,
   result,
   revealed,
+  gateSubmitted,
   gateName,
   gateEmail,
+  gatePhone,
+  gateMarketingConsent,
   gateSubmitting,
   gateError,
   onGateNameChange,
   onGateEmailChange,
+  onGatePhoneChange,
+  onGateMarketingConsentChange,
   onGateSubmit,
 }: {
   name: string;
@@ -614,12 +652,17 @@ function ResultsPanel({
   occupancy: number;
   result: CalculatorResult;
   revealed: boolean;
+  gateSubmitted: boolean;
   gateName: string;
   gateEmail: string;
+  gatePhone: string;
+  gateMarketingConsent: boolean;
   gateSubmitting: boolean;
   gateError: string | null;
   onGateNameChange: (value: string) => void;
   onGateEmailChange: (value: string) => void;
+  onGatePhoneChange: (value: string) => void;
+  onGateMarketingConsentChange: (value: boolean) => void;
   onGateSubmit: () => void;
 }) {
   const firstName = name.trim().split(" ")[0];
@@ -648,10 +691,14 @@ function ResultsPanel({
           <EstimateGate
             name={gateName}
             email={gateEmail}
+            phone={gatePhone}
+            marketingConsent={gateMarketingConsent}
             submitting={gateSubmitting}
             error={gateError}
             onNameChange={onGateNameChange}
             onEmailChange={onGateEmailChange}
+            onPhoneChange={onGatePhoneChange}
+            onMarketingConsentChange={onGateMarketingConsentChange}
             onSubmit={onGateSubmit}
           />
         )}
@@ -737,22 +784,31 @@ function ResultsPanel({
         </div>
       </div>
 
-      <div className="rounded-[18px] bg-maroon p-8 text-center text-cream sm:p-10">
-        <h3 className="mb-2 font-serif text-2xl font-bold">Ready to make this happen?</h3>
-        <p className="mx-auto mb-5 max-w-[420px] text-sm text-light-sage/90">
-          Let&apos;s have a no-obligation 20-minute call to walk through your specific property
-          and confirm what we can achieve together.
-        </p>
-        <Button
-          link="/contact"
-          variant="primary"
-          bgColor="cream"
-          color="maroon"
-          animateColor="maroon"
-        >
-          Book a Free Call with Sos Stays
-        </Button>
-      </div>
+      {gateSubmitted ? (
+        <div className="rounded-[18px] bg-maroon p-8 text-center text-cream sm:p-10">
+          <h3 className="mb-2 font-serif text-2xl font-bold">Thanks — we&apos;ve got your numbers</h3>
+          <p className="mx-auto max-w-[420px] text-sm text-light-sage/90">
+            We&apos;ll get back to you with how to proceed.
+          </p>
+        </div>
+      ) : (
+        <div className="rounded-[18px] bg-maroon p-8 text-center text-cream sm:p-10">
+          <h3 className="mb-2 font-serif text-2xl font-bold">Ready to make this happen?</h3>
+          <p className="mx-auto mb-5 max-w-[420px] text-sm text-light-sage/90">
+            Let&apos;s have a no-obligation 20-minute call to walk through your specific property
+            and confirm what we can achieve together.
+          </p>
+          <Button
+            link="/contact"
+            variant="primary"
+            bgColor="cream"
+            color="maroon"
+            animateColor="maroon"
+          >
+            Book a Free Call with Sos Stays
+          </Button>
+        </div>
+      )}
 
       <p className="mx-auto mt-6 max-w-[640px] text-center text-[11px] leading-relaxed text-near-black/55">
         Projections are estimates based on market data for the Louth–Meath–Newry corridor and
@@ -770,18 +826,26 @@ function ResultsPanel({
 function EstimateGate({
   name,
   email,
+  phone,
+  marketingConsent,
   submitting,
   error,
   onNameChange,
   onEmailChange,
+  onPhoneChange,
+  onMarketingConsentChange,
   onSubmit,
 }: {
   name: string;
   email: string;
+  phone: string;
+  marketingConsent: boolean;
   submitting: boolean;
   error: string | null;
   onNameChange: (value: string) => void;
   onEmailChange: (value: string) => void;
+  onPhoneChange: (value: string) => void;
+  onMarketingConsentChange: (value: boolean) => void;
   onSubmit: () => void;
 }) {
   return (
@@ -795,11 +859,13 @@ function EstimateGate({
       >
         <h4 className="font-serif text-lg font-bold text-near-black">Your numbers are ready</h4>
         <p className="text-[13px] leading-relaxed text-near-black/70">
-          Pop in your name and email and we&apos;ll unlock your full breakdown straightaway.
+          Pop in your details and we&apos;ll unlock your full breakdown straightaway.
         </p>
 
         <label className="flex flex-col gap-1.5 text-sm text-near-black">
-          Name <span className="text-error-red">*</span>
+          <span>
+            Name <span className="text-error-red">*</span>
+          </span>
           <input
             type="text"
             value={name}
@@ -810,7 +876,9 @@ function EstimateGate({
         </label>
 
         <label className="flex flex-col gap-1.5 text-sm text-near-black">
-          Email <span className="text-error-red">*</span>
+          <span>
+            Email <span className="text-error-red">*</span>
+          </span>
           <input
             type="email"
             value={email}
@@ -820,7 +888,33 @@ function EstimateGate({
           />
         </label>
 
+        <label className="flex flex-col gap-1.5 text-sm text-near-black">
+          <span>
+            Phone number <span className="text-error-red">*</span>
+          </span>
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => onPhoneChange(e.target.value)}
+            placeholder="Your phone number"
+            className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+          />
+        </label>
+
         {error && <p className="text-[13px] text-error-red">{error}</p>}
+
+        <div className="flex items-start gap-2.5 rounded-[10px] border border-sage-grey/50 bg-cream p-3.5">
+          <input
+            type="checkbox"
+            id="gate-marketing-consent"
+            checked={marketingConsent}
+            onChange={(e) => onMarketingConsentChange(e.target.checked)}
+            className="mt-0.5 h-[18px] w-[18px] flex-none cursor-pointer accent-[var(--maroon)]"
+          />
+          <label htmlFor="gate-marketing-consent" className="cursor-pointer text-[13px] text-near-black">
+            Keep me updated with property management tips and offers from Sos Stays.
+          </label>
+        </div>
 
         <Button
           type="submit"
