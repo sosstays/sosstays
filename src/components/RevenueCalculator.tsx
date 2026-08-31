@@ -96,6 +96,15 @@ export function RevenueCalculator({
 
   const [result, setResult] = useState<CalculatorResult | null>(null);
 
+  // Gate for visitors who arrive without a known name/email (the standalone
+  // calculator, e.g. on /pricing) — the numbers render blurred until they
+  // hand over contact details, which is when we actually save the lead.
+  const [revealed, setRevealed] = useState(hasContact);
+  const [gateName, setGateName] = useState("");
+  const [gateEmail, setGateEmail] = useState("");
+  const [gateSubmitting, setGateSubmitting] = useState(false);
+  const [gateError, setGateError] = useState<string | null>(null);
+
   // Rough monthly revenue from the occupancy/rate sliders above — used when
   // the owner doesn't know their actual figure.
   const estimatedRevenue = Math.round(adr * (occupancy / 100) * 30.4);
@@ -158,43 +167,78 @@ export function RevenueCalculator({
     });
     setResult(calc);
 
-    // Nothing to attribute this to on the standalone tool — just show the
-    // numbers without saving anywhere.
-    if (!hasContact) {
-      setSubmitting(false);
-      setStage("results");
-      onResultsShown?.();
+    // Already know who this is (e.g. arrived via the contact form) — save
+    // the lead straightaway and show the numbers unblurred.
+    if (hasContact) {
+      try {
+        await submitLead({ name, email, current, calc });
+      } finally {
+        setSubmitting(false);
+        setStage("results");
+        onResultsShown?.();
+      }
       return;
     }
 
+    // Standalone visitor — show the results stage but keep the numbers
+    // blurred behind a name/email gate; the lead is only saved once they
+    // submit that.
+    setSubmitting(false);
+    setStage("results");
+    onResultsShown?.();
+  }
+
+  function submitLead({
+    name: leadName,
+    email: leadEmail,
+    current,
+    calc,
+  }: {
+    name: string;
+    email: string;
+    current: number;
+    calc: CalculatorResult;
+  }) {
+    return fetch("/api/calculator-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: leadName,
+        email: leadEmail,
+        area,
+        bedrooms,
+        platforms: platforms.join(", "),
+        occupancy: `${occupancy}%`,
+        adr: `€${adr}`,
+        currentRevenue: current,
+        hoursPerWeek,
+        biggestChallenge,
+        estimatedPotential: Math.round(calc.net),
+        estimatedUplift: Math.round(calc.uplift),
+        upliftPercent: calc.upliftPercent,
+      }),
+    });
+  }
+
+  async function handleGateSubmit() {
+    const trimmedName = gateName.trim();
+    const trimmedEmail = gateEmail.trim();
+    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail);
+    if (!trimmedName || !validEmail) {
+      setGateError(!trimmedName ? "Please enter your name." : "Please enter a valid email address.");
+      return;
+    }
+    setGateError(null);
+    setGateSubmitting(true);
+
+    const current = revenueMode === "estimate" ? estimatedRevenue : parseFloat(currentRevenue) || 0;
     try {
-      const res = await fetch("/api/calculator-lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          area,
-          bedrooms,
-          platforms: platforms.join(", "),
-          occupancy: `${occupancy}%`,
-          adr: `€${adr}`,
-          currentRevenue: current,
-          hoursPerWeek,
-          biggestChallenge,
-          estimatedPotential: Math.round(calc.net),
-          estimatedUplift: Math.round(calc.uplift),
-          upliftPercent: calc.upliftPercent,
-        }),
-      });
-      if (!res.ok) throw new Error(`Lead submission failed: ${res.status}`);
-      setStage("results");
-    } catch {
-      // Still show results — the estimate isn't dependent on the lead save.
-      setStage("results");
+      await submitLead({ name: trimmedName, email: trimmedEmail, current, calc: result! });
     } finally {
-      setSubmitting(false);
-      onResultsShown?.();
+      // Reveal regardless of whether the save succeeded — the estimate
+      // itself doesn't depend on MailerLite being reachable.
+      setGateSubmitting(false);
+      setRevealed(true);
     }
   }
 
@@ -527,6 +571,14 @@ export function RevenueCalculator({
           platformCount={platforms.length}
           occupancy={occupancy}
           result={result}
+          revealed={revealed}
+          gateName={gateName}
+          gateEmail={gateEmail}
+          gateSubmitting={gateSubmitting}
+          gateError={gateError}
+          onGateNameChange={setGateName}
+          onGateEmailChange={setGateEmail}
+          onGateSubmit={handleGateSubmit}
         />
       )}
     </div>
@@ -540,6 +592,14 @@ function ResultsPanel({
   platformCount,
   occupancy,
   result,
+  revealed,
+  gateName,
+  gateEmail,
+  gateSubmitting,
+  gateError,
+  onGateNameChange,
+  onGateEmailChange,
+  onGateSubmit,
 }: {
   name: string;
   currentRevenue: number;
@@ -547,6 +607,14 @@ function ResultsPanel({
   platformCount: number;
   occupancy: number;
   result: CalculatorResult;
+  revealed: boolean;
+  gateName: string;
+  gateEmail: string;
+  gateSubmitting: boolean;
+  gateError: string | null;
+  onGateNameChange: (value: string) => void;
+  onGateEmailChange: (value: string) => void;
+  onGateSubmit: () => void;
 }) {
   const firstName = name.trim().split(" ")[0];
   const channelLabel =
@@ -569,7 +637,24 @@ function ResultsPanel({
         </p>
       </div>
 
-      <div className="mb-7 grid grid-cols-1 gap-3.5 sm:grid-cols-3">
+      <div className="relative">
+        {!revealed && (
+          <EstimateGate
+            name={gateName}
+            email={gateEmail}
+            submitting={gateSubmitting}
+            error={gateError}
+            onNameChange={onGateNameChange}
+            onEmailChange={onGateEmailChange}
+            onSubmit={onGateSubmit}
+          />
+        )}
+
+        <div
+          className={revealed ? undefined : "pointer-events-none blur-md select-none"}
+          aria-hidden={!revealed}
+        >
+          <div className="mb-7 grid grid-cols-1 gap-3.5 sm:grid-cols-3">
         <div className="rounded-[10px] border border-sage-grey/40 p-5 text-center">
           <p className="mb-2 text-[11px] font-medium tracking-wide text-near-black/60 uppercase">
             Your current monthly
@@ -628,6 +713,8 @@ function ResultsPanel({
           tone="green"
           total
         />
+          </div>
+        </div>
       </div>
 
       <div className="mb-7 rounded-[10px] border border-forest-green/30 bg-light-forest-green/50 p-6">
@@ -670,6 +757,82 @@ function ResultsPanel({
           Get in touch
         </Link>
       </p>
+    </div>
+  );
+}
+
+function EstimateGate({
+  name,
+  email,
+  submitting,
+  error,
+  onNameChange,
+  onEmailChange,
+  onSubmit,
+}: {
+  name: string;
+  email: string;
+  submitting: boolean;
+  error: string | null;
+  onNameChange: (value: string) => void;
+  onEmailChange: (value: string) => void;
+  onSubmit: () => void;
+}) {
+  return (
+    <div className="absolute inset-0 z-10 flex items-start justify-center pt-6 sm:items-center sm:pt-0">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+        className="mx-4 flex w-full max-w-[380px] flex-col gap-3.5 rounded-[14px] border border-sage-grey/40 bg-cream p-6 shadow-lg sm:p-7"
+      >
+        <h4 className="font-serif text-lg font-bold text-near-black">Your numbers are ready</h4>
+        <p className="text-[13px] leading-relaxed text-near-black/70">
+          Pop in your name and email and we&apos;ll unlock your full breakdown straightaway.
+        </p>
+
+        <label className="flex flex-col gap-1.5 text-sm text-near-black">
+          Name <span className="text-error-red">*</span>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => onNameChange(e.target.value)}
+            placeholder="Your name"
+            className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+          />
+        </label>
+
+        <label className="flex flex-col gap-1.5 text-sm text-near-black">
+          Email <span className="text-error-red">*</span>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => onEmailChange(e.target.value)}
+            placeholder="you@example.com"
+            className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+          />
+        </label>
+
+        {error && <p className="text-[13px] text-error-red">{error}</p>}
+
+        <Button
+          type="submit"
+          disabled={submitting}
+          variant="primary"
+          bgColor="maroon"
+          color="cream"
+          animateColor="maroon"
+          size="sm"
+          className="disabled:opacity-60"
+        >
+          {submitting ? "Unlocking…" : "Show My Numbers →"}
+        </Button>
+
+        <p className="text-center text-[11px] text-near-black/55">
+          We&apos;ll never share your data with third parties.
+        </p>
+      </form>
     </div>
   );
 }
