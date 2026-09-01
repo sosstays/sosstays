@@ -8,15 +8,20 @@ export function BookNowCta({
   className,
   bgColor,
   color,
+  external = true,
+  label = "Book now",
 }: {
   bookingUrl: string | null;
   className: string;
   bgColor: ButtonColor;
   color: ButtonColor;
+  /** False for an internal link (e.g. an in-page anchor) rather than an external booking URL. */
+  external?: boolean;
+  label?: string;
 }) {
   return bookingUrl ? (
-    <Button link={bookingUrl} external bgColor={bgColor} color={color} size="custom" className={className}>
-      Book now
+    <Button link={bookingUrl} external={external} bgColor={bgColor} color={color} size="custom" className={className}>
+      {label}
     </Button>
   ) : (
     <span className={`${className} cursor-not-allowed opacity-60`}>Booking coming soon</span>

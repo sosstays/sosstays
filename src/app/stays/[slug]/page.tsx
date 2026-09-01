@@ -49,7 +49,7 @@ export default async function PropertyPage({ params }: Props) {
   // bookingSubdomainUrl set at all) — so use it as-is when it's already a
   // full URL, and only fall back to the slug+subdomain construction
   // otherwise.
-  const bookingUrl = property.uplistingPropertySlug?.startsWith("http")
+  const genericBookingUrl = property.uplistingPropertySlug?.startsWith("http")
     ? property.uplistingPropertySlug
     : siteSettings?.bookingSubdomainUrl && property.uplistingPropertySlug
       ? buildUplistingBookingUrl({
@@ -57,6 +57,18 @@ export default async function PropertyPage({ params }: Props) {
           propertySlug: property.uplistingPropertySlug,
         })
       : null;
+
+  // A property page covers a whole guesthouse, which can have several
+  // separately-bookable Uplisting rooms — there's no single checkout link
+  // for "the property". When at least one room type has one (roomId),
+  // send guests to the room types table below to pick a specific room's
+  // real booking link instead of a generic/property-level one (which, in
+  // practice, has often just been the bare booking domain with no
+  // property or dates attached — see uplistingPropertySlug above).
+  const hasBookableRooms = (property.roomTypes ?? []).some((room: { roomId?: string }) => room.roomId);
+  const bookingUrl = hasBookableRooms ? "#room-types" : genericBookingUrl;
+  const bookingIsExternal = !hasBookableRooms;
+  const bookingLabel = hasBookableRooms ? "See room types" : "Book now";
 
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", url: SITE_URL },
@@ -155,6 +167,8 @@ export default async function PropertyPage({ params }: Props) {
           </div>
           <BookNowCta
             bookingUrl={bookingUrl}
+            external={bookingIsExternal}
+            label={bookingLabel}
             bgColor="forest-green"
             color="cream"
             className="px-7 py-3.5 text-[15px] font-semibold"
@@ -229,7 +243,7 @@ export default async function PropertyPage({ params }: Props) {
 
       {/* ROOM TYPES */}
       {property.roomTypes?.length > 0 && (
-        <section className="mx-auto max-w-6xl px-8 pb-14 sm:px-14">
+        <section id="room-types" className="mx-auto max-w-6xl scroll-mt-24 px-8 pb-14 sm:px-14">
           <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
             Room types
           </h2>
@@ -272,6 +286,8 @@ export default async function PropertyPage({ params }: Props) {
           <p className="mb-7 text-[15px] text-light-sage">Check your dates and send it.</p>
           <BookNowCta
             bookingUrl={bookingUrl}
+            external={bookingIsExternal}
+            label={bookingLabel}
             bgColor="cream"
             color="forest-green"
             className="px-8 py-4 text-[15px] font-semibold"
