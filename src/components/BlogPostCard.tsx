@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
 import { urlFor } from "@/sanity/image";
+import { MediaCard } from "@/components/MediaCard";
 
 type BlogPost = {
   _id: string;
@@ -19,46 +19,35 @@ const dateFormatter = new Intl.DateTimeFormat("en-IE", {
   day: "numeric",
 });
 
-// Same card shape as AreaGuideCard, but the footer swaps the "Explore →"
-// link for the post's byline, since a blog card's equivalent
-// call-to-action is "who wrote this" rather than "go here".
+// Same card shape as AreaGuideCard (see MediaCard), but the footer swaps
+// the "Explore →" link for the post's byline, since a blog card's
+// equivalent call-to-action is "who wrote this" rather than "go here".
 export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fallbackAuthorName: string }) {
   const authorName = post.author?.name || fallbackAuthorName;
   const primaryTag = post.tags?.[0];
 
   return (
-    <Link
+    <MediaCard
       href={`/blog/${post.slug}`}
-      className="block overflow-hidden rounded-[10px] border border-sage-grey/40 bg-light-forest-green"
-    >
-      {post.coverImage ? (
-        <div className="relative h-40">
-          <Image
-            src={urlFor(post.coverImage).width(500).height(320).url()}
-            alt={post.coverImage.alt ?? post.title}
-            fill
-            className="object-cover"
-          />
-        </div>
-      ) : (
-        <div className="h-40 bg-light-sage/25" />
-      )}
-      <div className="p-5">
-        <div className="mb-2 flex items-center gap-2.5 text-xs text-near-black/60">
-          {primaryTag && (
-            <span className="rounded-full bg-cream px-2.5 py-1 font-semibold text-forest-green">
-              {primaryTag}
-            </span>
-          )}
-          {post.publishedAt && <span>{dateFormatter.format(new Date(post.publishedAt))}</span>}
-        </div>
-
-        <h3 className="mb-2 font-serif text-lg font-bold text-forest-green">{post.title}</h3>
-
-        {post.excerpt && (
-          <p className="mb-3 text-sm leading-relaxed text-near-black/70">{post.excerpt}</p>
-        )}
-
+      image={post.coverImage}
+      imageAlt={post.coverImage?.alt ?? post.title}
+      title={post.title}
+      header={
+        (primaryTag || post.publishedAt) && (
+          <div className="mb-2 flex items-center gap-2.5 text-xs text-near-black/60">
+            {primaryTag && (
+              <span className="rounded-full bg-cream px-2.5 py-1 font-semibold text-forest-green">
+                {primaryTag}
+              </span>
+            )}
+            {post.publishedAt && <span>{dateFormatter.format(new Date(post.publishedAt))}</span>}
+          </div>
+        )
+      }
+      body={
+        post.excerpt && <p className="mb-3 text-sm leading-relaxed text-near-black/70">{post.excerpt}</p>
+      }
+      footer={
         <div className="flex items-center gap-2.5">
           {post.author?.avatar ? (
             <div className="relative h-7 w-7 flex-none overflow-hidden rounded-full">
@@ -76,7 +65,7 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
           )}
           <span className="text-sm font-semibold text-forest-green">{authorName}</span>
         </div>
-      </div>
-    </Link>
+      }
+    />
   );
 }
