@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/Button";
 
 // A floating "book direct" bar that slides in once the visitor scrolls past
 // roughly one viewport height — a persistent low-friction CTA for long,
@@ -42,14 +43,17 @@ export function StickyBookingBar({
             </span>
           ))}
         </div>
-        <a
-          href={ctaHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center rounded-full bg-cream px-6.5 py-3 text-sm font-semibold text-deep-forest transition-transform duration-200 hover:-translate-y-0.5"
+        <Button
+          link={ctaHref}
+          external
+          animate={false}
+          bgColor="cream"
+          color="deep-forest"
+          size="custom"
+          className="px-6.5 py-3 text-sm font-semibold transition-transform duration-200 hover:-translate-y-0.5"
         >
           {ctaLabel} →
-        </a>
+        </Button>
       </div>
     </div>
   );

@@ -7,7 +7,13 @@ import type { MouseEvent, ReactNode } from "react";
 // accepting arbitrary strings) so every class below can be written out
 // literally for Tailwind's static scanner instead of built with template
 // interpolation, which it can't see into.
-export type ButtonColor = "forest-green" | "cream" | "maroon" | "light-sage" | "transparent";
+export type ButtonColor =
+  | "forest-green"
+  | "cream"
+  | "maroon"
+  | "light-sage"
+  | "transparent"
+  | "deep-forest";
 
 const BG_CLASS: Record<ButtonColor, string> = {
   "forest-green": "bg-forest-green",
@@ -15,6 +21,7 @@ const BG_CLASS: Record<ButtonColor, string> = {
   maroon: "bg-maroon",
   "light-sage": "bg-light-sage",
   transparent: "bg-transparent",
+  "deep-forest": "bg-deep-forest",
 };
 
 const TEXT_CLASS: Record<ButtonColor, string> = {
@@ -23,6 +30,7 @@ const TEXT_CLASS: Record<ButtonColor, string> = {
   maroon: "text-maroon",
   "light-sage": "text-light-sage",
   transparent: "text-transparent",
+  "deep-forest": "text-deep-forest",
 };
 
 const BORDER_CLASS: Record<ButtonColor, string> = {
@@ -31,6 +39,7 @@ const BORDER_CLASS: Record<ButtonColor, string> = {
   maroon: "border-maroon",
   "light-sage": "border-light-sage",
   transparent: "border-transparent",
+  "deep-forest": "border-deep-forest",
 };
 
 // group-hover text-color classes have to exist as literal strings somewhere
@@ -42,6 +51,7 @@ const GROUP_HOVER_TEXT_CLASS: Record<ButtonColor, string> = {
   maroon: "group-hover:text-maroon",
   "light-sage": "group-hover:text-light-sage",
   transparent: "group-hover:text-transparent",
+  "deep-forest": "group-hover:text-deep-forest",
 };
 
 const SIZE_CLASS = {
