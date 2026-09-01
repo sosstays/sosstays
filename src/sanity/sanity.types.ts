@@ -764,6 +764,7 @@ export type PropertyPage = {
     autoplaySeconds?: number;
   };
   uplistingPropertySlug: string;
+  uplistingPropertyId?: number;
   seoTitle?: string;
   seoDescription?: string;
   seoImage?: {
@@ -1096,28 +1097,8 @@ export type BLOG_POST_QUERY_RESULT = {
 } | null;
 
 // Source: ../web/src/sanity/queries.ts
-// Variable: PROPERTY_PAGES_QUERY
-// Query: *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {    _id,    name,    "slug": slug.current,    location,    shortDescription,    "coverImage": gallery[0]  }
-export type PROPERTY_PAGES_QUERY_RESULT = Array<{
-  _id: string;
-  name: string;
-  slug: string;
-  location: string;
-  shortDescription: string | null;
-  coverImage: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt: string;
-    _type: "image";
-    _key: string;
-  } | null;
-}>;
-
-// Source: ../web/src/sanity/queries.ts
 // Variable: PROPERTY_PAGE_QUERY
-// Query: *[_type == "propertyPage" && slug.current == $slug][0] {    _id,    name,    "slug": slug.current,    location,    locationLink,    shortDescription,    fullDescription,    gallery,    galleryPromotion {      enabled,      highlights[] {        headline,        description,        image {          ...,          alt        },        supportingImages[] {          ...,          alt        },        ctaLabel,        ctaHref      },      delaySeconds,      autoplaySeconds    },    "videoUrl": video.asset->url,    "videoMimeType": video.asset->mimeType,    roomTypes,    amenities,    sleeps,    priceLabel,    bedrooms,    beds,    bathrooms,    propertyType,    reviewScore,    reviewCount,    reviewCategories,    uplistingPropertySlug,    faqs,    relatedAreaGuides[]-> {      _id,      areaName,      "slug": slug.current,      heroImage,      introduction    },      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
+// Query: *[_type == "propertyPage" && slug.current == $slug][0] {    _id,    name,    "slug": slug.current,    location,    locationLink,    shortDescription,    fullDescription,    gallery,    galleryPromotion {      enabled,      highlights[] {        headline,        description,        image {          ...,          alt        },        supportingImages[] {          ...,          alt        },        ctaLabel,        ctaHref      },      delaySeconds,      autoplaySeconds    },    "videoUrl": video.asset->url,    "videoMimeType": video.asset->mimeType,    roomTypes,    amenities,    sleeps,    priceLabel,    bedrooms,    beds,    bathrooms,    propertyType,    reviewScore,    reviewCount,    reviewCategories,    uplistingPropertySlug,    uplistingPropertyId,    faqs,    relatedAreaGuides[]-> {      _id,      areaName,      "slug": slug.current,      heroImage,      introduction    },      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
 export type PROPERTY_PAGE_QUERY_RESULT = {
   _id: string;
   name: string;
@@ -1222,6 +1203,7 @@ export type PROPERTY_PAGE_QUERY_RESULT = {
     _key: string;
   }> | null;
   uplistingPropertySlug: string;
+  uplistingPropertyId: number | null;
   faqs: Array<{
     question: string;
     answer: string;
@@ -1271,6 +1253,27 @@ export type PROPERTY_PAGE_QUERY_RESULT = {
     } | null;
     noIndex: boolean | false;
   };
+} | null;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: PROPERTY_BOOKING_QUERY
+// Query: *[_type == "propertyPage" && slug.current == $slug][0] {    _id,    name,    "slug": slug.current,    location,    sleeps,    "coverImage": gallery[0],    uplistingPropertyId  }
+export type PROPERTY_BOOKING_QUERY_RESULT = {
+  _id: string;
+  name: string;
+  slug: string;
+  location: string;
+  sleeps: number | null;
+  coverImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: "image";
+    _key: string;
+  } | null;
+  uplistingPropertyId: number | null;
 } | null;
 
 // Source: ../web/src/sanity/queries.ts
@@ -1698,7 +1701,7 @@ export type HOSTS_MODULE_QUERY_RESULT = {
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: HOMEPAGE_QUERY
-// Query: {  "properties": *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...3] {    _id, name, "slug": slug.current, location, shortDescription, sleeps,    "coverImage": gallery[0], "gallery": gallery[0...3]  },  "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {    _id, areaName, "slug": slug.current, heroImage, introduction  },  "posts": *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) [0...3] {    _id, title, "slug": slug.current, excerpt, coverImage  }}
+// Query: {  "properties": *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...3] {    _id, name, "slug": slug.current, location, shortDescription, sleeps,    "coverImage": gallery[0], "gallery": gallery[0...3]  },  "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {    _id, areaName, "slug": slug.current, heroImage, introduction  }}
 export type HOMEPAGE_QUERY_RESULT = {
   properties: Array<{
     _id: string;
@@ -1756,20 +1759,6 @@ export type HOMEPAGE_QUERY_RESULT = {
       _type: "block";
       _key: string;
     }>;
-  }>;
-  posts: Array<{
-    _id: string;
-    title: string;
-    slug: string;
-    excerpt: string | null;
-    coverImage: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt: string;
-      _type: "image";
-    };
   }>;
 };
 
@@ -2064,8 +2053,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt,\n    author,\n    tags\n  }\n': BLOG_POSTS_QUERY_RESULT;
     '\n  *[_type == "blogPost" && defined(slug.current) && "landlord" in tags] | order(publishedAt desc) [0...3] {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt,\n    author,\n    tags\n  }\n': LANDLORD_BLOG_POSTS_QUERY_RESULT;
     '\n  *[_type == "blogPost" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    body,\n    publishedAt,\n    author,\n    tags,\n    relatedAreaGuides[]-> {\n      _id,\n      areaName,\n      "slug": slug.current,\n      heroImage\n    },\n    promotedProperty-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      priceLabel,\n      "coverImage": gallery[0]\n    },\n    "relatedPosts": *[_type == "blogPost" && defined(slug.current) && _id != ^._id] | order(publishedAt desc) [0...3] {\n      _id,\n      title,\n      "slug": slug.current,\n      coverImage,\n      publishedAt\n    },\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': BLOG_POST_QUERY_RESULT;
-    '\n  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {\n    _id,\n    name,\n    "slug": slug.current,\n    location,\n    shortDescription,\n    "coverImage": gallery[0]\n  }\n': PROPERTY_PAGES_QUERY_RESULT;
-    '\n  *[_type == "propertyPage" && slug.current == $slug][0] {\n    _id,\n    name,\n    "slug": slug.current,\n    location,\n    locationLink,\n    shortDescription,\n    fullDescription,\n    gallery,\n    galleryPromotion {\n      enabled,\n      highlights[] {\n        headline,\n        description,\n        image {\n          ...,\n          alt\n        },\n        supportingImages[] {\n          ...,\n          alt\n        },\n        ctaLabel,\n        ctaHref\n      },\n      delaySeconds,\n      autoplaySeconds\n    },\n    "videoUrl": video.asset->url,\n    "videoMimeType": video.asset->mimeType,\n    roomTypes,\n    amenities,\n    sleeps,\n    priceLabel,\n    bedrooms,\n    beds,\n    bathrooms,\n    propertyType,\n    reviewScore,\n    reviewCount,\n    reviewCategories,\n    uplistingPropertySlug,\n    faqs,\n    relatedAreaGuides[]-> {\n      _id,\n      areaName,\n      "slug": slug.current,\n      heroImage,\n      introduction\n    },\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': PROPERTY_PAGE_QUERY_RESULT;
+    '\n  *[_type == "propertyPage" && slug.current == $slug][0] {\n    _id,\n    name,\n    "slug": slug.current,\n    location,\n    locationLink,\n    shortDescription,\n    fullDescription,\n    gallery,\n    galleryPromotion {\n      enabled,\n      highlights[] {\n        headline,\n        description,\n        image {\n          ...,\n          alt\n        },\n        supportingImages[] {\n          ...,\n          alt\n        },\n        ctaLabel,\n        ctaHref\n      },\n      delaySeconds,\n      autoplaySeconds\n    },\n    "videoUrl": video.asset->url,\n    "videoMimeType": video.asset->mimeType,\n    roomTypes,\n    amenities,\n    sleeps,\n    priceLabel,\n    bedrooms,\n    beds,\n    bathrooms,\n    propertyType,\n    reviewScore,\n    reviewCount,\n    reviewCategories,\n    uplistingPropertySlug,\n    uplistingPropertyId,\n    faqs,\n    relatedAreaGuides[]-> {\n      _id,\n      areaName,\n      "slug": slug.current,\n      heroImage,\n      introduction\n    },\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': PROPERTY_PAGE_QUERY_RESULT;
+    '\n  *[_type == "propertyPage" && slug.current == $slug][0] {\n    _id,\n    name,\n    "slug": slug.current,\n    location,\n    sleeps,\n    "coverImage": gallery[0],\n    uplistingPropertyId\n  }\n': PROPERTY_BOOKING_QUERY_RESULT;
     '\n  *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) {\n    _id,\n    areaName,\n    "slug": slug.current,\n    heroImage,\n    introduction\n  }\n': AREA_GUIDES_QUERY_RESULT;
     '\n  *[_type == "areaGuide" && slug.current == $slug][0] {\n    _id,\n    areaName,\n    "slug": slug.current,\n    heroImage,\n    introduction,\n    thingsToDo,\n    travelNotes,\n    faqs,\n    featuredProperties[]-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      sleeps,\n      "coverImage": gallery[0],\n      "gallery": gallery[0...3],\n      uplistingPropertySlug\n    },\n    "relatedBlogPosts": *[_type == "blogPost" && references(^._id)] {\n      _id,\n      title,\n      "slug": slug.current,\n      excerpt,\n      coverImage\n    },\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': AREA_GUIDE_QUERY_RESULT;
     '\n  *[_type == "landlordPage" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    heroStatement,\n    proofPoints,\n    body,\n    faqs,\n    ctaLabel,\n    ctaUrl,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': LANDLORD_PAGE_QUERY_RESULT;
@@ -2076,7 +2065,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "termsPage" && _id == "termsPage"][0] {\n    title,\n    lastUpdated,\n    body,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': TERMS_PAGE_QUERY_RESULT;
     '\n  *[_type == "heroSection" && _id == "heroSection"][0] {\n    eyebrow,\n    heading,\n    body,\n    subBody,\n    image,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl\n  }\n': HERO_SECTION_QUERY_RESULT;
     '\n  *[_type == "hostsModule" && _id == "hostsModule"][0] {\n    eyebrow,\n    heading,\n    body,\n    commissionRate,\n    commissionLabel,\n    commissionSuffix,\n    commissionNote,\n    ctaLabel,\n    ctaUrl,\n    stepperEyebrow,\n    stepperHeading,\n    steps[] {\n      title,\n      bullets,\n      image\n    },\n    marqueeHeading,\n    marqueeSubtext\n  }\n': HOSTS_MODULE_QUERY_RESULT;
-    '{\n  "properties": *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...3] {\n    _id, name, "slug": slug.current, location, shortDescription, sleeps,\n    "coverImage": gallery[0], "gallery": gallery[0...3]\n  },\n  "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {\n    _id, areaName, "slug": slug.current, heroImage, introduction\n  },\n  "posts": *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) [0...3] {\n    _id, title, "slug": slug.current, excerpt, coverImage\n  }\n}': HOMEPAGE_QUERY_RESULT;
+    '{\n  "properties": *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...3] {\n    _id, name, "slug": slug.current, location, shortDescription, sleeps,\n    "coverImage": gallery[0], "gallery": gallery[0...3]\n  },\n  "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {\n    _id, areaName, "slug": slug.current, heroImage, introduction\n  }\n}': HOMEPAGE_QUERY_RESULT;
     '\n  *[_type == "landingPage" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    heroEyebrow,\n    heroHeadline,\n    heroSubtext,\n    heroTags,\n    heroImage,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl,\n    marqueeItems,\n    distanceStat,\n    distanceLabel,\n    destinationName,\n    distanceText,\n    geographyHeading,\n    proximityStats[] {\n      value,\n      label\n    },\n    directBookingBadge,\n    directBookingHeadline,\n    directBookingText,\n    directBookingSavingsPercent,\n    directBookingComparisonNote,\n    featuredProperty-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      sleeps,\n      bedrooms,\n      beds,\n      bathrooms,\n      reviewScore,\n      reviewCount,\n      amenities,\n      roomTypes,\n      "coverImage": gallery[0],\n      "gallery": gallery[0...3],\n      uplistingPropertySlug\n    },\n    infoSections[] {\n      eyebrow,\n      heading,\n      body,\n      layout,\n      items[] {\n        title,\n        description,\n        tag,\n        image,\n        link\n      }\n    },\n    pricingTiers[] {\n      amount,\n      label\n    },\n    pricingNote,\n    pricingLink,\n    pricingLinkLabel,\n    itineraryEyebrow,\n    itineraryHeading,\n    itineraryText,\n    itineraryDays[] {\n      dayLabel,\n      items[] {\n        time,\n        title,\n        description\n      }\n    },\n    relatedAreaGuide-> {\n      areaName,\n      "slug": slug.current,\n      thingsToDo\n    },\n    finalCtaHeadline,\n    finalCtaText,\n    finalCtaSecondaryLabel,\n    finalCtaSecondaryUrl,\n    stickyBarEnabled,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': LANDING_PAGE_QUERY_RESULT;
     '\n  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage"] && defined(slug.current) && noIndex != true] {\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      slug.current\n    ),\n    _updatedAt\n  }\n': SITEMAP_QUERY_RESULT;
     '\n{\n  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {\n    siteName,\n    defaultSeoDescription,\n    businessName,\n    contactEmail,\n    socialLinks\n  },\n  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage"] && defined(slug.current) && noIndex != true] {\n    _type,\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      slug.current\n    ),\n    "title": coalesce(name, title, areaName, ""),\n    "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")\n  }\n}\n': LLMS_TXT_QUERY_RESULT;

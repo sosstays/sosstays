@@ -125,6 +125,7 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     reviewCount,
     reviewCategories,
     uplistingPropertySlug,
+    uplistingPropertyId,
     faqs,
     relatedAreaGuides[]-> {
       _id,
@@ -134,6 +135,20 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
       introduction
     },
     ${seoProjection}
+  }
+`);
+
+// Lean projection for the /stays/[slug]/book checkout flow — just enough to
+// resolve a slug to its Uplisting property id and display a summary.
+export const PROPERTY_BOOKING_QUERY = defineQuery(`
+  *[_type == "propertyPage" && slug.current == $slug][0] {
+    _id,
+    name,
+    "slug": slug.current,
+    location,
+    sleeps,
+    "coverImage": gallery[0],
+    uplistingPropertyId
   }
 `);
 
