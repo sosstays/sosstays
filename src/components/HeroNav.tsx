@@ -3,8 +3,55 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
-import { Button } from "@/components/Button";
+import { Button, type ButtonColor } from "@/components/Button";
 import type { NavLink } from "@/lib/navLinks";
+
+type Variant = "default" | "landlords";
+
+// One table entry per look, instead of the ternary cascade this used to be
+// — a third nav context (a new variant) means one new row here instead of
+// another cascade to extend, matching how Button's own BG_CLASS/TEXT_CLASS
+// maps work.
+const VARIANT_STYLES: Record<
+  Variant,
+  {
+    navBg: string;
+    navBorder: string;
+    linkColor: string;
+    logoColor: string;
+    ctaSizeClass: string;
+    iconColor: string;
+    mobilePanelBg: string;
+    mobilePanelBorder: string;
+    ctaBgColor?: ButtonColor;
+    ctaColor?: ButtonColor;
+    ctaAnimateColor?: ButtonColor;
+  }
+> = {
+  default: {
+    navBg: "bg-cream/95",
+    navBorder: "border-[#E2E2DC]",
+    linkColor: "text-forest-green",
+    logoColor: "text-forest-green",
+    ctaSizeClass: "px-4 py-2 text-xs font-medium sm:px-5 sm:py-2.5 sm:text-sm",
+    iconColor: "text-near-black",
+    mobilePanelBg: "bg-cream",
+    mobilePanelBorder: "border-[#E2E2DC]",
+  },
+  landlords: {
+    navBg: "bg-maroon/95",
+    navBorder: "border-maroon",
+    linkColor: "text-cream",
+    logoColor: "text-cream",
+    ctaSizeClass: "px-4 py-2 text-xs font-semibold sm:px-5 sm:py-2.5 sm:text-sm",
+    iconColor: "text-cream",
+    mobilePanelBg: "bg-maroon",
+    mobilePanelBorder: "border-cream/20",
+    ctaBgColor: "cream",
+    ctaColor: "maroon",
+    ctaAnimateColor: "maroon",
+  },
+};
 
 // Next.js's <Link> only scrolls on navigation when the resulting URL
 // actually changes. If you're already on the target page and its hash
@@ -49,39 +96,30 @@ export function HeroNav({
   links: NavLink[];
   ctaHref?: string;
   ctaLabel?: string;
-  variant?: "default" | "landlords";
+  variant?: Variant;
   sticky?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const isLandlords = variant === "landlords";
-
-  const navBg = isLandlords ? "bg-maroon/95" : "bg-cream/95";
-  const navBorder = isLandlords ? "border-maroon" : "border-[#E2E2DC]";
-  const linkColorClass = isLandlords ? "text-cream" : "text-forest-green";
-  const logoColorClass = isLandlords ? "text-cream" : "text-forest-green";
-  const ctaSizeClass = isLandlords
-    ? "px-4 py-2 text-xs font-semibold sm:px-5 sm:py-2.5 sm:text-sm"
-    : "px-4 py-2 text-xs font-medium sm:px-5 sm:py-2.5 sm:text-sm";
-  const iconColor = isLandlords ? "text-cream" : "text-near-black";
-  const mobilePanelBg = isLandlords ? "bg-maroon" : "bg-cream";
-  const mobilePanelBorder = isLandlords ? "border-cream/20" : "border-[#E2E2DC]";
+  const styles = VARIANT_STYLES[variant];
   const positionClass = sticky ? "sticky top-0 z-40" : "absolute inset-x-0 top-0 z-20";
 
   return (
-    <nav className={`${positionClass} border-b ${navBorder} ${navBg} px-8 py-5 backdrop-blur sm:px-14`}>
+    <nav
+      className={`${positionClass} border-b ${styles.navBorder} ${styles.navBg} px-8 py-5 backdrop-blur sm:px-14`}
+    >
       <div className="flex items-center justify-between gap-3">
         <Link href="/" className="flex items-center">
-          <Logo className={`h-10 w-auto ${logoColorClass}`} />
+          <Logo className={`h-10 w-auto ${styles.logoColor}`} />
         </Link>
 
         <div className="flex items-center gap-4 sm:gap-10">
           <div className="hidden items-center gap-7 sm:flex sm:gap-10">
             {links.map((link) => (
               <Link
-                key={link.href}
+                key={`${link.href}::${link.label}`}
                 href={link.href}
                 onClick={(e) => handleHashNavClick(e, link.href)}
-                className={`text-sm font-medium transition-opacity hover:opacity-70 ${linkColorClass}`}
+                className={`text-sm font-medium transition-opacity hover:opacity-70 ${styles.linkColor}`}
               >
                 {link.label}
               </Link>
@@ -91,12 +129,12 @@ export function HeroNav({
             <Button
               link={ctaHref}
               onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleHashNavClick(e, ctaHref)}
-              variant={isLandlords ? "primary" : "secondary"}
-              bgColor={isLandlords ? "cream" : undefined}
-              color={isLandlords ? "maroon" : undefined}
-              animateColor={isLandlords ? "maroon" : undefined}
+              variant={styles.ctaBgColor ? "primary" : "secondary"}
+              bgColor={styles.ctaBgColor}
+              color={styles.ctaColor}
+              animateColor={styles.ctaAnimateColor}
               size="custom"
-              className={ctaSizeClass}
+              className={styles.ctaSizeClass}
             >
               {ctaLabel}
             </Button>
@@ -106,7 +144,7 @@ export function HeroNav({
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className={`flex h-8 w-8 flex-none items-center justify-center ${iconColor} sm:hidden`}
+            className={`flex h-8 w-8 flex-none items-center justify-center ${styles.iconColor} sm:hidden`}
           >
             {open ? (
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -132,16 +170,18 @@ export function HeroNav({
       </div>
 
       {open && (
-        <div className={`mt-4 flex flex-col gap-1 rounded-[10px] border ${mobilePanelBorder} ${mobilePanelBg} p-3 sm:hidden`}>
+        <div
+          className={`mt-4 flex flex-col gap-1 rounded-[10px] border ${styles.mobilePanelBorder} ${styles.mobilePanelBg} p-3 sm:hidden`}
+        >
           {links.map((link) => (
             <Link
-              key={link.href}
+              key={`${link.href}::${link.label}`}
               href={link.href}
               onClick={(e) => {
                 handleHashNavClick(e, link.href);
                 setOpen(false);
               }}
-              className={`rounded-[6px] px-3 py-3 text-sm font-medium transition-opacity hover:opacity-70 ${linkColorClass}`}
+              className={`rounded-[6px] px-3 py-3 text-sm font-medium transition-opacity hover:opacity-70 ${styles.linkColor}`}
             >
               {link.label}
             </Link>
