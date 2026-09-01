@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Button } from "@/components/Button";
+import { StepProgress } from "@/components/StepProgress";
 import { AddressAutocomplete, type AddressAutocompleteValue } from "@/components/AddressAutocomplete";
 import { calculateRevenue, formatEuro, type CalculatorResult } from "@/lib/revenueCalculator";
 
@@ -270,40 +271,12 @@ export function RevenueCalculator({
     }
   }
 
-  const progressSegments = [1, 2, 3].map((n) => ({
-    number: n,
-    grow: n < TOTAL_STEPS,
-    reached: n <= step,
-    lineReached: n < step,
-  }));
-
   return (
     <div id="calculator" className="w-full">
       {stage === "form" && (
         <div className="rounded-[18px] border border-sage-grey/30 bg-cream p-8 shadow-sm sm:p-11">
           {formIntro && <div className="mb-9">{formIntro}</div>}
-          <div className="mb-9 flex items-center gap-2.5">
-            {progressSegments.map((seg) => (
-              <div key={seg.number} className={`flex items-center gap-2.5 ${seg.grow ? "flex-1" : ""}`}>
-                <div
-                  className="flex h-7 w-7 flex-none items-center justify-center rounded-full border text-[13px] font-semibold"
-                  style={{
-                    background: seg.reached ? "var(--maroon)" : "var(--cream)",
-                    color: seg.reached ? "var(--cream)" : "var(--near-black)",
-                    borderColor: seg.reached ? "var(--maroon)" : "var(--sage-grey)",
-                  }}
-                >
-                  {seg.number}
-                </div>
-                {seg.grow && (
-                  <div
-                    className="h-0.5 flex-1"
-                    style={{ background: seg.lineReached ? "var(--maroon)" : "var(--sage-grey)" }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+          <StepProgress steps={TOTAL_STEPS} current={step} />
 
           {step === 1 && (
             <div className="flex flex-col gap-4.5">

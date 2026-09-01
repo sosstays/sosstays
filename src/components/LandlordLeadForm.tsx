@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
+import { StepProgress } from "@/components/StepProgress";
 import { saveLandlordContact } from "@/lib/landlordHandoff";
 
 const SITUATION_OPTIONS = [
@@ -75,42 +76,9 @@ export function LandlordLeadForm() {
     `Name: ${name}\nEmail: ${email}\nMobile: ${mobile}\nSituation: ${situation}\n\n${propertyDescription}`
   )}`;
 
-  const progressSegments = [0, 1, 2].map((i) => {
-    const reached = stage !== "form" || i <= step;
-    return {
-      number: i + 1,
-      grow: i < 2,
-      reached,
-      lineReached: stage !== "form" || i < step,
-    };
-  });
-
   return (
     <div className="rounded-[18px] border border-sage-grey/40 p-8 text-left sm:p-11">
-      {stage === "form" && (
-        <div className="mb-9 flex items-center gap-2.5">
-          {progressSegments.map((seg) => (
-            <div key={seg.number} className={`flex items-center gap-2.5 ${seg.grow ? "flex-1" : ""}`}>
-              <div
-                className="flex h-7 w-7 flex-none items-center justify-center rounded-full border text-[13px] font-semibold"
-                style={{
-                  background: seg.reached ? "var(--maroon)" : "var(--cream)",
-                  color: seg.reached ? "var(--cream)" : "var(--near-black)",
-                  borderColor: seg.reached ? "var(--maroon)" : "var(--sage-grey)",
-                }}
-              >
-                {seg.number}
-              </div>
-              {seg.grow && (
-                <div
-                  className="h-0.5 flex-1"
-                  style={{ background: seg.lineReached ? "var(--maroon)" : "var(--sage-grey)" }}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      {stage === "form" && <StepProgress steps={3} current={step + 1} />}
 
       {stage === "form" && step === 0 && (
         <div className="flex flex-col gap-4.5">
