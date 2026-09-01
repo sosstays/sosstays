@@ -112,10 +112,7 @@ export function LandlordLeadForm() {
           <div className="mt-1 flex justify-end">
             <Button
               onClick={goNext}
-              variant="primary"
-              bgColor="maroon"
-              color="cream"
-              animateColor="maroon"
+              variant="landlord"
               size="sm"
             >
               Continue →
@@ -149,10 +146,7 @@ export function LandlordLeadForm() {
             </button>
             <Button
               onClick={goNext}
-              variant="primary"
-              bgColor="maroon"
-              color="cream"
-              animateColor="maroon"
+              variant="landlord"
               size="sm"
             >
               Continue →
@@ -217,10 +211,7 @@ export function LandlordLeadForm() {
             <Button
               disabled={submitting}
               onClick={submitLeadForm}
-              variant="primary"
-              bgColor="maroon"
-              color="cream"
-              animateColor="maroon"
+              variant="landlord"
               size="custom"
               className="px-7 py-3.5 text-sm font-semibold disabled:opacity-60"
             >
@@ -242,10 +233,7 @@ export function LandlordLeadForm() {
           <Button
             link={mailtoHref}
             external
-            variant="primary"
-            bgColor="maroon"
-            color="cream"
-            animateColor="maroon"
+            variant="landlord"
             size="sm"
           >
             Email us instead

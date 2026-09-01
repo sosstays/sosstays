@@ -63,12 +63,15 @@ const SIZE_CLASS = {
   custom: "",
 } as const;
 
-type Variant = "primary" | "secondary";
+type Variant = "primary" | "secondary" | "landlord";
 
-// The two default looks. "primary" is a solid fill; "secondary" is an
-// outline that fills in on hover. Both wash to light-sage and settle the
-// label into forest-green by default — override bgColor/color/
-// animateBgColor/animateColor per instance for maroon-context pages etc.
+// The default looks. "primary" is a solid fill; "secondary" is an outline
+// that fills in on hover; both wash to light-sage and settle the label into
+// forest-green by default. "landlord" is "primary" recolored maroon/cream
+// for landlord-context pages/forms — was being re-specified as
+// bgColor="maroon" color="cream" animateColor="maroon" at every call site.
+// Override bgColor/color/animateBgColor/animateColor per instance for
+// anything that doesn't fit one of these three.
 const VARIANT_DEFAULTS: Record<
   Variant,
   { bgColor: ButtonColor; color: ButtonColor; animateBgColor: ButtonColor; animateColor: ButtonColor }
@@ -84,6 +87,12 @@ const VARIANT_DEFAULTS: Record<
     color: "forest-green",
     animateBgColor: "light-sage",
     animateColor: "forest-green",
+  },
+  landlord: {
+    bgColor: "maroon",
+    color: "cream",
+    animateBgColor: "light-sage",
+    animateColor: "maroon",
   },
 };
 

@@ -344,10 +344,7 @@ export function RevenueCalculator({
               <div className="mt-1 flex justify-end">
                 <Button
                   onClick={() => goStep(2)}
-                  variant="primary"
-                  bgColor="maroon"
-                  color="cream"
-                  animateColor="maroon"
+                  variant="landlord"
                   size="sm"
                 >
                   Next — Current Performance →
@@ -474,10 +471,7 @@ export function RevenueCalculator({
                 </button>
                 <Button
                   onClick={() => goStep(3)}
-                  variant="primary"
-                  bgColor="maroon"
-                  color="cream"
-                  animateColor="maroon"
+                  variant="landlord"
                   size="sm"
                 >
                   Calculate My Potential →
@@ -555,10 +549,7 @@ export function RevenueCalculator({
                 <Button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  variant="primary"
-                  bgColor="maroon"
-                  color="cream"
-                  animateColor="maroon"
+                  variant="landlord"
                   size="custom"
                   className="px-7 py-3.5 text-sm font-semibold disabled:opacity-60"
                 >
@@ -892,10 +883,7 @@ function EstimateGate({
         <Button
           type="submit"
           disabled={submitting}
-          variant="primary"
-          bgColor="maroon"
-          color="cream"
-          animateColor="maroon"
+          variant="landlord"
           size="sm"
           className="disabled:opacity-60"
         >
