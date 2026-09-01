@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { urlFor } from "@/sanity/image";
 import { Button } from "@/components/Button";
+import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 type SanityImageWithAlt = { alt?: string } & Record<string, unknown>;
 
@@ -338,30 +339,35 @@ export function PropertyGallery({
         );
       })}
 
-      {lightboxOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-near-black/95">
+      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+        <DialogContent>
+          <DialogTitle>{alt} — photo gallery</DialogTitle>
+          <DialogDescription>
+            {images.length} photo{images.length === 1 ? "" : "s"} of {alt}
+          </DialogDescription>
           <div className="sticky top-0 z-10 flex items-center justify-between bg-near-black/95 px-6 py-4 sm:px-10">
-            <span className="text-sm font-medium text-cream">
+            <span aria-hidden className="text-sm font-medium text-cream">
               {images.length} photo{images.length === 1 ? "" : "s"}
             </span>
-            <button
-              type="button"
-              onClick={() => setLightboxOpen(false)}
-              aria-label="Close gallery"
-              className="flex h-10 w-10 items-center justify-center rounded-full text-cream hover:bg-cream/10"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
+            <DialogClose asChild>
+              <button
+                type="button"
+                aria-label="Close gallery"
+                className="flex h-10 w-10 items-center justify-center rounded-full text-cream hover:bg-cream/10"
               >
-                <path d="M6 6l12 12M18 6 6 18" />
-              </svg>
-            </button>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <path d="M6 6l12 12M18 6 6 18" />
+                </svg>
+              </button>
+            </DialogClose>
           </div>
           <div className="mx-auto max-w-4xl px-6 pb-16 sm:px-10">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -377,8 +383,8 @@ export function PropertyGallery({
               ))}
             </div>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
