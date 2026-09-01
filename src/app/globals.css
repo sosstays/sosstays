@@ -9,6 +9,7 @@
   --light-sage: #ACC196;     /* secondary accent */
   --cream: #FEFEE3;          /* page background */
   --maroon: #472D30;         /* owner-context accent */
+  --deep-forest: #3F5240;    /* darker than --forest-green, used for hero/CTA bands */
   --sage-grey: #A6B0A6;      /* border/divider */
   --near-black: #171917;     /* body text */
   --error-red: #C0392B;      /* form validation errors — never --maroon, too dark to read as an error */
@@ -25,6 +26,7 @@
   --color-light-sage: var(--light-sage);
   --color-cream: var(--cream);
   --color-maroon: var(--maroon);
+  --color-deep-forest: var(--deep-forest);
   --color-sage-grey: var(--sage-grey);
   --color-near-black: var(--near-black);
   --color-error-red: var(--error-red);

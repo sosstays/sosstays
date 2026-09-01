@@ -10,6 +10,8 @@ export type SearchResultRoom = {
   image?: SanityImageWithAlt;
   bedConfiguration?: string;
   guests?: number;
+  /** Average nightly accommodation rate over the searched dates — omitted when no dates were searched or the rate couldn't be fetched. */
+  fromPricePerNight?: number;
 };
 
 export type SearchResultCardProps = {
@@ -24,10 +26,9 @@ export type SearchResultCardProps = {
   guests?: number;
 };
 
-// Room detail pages (/stays/[slug]/rooms/[roomId]) don't exist yet —
-// this is a placeholder route for whenever that page gets built.
-// Carries the search context through as query params so that page can
-// pick up where the search left off.
+// Carries the search context through as query params so the room detail
+// page (/stays/[slug]/rooms/[roomId]) can pick up where the search left
+// off (prefilling its own booking link with the same dates/guest count).
 function buildRoomHref(
   slug: string,
   roomId: string,
@@ -70,7 +71,14 @@ function RoomRow({
       )}
 
       <div className="flex min-w-0 flex-1 flex-col justify-center">
-        <h4 className="truncate font-serif text-base font-bold text-near-black">{room.name}</h4>
+        <div className="flex flex-wrap items-center gap-x-2">
+          <h4 className="truncate font-serif text-base font-bold text-near-black">{room.name}</h4>
+          {room.fromPricePerNight !== undefined && (
+            <span className="shrink-0 text-sm font-semibold text-forest-green">
+              ~€{room.fromPricePerNight} / night
+            </span>
+          )}
+        </div>
         <p className="mt-0.5 text-sm text-near-black/60">
           {[room.guests ? `Sleeps ${room.guests}` : null, room.bedConfiguration].filter(Boolean).join(" · ")}
         </p>
