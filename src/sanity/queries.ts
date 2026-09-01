@@ -245,6 +245,22 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
   }
 `);
 
+// ---- Footer (singleton) ----
+
+export const FOOTER_QUERY = defineQuery(`
+  *[_type == "footer" && _id == "footer"][0] {
+    tagline,
+    columns[] {
+      title,
+      links[] {
+        label,
+        href
+      }
+    },
+    copyrightText
+  }
+`);
+
 // ---- Privacy policy (singleton) ----
 
 export const PRIVACY_POLICY_QUERY = defineQuery(`
@@ -417,7 +433,7 @@ export const LANDING_PAGE_QUERY = defineQuery(`
 // ---- Sitemap ----
 
 export const SITEMAP_QUERY = defineQuery(`
-  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage"] && defined(slug.current) && noIndex != true] {
+  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {
     "href": select(
       _type == "blogPost" => "/blog/" + slug.current,
       _type == "propertyPage" => "/stays/" + slug.current,
@@ -442,7 +458,7 @@ export const LLMS_TXT_QUERY = defineQuery(`
     contactEmail,
     socialLinks
   },
-  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage"] && defined(slug.current) && noIndex != true] {
+  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {
     _type,
     "href": select(
       _type == "blogPost" => "/blog/" + slug.current,

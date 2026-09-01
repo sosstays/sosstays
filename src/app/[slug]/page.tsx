@@ -17,20 +17,21 @@ import type { Metadata } from "next";
 
 export const revalidate = 60;
 
-const SLUG = "hotels-near-funtasia";
+type Props = { params: Promise<{ slug: string }> };
 
-async function getData() {
+async function getData(slug: string) {
   const [page, siteSettings] = await Promise.all([
-    client.fetch(LANDING_PAGE_QUERY, { slug: SLUG }),
+    client.fetch(LANDING_PAGE_QUERY, { slug }),
     client.fetch(SITE_SETTINGS_QUERY),
   ]);
   return { page, siteSettings };
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { page } = await getData();
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const { page } = await getData(slug);
   if (!page) return {};
-  return buildMetadata(page.seo, `/${SLUG}`);
+  return buildMetadata(page.seo, `/${slug}`);
 }
 
 // Splits a string like "~15 min" into its leading number (for CountUp) and
@@ -59,8 +60,9 @@ function StatNumber({ text, className }: { text: string; className?: string }) {
   );
 }
 
-export default async function HotelsNearFuntasiaPage() {
-  const { page, siteSettings } = await getData();
+export default async function LandingPage({ params }: Props) {
+  const { slug } = await params;
+  const { page, siteSettings } = await getData(slug);
   if (!page) notFound();
 
   const bookingUrl =
@@ -74,7 +76,7 @@ export default async function HotelsNearFuntasiaPage() {
 
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", url: SITE_URL },
-    { name: page.heroHeadline || "Hotels near Funtasia", url: `${SITE_URL}/${SLUG}` },
+    { name: page.heroHeadline || page.title, url: `${SITE_URL}/${slug}` },
   ]);
 
   const property = page.featuredProperty;
@@ -265,9 +267,11 @@ export default async function HotelsNearFuntasiaPage() {
                 <div className="text-xs font-semibold tracking-[0.18em] text-forest-green/80 uppercase">
                   You play here
                 </div>
-                <div className="mt-2.5 font-serif text-xl font-bold text-deep-forest">
-                  {page.destinationName || "Funtasia"}
-                </div>
+                {page.destinationName && (
+                  <div className="mt-2.5 font-serif text-xl font-bold text-deep-forest">
+                    {page.destinationName}
+                  </div>
+                )}
                 {page.distanceLabel && (
                   <div className="mt-1.5 text-[15px] leading-relaxed text-near-black/62">{page.distanceLabel}</div>
                 )}
@@ -294,16 +298,16 @@ export default async function HotelsNearFuntasiaPage() {
                   ))}
                 </div>
               )}
-              {property && (
+              {property && page.destinationName && (
                 <a
                   href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
                     `${property.name}, ${property.location}`
-                  )}&destination=${encodeURIComponent("Funtasia, Drogheda")}&travelmode=driving`}
+                  )}&destination=${encodeURIComponent(page.destinationName)}&travelmode=driving`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm font-semibold text-forest-green"
                 >
-                  Get driving directions to Funtasia →
+                  Get driving directions to {page.destinationName} →
                 </a>
               )}
             </Reveal>
@@ -526,8 +530,8 @@ export default async function HotelsNearFuntasiaPage() {
         </section>
       )}
 
-      {/* FUNTASIA ACTIVITIES — magazine photo grid, for the info section
-          explicitly marked layout: "photoGrid" in Sanity (see landingPage.ts) */}
+      {/* PHOTO-GRID INFO SECTION — for the info section explicitly marked
+          layout: "photoGrid" in Sanity (see landingPage.ts) */}
       {activitySection && (
         <section className="mx-auto max-w-6xl px-8 pt-28 sm:px-14">
           {activitySection.eyebrow && (
@@ -817,7 +821,7 @@ export default async function HotelsNearFuntasiaPage() {
         <StickyBookingBar
           title={property.name}
           meta={[
-            page.distanceStat && page.distanceLabel ? `${page.distanceStat} from Funtasia` : "",
+            page.distanceStat && page.distanceLabel ? `${page.distanceStat} ${page.distanceLabel}` : "",
             property.sleeps ? `Sleeps ${property.sleeps}` : "",
             property.reviewScore && property.reviewCount
               ? `${property.reviewScore} Superb · ${property.reviewCount} reviews`

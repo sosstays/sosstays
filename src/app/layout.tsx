@@ -3,7 +3,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import Script from "next/script";
 import { Footer } from "@/components/Footer";
 import { client } from "@/sanity/client";
-import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { SITE_SETTINGS_QUERY, FOOTER_QUERY } from "@/sanity/queries";
 import "./globals.css";
 
 const GA_MEASUREMENT_ID = "G-ZG60S049VC";
@@ -37,7 +37,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await client.fetch(SITE_SETTINGS_QUERY);
+  const [settings, footer] = await Promise.all([
+    client.fetch(SITE_SETTINGS_QUERY),
+    client.fetch(FOOTER_QUERY),
+  ]);
 
   return (
     <html
@@ -79,7 +82,7 @@ export default async function RootLayout({
           `}
         </Script>
         <div className="flex-1">{children}</div>
-        <Footer socialLinks={settings?.socialLinks} />
+        <Footer socialLinks={settings?.socialLinks} content={footer} />
       </body>
     </html>
   );
