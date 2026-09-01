@@ -39,7 +39,14 @@ function BookNowCta({
   color: ButtonColor;
 }) {
   return bookingUrl ? (
-    <Button link={bookingUrl} external bgColor={bgColor} color={color} size="custom" className={className}>
+    <Button
+      link={bookingUrl}
+      external={bookingUrl.startsWith("http")}
+      bgColor={bgColor}
+      color={color}
+      size="custom"
+      className={className}
+    >
       Book now
     </Button>
   ) : (
@@ -171,7 +178,11 @@ export default async function PropertyPage({ params }: Props) {
   // bookingSubdomainUrl set at all) — so use it as-is when it's already a
   // full URL, and only fall back to the slug+subdomain construction
   // otherwise.
-  const bookingUrl = property.uplistingPropertySlug?.startsWith("http")
+  //
+  // When uplistingPropertyId is also set, prefer the on-site embedded
+  // checkout (/book) over Uplisting's own hosted page, so pricing and
+  // payment stay on this site.
+  const externalBookingUrl = property.uplistingPropertySlug?.startsWith("http")
     ? property.uplistingPropertySlug
     : siteSettings?.bookingSubdomainUrl && property.uplistingPropertySlug
       ? buildUplistingBookingUrl({
@@ -179,6 +190,7 @@ export default async function PropertyPage({ params }: Props) {
           propertySlug: property.uplistingPropertySlug,
         })
       : null;
+  const bookingUrl = property.uplistingPropertyId ? `/stays/${slug}/book` : externalBookingUrl;
 
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", url: SITE_URL },

@@ -125,6 +125,7 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     reviewCount,
     reviewCategories,
     uplistingPropertySlug,
+    uplistingPropertyId,
     faqs,
     relatedAreaGuides[]-> {
       _id,
