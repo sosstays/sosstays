@@ -13,6 +13,7 @@ import { CountUp } from "@/components/CountUp";
 import { ItineraryTimeline } from "@/components/ItineraryTimeline";
 import { StickyBookingBar } from "@/components/StickyBookingBar";
 import { ComparisonBars } from "@/components/ComparisonBars";
+import { MarqueeBanner } from "@/components/MarqueeBanner";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -199,26 +200,12 @@ export default async function LandingPage({ params }: Props) {
       </section>
 
       {/* MARQUEE TICKER */}
-      {marqueeItems.length > 0 && (
-        <div className="overflow-hidden border-b border-cream/12 bg-forest-green py-5">
-          <div className="sos-marquee flex w-max">
-            {[0, 1].map((rep) => (
-              <div
-                key={rep}
-                aria-hidden={rep === 1}
-                className="flex items-center gap-11 pr-11 text-[15px] font-medium tracking-[0.14em] whitespace-nowrap text-cream/78 uppercase"
-              >
-                {marqueeItems.map((item, i) => (
-                  <span key={i} className="flex items-center gap-11">
-                    <span>{item}</span>
-                    <span className="text-light-sage">✳</span>
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <MarqueeBanner
+        items={marqueeItems}
+        className="overflow-hidden border-b border-cream/12 bg-forest-green py-5"
+        itemClassName="gap-11 pr-11 text-[15px] font-medium tracking-[0.14em] text-cream/78 uppercase"
+        separator={<span className="text-light-sage">✳</span>}
+      />
 
       {/* GEOGRAPHY */}
       {page.distanceStat && (

@@ -12,6 +12,7 @@ import { Button } from "@/components/Button";
 import { AudienceTabs } from "@/components/AudienceTabs";
 import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
 import { GapChart } from "@/components/GapChart";
+import { MarqueeBanner } from "@/components/MarqueeBanner";
 import { COMMISSION_RANGE, MAINTENANCE_AUTHORITY_EUR } from "@/lib/businessFacts";
 
 type LandlordPage = {
@@ -138,11 +139,6 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               <span className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
                 For property owners
               </span>
-              <p className="mb-4.5 max-w-[560px] text-sm text-light-sage/85">
-                Self-managing hosts in this corridor typically leave 20–35% of
-                revenue on the table. That&apos;s a market benchmark, not a
-                guess — and it&apos;s the gap we close.
-              </p>
               <h1 className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl">
                 You&apos;re already doing this yourself.
                 <br />
@@ -168,6 +164,21 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           </div>
         </div>
       </section>
+
+      {/* MARQUEE — THE GAP */}
+      <MarqueeBanner
+        items={[
+          <span key="gap">
+            Self-managing hosts in this corridor typically leave{" "}
+            <span className="text-light-sage">20–35%</span> of revenue on the
+            table. That&apos;s a market benchmark, not a guess — and
+            it&apos;s the gap we close.
+          </span>,
+        ]}
+        className="overflow-hidden border-b border-cream/12 bg-maroon py-5"
+        itemClassName="gap-11 pr-11 text-[15px] font-medium tracking-[0.04em] text-cream/85"
+        separator={<span className="text-light-sage">✳</span>}
+      />
 
       {/* THE 11PM PROBLEM */}
       <section className="relative overflow-hidden bg-warm-cream px-8 py-24 sm:px-14 sm:py-28">
@@ -455,11 +466,12 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                   <span
                     className={`text-4xl font-bold tracking-tight text-maroon ${poppins.className}`}
                   >
-                    40&ndash;50% uplift
+                    93% occupancy uplift
                   </span>
                   <p className="mt-2.5 text-sm leading-relaxed text-near-black/65">
-                    the minimum increase we&apos;re targeting after
-                    repricing — still playing out.
+                    Confirmed result after repricing — occupancy went from
+                    31% to 60% in August, Rathescar Grove&apos;s first month
+                    under management.
                   </p>
                 </div>
               </div>
