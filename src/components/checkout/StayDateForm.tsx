@@ -37,7 +37,7 @@ export function StayDateForm({ slug, maxGuests }: { slug: string; maxGuests?: nu
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6 rounded-[10px] border border-sage-grey/40 p-7">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 rounded-[18px] border border-border-subtle bg-bright-cream p-7">
       <div className="grid gap-5 sm:grid-cols-3">
         <label className="flex flex-col gap-1.5">
           <span className="text-sm text-near-black">

@@ -52,35 +52,54 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Could not fetch a price quote" }, { status: 502 });
   }
 
-  const session = await stripe.checkout.sessions.create({
-    ui_mode: "embedded_page",
-    mode: "payment",
-    customer_email: guestEmail,
-    line_items: [
-      {
-        price_data: {
-          currency: quote.currency.toLowerCase(),
-          product_data: {
-            name: `${property.name} — ${quote.numberOfNights} night${quote.numberOfNights === 1 ? "" : "s"}`,
-            description: `${checkIn} to ${checkOut}, ${guests} guest${guests === 1 ? "" : "s"}`,
-          },
-          unit_amount: Math.round(quote.total * 100),
-        },
-        quantity: 1,
+  let session;
+  try {
+    session = await stripe.checkout.sessions.create({
+      ui_mode: "embedded_page",
+      mode: "payment",
+      customer_email: guestEmail,
+      // Matches the site's palette/type/radius as closely as embedded
+      // Checkout's server-side branding controls allow — there's no
+      // client-side Appearance API for ui_mode: embedded_page, neither
+      // `logo` nor `icon` are permitted for embedded (hosted-page only —
+      // confirmed against the live API), and font_family only accepts a
+      // fixed enum (no Poppins), so "montserrat" is the closest
+      // geometric-sans match on offer.
+      branding_settings: {
+        background_color: "#FFFEF2",
+        border_style: "rounded",
+        button_color: "#4A5D48",
+        font_family: "montserrat",
       },
-    ],
-    return_url: `${request.nextUrl.origin}/stays/${slug}/book/return?session_id={CHECKOUT_SESSION_ID}`,
-    metadata: {
-      propertySlug: slug,
-      uplistingPropertyId: String(uplistingPropertyId),
-      checkIn,
-      checkOut,
-      guests: String(guests),
-      guestName,
-      guestEmail,
-      guestPhone: guestPhone ?? "",
-    },
-  });
+      line_items: [
+        {
+          price_data: {
+            currency: quote.currency.toLowerCase(),
+            product_data: {
+              name: `${property.name} — ${quote.numberOfNights} night${quote.numberOfNights === 1 ? "" : "s"}`,
+              description: `${checkIn} to ${checkOut}, ${guests} guest${guests === 1 ? "" : "s"}`,
+            },
+            unit_amount: Math.round(quote.total * 100),
+          },
+          quantity: 1,
+        },
+      ],
+      return_url: `${request.nextUrl.origin}/stays/${slug}/book/return?session_id={CHECKOUT_SESSION_ID}`,
+      metadata: {
+        propertySlug: slug,
+        uplistingPropertyId: String(uplistingPropertyId),
+        checkIn,
+        checkOut,
+        guests: String(guests),
+        guestName,
+        guestEmail,
+        guestPhone: guestPhone ?? "",
+      },
+    });
+  } catch (error) {
+    console.error("Stripe session creation failed", error);
+    return NextResponse.json({ error: "Could not start checkout" }, { status: 502 });
+  }
 
   return NextResponse.json({ clientSecret: session.client_secret });
 }

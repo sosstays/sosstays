@@ -12,6 +12,10 @@ const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
   : null;
 
+// The client-side Appearance API only applies to Elements/PaymentElement —
+// an embedded_page Checkout Session's colors/font/border are set server-side
+// via `branding_settings` on session creation (see api/checkout/session).
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type Props = {
@@ -80,15 +84,30 @@ export function BookingCheckout({ slug, checkIn, checkOut, guests, quote }: Prop
 
   if (clientSecret && stripePromise) {
     return (
-      <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret }}>
-        <EmbeddedCheckout />
-      </EmbeddedCheckoutProvider>
+      <div className="overflow-hidden rounded-[18px] border border-border-subtle bg-bright-cream">
+        <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret }}>
+          <EmbeddedCheckout />
+        </EmbeddedCheckoutProvider>
+      </div>
     );
   }
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[1fr_320px] lg:items-start">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <div className="overflow-hidden rounded-[18px] border border-border-subtle bg-bright-cream">
+      <div className="flex items-center justify-between border-b border-dashed border-border-subtle bg-pale-sage/40 px-[26px] py-[15px]">
+        <span className="text-xs font-semibold tracking-[0.06em] text-forest-green uppercase">
+          Secure checkout
+        </span>
+        <span className="flex items-center gap-2 text-xs text-near-black/60">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <rect width="18" height="11" x="3" y="11" rx="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          Payment held by Stripe
+        </span>
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 px-[34px] py-[26px] sm:px-[42px] sm:pb-[42px]">
         <label className="flex flex-col gap-1.5">
           <span className="text-sm text-near-black">
             Full Name <span className="text-error-red">*</span>
@@ -141,42 +160,11 @@ export function BookingCheckout({ slug, checkIn, checkOut, guests, quote }: Prop
           disabled={submitting}
           variant="primary"
           size="custom"
-          className="self-start px-8 py-3 text-[15px] font-semibold disabled:opacity-60"
+          className="self-start px-8 py-3.5 text-[15px] font-semibold disabled:opacity-60"
         >
-          {submitting ? "Preparing payment…" : "Continue to payment"}
+          {submitting ? "Preparing payment…" : `Send your SOS — pay ${formatCurrency(quote.total, quote.currency)}`}
         </Button>
       </form>
-
-      <div className="flex flex-col gap-4 rounded-[10px] border border-sage-grey/40 p-6">
-        <div className="flex justify-between text-sm text-near-black/70">
-          <span>Check-in</span>
-          <span className="text-near-black">{checkIn}</span>
-        </div>
-        <div className="flex justify-between text-sm text-near-black/70">
-          <span>Check-out</span>
-          <span className="text-near-black">{checkOut}</span>
-        </div>
-        <div className="flex justify-between text-sm text-near-black/70">
-          <span>Guests</span>
-          <span className="text-near-black">{guests}</span>
-        </div>
-        <div className="my-1 border-t border-sage-grey/40" />
-        <div className="flex justify-between text-sm text-near-black/70">
-          <span>{quote.numberOfNights} night stay</span>
-          <span className="text-near-black">{formatCurrency(quote.accommodationTotal, quote.currency)}</span>
-        </div>
-        {quote.cleaningFee > 0 && (
-          <div className="flex justify-between text-sm text-near-black/70">
-            <span>Cleaning fee</span>
-            <span className="text-near-black">{formatCurrency(quote.cleaningFee, quote.currency)}</span>
-          </div>
-        )}
-        <div className="my-1 border-t border-sage-grey/40" />
-        <div className="flex justify-between text-base font-semibold text-near-black">
-          <span>Total</span>
-          <span>{formatCurrency(quote.total, quote.currency)}</span>
-        </div>
-      </div>
     </div>
   );
 }

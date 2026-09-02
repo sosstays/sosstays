@@ -19,6 +19,12 @@
   --deep-forest: #3F5240;    /* darker than --forest-green, used for hero/CTA bands */
   --pale-sage: #E3ECD8;      /* lighter than --light-sage, used for sunken card fills */
   --bright-cream: #FFFEF2;   /* near-white cream, used for raised stat tiles on --cream */
+
+  /* Added for the booking-flow (Stripe checkout) design — from the "Sos
+     Stays Booking Flow v2" Claude Design project's own token set, not
+     already covered by the palette above. */
+  --sage-300: #C6D7B3;       /* lighter than --light-sage, used for soft glows/accents */
+  --border-subtle: #DDE3D3;  /* lighter hairline than --sage-grey, for cards on cream */
 }
 
 @theme inline {
@@ -38,6 +44,8 @@
   --color-deep-forest: var(--deep-forest);
   --color-pale-sage: var(--pale-sage);
   --color-bright-cream: var(--bright-cream);
+  --color-sage-300: var(--sage-300);
+  --color-border-subtle: var(--border-subtle);
 }
 
 body {
