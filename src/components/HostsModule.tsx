@@ -205,7 +205,7 @@ export function HostsModule({ data }: { data: HostsModuleData | null }) {
             )}
             {data.ctaLabel && (
               <Button
-                link={data.ctaUrl || "/landlords-whats-next"}
+                link={data.ctaUrl || "/landlords#calculator"}
                 variant="secondary"
                 color="maroon"
                 animateBgColor="maroon"

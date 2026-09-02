@@ -6,7 +6,7 @@ import { SITE_SETTINGS_QUERY, AUDIENCE_TABS_QUERY, LANDLORD_BLOG_POSTS_QUERY } f
 import { JsonLd, buildServiceSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
-import { LandlordLeadForm } from "@/components/LandlordLeadForm";
+import { LandlordSosAndEstimate } from "@/components/LandlordSosAndEstimate";
 import { FaqSection } from "@/components/FaqSection";
 import { Button } from "@/components/Button";
 import { AudienceTabs } from "@/components/AudienceTabs";
@@ -119,7 +119,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         <HeroNav
           links={LANDLORD_NAV_LINKS}
           variant="landlords"
-          ctaHref="/landlords-whats-next"
+          ctaHref="#calculator"
           ctaLabel="Get estimate"
           sticky
         />
@@ -480,25 +480,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         </div>
       </section>
 
-      {/* SEND YOUR SOS */}
-      <section id="send-sos" className="px-8 py-24 sm:px-14 sm:py-28">
-        <div className="mx-auto max-w-[640px]">
-          <div className="mb-10 text-center">
-            <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
-              Send your SOS
-            </p>
-            <h2 className="mb-4 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
-              Tell us about your place
-            </h2>
-            <p className="mx-auto max-w-[480px] text-sm text-near-black/60">
-              Three quick steps — we&apos;ll be in touch within a day or two.
-              Right after, you can run a free revenue estimate for your
-              property.
-            </p>
-          </div>
-          <LandlordLeadForm />
-        </div>
-      </section>
+      <LandlordSosAndEstimate />
 
       {/* PROCESS */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
