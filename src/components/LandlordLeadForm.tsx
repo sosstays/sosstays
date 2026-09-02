@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
-import { saveLandlordContact } from "@/lib/landlordHandoff";
+import type { LandlordContact } from "@/lib/landlordHandoff";
 
 const SITUATION_OPTIONS = [
   "I have an existing Airbnb/STR property I'd like help managing",
@@ -15,10 +14,16 @@ const SITUATION_OPTIONS = [
 const CONTACT_EMAIL = "info@sosstays.com";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type Stage = "form" | "error";
+type Stage = "form" | "submitted" | "error";
 
-export function LandlordLeadForm() {
-  const router = useRouter();
+export function LandlordLeadForm({
+  onSubmitted,
+}: {
+  /** Fires once the lead form submits successfully, with the name/email
+   *  entered — lets a parent hand them straight to the estimate calculator
+   *  further down the page without asking for them again. */
+  onSubmitted?: (contact: LandlordContact) => void;
+} = {}) {
   const [stage, setStage] = useState<Stage>("form");
   const [step, setStep] = useState(0);
   const [situation, setSituation] = useState("");
@@ -60,8 +65,8 @@ export function LandlordLeadForm() {
         body: JSON.stringify({ name, email, mobile, situation, propertyDescription }),
       });
       if (!res.ok) throw new Error(`Form submission failed: ${res.status}`);
-      saveLandlordContact({ name: name.trim(), email: email.trim() });
-      router.push("/landlords-whats-next");
+      onSubmitted?.({ name: name.trim(), email: email.trim() });
+      setStage("submitted");
     } catch {
       setStage("error");
     } finally {
@@ -259,6 +264,30 @@ export function LandlordLeadForm() {
               {submitting ? "Sending…" : "Send your SOS"}
             </Button>
           </div>
+        </div>
+      )}
+
+      {stage === "submitted" && (
+        <div>
+          <p className="mb-2 text-base font-semibold text-near-black">
+            Got it — thanks, {name.trim() || "there"}.
+          </p>
+          <p className="mb-5 text-sm leading-relaxed text-near-black/70">
+            One of the team will be in touch within a day or two. In the meantime, get a free
+            revenue estimate for your property — no need to enter your details again.
+          </p>
+          <Button
+            onClick={() =>
+              document.getElementById("calculator")?.scrollIntoView({ behavior: "smooth" })
+            }
+            variant="primary"
+            bgColor="maroon"
+            color="cream"
+            animateColor="maroon"
+            size="sm"
+          >
+            See your estimate ↓
+          </Button>
         </div>
       )}
 
