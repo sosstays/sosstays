@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import Image from "next/image";
 import { loadStripe } from "@stripe/stripe-js";
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe-js";
 import { Button } from "@/components/Button";
+import { urlFor } from "@/sanity/image";
 import type { StayQuote } from "@/lib/uplistingApi";
 
 // Loaded once at module scope, outside the component, per Stripe's guidance —
@@ -18,6 +20,14 @@ const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+export type CheckoutAddOn = {
+  _id: string;
+  name: string;
+  description?: string | null;
+  price: number;
+  image?: ({ alt?: string } & Record<string, unknown>) | null;
+};
+
 type Props = {
   slug: string;
   checkIn: string;
@@ -26,19 +36,39 @@ type Props = {
   quote: StayQuote;
   /** A specific room's Uplisting property id, overriding the property-level one — see RoomBookingBar. */
   propertyId?: number;
+  addOns?: CheckoutAddOn[];
 };
 
 function formatCurrency(amount: number, currency: string) {
   return new Intl.NumberFormat("en-GB", { style: "currency", currency }).format(amount);
 }
 
-export function BookingCheckout({ slug, propertyId, checkIn, checkOut, guests, quote }: Props) {
+export function BookingCheckout({
+  slug,
+  propertyId,
+  checkIn,
+  checkOut,
+  guests,
+  quote,
+  addOns = [],
+}: Props) {
   const [guestName, setGuestName] = useState("");
   const [guestEmail, setGuestEmail] = useState("");
   const [guestPhone, setGuestPhone] = useState("");
+  const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+  const addOnsTotal = useMemo(
+    () => addOns.filter((addOn) => selectedAddOnIds.includes(addOn._id)).reduce((sum, addOn) => sum + addOn.price, 0),
+    [addOns, selectedAddOnIds]
+  );
+  const total = quote.total + addOnsTotal;
+
+  function toggleAddOn(id: string) {
+    setSelectedAddOnIds((prev) => (prev.includes(id) ? prev.filter((existing) => existing !== id) : [...prev, id]));
+  }
 
   const fetchClientSecret = useCallback(() => {
     if (!clientSecret) throw new Error("No client secret available yet");
@@ -68,6 +98,7 @@ export function BookingCheckout({ slug, propertyId, checkIn, checkOut, guests, q
           checkIn,
           checkOut,
           guests,
+          addOnIds: selectedAddOnIds,
           guestName: guestName.trim(),
           guestEmail: guestEmail.trim(),
           guestPhone: guestPhone.trim() || undefined,
@@ -147,6 +178,51 @@ export function BookingCheckout({ slug, propertyId, checkIn, checkOut, guests, q
           />
         </label>
 
+        {addOns.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <span className="text-sm text-near-black">Add to your stay</span>
+            {addOns.map((addOn) => {
+              const checked = selectedAddOnIds.includes(addOn._id);
+              return (
+                <label
+                  key={addOn._id}
+                  className={`flex cursor-pointer items-start gap-3 rounded-[10px] border p-3.5 transition-colors ${
+                    checked ? "border-forest-green bg-light-forest-green/30" : "border-sage-grey/50"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => toggleAddOn(addOn._id)}
+                    className="mt-1 h-4 w-4 accent-forest-green"
+                  />
+                  {addOn.image && (
+                    <div className="relative h-14 w-14 flex-none overflow-hidden rounded-[6px]">
+                      <Image
+                        src={urlFor(addOn.image).width(112).height(112).url()}
+                        alt={addOn.image.alt ?? addOn.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="text-[15px] font-medium text-near-black">{addOn.name}</span>
+                      <span className="flex-none text-[15px] text-forest-green">
+                        +{formatCurrency(addOn.price, quote.currency)}
+                      </span>
+                    </div>
+                    {addOn.description && (
+                      <p className="mt-0.5 text-[13px] text-near-black/60">{addOn.description}</p>
+                    )}
+                  </div>
+                </label>
+              );
+            })}
+          </div>
+        )}
+
         {error && (
           <p role="alert" className="text-[13px] text-error-red">
             {error}
@@ -165,7 +241,7 @@ export function BookingCheckout({ slug, propertyId, checkIn, checkOut, guests, q
           size="custom"
           className="self-start px-8 py-3.5 text-[15px] font-semibold disabled:opacity-60"
         >
-          {submitting ? "Preparing payment…" : `Send your SOS — pay ${formatCurrency(quote.total, quote.currency)}`}
+          {submitting ? "Preparing payment…" : `Send your SOS — pay ${formatCurrency(total, quote.currency)}`}
         </Button>
       </form>
     </div>

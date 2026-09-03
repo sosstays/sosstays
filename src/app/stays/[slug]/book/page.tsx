@@ -149,6 +149,7 @@ export default async function BookPage({ params, searchParams }: Props) {
         checkOut={checkOut!}
         guests={guests!}
         quote={quote}
+        addOns={property.addOns ?? []}
       />
       <div className="lg:sticky lg:top-6">
         <BookingSummaryCard

@@ -23,12 +23,22 @@ export async function POST(request: NextRequest) {
   if (!guestDetails.ok) {
     return NextResponse.json({ error: guestDetails.error }, { status: 400 });
   }
-  const { slug, checkIn, checkOut, guests, promotionCode, propertyId } = stayParams.data;
+  const { slug, checkIn, checkOut, guests, promotionCode, propertyId, addOnIds } = stayParams.data;
   const { guestName, guestEmail, guestPhone } = guestDetails.data;
 
   const property = await client.fetch(PROPERTY_BOOKING_QUERY, { slug });
   if (!property) {
     return NextResponse.json({ error: "Property not found" }, { status: 404 });
+  }
+
+  // Only charge for add-ons this property actually offers, and always at
+  // the price stored in Sanity — never anything the client sent — so a
+  // tampered request can't add an unauthorized item or change its price.
+  type AddOn = { _id: string; name: string; price: number };
+  const availableAddOns: AddOn[] = property.addOns ?? [];
+  const selectedAddOns = availableAddOns.filter((addOn) => addOnIds.includes(addOn._id));
+  if (selectedAddOns.length !== addOnIds.length) {
+    return NextResponse.json({ error: "One or more add-ons aren't available for this property" }, { status: 400 });
   }
   // propertyId (when supplied) picks a specific room of a multi-room
   // property — see RoomBookingBar — and takes precedence over the
@@ -86,6 +96,18 @@ export async function POST(request: NextRequest) {
           },
           quantity: 1,
         },
+        // Each add-on is its own line item, in the same currency as the
+        // accommodation — Stripe Checkout can only charge one currency per
+        // session, and addOn.price is documented in Studio as needing to
+        // match Uplisting's quote currency for exactly this reason.
+        ...selectedAddOns.map((addOn) => ({
+          price_data: {
+            currency: quote.currency.toLowerCase(),
+            product_data: { name: addOn.name },
+            unit_amount: Math.round(addOn.price * 100),
+          },
+          quantity: 1,
+        })),
       ],
       return_url: `${request.nextUrl.origin}/stays/${slug}/book/return?session_id={CHECKOUT_SESSION_ID}`,
       metadata: {
@@ -97,6 +119,10 @@ export async function POST(request: NextRequest) {
         guestName,
         guestEmail,
         guestPhone: guestPhone ?? "",
+        // Uplisting's booking API has no extras field, so add-ons aren't
+        // synced into the booking record — this is purely for visibility
+        // in the Stripe dashboard/receipt.
+        addOns: selectedAddOns.map((addOn) => addOn.name).join(", "),
       },
     });
   } catch (error) {

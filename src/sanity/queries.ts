@@ -168,7 +168,14 @@ export const PROPERTY_BOOKING_QUERY = defineQuery(`
     location,
     sleeps,
     "coverImage": gallery[0],
-    uplistingPropertyId
+    uplistingPropertyId,
+    "addOns": *[_type == "addOn" && enabled != false && references(^._id)] {
+      _id,
+      name,
+      description,
+      price,
+      image
+    }
   }
 `);
 

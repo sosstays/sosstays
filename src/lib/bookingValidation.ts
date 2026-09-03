@@ -14,6 +14,8 @@ export type StayParams = {
    * single field and can't represent "book room 267358 of property X".
    */
   propertyId?: number;
+  /** Sanity _ids of the addOn documents the guest selected — see checkout/session's addOn handling. */
+  addOnIds: string[];
 };
 
 export type StayParamsResult = { ok: true; data: StayParams } | { ok: false; error: string };
@@ -21,7 +23,7 @@ export type StayParamsResult = { ok: true; data: StayParams } | { ok: false; err
 // Shared by /api/checkout/quote and /api/checkout/session — both need the
 // same slug/dates/guests shape validated before touching Uplisting.
 export function validateStayParams(body: unknown): StayParamsResult {
-  const { slug, checkIn, checkOut, guests, promotionCode, propertyId } = (body ?? {}) as Record<
+  const { slug, checkIn, checkOut, guests, promotionCode, propertyId, addOnIds } = (body ?? {}) as Record<
     string,
     unknown
   >;
@@ -51,6 +53,14 @@ export function validateStayParams(body: unknown): StayParamsResult {
     parsedPropertyId = parsed;
   }
 
+  let parsedAddOnIds: string[] = [];
+  if (addOnIds !== undefined) {
+    if (!Array.isArray(addOnIds) || !addOnIds.every((id) => typeof id === "string" && id)) {
+      return { ok: false, error: "addOnIds must be an array of strings" };
+    }
+    parsedAddOnIds = addOnIds;
+  }
+
   return {
     ok: true,
     data: {
@@ -60,6 +70,7 @@ export function validateStayParams(body: unknown): StayParamsResult {
       guests: numberOfGuests,
       promotionCode: typeof promotionCode === "string" && promotionCode ? promotionCode : undefined,
       propertyId: parsedPropertyId,
+      addOnIds: parsedAddOnIds,
     },
   };
 }
