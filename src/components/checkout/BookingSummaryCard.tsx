@@ -1,10 +1,7 @@
 import Image from "next/image";
 import { urlFor } from "@/sanity/image";
+import { formatCurrency } from "@/lib/utils";
 import type { StayQuote } from "@/lib/uplistingApi";
-
-function formatCurrency(amount: number, currency: string) {
-  return new Intl.NumberFormat("en-GB", { style: "currency", currency }).format(amount);
-}
 
 function formatDate(iso: string) {
   return new Date(`${iso}T00:00:00`).toLocaleDateString("en-GB", {
