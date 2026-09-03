@@ -178,10 +178,9 @@ export default async function RoomPage({ params, searchParams }: Props) {
 
       {/* STICKY BOOKING BAR */}
       <RoomBookingBar
+        slug={slug}
         propertyId={room.id}
-        propertySlug={roomId}
         roomName={room.name}
-        uplistingDomain={room.uplistingDomain ?? null}
         initialCheckIn={check_in}
         initialCheckOut={check_out}
         initialGuests={guests ? Number(guests) : undefined}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { DateGuestsFields, toISODate, type DateGuestsValue } from "@/components/DateGuestsFields";
 import type { UplistingRoomFees } from "@/lib/uplisting/client";
 
@@ -31,17 +32,18 @@ async function fetchCalendar(propertyId: string, from: string, to: string): Prom
   return body.days;
 }
 
-function buildBookingUrl(uplistingDomain: string, propertySlug: string, checkIn: Date, checkOut: Date, guests: number) {
-  try {
-    const url = new URL("/checkout", new URL(uplistingDomain).origin);
-    url.searchParams.set("propertySlug", propertySlug);
-    url.searchParams.set("checkIn", toISODate(checkIn));
-    url.searchParams.set("checkOut", toISODate(checkOut));
-    url.searchParams.set("guests", String(guests));
-    return url.toString();
-  } catch {
-    return uplistingDomain;
-  }
+// Sends the guest to this site's own Stripe embedded checkout for this
+// specific room (property_id), rather than off-site to Uplisting's own
+// StayDirect checkout — see /stays/[slug]/book, which resolves property_id
+// as an override to the property's single-listing uplistingPropertyId field.
+function buildBookingUrl(slug: string, propertyId: string, checkIn: Date, checkOut: Date, guests: number) {
+  const params = new URLSearchParams({
+    property_id: propertyId,
+    checkIn: toISODate(checkIn),
+    checkOut: toISODate(checkOut),
+    guests: String(guests),
+  });
+  return `/stays/${slug}/book?${params.toString()}`;
 }
 
 // The room page's sticky booking bar: pinned to the bottom of the
@@ -54,27 +56,26 @@ function buildBookingUrl(uplistingDomain: string, propertySlug: string, checkIn:
 // link — the on-load fetch can be minutes stale by the time they click
 // "Book now".
 export function RoomBookingBar({
+  slug,
   propertyId,
-  propertySlug,
   roomName,
-  uplistingDomain,
   fees,
   initialCheckIn,
   initialCheckOut,
   initialGuests,
   maxGuests,
 }: {
+  /** The property page's Sanity slug — /stays/[slug]/book is where "Book now" leads. */
+  slug: string;
   propertyId: string;
-  /** Uplisting's property_slug — what StayDirect's own checkout URL keys off, e.g. "2e6b8e". */
-  propertySlug: string;
   roomName: string;
-  uplistingDomain: string | null;
   fees: UplistingRoomFees;
   initialCheckIn?: string;
   initialCheckOut?: string;
   initialGuests?: number;
   maxGuests?: number;
 }) {
+  const router = useRouter();
   const [days, setDays] = useState<Map<string, CalendarDay>>(new Map());
   const [loadingCalendar, setLoadingCalendar] = useState(true);
   const [selection, setSelection] = useState<DateGuestsValue>({ checkIn: null, checkOut: null, guests: initialGuests ?? 1 });
@@ -145,7 +146,7 @@ export function RoomBookingBar({
   }, []);
 
   async function handleBookNow() {
-    if (!uplistingDomain || !selection.checkIn || !selection.checkOut || checking) return;
+    if (!selection.checkIn || !selection.checkOut || checking) return;
 
     setChecking(true);
     setError(null);
@@ -168,12 +169,8 @@ export function RoomBookingBar({
         return;
       }
 
-      window.location.href = buildBookingUrl(
-        uplistingDomain,
-        propertySlug,
-        selection.checkIn,
-        selection.checkOut,
-        selection.guests
+      router.push(
+        buildBookingUrl(slug, propertyId, selection.checkIn, selection.checkOut, selection.guests)
       );
     } catch {
       setError("Couldn't confirm availability — try again in a moment.");
@@ -182,7 +179,7 @@ export function RoomBookingBar({
     }
   }
 
-  const canBook = Boolean(uplistingDomain && selection.checkIn && selection.checkOut && !checking);
+  const canBook = Boolean(selection.checkIn && selection.checkOut && !checking);
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-cream/10 bg-deep-forest/95 px-8 py-3.5 backdrop-blur-md sm:px-14">

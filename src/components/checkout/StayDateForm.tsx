@@ -8,7 +8,16 @@ import { Button } from "@/components/Button";
 // check-out / guests in the URL (e.g. clicked straight from the property
 // page rather than from a date-aware search). Once submitted, the page
 // reloads with those as query params and can fetch a real quote.
-export function StayDateForm({ slug, maxGuests }: { slug: string; maxGuests?: number | null }) {
+export function StayDateForm({
+  slug,
+  maxGuests,
+  propertyId,
+}: {
+  slug: string;
+  maxGuests?: number | null;
+  /** Carries a specific room's Uplisting property id through the date form — see RoomBookingBar. */
+  propertyId?: number;
+}) {
   const router = useRouter();
   const today = new Date().toISOString().slice(0, 10);
   const [checkIn, setCheckIn] = useState("");
@@ -33,6 +42,7 @@ export function StayDateForm({ slug, maxGuests }: { slug: string; maxGuests?: nu
     }
     setError("");
     const params = new URLSearchParams({ checkIn, checkOut, guests: String(guestCount) });
+    if (propertyId) params.set("property_id", String(propertyId));
     router.push(`/stays/${slug}/book?${params.toString()}`);
   }
 

@@ -24,13 +24,15 @@ type Props = {
   checkOut: string;
   guests: number;
   quote: StayQuote;
+  /** A specific room's Uplisting property id, overriding the property-level one — see RoomBookingBar. */
+  propertyId?: number;
 };
 
 function formatCurrency(amount: number, currency: string) {
   return new Intl.NumberFormat("en-GB", { style: "currency", currency }).format(amount);
 }
 
-export function BookingCheckout({ slug, checkIn, checkOut, guests, quote }: Props) {
+export function BookingCheckout({ slug, propertyId, checkIn, checkOut, guests, quote }: Props) {
   const [guestName, setGuestName] = useState("");
   const [guestEmail, setGuestEmail] = useState("");
   const [guestPhone, setGuestPhone] = useState("");
@@ -62,6 +64,7 @@ export function BookingCheckout({ slug, checkIn, checkOut, guests, quote }: Prop
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           slug,
+          propertyId,
           checkIn,
           checkOut,
           guests,

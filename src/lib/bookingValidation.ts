@@ -7,6 +7,13 @@ export type StayParams = {
   checkOut: string;
   guests: number;
   promotionCode?: string;
+  /**
+   * Overrides the property's Sanity-derived uplistingPropertyId — needed
+   * when booking a specific room of a multi-room property (see
+   * RoomBookingBar), since Sanity's propertyPage.uplistingPropertyId is a
+   * single field and can't represent "book room 267358 of property X".
+   */
+  propertyId?: number;
 };
 
 export type StayParamsResult = { ok: true; data: StayParams } | { ok: false; error: string };
@@ -14,7 +21,10 @@ export type StayParamsResult = { ok: true; data: StayParams } | { ok: false; err
 // Shared by /api/checkout/quote and /api/checkout/session — both need the
 // same slug/dates/guests shape validated before touching Uplisting.
 export function validateStayParams(body: unknown): StayParamsResult {
-  const { slug, checkIn, checkOut, guests, promotionCode } = (body ?? {}) as Record<string, unknown>;
+  const { slug, checkIn, checkOut, guests, promotionCode, propertyId } = (body ?? {}) as Record<
+    string,
+    unknown
+  >;
 
   if (typeof slug !== "string" || !slug) {
     return { ok: false, error: "slug is required" };
@@ -32,6 +42,14 @@ export function validateStayParams(body: unknown): StayParamsResult {
   if (!Number.isInteger(numberOfGuests) || numberOfGuests < 1) {
     return { ok: false, error: "guests must be a positive integer" };
   }
+  let parsedPropertyId: number | undefined;
+  if (propertyId !== undefined && propertyId !== null && propertyId !== "") {
+    const parsed = Number(propertyId);
+    if (!Number.isInteger(parsed) || parsed < 1) {
+      return { ok: false, error: "propertyId must be a positive integer" };
+    }
+    parsedPropertyId = parsed;
+  }
 
   return {
     ok: true,
@@ -41,6 +59,7 @@ export function validateStayParams(body: unknown): StayParamsResult {
       checkOut,
       guests: numberOfGuests,
       promotionCode: typeof promotionCode === "string" && promotionCode ? promotionCode : undefined,
+      propertyId: parsedPropertyId,
     },
   };
 }

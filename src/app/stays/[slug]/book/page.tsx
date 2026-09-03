@@ -83,7 +83,13 @@ export default async function BookPage({ params, searchParams }: Props) {
     </main>
   );
 
-  const uplistingPropertyId = resolveUplistingPropertyId(property.uplistingPropertyId);
+  // property_id in the URL picks a specific room of a multi-room property
+  // (see RoomBookingBar) — it takes precedence over the property-level
+  // Sanity field, which only fits a single-listing property.
+  const propertyIdParam = first(query.property_id);
+  const propertyIdOverride =
+    propertyIdParam && Number.isInteger(Number(propertyIdParam)) ? Number(propertyIdParam) : undefined;
+  const uplistingPropertyId = propertyIdOverride ?? resolveUplistingPropertyId(property.uplistingPropertyId);
 
   if (!uplistingPropertyId) {
     return shell(
@@ -106,7 +112,9 @@ export default async function BookPage({ params, searchParams }: Props) {
     checkIn && checkOut && checkOut > checkIn && Number.isInteger(guests) && (guests ?? 0) > 0;
 
   if (!hasValidParams) {
-    return shell(<StayDateForm slug={slug} maxGuests={property.sleeps} />);
+    return shell(
+      <StayDateForm slug={slug} maxGuests={property.sleeps} propertyId={propertyIdOverride} />
+    );
   }
 
   let quote;
@@ -134,7 +142,14 @@ export default async function BookPage({ params, searchParams }: Props) {
 
   return shell(
     <div className="grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
-      <BookingCheckout slug={slug} checkIn={checkIn!} checkOut={checkOut!} guests={guests!} quote={quote} />
+      <BookingCheckout
+        slug={slug}
+        propertyId={propertyIdOverride}
+        checkIn={checkIn!}
+        checkOut={checkOut!}
+        guests={guests!}
+        quote={quote}
+      />
       <div className="lg:sticky lg:top-6">
         <BookingSummaryCard
           property={{

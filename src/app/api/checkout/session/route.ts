@@ -23,14 +23,17 @@ export async function POST(request: NextRequest) {
   if (!guestDetails.ok) {
     return NextResponse.json({ error: guestDetails.error }, { status: 400 });
   }
-  const { slug, checkIn, checkOut, guests, promotionCode } = stayParams.data;
+  const { slug, checkIn, checkOut, guests, promotionCode, propertyId } = stayParams.data;
   const { guestName, guestEmail, guestPhone } = guestDetails.data;
 
   const property = await client.fetch(PROPERTY_BOOKING_QUERY, { slug });
   if (!property) {
     return NextResponse.json({ error: "Property not found" }, { status: 404 });
   }
-  const uplistingPropertyId = resolveUplistingPropertyId(property.uplistingPropertyId);
+  // propertyId (when supplied) picks a specific room of a multi-room
+  // property — see RoomBookingBar — and takes precedence over the
+  // property-level field, which only fits a single-listing property.
+  const uplistingPropertyId = propertyId ?? resolveUplistingPropertyId(property.uplistingPropertyId);
   if (!uplistingPropertyId) {
     return NextResponse.json(
       { error: "This property isn't set up for on-site checkout yet" },
