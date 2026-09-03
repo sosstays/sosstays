@@ -239,7 +239,7 @@ export default async function PropertyPage({ params }: Props) {
       )}
 
       {/* ROOM TYPES */}
-      {property.roomTypes?.length > 0 && (
+      {(property.roomTypes?.length ?? 0) > 0 && (
         <section id="room-types" className="mx-auto max-w-6xl scroll-mt-24 px-8 pb-14 sm:px-14">
           <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
             Room types
