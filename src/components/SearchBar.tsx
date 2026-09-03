@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DateGuestsFields, toISODate, parseISODate, type DateGuestsValue } from "@/components/DateGuestsFields";
 
-const LOCATIONS = ["Drogheda", "Meath", "The Mournes"];
+const LOCATIONS = ["Drogheda"];
 
 const FIELD_LABEL = "mb-1 block truncate text-[11px] font-semibold tracking-widest text-near-black/50 uppercase";
 const POPOVER = "absolute top-[calc(100%+12px)] z-20 mt-[10px] rounded-2xl bg-cream shadow-[0_16px_40px_-12px_rgba(23,25,23,0.3)]";
