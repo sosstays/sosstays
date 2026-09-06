@@ -95,7 +95,7 @@ export function CountyPageContent({ county }: { county: County }) {
 
   return (
     <div className={`${poppins.className} flex flex-col gap-16 sm:gap-20 lg:gap-[84px]`}>
-      <Hero county={county} shown={shown} />
+      <Hero county={county} hasExample={hasExample} shown={shown} />
       {stats && <StatStrip stats={stats} p={p} shown={shown} />}
       <PricingBandLive countyName={county.name} shown={shown} />
       {(hasDrivers || hasExample) && (
@@ -120,7 +120,7 @@ export function CountyPageContent({ county }: { county: County }) {
   );
 }
 
-function Hero({ county, shown }: { county: County; shown: boolean }) {
+function Hero({ county, hasExample, shown }: { county: County; hasExample: boolean; shown: boolean }) {
   const isLive = county.state === "live";
   return (
     // No overflow-hidden here — the decorative mark below bleeds up and
@@ -174,7 +174,9 @@ function Hero({ county, shown }: { county: County; shown: boolean }) {
               style={{ color: isLive ? "var(--forest-green)" : "#5a6157" }}
             >
               {isLive
-                ? "Live Sos Stays performance data for this county"
+                ? hasExample
+                  ? "Live Sos Stays performance data for this county"
+                  : "Live local market data for this county (AirDNA)"
                 : `We're expanding into Co. ${county.name} — no managed properties here yet`}
             </span>
           </div>
