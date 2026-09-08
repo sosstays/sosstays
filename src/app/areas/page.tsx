@@ -2,7 +2,7 @@ import { client } from "@/sanity/client";
 import { AREA_GUIDES_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import { AreaGuideCard } from "@/components/AreaGuideCard";
 import { Button } from "@/components/Button";
 import type { Metadata } from "next";
@@ -20,11 +20,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AreasIndexPage() {
-  const areas = await client.fetch(AREA_GUIDES_QUERY);
+  const [areas, siteNavLinks] = await Promise.all([
+    client.fetch(AREA_GUIDES_QUERY),
+    getSiteNavLinks(),
+  ]);
 
   return (
     <>
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
+      <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8">
           <h1 className="font-serif text-4xl font-semibold text-forest-green">Areas</h1>

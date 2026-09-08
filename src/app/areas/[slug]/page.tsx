@@ -13,7 +13,7 @@ import {
   buildFaqSchema,
 } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import { ThingsToDoTabs } from "@/components/ThingsToDoTabs";
 import { PropertyCard } from "@/components/PropertyCard";
 import { FaqSection } from "@/components/FaqSection";
@@ -32,7 +32,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AreaGuidePage({ params }: Props) {
   const { slug } = await params;
-  const guide = await client.fetch(AREA_GUIDE_QUERY, { slug });
+  const [guide, siteNavLinks] = await Promise.all([
+    client.fetch(AREA_GUIDE_QUERY, { slug }),
+    getSiteNavLinks(),
+  ]);
   if (!guide) notFound();
 
   const breadcrumbSchema = buildBreadcrumbSchema([
@@ -63,7 +66,7 @@ export default async function AreaGuidePage({ params }: Props) {
         <div className="absolute inset-0 bg-forest-green/30" />
         <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-b from-forest-green/0 to-forest-green/60" />
 
-        <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" />
+        <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" />
 
         <div className="absolute inset-x-8 bottom-11 text-center sm:inset-x-14 sm:text-left">
           <p className="mb-3.5 text-xs font-medium tracking-widest text-light-sage uppercase">

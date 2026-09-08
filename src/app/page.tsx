@@ -6,7 +6,7 @@ import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
-import { HOME_NAV_LINKS } from "@/lib/navLinks";
+import { getHomeNavLinks } from "@/lib/navLinks";
 import { PropertyCard, type PropertyCardProps } from "@/components/PropertyCard";
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
@@ -20,11 +20,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [hero, { properties, areas }, siteSettings, hostsModule] = await Promise.all([
+  const [hero, { properties, areas }, siteSettings, hostsModule, homeNavLinks] = await Promise.all([
     client.fetch(HERO_SECTION_QUERY),
     client.fetch(HOMEPAGE_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(HOSTS_MODULE_QUERY),
+    getHomeNavLinks(),
   ]);
   const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
   const instagramUrl = siteSettings?.socialLinks?.find(
@@ -48,7 +49,7 @@ export default async function HomePage() {
         )}
         <div className="absolute inset-0 bg-forest-green/60" />
 
-        <HeroNav links={HOME_NAV_LINKS} ctaHref="#stays" ctaLabel="Find your break" />
+        <HeroNav links={homeNavLinks} ctaHref="#stays" ctaLabel="Find your break" />
 
         {/* hero content */}
         <div className="absolute inset-x-8 top-24 bottom-16 z-10 flex flex-col items-center justify-end gap-10 overflow-hidden text-center sm:inset-x-14 sm:top-auto sm:flex-row sm:items-end sm:justify-between sm:overflow-visible sm:text-left">

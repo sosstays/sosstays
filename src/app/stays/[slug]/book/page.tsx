@@ -3,20 +3,23 @@ import Link from "next/link";
 import { client } from "@/sanity/client";
 import { PROPERTY_PAGE_QUERY } from "@/sanity/queries";
 import { HeroNav } from "@/components/HeroNav";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import { BookingFlow } from "@/components/BookingFlow";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export default async function BookPropertyPage({ params }: Props) {
   const { slug } = await params;
-  const property = await client.fetch(PROPERTY_PAGE_QUERY, { slug });
+  const [property, siteNavLinks] = await Promise.all([
+    client.fetch(PROPERTY_PAGE_QUERY, { slug }),
+    getSiteNavLinks(),
+  ]);
 
   if (!property || !property.uplistingPropertyId) notFound();
 
   return (
     <main className="min-h-screen bg-cream font-sans text-near-black">
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
+      <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
 
       <section className="mx-auto max-w-3xl px-8 py-12 sm:px-14">
         <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-sm text-near-black/55">

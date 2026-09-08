@@ -14,7 +14,7 @@ import {
 } from "@/sanity/jsonld";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
 import { HeroNav } from "@/components/HeroNav";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { ReviewScoreCard } from "@/components/ReviewScore";
 import { FaqSection } from "@/components/FaqSection";
@@ -164,9 +164,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PropertyPage({ params }: Props) {
   const { slug } = await params;
-  const [property, siteSettings] = await Promise.all([
+  const [property, siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(PROPERTY_PAGE_QUERY, { slug }),
     client.fetch(SITE_SETTINGS_QUERY),
+    getSiteNavLinks(),
   ]);
 
   if (!property) notFound();
@@ -206,7 +207,7 @@ export default async function PropertyPage({ params }: Props) {
       <JsonLd data={breadcrumbSchema} />
       {faqSchema && <JsonLd data={faqSchema} />}
 
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
+      <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
 
       {/* GALLERY */}
       <section className="mx-auto max-w-6xl px-8 pt-6 sm:px-14">
