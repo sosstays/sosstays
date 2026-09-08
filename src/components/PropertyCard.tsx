@@ -18,6 +18,10 @@ export type PropertyCardProps = {
    * "Stay here" list).
    */
   surface?: "plain" | "framed";
+  /** Omits the "Sleeps N" pill. */
+  hideSleeps?: boolean;
+  /** Omits the "Have a look" pill. */
+  hideCta?: boolean;
 };
 
 export function PropertyCard({
@@ -29,6 +33,8 @@ export function PropertyCard({
   coverImage,
   gallery,
   surface = "plain",
+  hideSleeps = false,
+  hideCta = false,
 }: PropertyCardProps) {
   // GROQ returns `null` (not `undefined`) for an empty array field, which
   // skips a destructuring default — normalize explicitly.
@@ -97,7 +103,7 @@ export function PropertyCard({
         <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{location}</p>
         <div className="mb-3.5 flex flex-wrap items-center gap-3.5">
           <h3 className="font-serif text-lg font-bold text-near-black sm:text-2xl">{name}</h3>
-          {sleeps && (
+          {!hideSleeps && sleeps && (
             <span className="rounded-full bg-light-sage/35 px-3.5 py-1.5 text-sm font-semibold whitespace-nowrap text-forest-green">
               Sleeps {sleeps}
             </span>
@@ -106,9 +112,11 @@ export function PropertyCard({
         {shortDescription && (
           <p className="mb-6 leading-relaxed text-near-black/70">{shortDescription}</p>
         )}
-        <span className="inline-flex items-center gap-2 rounded-full bg-forest-green px-6 py-3.5 text-[15px] font-semibold text-cream transition-colors duration-300 group-hover:bg-light-sage group-hover:text-forest-green">
-          Have a look →
-        </span>
+        {!hideCta && (
+          <span className="inline-flex items-center gap-2 rounded-full bg-forest-green px-6 py-3.5 text-[15px] font-semibold text-cream transition-colors duration-300 group-hover:bg-light-sage group-hover:text-forest-green">
+            Have a look →
+          </span>
+        )}
       </div>
     </>
   );
