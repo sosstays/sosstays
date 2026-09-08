@@ -124,7 +124,6 @@ export default async function HomePage() {
                 shortDescription={property.shortDescription}
                 sleeps={property.sleeps}
                 coverImage={property.coverImage}
-                gallery={property.gallery}
                 surface="framed"
                 hideSleeps
                 hideCta
