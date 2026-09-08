@@ -3,7 +3,7 @@ import { client } from "@/sanity/client";
 import { BLOG_POSTS_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import { BlogPostCard } from "@/components/BlogPostCard";
 import type { Metadata } from "next";
 
@@ -25,9 +25,10 @@ export default async function BlogIndexPage({
   searchParams: Promise<{ tag?: string }>;
 }) {
   const { tag } = await searchParams;
-  const [allPosts, siteSettings] = await Promise.all([
+  const [allPosts, siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(BLOG_POSTS_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
+    getSiteNavLinks(),
   ]);
   const fallbackAuthorName = siteSettings?.businessName || "Sos Stays";
   const posts = tag
@@ -36,7 +37,7 @@ export default async function BlogIndexPage({
 
   return (
     <>
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
+      <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8">
           <h1 className="font-serif text-4xl font-semibold text-forest-green">The Blog</h1>

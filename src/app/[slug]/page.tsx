@@ -7,7 +7,7 @@ import { buildMetadata, SITE_URL } from "@/sanity/metadata";
 import { buildUplistingBookingUrl } from "@/sanity/uplisting";
 import { JsonLd, buildBreadcrumbSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
 import { CountUp } from "@/components/CountUp";
 import { ItineraryTimeline } from "@/components/ItineraryTimeline";
@@ -21,11 +21,12 @@ export const revalidate = 60;
 type Props = { params: Promise<{ slug: string }> };
 
 async function getData(slug: string) {
-  const [page, siteSettings] = await Promise.all([
+  const [page, siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(LANDING_PAGE_QUERY, { slug }),
     client.fetch(SITE_SETTINGS_QUERY),
+    getSiteNavLinks(),
   ]);
-  return { page, siteSettings };
+  return { page, siteSettings, siteNavLinks };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -63,7 +64,7 @@ function StatNumber({ text, className }: { text: string; className?: string }) {
 
 export default async function LandingPage({ params }: Props) {
   const { slug } = await params;
-  const { page, siteSettings } = await getData(slug);
+  const { page, siteSettings, siteNavLinks } = await getData(slug);
   if (!page) notFound();
 
   const bookingUrl =
@@ -107,7 +108,7 @@ export default async function LandingPage({ params }: Props) {
         )}
         <div className="absolute inset-0 bg-gradient-to-b from-deep-forest/62 via-deep-forest/34 to-deep-forest/82" />
 
-        <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" />
+        <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" />
 
         <div className="relative mx-auto w-full max-w-6xl">
           {page.heroEyebrow && (

@@ -274,6 +274,21 @@ export const FOOTER_QUERY = defineQuery(`
   }
 `);
 
+// ---- Navigation (singleton) ----
+
+export const NAVIGATION_QUERY = defineQuery(`
+  *[_type == "navigation" && _id == "navigation"][0] {
+    homeNavLinks[] {
+      label,
+      href
+    },
+    siteNavLinks[] {
+      label,
+      href
+    }
+  }
+`);
+
 // ---- Privacy policy (singleton) ----
 
 export const PRIVACY_POLICY_QUERY = defineQuery(`
