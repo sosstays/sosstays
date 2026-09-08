@@ -7,7 +7,7 @@ import { JsonLd, buildBreadcrumbSchema, buildFaqSchema } from "@/sanity/jsonld";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
 import { getUplistingRoom } from "@/lib/uplisting/client";
 import { HeroNav } from "@/components/HeroNav";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { ReviewScoreCard } from "@/components/ReviewScore";
 import { FaqSection } from "@/components/FaqSection";
@@ -59,9 +59,10 @@ export default async function RoomPage({ params, searchParams }: Props) {
   const { slug, roomId } = await params;
   const { check_in, check_out, guests } = await searchParams;
 
-  const [property, room] = await Promise.all([
+  const [property, room, siteNavLinks] = await Promise.all([
     client.fetch(PROPERTY_PAGE_QUERY, { slug }),
     getUplistingRoom(roomId).catch(() => null),
+    getSiteNavLinks(),
   ]);
 
   if (!property || !room) notFound();
@@ -80,7 +81,7 @@ export default async function RoomPage({ params, searchParams }: Props) {
       <JsonLd data={breadcrumbSchema} />
       {faqSchema && <JsonLd data={faqSchema} />}
 
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
+      <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
 
       {/* GALLERY */}
       <section className="mx-auto max-w-6xl px-8 pt-6 sm:px-14">

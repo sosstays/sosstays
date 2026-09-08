@@ -2,7 +2,7 @@ import { client } from "@/sanity/client";
 import { PROPERTY_PAGES_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import { PropertyCard } from "@/components/PropertyCard";
 import type { Metadata } from "next";
 
@@ -30,11 +30,14 @@ type SosPropertyPage = {
 };
 
 export default async function StaysIndexPage() {
-  const properties = await client.fetch<SosPropertyPage[]>(PROPERTY_PAGES_QUERY);
+  const [properties, siteNavLinks] = await Promise.all([
+    client.fetch<SosPropertyPage[]>(PROPERTY_PAGES_QUERY),
+    getSiteNavLinks(),
+  ]);
 
   return (
     <>
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/search" ctaLabel="Find your break" sticky />
+      <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8">
           <h1 className="font-serif text-4xl font-semibold text-forest-green">Stays</h1>

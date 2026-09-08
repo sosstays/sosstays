@@ -15,7 +15,7 @@ import { SocialIcons } from "@/components/SocialIcons";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { DisqusComments } from "@/components/DisqusComments";
 import { BlogPostListItem } from "@/components/BlogPostListItem";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -37,9 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const [post, siteSettings] = await Promise.all([
+  const [post, siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(BLOG_POST_QUERY, { slug }),
     client.fetch(SITE_SETTINGS_QUERY),
+    getSiteNavLinks(),
   ]);
   if (!post) notFound();
 
@@ -58,7 +59,7 @@ export default async function BlogPostPage({ params }: Props) {
     <>
       <JsonLd data={buildArticleSchema(post, siteSettings)} />
       <JsonLd data={breadcrumbSchema} />
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
+      <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
 
       <main className="bg-cream font-sans text-near-black">
         {/* BREADCRUMB */}

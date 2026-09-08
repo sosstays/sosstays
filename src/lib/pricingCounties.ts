@@ -18,8 +18,8 @@ export type CountyStats = {
   occupancy: number;
   annualRevenue: number;
   statsSourceNote: string;
-  realExample: RealExample;
-  drivers: string[];
+  realExample: RealExample | null;
+  drivers: string[] | null;
   faqs: CountyFaq[];
 };
 

@@ -13,7 +13,7 @@ import {
 } from "@/sanity/jsonld";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
 import { HeroNav } from "@/components/HeroNav";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { ReviewScoreCard } from "@/components/ReviewScore";
 import { FaqSection } from "@/components/FaqSection";
@@ -35,9 +35,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PropertyPage({ params }: Props) {
   const { slug } = await params;
-  const [property, siteSettings] = await Promise.all([
+  const [property, siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(PROPERTY_PAGE_QUERY, { slug }),
     client.fetch(SITE_SETTINGS_QUERY),
+    getSiteNavLinks(),
   ]);
 
   if (!property) notFound();
@@ -49,7 +50,7 @@ export default async function PropertyPage({ params }: Props) {
   // bookingSubdomainUrl set at all) — so use it as-is when it's already a
   // full URL, and only fall back to the slug+subdomain construction
   // otherwise.
-  const genericBookingUrl = property.uplistingPropertySlug?.startsWith("http")
+  const externalBookingUrl = property.uplistingPropertySlug?.startsWith("http")
     ? property.uplistingPropertySlug
     : siteSettings?.bookingSubdomainUrl && property.uplistingPropertySlug
       ? buildUplistingBookingUrl({
@@ -57,6 +58,10 @@ export default async function PropertyPage({ params }: Props) {
           propertySlug: property.uplistingPropertySlug,
         })
       : null;
+  // When uplistingPropertyId is also set, prefer the on-site embedded
+  // checkout (/book) over Uplisting's own hosted page, so pricing and
+  // payment stay on this site.
+  const genericBookingUrl = property.uplistingPropertyId ? `/stays/${slug}/book` : externalBookingUrl;
 
   // A property page covers a whole guesthouse, which can have several
   // separately-bookable Uplisting rooms — there's no single checkout link
@@ -67,7 +72,7 @@ export default async function PropertyPage({ params }: Props) {
   // property or dates attached — see uplistingPropertySlug above).
   const hasBookableRooms = (property.roomTypes ?? []).some((room: { roomId?: string }) => room.roomId);
   const bookingUrl = hasBookableRooms ? "#room-types" : genericBookingUrl;
-  const bookingIsExternal = !hasBookableRooms;
+  const bookingIsExternal = Boolean(bookingUrl?.startsWith("http"));
   const bookingLabel = hasBookableRooms ? "See room types" : "Book now";
 
   const breadcrumbSchema = buildBreadcrumbSchema([
@@ -84,7 +89,7 @@ export default async function PropertyPage({ params }: Props) {
       <JsonLd data={breadcrumbSchema} />
       {faqSchema && <JsonLd data={faqSchema} />}
 
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
+      <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
 
       {/* GALLERY */}
       <section className="mx-auto max-w-6xl px-8 pt-6 sm:px-14">

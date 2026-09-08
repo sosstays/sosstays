@@ -6,7 +6,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { ContactForm } from "@/components/ContactForm";
 import { ContactPromiseBubble } from "@/components/ContactPromiseBubble";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import type { Metadata } from "next";
 
 // This page recreates a specific reference design that calls for Poppins
@@ -37,11 +37,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  const siteSettings = await client.fetch(SITE_SETTINGS_QUERY);
+  const [siteSettings, siteNavLinks] = await Promise.all([
+    client.fetch(SITE_SETTINGS_QUERY),
+    getSiteNavLinks(),
+  ]);
 
   return (
     <>
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
+      <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className={`${poppins.className} min-h-screen bg-cream text-near-black`}>
         <div className="grid grid-cols-1 gap-10 px-5 py-10 sm:px-10 lg:grid-cols-[2fr_3fr] lg:items-center lg:gap-24 lg:px-[60px]">
           {/* IMAGE — stacked below the form on smaller screens, to the side on lg+ */}
