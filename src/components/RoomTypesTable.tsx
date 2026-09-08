@@ -1,11 +1,13 @@
 import { Poppins } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 import { urlFor } from "@/sanity/image";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["600"] });
 
 type RoomType = {
   name: string;
+  roomId?: string | null;
   image?: ({ alt?: string } & Record<string, unknown>) | null;
   bedConfiguration?: string | null;
   guests: number;
@@ -26,7 +28,7 @@ function GuestIcon() {
   );
 }
 
-export function RoomTypesTable({ roomTypes }: { roomTypes?: RoomType[] | null }) {
+export function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTypes?: RoomType[] | null }) {
   if (!roomTypes || roomTypes.length === 0) return null;
 
   return (
@@ -41,45 +43,78 @@ export function RoomTypesTable({ roomTypes }: { roomTypes?: RoomType[] | null })
           </tr>
         </thead>
         <tbody>
-          {roomTypes.map((room, i) => (
-            <tr key={i} className={i !== 0 ? "border-t border-sage-grey/40" : undefined}>
-              <td className="px-6 py-5">
-                <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
-                  {room.image && (
-                    <div className="relative h-32 w-full flex-none overflow-hidden rounded-[8px] sm:h-16 sm:w-20">
-                      <Image
-                        src={urlFor(room.image).width(200).height(160).url()}
-                        alt={room.image.alt ?? room.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                  <div>
-                    <p className={`mb-1.5 text-base font-semibold text-forest-green ${poppins.className}`}>
-                      {room.name}
-                    </p>
-                    {room.bedConfiguration && (
-                      <p className="text-sm text-near-black/70">{room.bedConfiguration}</p>
-                    )}
+          {roomTypes.map((room, i) => {
+            // Sanity's roomTypes[].roomId isn't always filled in (it's an
+            // optional PMS-linking field) — only rows with one can lead
+            // anywhere, since /stays/[slug]/rooms/[roomId] needs it to look
+            // up the Uplisting listing.
+            const href = room.roomId ? `/stays/${slug}/rooms/${room.roomId}` : null;
+
+            const nameCell = (
+              <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
+                {room.image && (
+                  <div className="relative h-32 w-full flex-none overflow-hidden rounded-[8px] sm:h-16 sm:w-20">
+                    <Image
+                      src={urlFor(room.image).width(200).height(160).url()}
+                      alt={room.image.alt ?? room.name}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                </div>
-              </td>
-              <td className="border-l border-sage-grey/40 px-6 py-5 text-near-black">
-                {room.guests <= 2 ? (
-                  <span className="inline-flex items-center gap-1">
-                    {Array.from({ length: room.guests }).map((_, g) => (
-                      <GuestIcon key={g} />
-                    ))}
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 text-sm font-medium">
-                    <GuestIcon />x {room.guests}
-                  </span>
                 )}
-              </td>
-            </tr>
-          ))}
+                <div>
+                  <p className={`mb-1.5 text-base font-semibold text-forest-green ${poppins.className}`}>
+                    {room.name}
+                  </p>
+                  {room.bedConfiguration && (
+                    <p className="text-sm text-near-black/70">{room.bedConfiguration}</p>
+                  )}
+                </div>
+              </div>
+            );
+
+            const guestsCell =
+              room.guests <= 2 ? (
+                <span className="inline-flex items-center gap-1">
+                  {Array.from({ length: room.guests }).map((_, g) => (
+                    <GuestIcon key={g} />
+                  ))}
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 text-sm font-medium">
+                  <GuestIcon />x {room.guests}
+                </span>
+              );
+
+            return (
+              <tr
+                key={i}
+                className={[
+                  i !== 0 ? "border-t border-sage-grey/40" : "",
+                  href ? "transition-colors hover:bg-light-forest-green/30" : "",
+                ].join(" ")}
+              >
+                <td className="px-6 py-5">
+                  {href ? (
+                    <Link href={href} className="contents">
+                      {nameCell}
+                    </Link>
+                  ) : (
+                    nameCell
+                  )}
+                </td>
+                <td className="border-l border-sage-grey/40 px-6 py-5 text-near-black">
+                  {href ? (
+                    <Link href={href} className="contents">
+                      {guestsCell}
+                    </Link>
+                  ) : (
+                    guestsCell
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

@@ -11,6 +11,7 @@ import { PropertyCard, type PropertyCardProps } from "@/components/PropertyCard"
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 import { HostsModule } from "@/components/HostsModule";
+import { SearchBar } from "@/components/SearchBar";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -37,7 +38,7 @@ export default async function HomePage() {
       <JsonLd data={buildOrganizationSchema(siteSettings)} />
 
       {/* HERO */}
-      <section className="relative h-[94vh] min-h-[700px] w-full bg-forest-green">
+      <section className="relative min-h-[94vh] w-full bg-forest-green">
         {hero?.image && (
           <Image
             src={urlFor(hero.image).width(1600).height(1400).url()}
@@ -51,9 +52,17 @@ export default async function HomePage() {
 
         <HeroNav links={homeNavLinks} ctaHref="#stays" ctaLabel="Find your break" />
 
-        {/* hero content */}
-        <div className="absolute inset-x-8 top-24 bottom-16 z-10 flex flex-col items-center justify-end gap-10 overflow-hidden text-center sm:inset-x-14 sm:top-auto sm:flex-row sm:items-end sm:justify-between sm:overflow-visible sm:text-left">
-          <div className="max-w-2xl">
+        {/* hero content — in normal flow (not absolutely positioned) and
+            min-h'd rather than height-locked, so if content ever grows
+            taller than a viewport (e.g. the search bar pushing things out),
+            it pushes the section taller instead of overflowing upward
+            behind HeroNav, which sits above it (z-20 vs z-10) and would
+            otherwise visually swallow whatever overflowed under it. The
+            top padding guarantees clearance from the nav regardless of
+            content height, which `top-24` inside an absolutely-positioned,
+            vertically-centered box could not. */}
+        <div className="relative z-10 mx-auto flex min-h-[94vh] w-[calc(100%-4rem)] flex-col items-center justify-center gap-10 pt-28 pb-10 text-center sm:w-[calc(100%-7rem)] sm:pt-32">
+          <div className="w-full">
             {hero?.eyebrow && (
               <p className="mb-3 text-xs font-semibold tracking-widest text-light-sage uppercase sm:mb-5">
                 {hero.eyebrow}
@@ -67,17 +76,11 @@ export default async function HomePage() {
                 </span>
               ))}
             </h1>
-            {hero?.body && (
-              <p className="mx-auto mb-3 max-w-[500px] text-lg text-cream/95 sm:mx-0 sm:mb-4">
-                {hero.body}
-              </p>
-            )}
+            {hero?.body && <p className="mx-auto mb-3 text-lg text-cream/95 sm:mb-4">{hero.body}</p>}
             {hero?.subBody && (
-              <p className="mx-auto mb-5 max-w-[460px] text-sm text-light-sage/85 sm:mx-0 sm:mb-8">
-                {hero.subBody}
-              </p>
+              <p className="mx-auto mb-5 text-sm text-light-sage/85 sm:mb-8">{hero.subBody}</p>
             )}
-            <div className="flex flex-wrap justify-center gap-4 sm:justify-start">
+            <div className="flex flex-wrap justify-center gap-4">
               {hero?.primaryCtaLabel && (
                 <Button
                   link={hero.primaryCtaUrl || "#stays"}
@@ -95,10 +98,13 @@ export default async function HomePage() {
               )}
             </div>
           </div>
+
+          <div className="w-full">
+            <SearchBar />
+          </div>
+
           {hero?.image?.alt && (
-            <div className="text-sm whitespace-nowrap text-cream/75 sm:text-right">
-              {hero.image.alt}
-            </div>
+            <div className="text-sm whitespace-nowrap text-cream/75">{hero.image.alt}</div>
           )}
         </div>
       </section>

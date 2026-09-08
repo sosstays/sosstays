@@ -101,7 +101,7 @@ export function CountyPageContent({ county }: { county: County }) {
       {(hasDrivers || hasExample) && (
         <DriversAndExample
           countyName={county.name}
-          drivers={hasDrivers ? stats!.drivers : []}
+          drivers={hasDrivers ? (stats!.drivers ?? []) : []}
           example={hasExample ? stats!.realExample : undefined}
           shown={shown}
         />
