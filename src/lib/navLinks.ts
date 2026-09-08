@@ -1,11 +1,8 @@
 export type NavLink = { href: string; label: string };
 
-// /stays is under construction — until it's ready, "Stays" points at the
-// homepage's #stays section instead of an index route. "Area guides" links
-// to the /areas index now that it's built. Kept in one place so every
-// page's nav stays in sync.
+// Kept in one place so every page's nav stays in sync.
 export const HOME_NAV_LINKS: NavLink[] = [
-  { href: "#stays", label: "Stays" },
+  { href: "/stays", label: "Stays" },
   { href: "/areas", label: "Area guides" },
   { href: "/blog", label: "Blog" },
   { href: "/pricing", label: "Pricing" },
@@ -13,7 +10,7 @@ export const HOME_NAV_LINKS: NavLink[] = [
 ];
 
 export const SITE_NAV_LINKS: NavLink[] = [
-  { href: "/#stays", label: "Stays" },
+  { href: "/stays", label: "Stays" },
   { href: "/areas", label: "Area guides" },
   { href: "/blog", label: "Blog" },
   { href: "/pricing", label: "Pricing" },

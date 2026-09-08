@@ -22,6 +22,8 @@ export type PropertyCardProps = {
   hideDescription?: boolean;
   /** Omits the "Have a look" pill — used where the card sits beside its own room list (search results). */
   hideCta?: boolean;
+  /** Omits the "Sleeps N" pill. */
+  hideSleeps?: boolean;
 };
 
 export function PropertyCard({
@@ -35,6 +37,7 @@ export function PropertyCard({
   surface = "plain",
   hideDescription = false,
   hideCta = false,
+  hideSleeps = false,
 }: PropertyCardProps) {
   // GROQ returns `null` (not `undefined`) for an empty array field, which
   // skips a destructuring default — normalize explicitly.
@@ -103,7 +106,7 @@ export function PropertyCard({
         <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{location}</p>
         <div className="mb-3.5 flex flex-wrap items-center gap-3.5">
           <h3 className="font-serif text-lg font-bold text-near-black sm:text-2xl">{name}</h3>
-          {sleeps && (
+          {!hideSleeps && sleeps && (
             <span className="rounded-full bg-light-sage/35 px-3.5 py-1.5 text-sm font-semibold whitespace-nowrap text-forest-green">
               Sleeps {sleeps}
             </span>
