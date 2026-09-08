@@ -7,7 +7,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { HOME_NAV_LINKS } from "@/lib/navLinks";
-import { PropertyCard } from "@/components/PropertyCard";
+import { PropertyCard, type PropertyCardProps } from "@/components/PropertyCard";
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 import { HostsModule } from "@/components/HostsModule";
@@ -26,7 +26,6 @@ export default async function HomePage() {
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(HOSTS_MODULE_QUERY),
   ]);
-  const featuredProperty = properties[0];
   const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
   const instagramUrl = siteSettings?.socialLinks?.find(
     (link: { platform: string; url: string }) => link.platform === "instagram",
@@ -103,27 +102,41 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* FEATURED STAY */}
-      {featuredProperty && (
+      {/* FEATURED STAYS */}
+      {properties.length > 0 && (
         <section id="stays" className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
           <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
             <h2 className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
               A few places to start
             </h2>
             <p className="max-w-[380px] text-near-black/60">
-              One house, for now. Have a proper look around it.
+              Have a proper look around each one.
             </p>
           </div>
 
-          <PropertyCard
-            slug={featuredProperty.slug}
-            name={featuredProperty.name}
-            location={featuredProperty.location}
-            shortDescription={featuredProperty.shortDescription}
-            sleeps={featuredProperty.sleeps}
-            coverImage={featuredProperty.coverImage}
-            gallery={featuredProperty.gallery}
-          />
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {properties.map((property: PropertyCardProps & { _id: string }) => (
+              <PropertyCard
+                key={property._id}
+                slug={property.slug}
+                name={property.name}
+                location={property.location}
+                shortDescription={property.shortDescription}
+                sleeps={property.sleeps}
+                coverImage={property.coverImage}
+                gallery={property.gallery}
+                surface="framed"
+                hideSleeps
+                hideCta
+              />
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Button link="/stays" variant="primary" bgColor="forest-green" color="cream">
+              View all stays
+            </Button>
+          </div>
         </section>
       )}
 
