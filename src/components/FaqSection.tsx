@@ -12,6 +12,7 @@ export function FaqSection({
   accent = "forest-green",
   centered = false,
   maxWidth = "720px",
+  padded = true,
 }: {
   id?: string;
   eyebrow?: string;
@@ -20,13 +21,20 @@ export function FaqSection({
   accent?: "forest-green" | "maroon";
   centered?: boolean;
   maxWidth?: string;
+  /** Set false when the parent already supplies horizontal padding (e.g.
+   *  a section that puts px-8/sm:px-14 on itself rather than its content
+   *  div) — otherwise this component's own padding stacks on top of the
+   *  parent's and the FAQ column ends up narrower and offset from every
+   *  sibling section's content column. Defaults to true (self-contained),
+   *  which is what every other caller of this component relies on. */
+  padded?: boolean;
 }) {
   if (!items || items.length === 0) return null;
 
   const accentClass = accent === "maroon" ? "text-maroon" : "text-forest-green";
 
   return (
-    <section id={id} className="mx-auto px-8 pb-24 sm:px-14" style={{ maxWidth }}>
+    <section id={id} className={`mx-auto pb-24 ${padded ? "px-8 sm:px-14" : ""}`} style={{ maxWidth }}>
       <div className={centered ? "mb-11 text-center" : "mb-6"}>
         {eyebrow && (
           <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{eyebrow}</p>
