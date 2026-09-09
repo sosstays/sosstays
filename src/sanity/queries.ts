@@ -325,6 +325,77 @@ export const HOSTS_MODULE_QUERY = defineQuery(`
   }
 `);
 
+// ---- Corporate Stays page (singleton) ----
+
+export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
+  *[_type == "corporateStaysPage" && _id == "corporateStaysPage"][0] {
+    heroBadge,
+    heroHeading,
+    heroBody,
+    heroPrimaryCtaLabel,
+    heroSecondaryCtaLabel,
+    heroFacts,
+    heroImages,
+    whoEyebrow,
+    whoHeading,
+    whoBody,
+    whoCards[] {
+      title,
+      body,
+      image
+    },
+    howEyebrow,
+    howHeading,
+    howBody,
+    howSteps[] {
+      title,
+      body
+    },
+    coverageEyebrow,
+    coverageHeading,
+    coverageAreas[] {
+      county,
+      live,
+      body
+    },
+    coverageNote,
+    includedEyebrow,
+    includedHeading,
+    includedFeatures[] {
+      title,
+      body,
+      icon
+    },
+    partnerEyebrow,
+    partnerHeading,
+    partnerBody,
+    partnerCtaLabel,
+    partnerCtaUrl,
+    faqEyebrow,
+    faqHeading,
+    faqs[] {
+      question,
+      answer
+    },
+    closingHeading,
+    closingBody,
+    ${seoProjection}
+  }
+`);
+
+// Onboarded properties for the corporate-stays "Partner with us" image
+// grid — a live query against propertyPage, not stored on the singleton
+// above, so the grid never goes stale as properties are added or removed.
+export const CORPORATE_ONBOARDED_PROPERTIES_QUERY = defineQuery(`
+  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...8] {
+    _id,
+    name,
+    "slug": slug.current,
+    location,
+    "coverImage": gallery[0]
+  }
+`);
+
 // ---- Homepage feed ----
 
 export const HOMEPAGE_QUERY = defineQuery(`{
