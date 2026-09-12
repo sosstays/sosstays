@@ -332,6 +332,31 @@ body {
   }
 }
 
+/* About page hero — slow drifting mark behind the headline.
+   See src/app/about/page.tsx */
+@keyframes about-drift {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(14px, -18px) rotate(7deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+@keyframes about-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-drift,
+  .about-spin {
+    animation: none;
+  }
+}
+
 /* Google Places autocomplete dropdown (AddressAutocomplete, used in the
    revenue calculator's "get estimate" form) — .pac-container is injected
    into <body> by the Maps JS library with its own stylesheet, so it can't
