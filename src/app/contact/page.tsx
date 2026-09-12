@@ -7,6 +7,7 @@ import { HeroNav } from "@/components/HeroNav";
 import { ContactForm } from "@/components/ContactForm";
 import { ContactPromiseBubble } from "@/components/ContactPromiseBubble";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
 // This page recreates a specific reference design that calls for Poppins
@@ -54,20 +55,20 @@ export default async function ContactPage() {
               sizes="(min-width: 1024px) 35vw, 90vw"
               priority
             />
-            <div className="absolute right-4 bottom-4 left-4 z-10 sm:right-6 sm:bottom-6 sm:left-auto sm:w-[360px]">
+            <Reveal delay={250} className="absolute right-4 bottom-4 left-4 z-10 sm:right-6 sm:bottom-6 sm:left-auto sm:w-[360px]">
               <ContactPromiseBubble />
-            </div>
+            </Reveal>
           </div>
 
           {/* CONTENT */}
           <div className="order-1 lg:order-2">
-            <h1 className={`${bricolage.className} mb-5 text-4xl font-bold tracking-tight text-forest-green sm:text-5xl`}>
+            <Reveal as="h1" className={`${bricolage.className} mb-5 text-4xl font-bold tracking-tight text-forest-green sm:text-5xl`}>
               Contact Us
-            </h1>
+            </Reveal>
 
-            <div className="border-t border-sage-grey/50 pt-12">
+            <Reveal delay={150} className="border-t border-sage-grey/50 pt-12">
               <ContactForm contactEmail={siteSettings?.contactEmail} />
-            </div>
+            </Reveal>
           </div>
         </div>
       </main>

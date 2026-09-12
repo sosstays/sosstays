@@ -5,6 +5,7 @@ import { HeroNav } from "@/components/HeroNav";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import { AreaGuideCard } from "@/components/AreaGuideCard";
 import { Button } from "@/components/Button";
+import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -27,14 +28,16 @@ export default async function AreasIndexPage() {
       <HeroNav links={SITE_NAV_LINKS} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8">
-          <h1 className="font-serif text-4xl font-semibold text-forest-green">Areas</h1>
-          <p className="mt-2 text-[#555550]">
+          <Reveal as="h1" className="font-serif text-4xl font-semibold text-forest-green">Areas</Reveal>
+          <Reveal as="p" delay={120} className="mt-2 text-[#555550]">
             From the Boyne to the Mournes — a proper break, wherever you land.
-          </p>
+          </Reveal>
 
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {areas.map((area: any) => (
-              <AreaGuideCard key={area._id} guide={area} />
+            {areas.map((area: any, i: number) => (
+              <Reveal key={area._id} delay={Math.min(i, 5) * 90}>
+                <AreaGuideCard guide={area} />
+              </Reveal>
             ))}
           </div>
 
@@ -42,7 +45,7 @@ export default async function AreasIndexPage() {
             <p className="mt-8 text-[#555550]">Area guides coming soon.</p>
           )}
 
-          <div className="mt-12 flex flex-col items-start gap-4 rounded-[14px] border border-sage-grey/40 bg-light-forest-green/25 p-6 sm:flex-row sm:items-center sm:justify-between">
+          <Reveal delay={200} className="mt-12 flex flex-col items-start gap-4 rounded-[14px] border border-sage-grey/40 bg-light-forest-green/25 p-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="font-serif text-lg font-bold text-forest-green">
                 Visiting Funtasia?
@@ -54,7 +57,7 @@ export default async function AreasIndexPage() {
             <Button link="/hotels-near-funtasia" variant="primary" bgColor="forest-green" color="cream">
               Hotels near Funtasia →
             </Button>
-          </div>
+          </Reveal>
         </div>
       </main>
     </>

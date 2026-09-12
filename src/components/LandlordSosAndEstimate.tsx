@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LandlordLeadForm } from "@/components/LandlordLeadForm";
 import { RevenueCalculator } from "@/components/RevenueCalculator";
+import { Reveal } from "@/components/Reveal";
 import type { LandlordContact } from "@/lib/landlordHandoff";
 
 // Both sections live in one client component so the estimate calculator can
@@ -38,19 +39,21 @@ export function LandlordSosAndEstimate() {
       <section id="send-sos" className="px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-[640px]">
           <div className="mb-10 text-center">
-            <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
+            <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
               Send your SOS
-            </p>
-            <h2 className="mb-4 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+            </Reveal>
+            <Reveal as="h2" delay={100} className="mb-4 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               Tell us about your place
-            </h2>
-            <p className="mx-auto max-w-[480px] text-sm text-near-black/60">
+            </Reveal>
+            <Reveal as="p" delay={180} className="mx-auto max-w-[480px] text-sm text-near-black/60">
               Three quick steps — we&apos;ll be in touch within a day or two.
               Right after, you can run a free revenue estimate for your
               property.
-            </p>
+            </Reveal>
           </div>
-          <LandlordLeadForm onSubmitted={setContact} />
+          <Reveal delay={240}>
+            <LandlordLeadForm onSubmitted={setContact} />
+          </Reveal>
         </div>
       </section>
 
