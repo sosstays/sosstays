@@ -77,23 +77,6 @@ export default async function HomePage() {
                 {hero.subBody}
               </p>
             )}
-            <div className="flex flex-wrap justify-center gap-4 sm:justify-start">
-              {hero?.primaryCtaLabel && (
-                <Button
-                  link={hero.primaryCtaUrl || "#stays"}
-                  variant="primary"
-                  bgColor="cream"
-                  color="forest-green"
-                >
-                  {hero.primaryCtaLabel}
-                </Button>
-              )}
-              {hero?.secondaryCtaLabel && (
-                <Button link={hero.secondaryCtaUrl || "/landlords"} variant="secondary" color="cream">
-                  {hero.secondaryCtaLabel}
-                </Button>
-              )}
-            </div>
           </div>
           {hero?.image?.alt && (
             <div className="text-sm whitespace-nowrap text-cream/75 sm:text-right">
@@ -102,6 +85,27 @@ export default async function HomePage() {
           )}
         </div>
       </section>
+
+      {/* LANDLORD BANNER — thin strip under the hero, maroon per the owner-context accent color */}
+      {hero?.secondaryCtaLabel && (
+        <section className="bg-maroon px-8 py-5 sm:px-14">
+          <Reveal className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-3 text-center sm:justify-between sm:text-left">
+            <p className="text-[15px] font-medium text-cream sm:text-base">
+              Own a property? We&apos;ll manage it for you and grow your income.
+            </p>
+            <Button
+              link={hero.secondaryCtaUrl || "/landlords"}
+              variant="secondary"
+              color="cream"
+              animateColor="maroon"
+              size="custom"
+              className="px-6 py-2.5 text-sm font-semibold"
+            >
+              {hero.secondaryCtaLabel}
+            </Button>
+          </Reveal>
+        </section>
+      )}
 
       {/* FEATURED STAYS */}
       {properties.length > 0 && (
