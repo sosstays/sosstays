@@ -11,6 +11,7 @@ import { PropertyCard, type PropertyCardProps } from "@/components/PropertyCard"
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 import { HostsModule } from "@/components/HostsModule";
+import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -106,28 +107,29 @@ export default async function HomePage() {
       {properties.length > 0 && (
         <section id="stays" className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
           <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
-            <h2 className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
+            <Reveal as="h2" className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
               A few places to start
-            </h2>
-            <p className="max-w-[380px] text-near-black/60">
+            </Reveal>
+            <Reveal as="p" delay={150} className="max-w-[380px] text-near-black/60">
               Have a proper look around each one.
-            </p>
+            </Reveal>
           </div>
 
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((property: PropertyCardProps & { _id: string }) => (
-              <PropertyCard
-                key={property._id}
-                slug={property.slug}
-                name={property.name}
-                location={property.location}
-                shortDescription={property.shortDescription}
-                sleeps={property.sleeps}
-                coverImage={property.coverImage}
-                surface="framed"
-                hideSleeps
-                hideCta
-              />
+            {properties.map((property: PropertyCardProps & { _id: string }, i: number) => (
+              <Reveal key={property._id} delay={Math.min(i, 5) * 90}>
+                <PropertyCard
+                  slug={property.slug}
+                  name={property.name}
+                  location={property.location}
+                  shortDescription={property.shortDescription}
+                  sleeps={property.sleeps}
+                  coverImage={property.coverImage}
+                  surface="framed"
+                  hideSleeps
+                  hideCta
+                />
+              </Reveal>
             ))}
           </div>
 
@@ -150,39 +152,45 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
           <div>
-            <p className="mb-2 text-xs tracking-widest text-near-black/55 uppercase">
+            <Reveal as="p" className="mb-2 text-xs tracking-widest text-near-black/55 uppercase">
               Follow along
-            </p>
-            <h2 className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
+            </Reveal>
+            <Reveal as="h2" delay={100} className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
               On Instagram
-            </h2>
+            </Reveal>
           </div>
           {instagramUrl && (
-            <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
-              Follow us on Instagram
-            </Button>
+            <Reveal delay={200}>
+              <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
+                Follow us on Instagram
+              </Button>
+            </Reveal>
           )}
         </div>
-        <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
+        <Reveal delay={150}>
+          <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
+        </Reveal>
       </section>
       <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
 
       {/* LANDLORD CTA — maroon per the owner-context accent color */}
       <section id="landlords" className="bg-maroon px-8 py-28 text-center sm:px-14">
         <div className="mx-auto max-w-xl">
-          <p className="mb-4 text-xs font-medium tracking-widest text-light-sage uppercase">
+          <Reveal as="p" className="mb-4 text-xs font-medium tracking-widest text-light-sage uppercase">
             For landlords
-          </p>
-          <h2 className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
+          </Reveal>
+          <Reveal as="h2" delay={120} className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
             Already self-managing your Airbnb?
-          </h2>
-          <p className="mb-9 text-lg leading-relaxed text-cream/85">
+          </Reveal>
+          <Reveal as="p" delay={220} className="mb-9 text-lg leading-relaxed text-cream/85">
             Most self-managing hosts earn 20–35% less than they should. We&apos;ll
             take it fully off your hands — commission-only, no setup fee.
-          </p>
-          <Button link="/landlords" variant="secondary" color="cream" animateColor="maroon">
-            Send your SOS
-          </Button>
+          </Reveal>
+          <Reveal delay={320}>
+            <Button link="/landlords" variant="secondary" color="cream" animateColor="maroon">
+              Send your SOS
+            </Button>
+          </Reveal>
         </div>
       </section>
     </main>
