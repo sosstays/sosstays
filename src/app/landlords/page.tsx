@@ -5,6 +5,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { LandlordPageContent } from "@/components/LandlordPageContent";
 import { HeroNav } from "@/components/HeroNav";
 import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
+import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -34,14 +35,14 @@ export default async function LandlordsIndexPage() {
             ctaHref="/contact"
             ctaLabel="Contact us"
           />
-          <h1 className="font-serif text-4xl font-bold text-cream">For landlords</h1>
-          <p className="mt-4 text-light-sage">
+          <Reveal as="h1" className="font-serif text-4xl font-bold text-cream">For landlords</Reveal>
+          <Reveal as="p" delay={120} className="mt-4 text-light-sage">
             Details coming soon —{" "}
             <Link href="/contact" className="text-cream underline">
               get in touch
             </Link>{" "}
             in the meantime.
-          </p>
+          </Reveal>
         </section>
       </main>
     );
@@ -58,14 +59,14 @@ export default async function LandlordsIndexPage() {
           ctaLabel="Contact us"
         />
         <div className="mx-auto max-w-3xl">
-          <h1 className="font-serif text-4xl font-bold text-cream">For landlords</h1>
+          <Reveal as="h1" className="font-serif text-4xl font-bold text-cream">For landlords</Reveal>
           <ul className="mt-6 space-y-4">
-            {pages.map((page: any) => (
-              <li key={page._id}>
+            {pages.map((page: any, i: number) => (
+              <Reveal as="li" key={page._id} delay={120 + Math.min(i, 5) * 80}>
                 <Link href={`/landlords/${page.slug}`} className="text-lg text-cream underline">
                   {page.title}
                 </Link>
-              </li>
+              </Reveal>
             ))}
           </ul>
         </div>

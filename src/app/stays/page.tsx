@@ -4,6 +4,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { getSiteNavLinks } from "@/lib/navLinks";
 import { PropertyCard } from "@/components/PropertyCard";
+import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -40,25 +41,26 @@ export default async function StaysIndexPage() {
       <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8">
-          <h1 className="font-serif text-4xl font-semibold text-forest-green">Stays</h1>
-          <p className="mt-2 text-near-black/60">
+          <Reveal as="h1" className="font-serif text-4xl font-semibold text-forest-green">Stays</Reveal>
+          <Reveal as="p" delay={120} className="mt-2 text-near-black/60">
             Book direct — no Airbnb fees, and you&apos;ll always know exactly who to call.
-          </p>
+          </Reveal>
 
           <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((property) => (
-              <PropertyCard
-                key={property._id}
-                slug={property.slug}
-                name={property.name}
-                location={property.location}
-                shortDescription={property.shortDescription}
-                sleeps={property.sleeps}
-                coverImage={property.coverImage}
-                surface="framed"
-                hideSleeps
-                hideCta
-              />
+            {properties.map((property, i) => (
+              <Reveal key={property._id} delay={Math.min(i, 5) * 90}>
+                <PropertyCard
+                  slug={property.slug}
+                  name={property.name}
+                  location={property.location}
+                  shortDescription={property.shortDescription}
+                  sleeps={property.sleeps}
+                  coverImage={property.coverImage}
+                  surface="framed"
+                  hideSleeps
+                  hideCta
+                />
+              </Reveal>
             ))}
           </div>
 

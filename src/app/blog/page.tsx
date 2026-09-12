@@ -5,6 +5,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { getSiteNavLinks } from "@/lib/navLinks";
 import { BlogPostCard } from "@/components/BlogPostCard";
+import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -40,8 +41,8 @@ export default async function BlogIndexPage({
       <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8">
-          <h1 className="font-serif text-4xl font-semibold text-forest-green">The Blog</h1>
-          <p className="mt-2 text-[#555550]">
+          <Reveal as="h1" className="font-serif text-4xl font-semibold text-forest-green">The Blog</Reveal>
+          <Reveal as="p" delay={120} className="mt-2 text-[#555550]">
             {tag ? (
               <>
                 Posts tagged &ldquo;{tag}&rdquo; —{" "}
@@ -52,11 +53,13 @@ export default async function BlogIndexPage({
             ) : (
               "Stories, guides, and inspiration for your next break."
             )}
-          </p>
+          </Reveal>
 
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post: any) => (
-              <BlogPostCard key={post._id} post={post} fallbackAuthorName={fallbackAuthorName} />
+            {posts.map((post: any, i: number) => (
+              <Reveal key={post._id} delay={Math.min(i, 5) * 90}>
+                <BlogPostCard post={post} fallbackAuthorName={fallbackAuthorName} />
+              </Reveal>
             ))}
           </div>
 

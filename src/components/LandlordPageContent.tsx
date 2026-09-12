@@ -13,6 +13,7 @@ import { AudienceTabs } from "@/components/AudienceTabs";
 import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
 import { GapChart } from "@/components/GapChart";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
+import { Reveal } from "@/components/Reveal";
 import { COMMISSION_RANGE, MAINTENANCE_AUTHORITY_EUR } from "@/lib/businessFacts";
 
 type LandlordPage = {
@@ -136,20 +137,20 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
 
           <div className="relative z-10">
             <div className="max-w-[600px] text-left">
-              <span className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
+              <Reveal as="span" className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
                 For property owners
-              </span>
-              <h1 className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl">
+              </Reveal>
+              <Reveal as="h1" delay={130} className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl">
                 You&apos;re already doing this yourself.
                 <br />
                 Let&apos;s do it better.
-              </h1>
-              <p className="mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
+              </Reveal>
+              <Reveal as="p" delay={260} className="mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
                 You handle the calendar, the cleaner, the awkward 11pm messages.
                 Hand it to us — same house, same income going to you, none of
                 the admin.
-              </p>
-              <div className="flex flex-wrap justify-start gap-4">
+              </Reveal>
+              <Reveal delay={390} className="flex flex-wrap justify-start gap-4">
                 <Button
                   link="#send-sos"
                   variant="primary"
@@ -159,7 +160,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 >
                   Get started →
                 </Button>
-              </div>
+              </Reveal>
             </div>
           </div>
         </div>
@@ -199,34 +200,37 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         </div>
         <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 lg:grid-cols-2">
           <div>
-            <span className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
+            <Reveal as="span" className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
               <span className="inline-block h-px w-5.5 bg-current" />
               The 11pm problem
-            </span>
-            <h2 className="mt-5 max-w-[20ch] font-serif text-4xl leading-[0.98] font-bold tracking-tight text-near-black sm:text-6xl">
+            </Reveal>
+            <Reveal as="h2" delay={120} className="mt-5 max-w-[20ch] font-serif text-4xl leading-[0.98] font-bold tracking-tight text-near-black sm:text-6xl">
               It&apos;s 11pm and the gate code doesn&apos;t work.
-            </h2>
-            <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-near-black/70">
+            </Reveal>
+            <Reveal as="p" delay={220} className="mt-6 max-w-[46ch] text-lg leading-relaxed text-near-black/70">
               Self-managing is rarely about the money at first. It&apos;s about the
               twelve small interruptions a week that you can&apos;t delegate to
               anyone, because there&apos;s nobody else.
-            </p>
-            <p className="mt-5 max-w-[46ch] text-lg leading-relaxed text-near-black/70">
+            </Reveal>
+            <Reveal as="p" delay={280} className="mt-5 max-w-[46ch] text-lg leading-relaxed text-near-black/70">
               We answer instead. Guest messages, pricing, the cleaner, the
               plumber under &euro;250 — the whole operation, run by a real local
               team.
-            </p>
-            <a
-              href="#how-it-works"
-              className="mt-7 inline-flex items-center gap-2.5 border-b border-maroon/30 pb-1 text-base font-semibold text-maroon"
-            >
-              See exactly what we take on <span>&rarr;</span>
-            </a>
+            </Reveal>
+            <Reveal delay={340}>
+              <a
+                href="#how-it-works"
+                className="mt-7 inline-flex items-center gap-2.5 border-b border-maroon/30 pb-1 text-base font-semibold text-maroon"
+              >
+                See exactly what we take on <span>&rarr;</span>
+              </a>
+            </Reveal>
           </div>
           <div className="flex flex-col gap-3.5">
-            {ELEVEN_PM_MESSAGES.map((message) => (
-              <div
+            {ELEVEN_PM_MESSAGES.map((message, i) => (
+              <Reveal
                 key={message.meta}
+                delay={i * 110}
                 className="max-w-[74%] self-start rounded-tr-[18px] rounded-br-[18px] rounded-bl-[18px] border border-sage-grey/40 bg-white px-5 py-4 shadow-sm"
               >
                 <p className="text-[15.5px] leading-relaxed text-near-black">
@@ -235,9 +239,9 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 <span className="mt-2 block text-xs font-semibold tracking-widest text-near-black/40 uppercase">
                   {message.meta}
                 </span>
-              </div>
+              </Reveal>
             ))}
-            <div className="max-w-[78%] self-end rounded-tl-[18px] rounded-tr-[18px] rounded-bl-[18px] bg-maroon px-6 py-5 shadow-lg">
+            <Reveal delay={ELEVEN_PM_MESSAGES.length * 110} className="max-w-[78%] self-end rounded-tl-[18px] rounded-tr-[18px] rounded-bl-[18px] bg-maroon px-6 py-5 shadow-lg">
               <p className="text-base leading-relaxed text-cream">
                 All four handled by 23:19. You were asleep.
               </p>
@@ -255,7 +259,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                   Sos Stays
                 </span>
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -265,21 +269,21 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-wrap items-end justify-between gap-12">
             <div>
-              <span className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
+              <Reveal as="span" className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
                 <span className="inline-block h-px w-5.5 bg-current" />
                 The gap
-              </span>
-              <h2 className="mt-5 max-w-[24ch] font-serif text-3xl leading-[0.98] font-bold tracking-tight text-near-black sm:text-5xl">
+              </Reveal>
+              <Reveal as="h2" delay={120} className="mt-5 max-w-[24ch] font-serif text-3xl leading-[0.98] font-bold tracking-tight text-near-black sm:text-5xl">
                 A fifth to a third of the revenue, left on the table.
-              </h2>
+              </Reveal>
             </div>
-            <p className="max-w-[36ch] text-base leading-relaxed text-near-black/70">
+            <Reveal as="p" delay={180} className="max-w-[36ch] text-base leading-relaxed text-near-black/70">
               A market benchmark for this corridor, not a guess. Same house,
               same owner — run properly, priced against live demand.
-            </p>
+            </Reveal>
           </div>
 
-          <div className="mt-12 rounded-[18px] border border-sage-grey/40 bg-white px-8 pt-10 pb-7 shadow-sm sm:px-10">
+          <Reveal delay={220} className="mt-12 rounded-[18px] border border-sage-grey/40 bg-white px-8 pt-10 pb-7 shadow-sm sm:px-10">
             <div className="flex flex-wrap items-start justify-between gap-6">
               <div className="flex flex-wrap gap-8">
                 <div>
@@ -309,7 +313,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             </div>
 
             <GapChart />
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -320,18 +324,19 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       >
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
-            <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
+            <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
               How it works
-            </p>
-            <h2 className="mb-5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+            </Reveal>
+            <Reveal as="h2" delay={100} className="mb-5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               Exactly what handing off looks like
-            </h2>
+            </Reveal>
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {HOW_IT_WORKS_STATS.map((item) => (
-              <div
+            {HOW_IT_WORKS_STATS.map((item, i) => (
+              <Reveal
                 key={item.title}
+                delay={i * 90}
                 className="rounded-[10px] border border-sage-grey/40 p-6"
               >
                 <div
@@ -345,10 +350,10 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 <p className="text-[13px] leading-relaxed text-near-black/65">
                   {item.description}
                 </p>
-              </div>
+              </Reveal>
             ))}
           </div>
-          <div className="mt-7 rounded-[18px] px-8 py-7 border border-sage-grey/40">
+          <Reveal delay={240} className="mt-7 rounded-[18px] px-8 py-7 border border-sage-grey/40">
             <h3 className="mb-1.5 text-base font-semibold text-near-black">
               Still your property
             </h3>
@@ -357,9 +362,9 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               commitment — stay as long as it&apos;s working for you, leave when
               it isn&apos;t.
             </p>
-          </div>
-          
-          <p className="mx-auto mt-9 max-w-[720px] text-[15px] leading-relaxed text-near-black/70">
+          </Reveal>
+
+          <Reveal as="p" delay={300} className="mx-auto mt-9 max-w-[720px] text-[15px] leading-relaxed text-near-black/70">
             We take that off your hands. Full property management — guest
             communication, pricing, cleaning coordination, maintenance — for a
             single commission on what you actually earn per night. No setup fee,
@@ -369,7 +374,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             calendar — every guest message, every check-in, every cleaner
             handoff, every repair call. You stay in control of the property; we
             handle everything that isn&apos;t the property itself.
-          </p>
+          </Reveal>
         </div>
       </section>
 
@@ -380,20 +385,20 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       {/* PROOF POINTS / MARKET DATA */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
         <div className="mb-4 text-center">
-          <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
+          <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
             Market data — Boyne–Mournes corridor
-          </p>
-          <h2 className="mb-3.5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+          </Reveal>
+          <Reveal as="h2" delay={100} className="mb-3.5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
             What this corridor is actually doing
-          </h2>
-          <p className="mx-auto max-w-[560px] text-sm text-near-black/60">
+          </Reveal>
+          <Reveal as="p" delay={180} className="mx-auto max-w-[560px] text-sm text-near-black/60">
             Industry benchmarks for the area — not a claim about our own
             portfolio, which is still one house deep.
-          </p>
+          </Reveal>
         </div>
         <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {MARKET_STATS.map((item) => (
-            <div key={item.caption} className="px-2 text-center">
+          {MARKET_STATS.map((item, i) => (
+            <Reveal key={item.caption} delay={i * 90} className="px-2 text-center">
               <div
                 className={`text-3xl font-extrabold text-maroon ${poppins.className}`}
               >
@@ -402,14 +407,14 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               <p className="mt-2 text-[13px] leading-normal text-near-black/60">
                 {item.caption}
               </p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* SPOTLIGHT — RATHESCAR GROVE */}
       <section className="mx-auto max-w-6xl px-8 pb-24 sm:px-14">
-        <div className="grid grid-cols-1 items-stretch overflow-hidden rounded-[18px] lg:grid-cols-2">
+        <Reveal className="grid grid-cols-1 items-stretch overflow-hidden rounded-[18px] lg:grid-cols-2">
           <div className="relative min-h-[320px] overflow-hidden bg-near-black lg:min-h-[520px]">
             <Image
               src="https://cdn.sanity.io/images/owyw3r12/production/df528c198ec5c52e746b7bf96ab99ce6e4957c81-2048x1536.jpg?w=1200&h=1500&fit=crop"
@@ -438,20 +443,20 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               </svg>
             </div>
             <div className="relative">
-              <span className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
+              <Reveal as="span" delay={100} className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
                 <span className="inline-block h-px w-5.5 bg-current" />
                 An honest early spotlight
-              </span>
-              <h3 className="mt-5 max-w-[22ch] font-serif text-3xl leading-[1.02] font-bold tracking-tight text-near-black sm:text-4xl">
+              </Reveal>
+              <Reveal as="h3" delay={180} className="mt-5 max-w-[22ch] font-serif text-3xl leading-[1.02] font-bold tracking-tight text-near-black sm:text-4xl">
                 What we found on our first property
-              </h3>
-              <p className="mt-5 max-w-[42ch] text-base leading-relaxed text-near-black/70">
+              </Reveal>
+              <Reveal as="p" delay={260} className="mt-5 max-w-[42ch] text-base leading-relaxed text-near-black/70">
                 Our own case, not a stand-in for what every owner should
                 expect — we&apos;ve run Rathescar Grove for a matter of
                 weeks. But the numbers are real, and specific.
-              </p>
+              </Reveal>
               <div className="mt-9 grid gap-6.5">
-                <div className="border-t border-maroon/15 pt-5.5">
+                <Reveal delay={340} className="border-t border-maroon/15 pt-5.5">
                   <span
                     className={`text-4xl font-bold tracking-tight text-maroon ${poppins.className}`}
                   >
@@ -461,8 +466,8 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                     vs. the local market average, at the rate the previous
                     listing was using.
                   </p>
-                </div>
-                <div className="border-t border-maroon/15 pt-5.5">
+                </Reveal>
+                <Reveal delay={420} className="border-t border-maroon/15 pt-5.5">
                   <span
                     className={`text-4xl font-bold tracking-tight text-maroon ${poppins.className}`}
                   >
@@ -473,11 +478,11 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                     31% to 60% in August, Rathescar Grove&apos;s first month
                     under management.
                   </p>
-                </div>
+                </Reveal>
               </div>
             </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <LandlordSosAndEstimate />
@@ -485,16 +490,16 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       {/* PROCESS */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
         <div className="mb-14 text-center">
-          <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
+          <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
             Process
-          </p>
-          <h2 className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+          </Reveal>
+          <Reveal as="h2" delay={100} className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
             What happens after you send your SOS
-          </h2>
+          </Reveal>
         </div>
         <div className="grid grid-cols-1 gap-9 sm:grid-cols-2 lg:grid-cols-4">
-          {PROCESS_STEPS.map((step) => (
-            <div key={step.number}>
+          {PROCESS_STEPS.map((step, i) => (
+            <Reveal key={step.number} delay={i * 100}>
               <div
                 className={`mb-3.5 text-3xl font-extrabold text-light-sage ${poppins.className}`}
               >
@@ -506,7 +511,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               <p className="text-sm leading-relaxed text-near-black/65">
                 {step.description}
               </p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -524,24 +529,26 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       {/* FINAL CTA */}
       <section className="bg-maroon px-8 py-24 text-center sm:px-14 sm:py-28">
         <div className="mx-auto max-w-[560px]">
-          <p className="mb-4.5 text-xs tracking-widest text-light-sage uppercase">
+          <Reveal as="p" className="mb-4.5 text-xs tracking-widest text-light-sage uppercase">
             Send your SOS
-          </p>
-          <h2 className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
+          </Reveal>
+          <Reveal as="h2" delay={120} className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
             Ready to hand over the keys?
-          </h2>
-          <p className="mb-9 text-lg leading-relaxed text-light-sage">
+          </Reveal>
+          <Reveal as="p" delay={220} className="mb-9 text-lg leading-relaxed text-light-sage">
             Two minutes of your time — with or without your numbers to hand.
-          </p>
-          <Button
-            link="#send-sos"
-            variant="primary"
-            bgColor="cream"
-            color="maroon"
-            animateColor="maroon"
-          >
-            Send your SOS ↑
-          </Button>
+          </Reveal>
+          <Reveal delay={320}>
+            <Button
+              link="#send-sos"
+              variant="primary"
+              bgColor="cream"
+              color="maroon"
+              animateColor="maroon"
+            >
+              Send your SOS ↑
+            </Button>
+          </Reveal>
         </div>
       </section>
 

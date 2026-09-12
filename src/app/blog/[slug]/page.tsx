@@ -16,6 +16,7 @@ import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { DisqusComments } from "@/components/DisqusComments";
 import { BlogPostListItem } from "@/components/BlogPostListItem";
 import { getSiteNavLinks } from "@/lib/navLinks";
+import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -77,9 +78,9 @@ export default async function BlogPostPage({ params }: Props) {
 
         {/* HEADER */}
         <header className="mx-auto max-w-6xl px-4 pt-5 sm:px-8">
-          <h1 className="max-w-3xl font-serif text-4xl leading-[1.05] font-bold tracking-tight text-[#1C1C1C] sm:text-5xl">
+          <Reveal as="h1" className="max-w-3xl font-serif text-4xl leading-[1.05] font-bold tracking-tight text-[#1C1C1C] sm:text-5xl">
             {post.title}
-          </h1>
+          </Reveal>
           <div className="mt-6 flex flex-wrap items-center gap-4 text-[13px] text-near-black/60">
             <div className="flex items-center gap-2.5">
               {post.author?.avatar ? (
@@ -160,7 +161,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
 
           {/* RIGHT: sidebar */}
-          <aside className="h-fit rounded-lg bg-light-forest-green p-7 lg:sticky lg:top-24">
+          <Reveal as="aside" delay={150} className="h-fit rounded-lg bg-light-forest-green p-7 lg:sticky lg:top-24">
             {post.promotedProperty && (
               <div className="mb-9 border-b border-sage-grey/30 pb-9">
                 <p className="mb-4 text-[13px] font-semibold text-forest-green">Featured stay</p>
@@ -260,24 +261,26 @@ export default async function BlogPostPage({ params }: Props) {
                 </ul>
               </div>
             )}
-          </aside>
+          </Reveal>
         </div>
 
         {/* LANDLORD CTA — maroon per the owner-context accent color */}
         <section className="mt-24 bg-maroon px-8 py-28 text-center sm:px-14">
           <div className="mx-auto max-w-xl">
-            <p className="mb-4 text-xs font-medium tracking-widest text-light-sage uppercase">
+            <Reveal as="p" className="mb-4 text-xs font-medium tracking-widest text-light-sage uppercase">
               For landlords
-            </p>
-            <h2 className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
+            </Reveal>
+            <Reveal as="h2" delay={120} className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
               Got a place worth minding?
-            </h2>
-            <p className="mb-9 text-lg leading-relaxed text-cream/85">
+            </Reveal>
+            <Reveal as="p" delay={220} className="mb-9 text-lg leading-relaxed text-cream/85">
               Send your SOS. We&apos;ll sort the stay — guests, calendar, cleaning, the lot.
-            </p>
-            <Button link="/landlords" variant="secondary" color="cream" animateColor="maroon">
-              Talk to us
-            </Button>
+            </Reveal>
+            <Reveal delay={320}>
+              <Button link="/landlords" variant="secondary" color="cream" animateColor="maroon">
+                Talk to us
+              </Button>
+            </Reveal>
           </div>
         </section>
       </main>
