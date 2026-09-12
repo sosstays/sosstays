@@ -2,23 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Poppins } from "next/font/google";
 import { Button } from "@/components/Button";
 import { FaqSection } from "@/components/FaqSection";
 import { CountyRevenueEstimator } from "@/components/pricing/CountyRevenueEstimator";
 import { formatEuro } from "@/lib/revenueCalculator";
 import { buildGenericCountyFaqs, mergeCountyFaqs } from "@/lib/countyFaqs";
 import type { County } from "@/lib/pricingCounties";
-
-// This design was approved with Poppins as the body font — a deliberate
-// departure from the rest of the site's Inter body font, scoped to just
-// this component rather than changed globally. Flagged for the team to
-// decide if it should become the site-wide sans font later.
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-poppins-live-county",
-});
 
 const STR_RULES_URL = "/blog/str-rules-ireland-what-hosts-need-to-know";
 
@@ -94,7 +83,7 @@ export function CountyPageContent({ county }: { county: County }) {
   const faqs = mergeCountyFaqs(buildGenericCountyFaqs(county.name, county.region), stats?.faqs ?? []);
 
   return (
-    <div className={`${poppins.className} flex flex-col gap-16 sm:gap-20 lg:gap-[84px]`}>
+    <div className="flex flex-col gap-16 sm:gap-20 lg:gap-[84px]">
       <Hero county={county} shown={shown} />
       {stats && <StatStrip stats={stats} p={p} shown={shown} />}
       <PricingBandLive countyName={county.name} shown={shown} />

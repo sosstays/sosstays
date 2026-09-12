@@ -1,25 +1,10 @@
 import Image from "next/image";
-import { Poppins, Bricolage_Grotesque } from "next/font/google";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
 import { SITE_NAV_LINKS } from "@/lib/navLinks";
 import type { Metadata } from "next";
-
-// This page recreates a specific reference design that calls for Poppins/
-// Bricolage Grotesque — scoped to just this route rather than swapping the
-// site's brand fonts (Playfair/Inter, set in layout.tsx) everywhere. Same
-// approach as /contact — see src/app/contact/page.tsx.
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-});
-
-const bricolage = Bricolage_Grotesque({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
@@ -66,7 +51,7 @@ export default function AboutUsPage() {
   return (
     <>
       <HeroNav links={SITE_NAV_LINKS} ctaHref="/landlords" ctaLabel="Send your SOS" sticky />
-      <main className={`${poppins.className} overflow-x-hidden bg-cream text-near-black`}>
+      <main className="overflow-x-hidden bg-cream text-near-black">
         {/* HERO */}
         <section className="relative flex min-h-[80vh] items-center overflow-hidden bg-deep-forest">
           <Image
@@ -96,14 +81,14 @@ export default function AboutUsPage() {
           />
           <div className="relative mx-auto w-full max-w-[1200px] px-8 py-24 sm:px-14">
             <Reveal
-              className={`${bricolage.className} mb-8 inline-block rounded-full border border-cream/30 px-[18px] py-2 text-xs font-semibold tracking-widest text-light-sage uppercase`}
+              className={`font-serif mb-8 inline-block rounded-full border border-cream/30 px-[18px] py-2 text-xs font-semibold tracking-widest text-light-sage uppercase`}
             >
               About us
             </Reveal>
             <Reveal
               as="h1"
               delay={120}
-              className={`${bricolage.className} mb-8 max-w-[16ch] text-[44px] leading-[1.02] font-extrabold tracking-tight text-cream sm:text-6xl lg:text-[92px]`}
+              className={`font-serif mb-8 max-w-[16ch] text-[44px] leading-[1.02] font-extrabold tracking-tight text-cream sm:text-6xl lg:text-[92px]`}
             >
               Sós is the Irish word for a break.
             </Reveal>
@@ -119,10 +104,10 @@ export default function AboutUsPage() {
         <section className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-32">
           <div className="grid grid-cols-1 gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-start lg:gap-18">
             <Reveal>
-              <p className={`${bricolage.className} mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase`}>
+              <p className={`font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase`}>
                 Why we exist
               </p>
-              <h2 className={`${bricolage.className} mb-6 text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl lg:text-[46px]`}>
+              <h2 className={`font-serif mb-6 text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl lg:text-[46px]`}>
                 We started because &ldquo;self-managed&rdquo; usually means &ldquo;self-exhausted&rdquo;
               </h2>
               <div className="my-7 h-[3px] w-[110px] bg-light-sage" />
@@ -180,10 +165,10 @@ export default function AboutUsPage() {
         <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
             <Reveal className="mb-14 max-w-[620px]">
-              <p className={`${bricolage.className} mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase`}>
+              <p className={`font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase`}>
                 What we do
               </p>
-              <h2 className={`${bricolage.className} text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl lg:text-[46px]`}>
+              <h2 className={`font-serif text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl lg:text-[46px]`}>
                 One team, two sides of the same stay
               </h2>
             </Reveal>
@@ -276,10 +261,10 @@ export default function AboutUsPage() {
         {/* HOW WE WORK */}
         <section className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-32">
           <Reveal className="mb-14 max-w-[620px]">
-            <p className={`${bricolage.className} mb-4 text-xs font-semibold tracking-widest text-light-sage/70 uppercase`}>
+            <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
               How we work
             </p>
-            <h2 className={`${bricolage.className} text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl lg:text-[46px]`}>
+            <h2 className={`font-serif text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl lg:text-[46px]`}>
               A few things we hold ourselves to
             </h2>
           </Reveal>
@@ -292,11 +277,11 @@ export default function AboutUsPage() {
                   i % 2 === 0 ? "md:border-r md:pr-12" : "md:pl-12"
                 }`}
               >
-                <span className={`${bricolage.className} pt-1 text-sm font-extrabold text-light-sage`}>
+                <span className={`font-serif pt-1 text-sm font-extrabold text-light-sage`}>
                   {item.number}
                 </span>
                 <div>
-                  <h3 className={`${bricolage.className} mb-2.5 text-xl font-bold text-deep-forest`}>{item.title}</h3>
+                  <h3 className={`font-serif mb-2.5 text-xl font-bold text-deep-forest`}>{item.title}</h3>
                   <p className="text-[15px] leading-loose text-near-black/65">{item.body}</p>
                 </div>
               </Reveal>
@@ -318,10 +303,10 @@ export default function AboutUsPage() {
           />
           <div className="relative mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-14 px-8 py-24 sm:px-14 sm:py-32 lg:grid-cols-2 lg:gap-16">
             <Reveal>
-              <p className={`${bricolage.className} mb-4 text-xs font-semibold tracking-widest text-light-sage uppercase`}>
+              <p className={`font-serif mb-4 text-xs font-semibold tracking-widest text-light-sage uppercase`}>
                 Where we operate
               </p>
-              <h2 className={`${bricolage.className} mb-6 text-[30px] leading-[1.1] font-bold tracking-tight text-cream sm:text-4xl lg:text-[46px]`}>
+              <h2 className={`font-serif mb-6 text-[30px] leading-[1.1] font-bold tracking-tight text-cream sm:text-4xl lg:text-[46px]`}>
                 Based in Ireland, growing across it
               </h2>
               <p className="mb-9 text-lg leading-loose text-light-sage">
@@ -349,7 +334,7 @@ export default function AboutUsPage() {
             <Reveal delay={150} className="flex flex-col">
               {REGIONS.map((region) => (
                 <div key={region.name} className="flex items-baseline justify-between border-b border-cream/15 py-6 last:border-b-0">
-                  <span className={`${bricolage.className} text-2xl font-bold sm:text-[27px] ${region.muted ? "text-light-sage" : "text-cream"}`}>
+                  <span className={`font-serif text-2xl font-bold sm:text-[27px] ${region.muted ? "text-light-sage" : "text-cream"}`}>
                     {region.name}
                   </span>
                   <span className="text-xs tracking-widest text-light-sage uppercase">{region.status}</span>
@@ -373,10 +358,10 @@ export default function AboutUsPage() {
                 />
               </svg>
             </div>
-            <p className={`${bricolage.className} mb-4 text-xs font-semibold tracking-widest text-light-sage/70 uppercase`}>
+            <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
               Doing it properly, on paper too
             </p>
-            <h2 className={`${bricolage.className} mb-6 text-[28px] leading-tight font-bold tracking-tight text-forest-green sm:text-4xl`}>
+            <h2 className={`font-serif mb-6 text-[28px] leading-tight font-bold tracking-tight text-forest-green sm:text-4xl`}>
               Registered, and ready for what&apos;s coming
             </h2>
             <p className="mx-auto max-w-[68ch] text-lg leading-loose text-near-black">
@@ -401,7 +386,7 @@ export default function AboutUsPage() {
             }}
           />
           <Reveal className="relative mx-auto max-w-[720px]">
-            <h2 className={`${bricolage.className} mb-6 text-[32px] leading-tight font-extrabold tracking-tight text-cream sm:text-5xl lg:text-[58px]`}>
+            <h2 className={`font-serif mb-6 text-[32px] leading-tight font-extrabold tracking-tight text-cream sm:text-5xl lg:text-[58px]`}>
               Wherever you&apos;re standing in this — welcome.
             </h2>
             <p className="mb-10 text-lg leading-loose text-light-sage">

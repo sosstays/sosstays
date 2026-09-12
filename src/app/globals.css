@@ -28,7 +28,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-poppins);
   --font-serif: var(--font-playfair);
 
   --color-forest-green: var(--forest-green);

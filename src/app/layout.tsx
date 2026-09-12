@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Playfair_Display, Poppins } from "next/font/google";
 import Script from "next/script";
 import { Footer } from "@/components/Footer";
 import { client } from "@/sanity/client";
@@ -10,7 +10,7 @@ const GA_MEASUREMENT_ID = "G-ZG60S049VC";
 const GTM_ID = "GTM-TLKN98WH";
 
 // Brand fonts per the Sos Stays brand knowledge base:
-// Playfair Display for headlines/pull quotes, Inter for body/UI.
+// Playfair Display for headlines/pull quotes, Poppins for body/UI.
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
@@ -18,10 +18,10 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export const revalidate = 60;
@@ -45,7 +45,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en-IE"
-      className={`${playfair.variable} ${inter.variable} h-full antialiased`}
+      className={`${playfair.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#FAFAF8] font-sans text-[#1C1C1C]">
         {/* Google Tag Manager */}
