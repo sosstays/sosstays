@@ -90,7 +90,15 @@ export const PROPERTY_PAGES_QUERY = defineQuery(`
     location,
     shortDescription,
     sleeps,
-    "coverImage": gallery[0]
+    "coverImage": gallery[0],
+    uplistingPropertySlug,
+    roomTypes[] {
+      name,
+      roomId,
+      image,
+      bedConfiguration,
+      guests
+    }
   }
 `);
 
@@ -147,6 +155,27 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
       introduction
     },
     ${seoProjection}
+  }
+`);
+
+// Lean projection for the /stays/[slug]/book checkout flow — just enough to
+// resolve a slug to its Uplisting property id and display a summary.
+export const PROPERTY_BOOKING_QUERY = defineQuery(`
+  *[_type == "propertyPage" && slug.current == $slug][0] {
+    _id,
+    name,
+    "slug": slug.current,
+    location,
+    sleeps,
+    "coverImage": gallery[0],
+    uplistingPropertyId,
+    "addOns": *[_type == "addOn" && enabled != false && references(^._id)] {
+      _id,
+      name,
+      description,
+      price,
+      image
+    }
   }
 `);
 
@@ -271,6 +300,21 @@ export const FOOTER_QUERY = defineQuery(`
       }
     },
     copyrightText
+  }
+`);
+
+// ---- Navigation (singleton) ----
+
+export const NAVIGATION_QUERY = defineQuery(`
+  *[_type == "navigation" && _id == "navigation"][0] {
+    homeNavLinks[] {
+      label,
+      href
+    },
+    siteNavLinks[] {
+      label,
+      href
+    }
   }
 `);
 

@@ -15,15 +15,15 @@ export function AreaGuideCard({ guide }: { guide: AreaGuide }) {
   return (
     <Link
       href={`/areas/${guide.slug}`}
-      className="block overflow-hidden rounded-[10px] border border-sage-grey/40 bg-light-forest-green"
+      className="group block overflow-hidden rounded-[10px] border border-sage-grey/40 bg-light-forest-green transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
     >
       {guide.heroImage ? (
-        <div className="relative h-40">
+        <div className="relative h-40 overflow-hidden">
           <Image
             src={urlFor(guide.heroImage).width(500).height(320).url()}
             alt={guide.heroImage.alt ?? guide.areaName}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
       ) : (
@@ -34,11 +34,10 @@ export function AreaGuideCard({ guide }: { guide: AreaGuide }) {
           {guide.areaName}
         </h3>
         {guide.introduction && (
-          <p className="mb-3 text-sm leading-relaxed text-near-black/70">
+          <p className="text-sm leading-relaxed text-near-black/70">
             {portableTextToPlain(guide.introduction, 80)}
           </p>
         )}
-        <span className="text-sm font-semibold text-forest-green">Explore →</span>
       </div>
     </Link>
   );

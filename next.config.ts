@@ -16,6 +16,12 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "plus.unsplash.com",
       },
+      {
+        // Uplisting's photo CDN — used by room detail pages, which pull
+        // gallery images straight from Uplisting instead of Sanity.
+        protocol: "https",
+        hostname: "djts5lg061pqs.cloudfront.net",
+      },
     ],
   },
 };

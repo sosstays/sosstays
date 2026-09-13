@@ -20,6 +20,12 @@
   --pale-sage: #E3ECD8;      /* lighter than --light-sage, used for sunken card fills */
   --bright-cream: #FFFEF2;   /* near-white cream, used for raised stat tiles on --cream */
 
+  /* Added for the booking-flow (Stripe checkout) design — from the "Sos
+     Stays Booking Flow v2" Claude Design project's own token set, not
+     already covered by the palette above. */
+  --sage-300: #C6D7B3;       /* lighter than --light-sage, used for soft glows/accents */
+  --border-subtle: #DDE3D3;  /* lighter hairline than --sage-grey, for cards on cream */
+
   /* Landlords landing redesign — see components/LandlordPageContent.tsx */
   --warm-cream: #F7EFE9;     /* deeper than --cream, used for the "11pm problem"/spotlight card fills */
   --muted-maroon: #8A5F52;   /* warmer, lighter than --maroon, used for those sections' eyebrow labels */
@@ -36,12 +42,14 @@
   --color-light-sage: var(--light-sage);
   --color-cream: var(--cream);
   --color-maroon: var(--maroon);
+  --color-deep-forest: var(--deep-forest);
   --color-sage-grey: var(--sage-grey);
   --color-near-black: var(--near-black);
   --color-error-red: var(--error-red);
-  --color-deep-forest: var(--deep-forest);
   --color-pale-sage: var(--pale-sage);
   --color-bright-cream: var(--bright-cream);
+  --color-sage-300: var(--sage-300);
+  --color-border-subtle: var(--border-subtle);
   --color-warm-cream: var(--warm-cream);
   --color-muted-maroon: var(--muted-maroon);
 }
@@ -180,6 +188,78 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .sos-marquee {
+    animation: none;
+  }
+}
+
+/* /search loading.tsx — indeterminate bar sliding across its track
+   while the Sanity + Uplisting fetches run server-side. */
+@keyframes sos-search-loading-bar {
+  0% {
+    left: -35%;
+  }
+  60% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+.sos-search-loading-bar {
+  animation: sos-search-loading-bar 1.3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* SearchResultCard (see components/SearchResultCard.tsx) — the card's
+   own bordered box pops in, then (sm and up) visibly widens from just
+   the property-photo column's width out to the full row, growing to
+   contain the room list revealed inside it. Each room row then pops
+   in after that. */
+@keyframes sos-property-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes sos-result-expand {
+  from {
+    width: 400px;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes sos-room-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.sos-result-card {
+  animation: sos-property-pop 0.6s ease-in-out both;
+}
+.sos-room-pop {
+  animation: sos-room-pop 0.5s ease-in-out both;
+}
+/* The width expand only makes sense once the card lays out
+   horizontally (sm and up) — below that, it's already full-width. */
+@media (min-width: 640px) {
+  .sos-result-card {
+    animation:
+      sos-property-pop 0.6s ease-in-out both,
+      sos-result-expand 0.85s cubic-bezier(0.65, 0, 0.35, 1) 0.6s both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sos-result-card,
+  .sos-room-pop {
     animation: none;
   }
 }

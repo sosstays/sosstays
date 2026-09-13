@@ -3,7 +3,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
-import { SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getSiteNavLinks } from "@/lib/navLinks";
 import type { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -47,10 +47,12 @@ const REGIONS = [
   { name: "Island-wide", status: "Expanding", muted: true },
 ];
 
-export default function AboutUsPage() {
+export default async function AboutUsPage() {
+  const siteNavLinks = await getSiteNavLinks();
+
   return (
     <>
-      <HeroNav links={SITE_NAV_LINKS} ctaHref="/landlords" ctaLabel="Send your SOS" sticky />
+      <HeroNav links={siteNavLinks} ctaHref="/landlords" ctaLabel="Send your SOS" sticky />
       <main className="overflow-x-hidden bg-cream text-near-black">
         {/* HERO */}
         <section className="relative flex min-h-[80vh] items-center overflow-hidden bg-deep-forest">

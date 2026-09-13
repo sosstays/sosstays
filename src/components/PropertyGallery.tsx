@@ -7,6 +7,19 @@ import { Button } from "@/components/Button";
 
 type SanityImageWithAlt = { alt?: string } & Record<string, unknown>;
 
+// Room detail pages source their gallery from Uplisting, which hands back
+// plain hosted photo URLs rather than Sanity image assets — so a tile can
+// be either a Sanity image (run through urlFor) or a bare URL string.
+type GalleryImage = SanityImageWithAlt | string;
+
+function gallerySrc(image: GalleryImage, width: number, height: number) {
+  return typeof image === "string" ? image : urlFor(image).width(width).height(height).url();
+}
+
+function galleryAlt(image: GalleryImage, fallback: string) {
+  return typeof image === "string" ? fallback : (image.alt ?? fallback);
+}
+
 export type PropertyGalleryHighlight = {
   headline: string;
   description: string;
@@ -37,7 +50,7 @@ export function PropertyGallery({
   alt,
   promo,
 }: {
-  images: SanityImageWithAlt[];
+  images: GalleryImage[];
   alt: string;
   promo?: PropertyGalleryPromo;
 }) {
@@ -114,8 +127,8 @@ export function PropertyGallery({
           }}
         >
           <Image
-            src={urlFor(tiles[0]).width(1400).height(1600).url()}
-            alt={tiles[0].alt ?? alt}
+            src={gallerySrc(tiles[0], 1400, 1600)}
+            alt={galleryAlt(tiles[0], alt)}
             fill
             priority
             className="object-cover"
@@ -300,8 +313,8 @@ export function PropertyGallery({
               }}
             >
               <Image
-                src={urlFor(image).width(700).height(560).url()}
-                alt={image.alt ?? alt}
+                src={gallerySrc(image, 700, 560)}
+                alt={galleryAlt(image, alt)}
                 fill
                 className="object-cover"
               />
@@ -368,8 +381,8 @@ export function PropertyGallery({
               {images.map((image, i) => (
                 <div key={i} className="relative h-72 overflow-hidden rounded-[10px]">
                   <Image
-                    src={urlFor(image).width(900).height(700).url()}
-                    alt={image.alt ?? alt}
+                    src={gallerySrc(image, 900, 700)}
+                    alt={galleryAlt(image, alt)}
                     fill
                     className="object-cover"
                   />

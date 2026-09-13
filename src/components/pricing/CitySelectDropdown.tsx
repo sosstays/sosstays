@@ -62,11 +62,6 @@ export function CitySelectDropdown({ counties: allCounties }: { counties: County
                   className="flex items-center justify-between px-4 py-2.5 text-[14.5px] text-near-black transition-colors hover:bg-forest-green/10"
                 >
                   <span>{county.name}</span>
-                  {county.state === "live" && (
-                    <span className="text-[10px] font-semibold tracking-wide text-forest-green uppercase">
-                      Live data
-                    </span>
-                  )}
                 </Link>
               </DropdownMenuItem>
             </li>
