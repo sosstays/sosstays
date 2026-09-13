@@ -1,14 +1,17 @@
-// Static content for /partners and /partners/[slug] — no Sanity schema yet
-// for this page, so partner entries live here rather than as DEFAULT_*
-// fallbacks behind a CMS query (unlike about/corporate-stays). When a
-// partner has no real profile yet, category placeholders say so honestly
-// rather than inventing a business name.
+// Fallback content for /partners and /partners/[slug] — used whenever
+// the "Partners Page" singleton (Sanity: partnersPage) hasn't been
+// created yet, or the "partner" documents list is empty, so the page
+// never ships blank. See studio/schemaTypes/documents/partnersPage.ts
+// and partner.ts.
 
 export type PartnerCategory = {
   slug: string;
   label: string;
 };
 
+// The fixed category taxonomy — mirrors studio/schemaTypes/shared/
+// partnerCategories.ts. Used for the directory's filter tags regardless
+// of CMS content, since it's a closed set rather than editable copy.
 export const PARTNER_CATEGORIES: PartnerCategory[] = [
   { slug: "cleaning", label: "Cleaning" },
   { slug: "photography", label: "Photography" },
@@ -26,13 +29,11 @@ export type Partner = {
   description: string;
   href: string; // external site/booking link
   featured: boolean;
-  profile?: {
-    intro: string;
-    body: string;
-  };
+  profileIntro?: string;
+  profileBody?: string;
 };
 
-export const PARTNERS: Partner[] = [
+export const DEFAULT_PARTNERS: Partner[] = [
   {
     slug: "funtasia",
     name: "Funtasia",
@@ -42,10 +43,9 @@ export const PARTNERS: Partner[] = [
       "The go-to for a wet Tuesday or a birthday that needs sorting — we send families here more than anywhere else.",
     href: "https://www.funtasia.net/",
     featured: true,
-    profile: {
-      intro: "Family entertainment centre, Drogheda",
-      body: "The go-to for a wet Tuesday or a birthday that needs sorting — we send families here more than anywhere else. Full profile content to come.",
-    },
+    profileIntro: "Family entertainment centre, Drogheda",
+    profileBody:
+      "The go-to for a wet Tuesday or a birthday that needs sorting — we send families here more than anywhere else. Full profile content to come.",
   },
   {
     slug: "tranquil-space",
@@ -59,12 +59,6 @@ export const PARTNERS: Partner[] = [
   },
 ];
 
-// Categories with no signed partner yet — shown as an honest "still
-// building this out" card rather than a placeholder business name.
-export const EMPTY_CATEGORIES = PARTNER_CATEGORIES.filter(
-  (cat) => !PARTNERS.some((p) => p.category === cat.slug)
-);
-
-export function getPartnerBySlug(slug: string): Partner | undefined {
-  return PARTNERS.find((p) => p.slug === slug && p.featured);
+export function getEmptyCategories(partners: Partner[]): PartnerCategory[] {
+  return PARTNER_CATEGORIES.filter((cat) => !partners.some((p) => p.category === cat.slug));
 }

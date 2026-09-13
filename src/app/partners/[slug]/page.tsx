@@ -1,20 +1,40 @@
 import { notFound } from "next/navigation";
+import { client } from "@/sanity/client";
+import { PARTNER_BY_SLUG_QUERY, FEATURED_PARTNER_SLUGS_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { Reveal } from "@/components/Reveal";
-import { getSiteNavLinks } from "@/lib/navLinks";
-import { getPartnerBySlug, PARTNERS } from "@/lib/partnersData";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
+import { DEFAULT_PARTNERS, type Partner } from "@/lib/partnersData";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  return PARTNERS.filter((p) => p.featured).map((p) => ({ slug: p.slug }));
+  const slugs = await client.fetch(FEATURED_PARTNER_SLUGS_QUERY);
+  if (slugs?.length) return slugs.map((slug: string) => ({ slug }));
+  return DEFAULT_PARTNERS.filter((p) => p.featured).map((p) => ({ slug: p.slug }));
+}
+
+async function getPartner(slug: string): Promise<Partner | null> {
+  const partner = await client.fetch(PARTNER_BY_SLUG_QUERY, { slug });
+  if (partner) {
+    return {
+      ...partner,
+      slug: partner.slug ?? slug,
+      featured: partner.featured ?? true,
+      profileIntro: partner.profileIntro ?? undefined,
+      profileBody: partner.profileBody ?? undefined,
+    };
+  }
+
+  const fallback = DEFAULT_PARTNERS.find((p) => p.slug === slug && p.featured);
+  return fallback ?? null;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const partner = getPartnerBySlug(slug);
+  const partner = await getPartner(slug);
   if (!partner) return buildMetadata(null, `/partners/${slug}`);
 
   return buildMetadata(
@@ -28,10 +48,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PartnerProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const partner = getPartnerBySlug(slug);
+  const partner = await getPartner(slug);
   if (!partner) notFound();
 
-  const siteNavLinks = await getSiteNavLinks();
+  const siteNavLinks = await getGuestSiteNavLinks();
 
   return (
     <>
@@ -50,7 +70,7 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
               {partner.name}
             </Reveal>
             <Reveal delay={160} className="text-lg text-cream/80">
-              {partner.profile?.intro ?? partner.tagline}
+              {partner.profileIntro || partner.tagline}
             </Reveal>
           </div>
         </section>
@@ -58,7 +78,7 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
         <section className="mx-auto max-w-[820px] px-8 py-20 sm:px-14">
           <Reveal>
             <p className="mb-8 text-lg leading-loose text-near-black/80">
-              {partner.profile?.body ?? partner.description}
+              {partner.profileBody || partner.description}
             </p>
             <a
               href={partner.href}

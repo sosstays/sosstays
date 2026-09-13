@@ -307,11 +307,11 @@ export const FOOTER_QUERY = defineQuery(`
 
 export const NAVIGATION_QUERY = defineQuery(`
   *[_type == "navigation" && _id == "navigation"][0] {
-    homeNavLinks[] {
+    guestNavLinks[] {
       label,
       href
     },
-    siteNavLinks[] {
+    landlordNavLinks[] {
       label,
       href
     }
@@ -519,6 +519,75 @@ export const CORPORATE_ONBOARDED_PROPERTIES_QUERY = defineQuery(`
     location,
     "coverImage": gallery[0]
   }
+`);
+
+// ---- Partners ----
+
+export const PARTNERS_PAGE_QUERY = defineQuery(`
+  *[_type == "partnersPage" && _id == "partnersPage"][0] {
+    heroBadge,
+    heroHeading,
+    heroImage,
+    introParagraph1,
+    introParagraph2,
+    introParagraph3,
+    tiersEyebrow,
+    tiersHeading,
+    tiers[] {
+      title,
+      body
+    },
+    tiersNote,
+    whoWeWantEyebrow,
+    whoWeWantHeading,
+    whoWeWantCategories[] {
+      title,
+      body,
+      tag
+    },
+    directoryEyebrow,
+    directoryHeading,
+    becomePartnerEyebrow,
+    becomePartnerHeading,
+    becomePartnerIntro,
+    ${seoProjection}
+  }
+`);
+
+// All partner directory entries — a live query against the repeatable
+// "partner" document type, not stored on the partnersPage singleton
+// above, so the directory never goes stale as partners are added or
+// removed (same pattern as CORPORATE_ONBOARDED_PROPERTIES_QUERY).
+export const PARTNERS_QUERY = defineQuery(`
+  *[_type == "partner"] | order(featured desc, name asc) {
+    _id,
+    name,
+    "slug": slug.current,
+    tagline,
+    category,
+    description,
+    href,
+    featured
+  }
+`);
+
+export const PARTNER_BY_SLUG_QUERY = defineQuery(`
+  *[_type == "partner" && featured == true && slug.current == $slug][0] {
+    _id,
+    name,
+    "slug": slug.current,
+    tagline,
+    category,
+    description,
+    href,
+    featured,
+    profileIntro,
+    profileBody
+  }
+`);
+
+export const FEATURED_PARTNER_SLUGS_QUERY = defineQuery(`
+  *[_type == "partner" && featured == true && defined(slug.current)][].slug.current
 `);
 
 // ---- Homepage feed ----

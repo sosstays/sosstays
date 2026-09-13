@@ -15,11 +15,321 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type Partner = {
+  _id: string;
+  _type: "partner";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name: string;
+  slug?: Slug;
+  tagline: string;
+  category:
+    | "cleaning"
+    | "photography"
+    | "social-content"
+    | "tours-experiences"
+    | "food-drink"
+    | "hospitality-days-out";
+  description: string;
+  href: string;
+  featured?: boolean;
+  profileIntro?: string;
+  profileBody?: string;
+};
+
+export type Slug = {
+  _type: "slug";
+  current: string;
+  source?: string;
+};
+
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type PartnersPage = {
+  _id: string;
+  _type: "partnersPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  heroBadge?: string;
+  heroHeading: string;
+  heroImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  introParagraph1?: string;
+  introParagraph2?: string;
+  introParagraph3?: string;
+  tiersEyebrow?: string;
+  tiersHeading?: string;
+  tiers?: Array<{
+    title: string;
+    body: string;
+    _type: "tier";
+    _key: string;
+  }>;
+  tiersNote?: string;
+  whoWeWantEyebrow?: string;
+  whoWeWantHeading?: string;
+  whoWeWantCategories?: Array<{
+    title: string;
+    body: string;
+    tag:
+      | "cleaning"
+      | "photography"
+      | "social-content"
+      | "tours-experiences"
+      | "food-drink"
+      | "hospitality-days-out";
+    _type: "whoWeWantCategory";
+    _key: string;
+  }>;
+  directoryEyebrow?: string;
+  directoryHeading?: string;
+  becomePartnerEyebrow?: string;
+  becomePartnerHeading?: string;
+  becomePartnerIntro?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  noIndex?: boolean;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x: number;
+  y: number;
+  height: number;
+  width: number;
+};
+
+export type AboutPage = {
+  _id: string;
+  _type: "aboutPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  heroBadge?: string;
+  heroHeading: string;
+  heroImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  introParagraph1?: string;
+  introParagraph2?: string;
+  introParagraph3?: string;
+  whatWeDoEyebrow?: string;
+  whatWeDoHeading?: string;
+  whatWeDoItems?: Array<{
+    title: string;
+    body: string;
+    _type: "whatWeDoItem";
+    _key: string;
+  }>;
+  coverageEyebrow?: string;
+  coverageHeading?: string;
+  coverageBody?: string;
+  coverageImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  regions?: Array<{
+    name: string;
+    status: string;
+    muted?: boolean;
+    _type: "region";
+    _key: string;
+  }>;
+  staysHeading?: string;
+  featuredStays?: Array<{
+    name: string;
+    href: string;
+    description: string;
+    _type: "featuredStay";
+    _key: string;
+  }>;
+  teamEyebrow?: string;
+  teamHeading?: string;
+  teamIntro?: string;
+  teamMembers?: Array<{
+    name: string;
+    title: string;
+    plainTitle: string;
+    bio: string;
+    photo?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    };
+    _type: "teamMember";
+    _key: string;
+  }>;
+  workWithUsEyebrow?: string;
+  workWithUsHeading?: string;
+  workWithUsIntro?: string;
+  workWithUsCategories?: Array<{
+    title: string;
+    body: string;
+    _type: "workCategory";
+    _key: string;
+  }>;
+  workWithUsPartnerNote?: string;
+  workWithUsContactLine?: string;
+  ownershipHeading?: string;
+  ownershipBody?: string;
+  ownershipCroLinkLabel?: string;
+  ownershipCroLinkUrl?: string;
+  reachUsHeading?: string;
+  reachUsEmail?: string;
+  reachUsWhatsapp?: string;
+  reachUsWhatsappUrl?: string;
+  reachUsInstagramHandle?: string;
+  reachUsInstagramUrl?: string;
+  faqHeading?: string;
+  faqs?: Array<{
+    question: string;
+    answer: string;
+    _type: "faq";
+    _key: string;
+  }>;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  noIndex?: boolean;
+};
+
+export type CorporateStaysPage = {
+  _id: string;
+  _type: "corporateStaysPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  heroBadge?: string;
+  heroHeading: string;
+  heroBody?: string;
+  heroPrimaryCtaLabel?: string;
+  heroSecondaryCtaLabel?: string;
+  heroFacts?: Array<string>;
+  heroImages?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: "image";
+    _key: string;
+  }>;
+  whoEyebrow?: string;
+  whoHeading?: string;
+  whoBody?: string;
+  whoCards?: Array<{
+    title: string;
+    body: string;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt: string;
+      _type: "image";
+    };
+    _type: "whoCard";
+    _key: string;
+  }>;
+  howEyebrow?: string;
+  howHeading?: string;
+  howBody?: string;
+  howSteps?: Array<{
+    title: string;
+    body: string;
+    _type: "howStep";
+    _key: string;
+  }>;
+  coverageEyebrow?: string;
+  coverageHeading?: string;
+  coverageAreas?: Array<{
+    county: string;
+    live?: boolean;
+    body: string;
+    _type: "coverageArea";
+    _key: string;
+  }>;
+  coverageNote?: string;
+  includedEyebrow?: string;
+  includedHeading?: string;
+  includedFeatures?: Array<{
+    title: string;
+    body: string;
+    icon: "sofa" | "wifi" | "contact" | "clipboard";
+    _type: "includedFeature";
+    _key: string;
+  }>;
+  partnerEyebrow?: string;
+  partnerHeading?: string;
+  partnerBody?: string;
+  partnerCtaLabel?: string;
+  partnerCtaUrl?: string;
+  faqEyebrow?: string;
+  faqHeading?: string;
+  faqs?: Array<{
+    question: string;
+    answer: string;
+    _type: "faq";
+    _key: string;
+  }>;
+  closingHeading?: string;
+  closingBody?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  noIndex?: boolean;
 };
 
 export type PropertyPageReference = {
@@ -51,22 +361,6 @@ export type AddOn = {
     } & PropertyPageReference
   >;
   enabled?: boolean;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x: number;
-  y: number;
-  height: number;
-  width: number;
 };
 
 export type AreaGuideReference = {
@@ -182,12 +476,6 @@ export type LandingPage = {
     _type: "image";
   };
   noIndex?: boolean;
-};
-
-export type Slug = {
-  _type: "slug";
-  current: string;
-  source?: string;
 };
 
 export type CountyPricingStats = {
@@ -410,13 +698,13 @@ export type Navigation = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  homeNavLinks?: Array<{
+  guestNavLinks?: Array<{
     label: string;
     href: string;
     _type: "navLink";
     _key: string;
   }>;
-  siteNavLinks?: Array<{
+  landlordNavLinks?: Array<{
     label: string;
     href: string;
     _type: "navLink";
@@ -949,14 +1237,18 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
+  | Partner
+  | Slug
   | SanityImageAssetReference
-  | PropertyPageReference
-  | AddOn
+  | PartnersPage
   | SanityImageCrop
   | SanityImageHotspot
+  | AboutPage
+  | CorporateStaysPage
+  | PropertyPageReference
+  | AddOn
   | AreaGuideReference
   | LandingPage
-  | Slug
   | CountyPricingStats
   | TermsPage
   | PrivacyPolicyPage
@@ -1704,13 +1996,13 @@ export type FOOTER_QUERY_RESULT = {
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: NAVIGATION_QUERY
-// Query: *[_type == "navigation" && _id == "navigation"][0] {    homeNavLinks[] {      label,      href    },    siteNavLinks[] {      label,      href    }  }
+// Query: *[_type == "navigation" && _id == "navigation"][0] {    guestNavLinks[] {      label,      href    },    landlordNavLinks[] {      label,      href    }  }
 export type NAVIGATION_QUERY_RESULT = {
-  homeNavLinks: Array<{
+  guestNavLinks: Array<{
     label: string;
     href: string;
   }> | null;
-  siteNavLinks: Array<{
+  landlordNavLinks: Array<{
     label: string;
     href: string;
   }> | null;
@@ -1844,6 +2136,311 @@ export type HOSTS_MODULE_QUERY_RESULT = {
   marqueeHeading: string | null;
   marqueeSubtext: string | null;
 } | null;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: CORPORATE_STAYS_PAGE_QUERY
+// Query: *[_type == "corporateStaysPage" && _id == "corporateStaysPage"][0] {    heroBadge,    heroHeading,    heroBody,    heroPrimaryCtaLabel,    heroSecondaryCtaLabel,    heroFacts,    heroImages,    whoEyebrow,    whoHeading,    whoBody,    whoCards[] {      title,      body,      image    },    howEyebrow,    howHeading,    howBody,    howSteps[] {      title,      body    },    coverageEyebrow,    coverageHeading,    coverageAreas[] {      county,      live,      body    },    coverageNote,    includedEyebrow,    includedHeading,    includedFeatures[] {      title,      body,      icon    },    partnerEyebrow,    partnerHeading,    partnerBody,    partnerCtaLabel,    partnerCtaUrl,    faqEyebrow,    faqHeading,    faqs[] {      question,      answer    },    closingHeading,    closingBody,      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
+export type CORPORATE_STAYS_PAGE_QUERY_RESULT = {
+  heroBadge: string | null;
+  heroHeading: string;
+  heroBody: string | null;
+  heroPrimaryCtaLabel: string | null;
+  heroSecondaryCtaLabel: string | null;
+  heroFacts: Array<string> | null;
+  heroImages: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: "image";
+    _key: string;
+  }> | null;
+  whoEyebrow: string | null;
+  whoHeading: string | null;
+  whoBody: string | null;
+  whoCards: Array<{
+    title: string;
+    body: string;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt: string;
+      _type: "image";
+    };
+  }> | null;
+  howEyebrow: string | null;
+  howHeading: string | null;
+  howBody: string | null;
+  howSteps: Array<{
+    title: string;
+    body: string;
+  }> | null;
+  coverageEyebrow: string | null;
+  coverageHeading: string | null;
+  coverageAreas: Array<{
+    county: string;
+    live: boolean | null;
+    body: string;
+  }> | null;
+  coverageNote: string | null;
+  includedEyebrow: string | null;
+  includedHeading: string | null;
+  includedFeatures: Array<{
+    title: string;
+    body: string;
+    icon: "clipboard" | "contact" | "sofa" | "wifi";
+  }> | null;
+  partnerEyebrow: string | null;
+  partnerHeading: string | null;
+  partnerBody: string | null;
+  partnerCtaLabel: string | null;
+  partnerCtaUrl: string | null;
+  faqEyebrow: string | null;
+  faqHeading: string | null;
+  faqs: Array<{
+    question: string;
+    answer: string;
+  }> | null;
+  closingHeading: string | null;
+  closingBody: string | null;
+  seo: {
+    title: string | "";
+    description: string | "";
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    noIndex: boolean | false;
+  };
+} | null;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: ABOUT_PAGE_QUERY
+// Query: *[_type == "aboutPage" && _id == "aboutPage"][0] {    heroBadge,    heroHeading,    heroImage,    introParagraph1,    introParagraph2,    introParagraph3,    whatWeDoEyebrow,    whatWeDoHeading,    whatWeDoItems[] {      title,      body    },    coverageEyebrow,    coverageHeading,    coverageBody,    coverageImage,    regions[] {      name,      status,      muted    },    staysHeading,    featuredStays[] {      name,      href,      description    },    teamEyebrow,    teamHeading,    teamIntro,    teamMembers[] {      name,      title,      plainTitle,      bio,      photo    },    workWithUsEyebrow,    workWithUsHeading,    workWithUsIntro,    workWithUsCategories[] {      title,      body    },    workWithUsPartnerNote,    workWithUsContactLine,    ownershipHeading,    ownershipBody,    ownershipCroLinkLabel,    ownershipCroLinkUrl,    reachUsHeading,    reachUsEmail,    reachUsWhatsapp,    reachUsWhatsappUrl,    reachUsInstagramHandle,    reachUsInstagramUrl,    faqHeading,    faqs[] {      question,      answer    },      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
+export type ABOUT_PAGE_QUERY_RESULT = {
+  heroBadge: string | null;
+  heroHeading: string;
+  heroImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  introParagraph1: string | null;
+  introParagraph2: string | null;
+  introParagraph3: string | null;
+  whatWeDoEyebrow: string | null;
+  whatWeDoHeading: string | null;
+  whatWeDoItems: Array<{
+    title: string;
+    body: string;
+  }> | null;
+  coverageEyebrow: string | null;
+  coverageHeading: string | null;
+  coverageBody: string | null;
+  coverageImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  regions: Array<{
+    name: string;
+    status: string;
+    muted: boolean | null;
+  }> | null;
+  staysHeading: string | null;
+  featuredStays: Array<{
+    name: string;
+    href: string;
+    description: string;
+  }> | null;
+  teamEyebrow: string | null;
+  teamHeading: string | null;
+  teamIntro: string | null;
+  teamMembers: Array<{
+    name: string;
+    title: string;
+    plainTitle: string;
+    bio: string;
+    photo: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+  }> | null;
+  workWithUsEyebrow: string | null;
+  workWithUsHeading: string | null;
+  workWithUsIntro: string | null;
+  workWithUsCategories: Array<{
+    title: string;
+    body: string;
+  }> | null;
+  workWithUsPartnerNote: string | null;
+  workWithUsContactLine: string | null;
+  ownershipHeading: string | null;
+  ownershipBody: string | null;
+  ownershipCroLinkLabel: string | null;
+  ownershipCroLinkUrl: string | null;
+  reachUsHeading: string | null;
+  reachUsEmail: string | null;
+  reachUsWhatsapp: string | null;
+  reachUsWhatsappUrl: string | null;
+  reachUsInstagramHandle: string | null;
+  reachUsInstagramUrl: string | null;
+  faqHeading: string | null;
+  faqs: Array<{
+    question: string;
+    answer: string;
+  }> | null;
+  seo: {
+    title: string | "";
+    description: string | "";
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    noIndex: boolean | false;
+  };
+} | null;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: CORPORATE_ONBOARDED_PROPERTIES_QUERY
+// Query: *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...8] {    _id,    name,    "slug": slug.current,    location,    "coverImage": gallery[0]  }
+export type CORPORATE_ONBOARDED_PROPERTIES_QUERY_RESULT = Array<{
+  _id: string;
+  name: string;
+  slug: string;
+  location: string;
+  coverImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: "image";
+    _key: string;
+  } | null;
+}>;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: PARTNERS_PAGE_QUERY
+// Query: *[_type == "partnersPage" && _id == "partnersPage"][0] {    heroBadge,    heroHeading,    heroImage,    introParagraph1,    introParagraph2,    introParagraph3,    tiersEyebrow,    tiersHeading,    tiers[] {      title,      body    },    tiersNote,    whoWeWantEyebrow,    whoWeWantHeading,    whoWeWantCategories[] {      title,      body,      tag    },    directoryEyebrow,    directoryHeading,    becomePartnerEyebrow,    becomePartnerHeading,    becomePartnerIntro,      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
+export type PARTNERS_PAGE_QUERY_RESULT = {
+  heroBadge: string | null;
+  heroHeading: string;
+  heroImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  introParagraph1: string | null;
+  introParagraph2: string | null;
+  introParagraph3: string | null;
+  tiersEyebrow: string | null;
+  tiersHeading: string | null;
+  tiers: Array<{
+    title: string;
+    body: string;
+  }> | null;
+  tiersNote: string | null;
+  whoWeWantEyebrow: string | null;
+  whoWeWantHeading: string | null;
+  whoWeWantCategories: Array<{
+    title: string;
+    body: string;
+    tag:
+      | "cleaning"
+      | "food-drink"
+      | "hospitality-days-out"
+      | "photography"
+      | "social-content"
+      | "tours-experiences";
+  }> | null;
+  directoryEyebrow: string | null;
+  directoryHeading: string | null;
+  becomePartnerEyebrow: string | null;
+  becomePartnerHeading: string | null;
+  becomePartnerIntro: string | null;
+  seo: {
+    title: string | "";
+    description: string | "";
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    noIndex: boolean | false;
+  };
+} | null;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: PARTNERS_QUERY
+// Query: *[_type == "partner"] | order(featured desc, name asc) {    _id,    name,    "slug": slug.current,    tagline,    category,    description,    href,    featured  }
+export type PARTNERS_QUERY_RESULT = Array<{
+  _id: string;
+  name: string;
+  slug: string | null;
+  tagline: string;
+  category:
+    | "cleaning"
+    | "food-drink"
+    | "hospitality-days-out"
+    | "photography"
+    | "social-content"
+    | "tours-experiences";
+  description: string;
+  href: string;
+  featured: boolean | null;
+}>;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: PARTNER_BY_SLUG_QUERY
+// Query: *[_type == "partner" && featured == true && slug.current == $slug][0] {    _id,    name,    "slug": slug.current,    tagline,    category,    description,    href,    featured,    profileIntro,    profileBody  }
+export type PARTNER_BY_SLUG_QUERY_RESULT = {
+  _id: string;
+  name: string;
+  slug: string | null;
+  tagline: string;
+  category:
+    | "cleaning"
+    | "food-drink"
+    | "hospitality-days-out"
+    | "photography"
+    | "social-content"
+    | "tours-experiences";
+  description: string;
+  href: string;
+  featured: boolean | null;
+  profileIntro: string | null;
+  profileBody: string | null;
+} | null;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: FEATURED_PARTNER_SLUGS_QUERY
+// Query: *[_type == "partner" && featured == true && defined(slug.current)][].slug.current
+export type FEATURED_PARTNER_SLUGS_QUERY_RESULT = Array<string>;
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: HOMEPAGE_QUERY
@@ -2075,15 +2672,41 @@ export type LANDING_PAGE_QUERY_RESULT = {
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: SITEMAP_QUERY
-// Query: *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {    "href": select(      _type == "blogPost" => "/blog/" + slug.current,      _type == "propertyPage" => "/stays/" + slug.current,      _type == "areaGuide" => "/areas/" + slug.current,      _type == "landlordPage" => "/landlords/" + slug.current,      slug.current    ),    _updatedAt  }
+// Query: *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {    "href": select(      _type == "blogPost" => "/blog/" + slug.current,      _type == "propertyPage" => "/stays/" + slug.current,      _type == "areaGuide" => "/areas/" + slug.current,      _type == "landlordPage" => "/landlords/" + slug.current,      "/" + slug.current    ),    _updatedAt  }
 export type SITEMAP_QUERY_RESULT = Array<{
   href: string;
   _updatedAt: string;
 }>;
 
 // Source: ../web/src/sanity/queries.ts
+// Variable: SITEMAP_SINGLETONS_QUERY
+// Query: *[_type in ["aboutPage", "corporateStaysPage", "privacyPolicyPage", "termsPage"]] {    "href": select(      _type == "aboutPage" => "/about",      _type == "corporateStaysPage" => "/corporate-stays",      _type == "privacyPolicyPage" => "/privacy-policy",      _type == "termsPage" => "/terms-and-conditions"    ),    _updatedAt,    "noIndex": noIndex == true  }
+export type SITEMAP_SINGLETONS_QUERY_RESULT = Array<
+  | {
+      href: "/about";
+      _updatedAt: string;
+      noIndex: boolean | false;
+    }
+  | {
+      href: "/corporate-stays";
+      _updatedAt: string;
+      noIndex: boolean | false;
+    }
+  | {
+      href: "/privacy-policy";
+      _updatedAt: string;
+      noIndex: boolean | false;
+    }
+  | {
+      href: "/terms-and-conditions";
+      _updatedAt: string;
+      noIndex: boolean | false;
+    }
+>;
+
+// Source: ../web/src/sanity/queries.ts
 // Variable: LLMS_TXT_QUERY
-// Query: {  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {    siteName,    defaultSeoDescription,    businessName,    contactEmail,    socialLinks  },  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {    _type,    "href": select(      _type == "blogPost" => "/blog/" + slug.current,      _type == "propertyPage" => "/stays/" + slug.current,      _type == "areaGuide" => "/areas/" + slug.current,      _type == "landlordPage" => "/landlords/" + slug.current,      slug.current    ),    "title": coalesce(name, title, areaName, ""),    "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")  }}
+// Query: {  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {    siteName,    defaultSeoDescription,    businessName,    contactEmail,    socialLinks  },  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {    _type,    "href": select(      _type == "blogPost" => "/blog/" + slug.current,      _type == "propertyPage" => "/stays/" + slug.current,      _type == "areaGuide" => "/areas/" + slug.current,      _type == "landlordPage" => "/landlords/" + slug.current,      "/" + slug.current    ),    "title": coalesce(name, title, areaName, ""),    "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")  }}
 export type LLMS_TXT_QUERY_RESULT = {
   settings: {
     siteName: string;
@@ -2215,15 +2838,23 @@ declare module "@sanity/client" {
     '\n  *[_type == "audienceTabs" && _id == "audienceTabs"][0] {\n    eyebrow,\n    tabs[] {\n      label,\n      heading,\n      body,\n      checklist\n    }\n  }\n': AUDIENCE_TABS_QUERY_RESULT;
     '\n  *[_type == "siteSettings" && _id == "siteSettings"][0] {\n    siteName,\n    defaultSeoTitle,\n    defaultSeoDescription,\n    defaultSeoImage,\n    businessName,\n    contactEmail,\n    bookingSubdomainUrl,\n    socialLinks[] {\n      platform,\n      url\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "footer" && _id == "footer"][0] {\n    tagline,\n    columns[] {\n      title,\n      links[] {\n        label,\n        href\n      }\n    },\n    copyrightText\n  }\n': FOOTER_QUERY_RESULT;
-    '\n  *[_type == "navigation" && _id == "navigation"][0] {\n    homeNavLinks[] {\n      label,\n      href\n    },\n    siteNavLinks[] {\n      label,\n      href\n    }\n  }\n': NAVIGATION_QUERY_RESULT;
+    '\n  *[_type == "navigation" && _id == "navigation"][0] {\n    guestNavLinks[] {\n      label,\n      href\n    },\n    landlordNavLinks[] {\n      label,\n      href\n    }\n  }\n': NAVIGATION_QUERY_RESULT;
     '\n  *[_type == "privacyPolicyPage" && _id == "privacyPolicyPage"][0] {\n    title,\n    lastUpdated,\n    body,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': PRIVACY_POLICY_QUERY_RESULT;
     '\n  *[_type == "termsPage" && _id == "termsPage"][0] {\n    title,\n    lastUpdated,\n    body,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': TERMS_PAGE_QUERY_RESULT;
     '\n  *[_type == "heroSection" && _id == "heroSection"][0] {\n    eyebrow,\n    heading,\n    body,\n    subBody,\n    image,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl\n  }\n': HERO_SECTION_QUERY_RESULT;
     '\n  *[_type == "hostsModule" && _id == "hostsModule"][0] {\n    eyebrow,\n    heading,\n    body,\n    commissionRate,\n    commissionLabel,\n    commissionSuffix,\n    commissionNote,\n    ctaLabel,\n    ctaUrl,\n    stepperEyebrow,\n    stepperHeading,\n    steps[] {\n      title,\n      bullets,\n      image\n    },\n    marqueeHeading,\n    marqueeSubtext\n  }\n': HOSTS_MODULE_QUERY_RESULT;
+    '\n  *[_type == "corporateStaysPage" && _id == "corporateStaysPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroBody,\n    heroPrimaryCtaLabel,\n    heroSecondaryCtaLabel,\n    heroFacts,\n    heroImages,\n    whoEyebrow,\n    whoHeading,\n    whoBody,\n    whoCards[] {\n      title,\n      body,\n      image\n    },\n    howEyebrow,\n    howHeading,\n    howBody,\n    howSteps[] {\n      title,\n      body\n    },\n    coverageEyebrow,\n    coverageHeading,\n    coverageAreas[] {\n      county,\n      live,\n      body\n    },\n    coverageNote,\n    includedEyebrow,\n    includedHeading,\n    includedFeatures[] {\n      title,\n      body,\n      icon\n    },\n    partnerEyebrow,\n    partnerHeading,\n    partnerBody,\n    partnerCtaLabel,\n    partnerCtaUrl,\n    faqEyebrow,\n    faqHeading,\n    faqs[] {\n      question,\n      answer\n    },\n    closingHeading,\n    closingBody,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': CORPORATE_STAYS_PAGE_QUERY_RESULT;
+    '\n  *[_type == "aboutPage" && _id == "aboutPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroImage,\n    introParagraph1,\n    introParagraph2,\n    introParagraph3,\n    whatWeDoEyebrow,\n    whatWeDoHeading,\n    whatWeDoItems[] {\n      title,\n      body\n    },\n    coverageEyebrow,\n    coverageHeading,\n    coverageBody,\n    coverageImage,\n    regions[] {\n      name,\n      status,\n      muted\n    },\n    staysHeading,\n    featuredStays[] {\n      name,\n      href,\n      description\n    },\n    teamEyebrow,\n    teamHeading,\n    teamIntro,\n    teamMembers[] {\n      name,\n      title,\n      plainTitle,\n      bio,\n      photo\n    },\n    workWithUsEyebrow,\n    workWithUsHeading,\n    workWithUsIntro,\n    workWithUsCategories[] {\n      title,\n      body\n    },\n    workWithUsPartnerNote,\n    workWithUsContactLine,\n    ownershipHeading,\n    ownershipBody,\n    ownershipCroLinkLabel,\n    ownershipCroLinkUrl,\n    reachUsHeading,\n    reachUsEmail,\n    reachUsWhatsapp,\n    reachUsWhatsappUrl,\n    reachUsInstagramHandle,\n    reachUsInstagramUrl,\n    faqHeading,\n    faqs[] {\n      question,\n      answer\n    },\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': ABOUT_PAGE_QUERY_RESULT;
+    '\n  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...8] {\n    _id,\n    name,\n    "slug": slug.current,\n    location,\n    "coverImage": gallery[0]\n  }\n': CORPORATE_ONBOARDED_PROPERTIES_QUERY_RESULT;
+    '\n  *[_type == "partnersPage" && _id == "partnersPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroImage,\n    introParagraph1,\n    introParagraph2,\n    introParagraph3,\n    tiersEyebrow,\n    tiersHeading,\n    tiers[] {\n      title,\n      body\n    },\n    tiersNote,\n    whoWeWantEyebrow,\n    whoWeWantHeading,\n    whoWeWantCategories[] {\n      title,\n      body,\n      tag\n    },\n    directoryEyebrow,\n    directoryHeading,\n    becomePartnerEyebrow,\n    becomePartnerHeading,\n    becomePartnerIntro,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': PARTNERS_PAGE_QUERY_RESULT;
+    '\n  *[_type == "partner"] | order(featured desc, name asc) {\n    _id,\n    name,\n    "slug": slug.current,\n    tagline,\n    category,\n    description,\n    href,\n    featured\n  }\n': PARTNERS_QUERY_RESULT;
+    '\n  *[_type == "partner" && featured == true && slug.current == $slug][0] {\n    _id,\n    name,\n    "slug": slug.current,\n    tagline,\n    category,\n    description,\n    href,\n    featured,\n    profileIntro,\n    profileBody\n  }\n': PARTNER_BY_SLUG_QUERY_RESULT;
+    '\n  *[_type == "partner" && featured == true && defined(slug.current)][].slug.current\n': FEATURED_PARTNER_SLUGS_QUERY_RESULT;
     '{\n  "properties": *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...3] {\n    _id, name, "slug": slug.current, location, shortDescription, sleeps,\n    "coverImage": gallery[0], "gallery": gallery[0...3]\n  },\n  "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {\n    _id, areaName, "slug": slug.current, heroImage, introduction\n  }\n}': HOMEPAGE_QUERY_RESULT;
     '\n  *[_type == "landingPage" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    heroEyebrow,\n    heroHeadline,\n    heroSubtext,\n    heroTags,\n    heroImage,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl,\n    marqueeItems,\n    distanceStat,\n    distanceLabel,\n    destinationName,\n    distanceText,\n    geographyHeading,\n    proximityStats[] {\n      value,\n      label\n    },\n    directBookingBadge,\n    directBookingHeadline,\n    directBookingText,\n    directBookingSavingsPercent,\n    directBookingComparisonNote,\n    featuredProperty-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      sleeps,\n      bedrooms,\n      beds,\n      bathrooms,\n      reviewScore,\n      reviewCount,\n      amenities,\n      roomTypes,\n      "coverImage": gallery[0],\n      "gallery": gallery[0...3],\n      uplistingPropertySlug\n    },\n    infoSections[] {\n      eyebrow,\n      heading,\n      body,\n      layout,\n      items[] {\n        title,\n        description,\n        tag,\n        image,\n        link\n      }\n    },\n    pricingTiers[] {\n      amount,\n      label\n    },\n    pricingNote,\n    pricingLink,\n    pricingLinkLabel,\n    itineraryEyebrow,\n    itineraryHeading,\n    itineraryText,\n    itineraryDays[] {\n      dayLabel,\n      items[] {\n        time,\n        title,\n        description\n      }\n    },\n    relatedAreaGuide-> {\n      areaName,\n      "slug": slug.current,\n      thingsToDo\n    },\n    finalCtaHeadline,\n    finalCtaText,\n    finalCtaSecondaryLabel,\n    finalCtaSecondaryUrl,\n    stickyBarEnabled,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': LANDING_PAGE_QUERY_RESULT;
-    '\n  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      slug.current\n    ),\n    _updatedAt\n  }\n': SITEMAP_QUERY_RESULT;
-    '\n{\n  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {\n    siteName,\n    defaultSeoDescription,\n    businessName,\n    contactEmail,\n    socialLinks\n  },\n  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {\n    _type,\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      slug.current\n    ),\n    "title": coalesce(name, title, areaName, ""),\n    "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")\n  }\n}\n': LLMS_TXT_QUERY_RESULT;
+    '\n  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      "/" + slug.current\n    ),\n    _updatedAt\n  }\n': SITEMAP_QUERY_RESULT;
+    '\n  *[_type in ["aboutPage", "corporateStaysPage", "privacyPolicyPage", "termsPage"]] {\n    "href": select(\n      _type == "aboutPage" => "/about",\n      _type == "corporateStaysPage" => "/corporate-stays",\n      _type == "privacyPolicyPage" => "/privacy-policy",\n      _type == "termsPage" => "/terms-and-conditions"\n    ),\n    _updatedAt,\n    "noIndex": noIndex == true\n  }\n': SITEMAP_SINGLETONS_QUERY_RESULT;
+    '\n{\n  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {\n    siteName,\n    defaultSeoDescription,\n    businessName,\n    contactEmail,\n    socialLinks\n  },\n  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {\n    _type,\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      "/" + slug.current\n    ),\n    "title": coalesce(name, title, areaName, ""),\n    "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")\n  }\n}\n': LLMS_TXT_QUERY_RESULT;
     '\n  *[_type == "countyPricingStats" && live == true] {\n    county,\n    adr,\n    occupancy,\n    annualRevenue,\n    statsSourceNote,\n    realExample,\n    drivers,\n    faqs\n  }\n': COUNTY_PRICING_STATS_QUERY_RESULT;
   }
 }
