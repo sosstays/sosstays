@@ -111,7 +111,13 @@ export default async function RoomPage({ params, searchParams }: Props) {
 
       {/* STORY + REVIEWS */}
       <section className="mx-auto max-w-6xl px-8 pt-12 pb-14 sm:px-14">
-        <div className="lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-14">
+        <div
+          className={
+            property.reviewScore
+              ? "lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-14"
+              : ""
+          }
+        >
           <div>
             {room.amenities.length > 0 && (
               <div className="mb-5 flex flex-wrap gap-2.5">
