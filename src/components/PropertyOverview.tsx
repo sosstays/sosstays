@@ -1,7 +1,4 @@
-import { Poppins } from "next/font/google";
 import { Button, type ButtonColor } from "@/components/Button";
-
-const poppins = Poppins({ subsets: ["latin"], weight: ["500", "600", "700"] });
 
 export function BookNowCta({
   bookingUrl,
@@ -113,7 +110,7 @@ export function PropertyOverview({
   if (items.length === 0) return null;
 
   return (
-    <div className={`${poppins.className} mb-10 flex flex-wrap gap-x-14 gap-y-8 border-b border-sage-grey/40 pb-10`}>
+    <div className="mb-10 flex flex-wrap gap-x-14 gap-y-8 border-b border-sage-grey/40 pb-10">
       {items.map(({ label, value, Icon }) => (
         <div key={label} className="flex flex-col gap-2.5">
           <div className="flex items-center gap-3">

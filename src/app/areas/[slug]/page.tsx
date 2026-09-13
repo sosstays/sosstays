@@ -17,6 +17,7 @@ import { getSiteNavLinks } from "@/lib/navLinks";
 import { ThingsToDoTabs } from "@/components/ThingsToDoTabs";
 import { PropertyCard } from "@/components/PropertyCard";
 import { FaqSection } from "@/components/FaqSection";
+import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -69,23 +70,23 @@ export default async function AreaGuidePage({ params }: Props) {
         <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" />
 
         <div className="absolute inset-x-8 bottom-11 text-center sm:inset-x-14 sm:text-left">
-          <p className="mb-3.5 text-xs font-medium tracking-widest text-light-sage uppercase">
+          <Reveal as="p" className="mb-3.5 text-xs font-medium tracking-widest text-light-sage uppercase">
             Areas / {guide.areaName}
-          </p>
-          <h1 className="font-serif text-4xl leading-[1.08] font-extrabold tracking-tight text-cream sm:text-6xl">
+          </Reveal>
+          <Reveal as="h1" delay={130} className="font-serif text-4xl leading-[1.08] font-extrabold tracking-tight text-cream sm:text-6xl">
             {guide.areaName}
-          </h1>
+          </Reveal>
         </div>
       </section>
 
       {/* INTRO + MAP */}
       <section className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-8 pt-16 pb-14 sm:px-14 lg:grid-cols-[1.2fr_1fr] lg:items-start">
         {guide.introduction && (
-          <div className="prose prose-neutral max-w-none text-lg leading-[1.65] text-near-black [&_p]:m-0">
+          <Reveal className="prose prose-neutral max-w-none text-lg leading-[1.65] text-near-black [&_p]:m-0">
             <PortableText value={guide.introduction} />
-          </div>
+          </Reveal>
         )}
-        <div>
+        <Reveal delay={150}>
           <div className="min-h-[320px] overflow-hidden rounded-[10px] border border-sage-grey/40">
             <iframe
               src={`https://www.google.com/maps?q=${encodeURIComponent(
@@ -109,41 +110,44 @@ export default async function AreaGuidePage({ params }: Props) {
               </div>
             </div>
           )}
-        </div>
+        </Reveal>
       </section>
 
       {/* THINGS TO DO */}
       {guide.thingsToDo && guide.thingsToDo.length > 0 && (
         <section className="mx-auto max-w-6xl px-8 pt-14 pb-5 sm:px-14">
-          <h2 className="mb-2 font-serif text-[26px] font-bold tracking-tight text-forest-green">
+          <Reveal as="h2" className="mb-2 font-serif text-[26px] font-bold tracking-tight text-forest-green">
             A few things worth knowing
-          </h2>
-          <p className="mb-7 text-sm text-near-black/60">
+          </Reveal>
+          <Reveal as="p" delay={120} className="mb-7 text-sm text-near-black/60">
             Grouped the way we&apos;d tell a friend, not the way a brochure would.
-          </p>
-          <ThingsToDoTabs items={guide.thingsToDo} />
+          </Reveal>
+          <Reveal delay={220}>
+            <ThingsToDoTabs items={guide.thingsToDo} />
+          </Reveal>
         </section>
       )}
 
       {/* STAYS IN THIS AREA */}
       {guide.featuredProperties && guide.featuredProperties.length > 0 && (
         <section className="mx-auto max-w-6xl px-8 pt-5 pb-20 sm:px-14">
-          <h2 className="mb-6 font-serif text-[26px] font-bold tracking-tight text-forest-green">
+          <Reveal as="h2" className="mb-6 font-serif text-[26px] font-bold tracking-tight text-forest-green">
             Stay here
-          </h2>
+          </Reveal>
           <div className="flex flex-col gap-6">
-            {guide.featuredProperties.map((property: any) => (
-              <PropertyCard
-                key={property._id}
-                slug={property.slug}
-                name={property.name}
-                location={property.location}
-                shortDescription={property.shortDescription}
-                sleeps={property.sleeps}
-                coverImage={property.coverImage}
-                gallery={property.gallery}
-                surface="framed"
-              />
+            {guide.featuredProperties.map((property: any, i: number) => (
+              <Reveal key={property._id} delay={Math.min(i, 5) * 90}>
+                <PropertyCard
+                  slug={property.slug}
+                  name={property.name}
+                  location={property.location}
+                  shortDescription={property.shortDescription}
+                  sleeps={property.sleeps}
+                  coverImage={property.coverImage}
+                  gallery={property.gallery}
+                  surface="framed"
+                />
+              </Reveal>
             ))}
           </div>
         </section>
@@ -153,7 +157,7 @@ export default async function AreaGuidePage({ params }: Props) {
 
       {/* RELATED BLOG POSTS */}
       {guide.relatedBlogPosts?.length > 0 && (
-        <section className="mx-auto max-w-6xl border-t border-sage-grey/40 px-8 py-10 sm:px-14">
+        <Reveal as="section" className="mx-auto max-w-6xl border-t border-sage-grey/40 px-8 py-10 sm:px-14">
           <p className="text-sm font-medium text-near-black/60">Read more</p>
           <ul className="mt-3 flex flex-wrap gap-5">
             {guide.relatedBlogPosts.map((post: any) => (
@@ -167,7 +171,7 @@ export default async function AreaGuidePage({ params }: Props) {
               </li>
             ))}
           </ul>
-        </section>
+        </Reveal>
       )}
     </main>
   );

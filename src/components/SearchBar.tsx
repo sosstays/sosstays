@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { DateGuestsFields, toISODate, parseISODate, type DateGuestsValue } from "@/components/DateGuestsFields";
-
-const LOCATIONS = ["Drogheda"];
+import { SEARCH_LOCATIONS } from "@/lib/searchLocations";
 
 const FIELD_LABEL = "mb-1 block truncate text-[11px] font-semibold tracking-widest text-near-black/50 uppercase";
 const POPOVER = "absolute top-[calc(100%+12px)] z-20 mt-[10px] rounded-2xl bg-cream shadow-[0_16px_40px_-12px_rgba(23,25,23,0.3)]";
@@ -111,18 +110,18 @@ export function SearchBar({
 
         {showLocations && (
           <ul className={`${POPOVER} left-0 w-64 overflow-hidden py-2`}>
-            {LOCATIONS.map((option) => (
-              <li key={option}>
+            {SEARCH_LOCATIONS.map(({ label }) => (
+              <li key={label}>
                 <button
                   type="button"
                   onClick={() => {
-                    setLocation(option);
+                    setLocation(label);
                     setShowLocations(false);
                   }}
                   className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-near-black hover:bg-light-forest-green"
                 >
                   <PinIcon />
-                  {option}
+                  {label}
                 </button>
               </li>
             ))}

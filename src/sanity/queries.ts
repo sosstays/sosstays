@@ -439,6 +439,56 @@ export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
   }
 `);
 
+// ---- About page (singleton) ----
+
+export const ABOUT_PAGE_QUERY = defineQuery(`
+  *[_type == "aboutPage" && _id == "aboutPage"][0] {
+    heroBadge,
+    heroHeading,
+    heroBody,
+    heroImage,
+    whyEyebrow,
+    whyHeading,
+    whyBodyIntro,
+    whyBodyDetail,
+    whyBodyConclusion,
+    whyImages,
+    audiencesEyebrow,
+    audiencesHeading,
+    guestCardBody,
+    guestCardFootnote,
+    guestCardImage,
+    ownerCardBody,
+    ownerCardPills,
+    ownerCardImage,
+    principlesEyebrow,
+    principlesHeading,
+    principles[] {
+      title,
+      body
+    },
+    coverageEyebrow,
+    coverageHeading,
+    coverageBody,
+    coverageImage,
+    coveragePrimaryCtaLabel,
+    coverageSecondaryCtaLabel,
+    regions[] {
+      name,
+      status,
+      muted
+    },
+    complianceEyebrow,
+    complianceHeading,
+    complianceBody,
+    closingHeading,
+    closingBody,
+    closingPrimaryCtaLabel,
+    closingSecondaryCtaLabel,
+    ${seoProjection}
+  }
+`);
+
 // Onboarded properties for the corporate-stays "Partner with us" image
 // grid — a live query against propertyPage, not stored on the singleton
 // above, so the grid never goes stale as properties are added or removed.
@@ -570,6 +620,22 @@ export const SITEMAP_QUERY = defineQuery(`
       "/" + slug.current
     ),
     _updatedAt
+  }
+`);
+
+// Singleton-backed static pages (about, corporate-stays, privacy-policy,
+// terms) — the sitemap wants their real _updatedAt and noIndex flag rather
+// than treating them as unchanging routes.
+export const SITEMAP_SINGLETONS_QUERY = defineQuery(`
+  *[_type in ["aboutPage", "corporateStaysPage", "privacyPolicyPage", "termsPage"]] {
+    "href": select(
+      _type == "aboutPage" => "/about",
+      _type == "corporateStaysPage" => "/corporate-stays",
+      _type == "privacyPolicyPage" => "/privacy-policy",
+      _type == "termsPage" => "/terms-and-conditions"
+    ),
+    _updatedAt,
+    "noIndex": noIndex == true
   }
 `);
 

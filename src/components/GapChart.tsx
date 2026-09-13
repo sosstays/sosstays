@@ -1,9 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Poppins } from "next/font/google";
-
-const poppins = Poppins({ subsets: ["latin"], weight: ["700"] });
 
 // "The gap" revenue-comparison chart on the landlords landing page — draws
 // its two curves in and fades the callout on scroll, same safe-default
@@ -108,7 +105,6 @@ export function GapChart() {
             fontWeight="700"
             letterSpacing="-0.02em"
             fill="var(--maroon)"
-            className={poppins.className}
           >
             20&ndash;35%
           </text>

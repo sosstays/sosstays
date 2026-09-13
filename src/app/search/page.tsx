@@ -4,6 +4,7 @@ import { PropertyCard } from "@/components/PropertyCard";
 import { SearchBar } from "@/components/SearchBar";
 import { SearchResultCard, type SearchResultRoom } from "@/components/SearchResultCard";
 import { searchUplistingAvailability, getUplistingCalendar } from "@/lib/uplisting/client";
+import { resolveSearchCity } from "@/lib/searchLocations";
 
 export const metadata = {
   title: "Search stays | Sos Stays",
@@ -121,7 +122,7 @@ export default async function SearchPage({
             checkIn: check_in,
             checkOut: check_out,
             guests: guestCount,
-            city: location,
+            city: resolveSearchCity(location),
           }).catch((error) => {
             console.error("Uplisting availability search failed:", error);
             return null;
@@ -180,6 +181,13 @@ export default async function SearchPage({
 
   const showMatches = hasSearchCriteria && availableSlugs !== null;
 
+  // Everything that didn't match the search — shown below the results as
+  // inspiration rather than left off the page entirely, since a guest
+  // whose exact dates/location came up short (or empty) might still book
+  // elsewhere on the site.
+  const matchedPropertyIds = new Set(matchedProperties.map(({ property }) => property._id));
+  const otherProperties = showMatches ? properties.filter((property) => !matchedPropertyIds.has(property._id)) : [];
+
   return (
     <main className="flex-1 bg-cream">
       <div className="mx-auto max-w-6xl px-8 py-8 sm:px-14">
@@ -230,6 +238,30 @@ export default async function SearchPage({
               <p className="mt-8 text-near-black/60">
                 Nothing available for those dates — try a different range, or check back soon.
               </p>
+            )}
+
+            {otherProperties.length > 0 && (
+              <div className="mt-16">
+                <h2 className="font-serif text-2xl font-semibold text-near-black">
+                  Other properties you might also be interested in
+                </h2>
+                <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {otherProperties.map((property) => (
+                    <PropertyCard
+                      key={property._id}
+                      slug={property.slug}
+                      name={property.name}
+                      location={property.location}
+                      shortDescription={property.shortDescription}
+                      sleeps={property.sleeps}
+                      coverImage={property.coverImage}
+                      surface="framed"
+                      hideDescription
+                      hideCta
+                    />
+                  ))}
+                </div>
+              </div>
             )}
           </>
         ) : (

@@ -9,14 +9,11 @@ import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
 import { getPricingCounties } from "@/lib/fetchPricingCounties";
 import { client } from "@/sanity/client";
 import { LANDLORD_BLOG_POSTS_QUERY } from "@/sanity/queries";
-import type { NavLink } from "@/lib/navLinks";
+import { LANDLORD_SITE_NAV_LINKS, type NavLink } from "@/lib/navLinks";
 
 export const revalidate = 60;
 
-const NAV_LINKS: NavLink[] = [
-  { href: "/pricing", label: "All counties" },
-  { href: "/landlords#how-it-works", label: "How it works" },
-];
+const NAV_LINKS: NavLink[] = [{ href: "/pricing", label: "All counties" }, ...LANDLORD_SITE_NAV_LINKS];
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -52,7 +49,7 @@ export default async function PricingCountyPage({ params }: Props) {
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
-      <HeroNav links={NAV_LINKS} sticky ctaHref="/contact" ctaLabel="Contact us" />
+      <HeroNav links={NAV_LINKS} variant="landlords" sticky ctaHref="/contact" ctaLabel="Contact us" />
       <div className="mx-auto flex max-w-[1120px] flex-col px-6 pt-20 pb-16 sm:px-10 sm:pt-24 sm:pb-[104px]">
         <CountyPageContent county={county} />
       </div>

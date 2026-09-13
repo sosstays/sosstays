@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Poppins } from "next/font/google";
 import type { Metadata } from "next";
 import { client } from "@/sanity/client";
 import { PROPERTY_BOOKING_QUERY } from "@/sanity/queries";
@@ -10,8 +9,6 @@ import { StayDateForm } from "@/components/checkout/StayDateForm";
 import { BookingCheckout } from "@/components/checkout/BookingCheckout";
 import { BookingSummaryCard } from "@/components/checkout/BookingSummaryCard";
 import { PaymentBadge } from "@/components/checkout/PaymentBadge";
-
-const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -40,7 +37,7 @@ export default async function BookPage({ params, searchParams }: Props) {
   if (!property) notFound();
 
   const shell = (children: React.ReactNode) => (
-    <main className={`${poppins.className} min-h-screen overflow-x-hidden bg-cream font-sans text-near-black`}>
+    <main className="min-h-screen overflow-x-hidden bg-cream font-sans text-near-black">
       <div className="relative overflow-hidden bg-deep-forest">
         <div
           className="absolute inset-0 opacity-10"
