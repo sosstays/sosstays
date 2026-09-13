@@ -4,7 +4,7 @@ import { LANDLORD_PAGES_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
 import { LandlordPageContent } from "@/components/LandlordPageContent";
 import { HeroNav } from "@/components/HeroNav";
-import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
+import { getLandlordNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
@@ -17,7 +17,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LandlordsIndexPage() {
-  const pages = await client.fetch(LANDLORD_PAGES_QUERY);
+  const [pages, landlordNavLinks] = await Promise.all([
+    client.fetch(LANDLORD_PAGES_QUERY),
+    getLandlordNavLinks(),
+  ]);
 
   // Common case: exactly one landlord pitch page exists — render it
   // directly at /landlords so the main nav CTA is never a dead link.
@@ -30,7 +33,7 @@ export default async function LandlordsIndexPage() {
       <main className="overflow-x-hidden bg-cream font-sans text-near-black">
         <section className="relative bg-maroon px-8 pt-[180px] pb-24 text-center sm:px-14 sm:pt-[200px]">
           <HeroNav
-            links={LANDLORD_NAV_LINKS}
+            links={landlordNavLinks}
             variant="landlords"
             ctaHref="/contact"
             ctaLabel="Contact us"
@@ -53,7 +56,7 @@ export default async function LandlordsIndexPage() {
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <section className="relative bg-maroon px-8 pt-[180px] pb-24 sm:px-14 sm:pt-[200px]">
         <HeroNav
-          links={LANDLORD_NAV_LINKS}
+          links={landlordNavLinks}
           variant="landlords"
           ctaHref="/contact"
           ctaLabel="Contact us"

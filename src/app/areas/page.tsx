@@ -2,7 +2,7 @@ import { client } from "@/sanity/client";
 import { AREA_GUIDES_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
-import { getSiteNavLinks } from "@/lib/navLinks";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { AreaGuideCard } from "@/components/AreaGuideCard";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AreasIndexPage() {
   const [areas, siteNavLinks] = await Promise.all([
     client.fetch(AREA_GUIDES_QUERY),
-    getSiteNavLinks(),
+    getGuestSiteNavLinks(),
   ]);
 
   return (

@@ -13,7 +13,7 @@ import {
   buildFaqSchema,
 } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
-import { getSiteNavLinks } from "@/lib/navLinks";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { ThingsToDoTabs } from "@/components/ThingsToDoTabs";
 import { PropertyCard } from "@/components/PropertyCard";
 import { FaqSection } from "@/components/FaqSection";
@@ -35,7 +35,7 @@ export default async function AreaGuidePage({ params }: Props) {
   const { slug } = await params;
   const [guide, siteNavLinks] = await Promise.all([
     client.fetch(AREA_GUIDE_QUERY, { slug }),
-    getSiteNavLinks(),
+    getGuestSiteNavLinks(),
   ]);
   if (!guide) notFound();
 

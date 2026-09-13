@@ -4,7 +4,7 @@ import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY, AUDIENCE_TABS_QUERY, LANDLORD_BLOG_POSTS_QUERY } from "@/sanity/queries";
 import { JsonLd, buildServiceSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
-import { LANDLORD_NAV_LINKS } from "@/lib/navLinks";
+import { getLandlordNavLinks } from "@/lib/navLinks";
 import { LandlordSosAndEstimate } from "@/components/LandlordSosAndEstimate";
 import { FaqSection } from "@/components/FaqSection";
 import { Button } from "@/components/Button";
@@ -99,10 +99,11 @@ const PROCESS_STEPS = [
 ];
 
 export async function LandlordPageContent({ page }: { page: LandlordPage }) {
-  const [siteSettings, audienceTabs, landlordPosts] = await Promise.all([
+  const [siteSettings, audienceTabs, landlordPosts, landlordNavLinks] = await Promise.all([
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(AUDIENCE_TABS_QUERY),
     client.fetch(LANDLORD_BLOG_POSTS_QUERY),
+    getLandlordNavLinks(),
   ]);
 
   return (
@@ -115,7 +116,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             it occupies its own space at the top of the section and the
             image below never sits underneath it. */}
         <HeroNav
-          links={LANDLORD_NAV_LINKS}
+          links={landlordNavLinks}
           variant="landlords"
           ctaHref="#calculator"
           ctaLabel="Get estimate"
@@ -201,7 +202,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               <span className="inline-block h-px w-5.5 bg-current" />
               The 11pm problem
             </Reveal>
-            <Reveal as="h2" delay={120} className="mt-5 max-w-[20ch] font-serif text-4xl leading-[0.98] font-bold tracking-tight text-near-black sm:text-6xl">
+            <Reveal as="h2" delay={120} className="mt-5 max-w-[20ch] font-serif text-4xl leading-[0.98] font-bold tracking-tight text-maroon sm:text-6xl">
               It&apos;s 11pm and the gate code doesn&apos;t work.
             </Reveal>
             <Reveal as="p" delay={220} className="mt-6 max-w-[46ch] text-lg leading-relaxed text-near-black/70">
@@ -270,7 +271,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 <span className="inline-block h-px w-5.5 bg-current" />
                 The gap
               </Reveal>
-              <Reveal as="h2" delay={120} className="mt-5 max-w-[24ch] font-serif text-3xl leading-[0.98] font-bold tracking-tight text-near-black sm:text-5xl">
+              <Reveal as="h2" delay={120} className="mt-5 max-w-[24ch] font-serif text-3xl leading-[0.98] font-bold tracking-tight text-maroon sm:text-5xl">
                 A fifth to a third of the revenue, left on the table.
               </Reveal>
             </div>
@@ -341,7 +342,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 >
                   {item.stat}
                 </div>
-                <h3 className="mb-2 text-base font-semibold text-near-black">
+                <h3 className="mb-2 text-base font-semibold text-maroon">
                   {item.title}
                 </h3>
                 <p className="text-[13px] leading-relaxed text-near-black/65">
@@ -351,7 +352,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             ))}
           </div>
           <Reveal delay={240} className="mt-7 rounded-[18px] px-8 py-7 border border-sage-grey/40">
-            <h3 className="mb-1.5 text-base font-semibold text-near-black">
+            <h3 className="mb-1.5 text-base font-semibold text-maroon">
               Still your property
             </h3>
             <p className="text-sm leading-relaxed text-near-black/65">
@@ -444,7 +445,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 <span className="inline-block h-px w-5.5 bg-current" />
                 An honest early spotlight
               </Reveal>
-              <Reveal as="h3" delay={180} className="mt-5 max-w-[22ch] font-serif text-3xl leading-[1.02] font-bold tracking-tight text-near-black sm:text-4xl">
+              <Reveal as="h3" delay={180} className="mt-5 max-w-[22ch] font-serif text-3xl leading-[1.02] font-bold tracking-tight text-maroon sm:text-4xl">
                 What we found on our first property
               </Reveal>
               <Reveal as="p" delay={260} className="mt-5 max-w-[42ch] text-base leading-relaxed text-near-black/70">
@@ -502,7 +503,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               >
                 {step.number}
               </div>
-              <h3 className="mb-2 text-base font-semibold text-near-black">
+              <h3 className="mb-2 text-base font-semibold text-maroon">
                 {step.title}
               </h3>
               <p className="text-sm leading-relaxed text-near-black/65">

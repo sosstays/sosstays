@@ -6,7 +6,7 @@ import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
-import { getHomeNavLinks } from "@/lib/navLinks";
+import { getGuestNavLinks } from "@/lib/navLinks";
 import { PropertyCard, type PropertyCardProps } from "@/components/PropertyCard";
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
@@ -27,7 +27,7 @@ export default async function HomePage() {
     client.fetch(HOMEPAGE_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(HOSTS_MODULE_QUERY),
-    getHomeNavLinks(),
+    getGuestNavLinks(),
   ]);
   const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
   const instagramUrl = siteSettings?.socialLinks?.find(

@@ -5,7 +5,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { ContactForm } from "@/components/ContactForm";
 import { ContactPromiseBubble } from "@/components/ContactPromiseBubble";
-import { getSiteNavLinks } from "@/lib/navLinks";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ContactPage() {
   const [siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(SITE_SETTINGS_QUERY),
-    getSiteNavLinks(),
+    getGuestSiteNavLinks(),
   ]);
 
   return (

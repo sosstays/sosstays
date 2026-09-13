@@ -9,7 +9,7 @@ import { Reveal } from "@/components/Reveal";
 import { FaqSection } from "@/components/FaqSection";
 import { AccordionPanel } from "@/components/Accordion";
 import { SocialIcons } from "@/components/SocialIcons";
-import { getSiteNavLinks } from "@/lib/navLinks";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -198,7 +198,7 @@ function CorporateIcon() {
 const WHAT_WE_DO_ICONS = [GuestKeyIcon, LandlordIcon, CorporateIcon];
 
 export default async function AboutUsPage() {
-  const [data, siteNavLinks] = await Promise.all([client.fetch(ABOUT_PAGE_QUERY), getSiteNavLinks()]);
+  const [data, siteNavLinks] = await Promise.all([client.fetch(ABOUT_PAGE_QUERY), getGuestSiteNavLinks()]);
 
   const heroImage: ImageSlot = data?.heroImage
     ? { src: urlFor(data.heroImage).width(1800).url(), alt: data.heroImage.alt ?? "" }

@@ -13,7 +13,7 @@ import {
 } from "@/sanity/jsonld";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
 import { HeroNav } from "@/components/HeroNav";
-import { getSiteNavLinks } from "@/lib/navLinks";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { ReviewScoreCard } from "@/components/ReviewScore";
 import { FaqSection } from "@/components/FaqSection";
@@ -38,7 +38,7 @@ export default async function PropertyPage({ params }: Props) {
   const [property, siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(PROPERTY_PAGE_QUERY, { slug }),
     client.fetch(SITE_SETTINGS_QUERY),
-    getSiteNavLinks(),
+    getGuestSiteNavLinks(),
   ]);
 
   if (!property) notFound();
@@ -137,7 +137,7 @@ export default async function PropertyPage({ params }: Props) {
           {property.location}
         </p>
         <div className="flex flex-wrap items-center gap-4">
-          <h1 className="font-serif text-3xl leading-tight font-extrabold tracking-tight text-near-black sm:text-4xl">
+          <h1 className="font-serif text-3xl leading-tight font-extrabold tracking-tight text-forest-green sm:text-4xl">
             {property.name}
           </h1>
           {property.priceLabel && (

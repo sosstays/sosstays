@@ -3,7 +3,7 @@ import { client } from "@/sanity/client";
 import { BLOG_POSTS_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
-import { getSiteNavLinks } from "@/lib/navLinks";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { BlogPostCard } from "@/components/BlogPostCard";
 import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
@@ -29,7 +29,7 @@ export default async function BlogIndexPage({
   const [allPosts, siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(BLOG_POSTS_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
-    getSiteNavLinks(),
+    getGuestSiteNavLinks(),
   ]);
   const fallbackAuthorName = siteSettings?.businessName || "Sos Stays";
   const posts = tag

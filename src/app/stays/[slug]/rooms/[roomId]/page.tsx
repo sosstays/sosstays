@@ -7,7 +7,7 @@ import { JsonLd, buildBreadcrumbSchema, buildFaqSchema } from "@/sanity/jsonld";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
 import { getUplistingRoom } from "@/lib/uplisting/client";
 import { HeroNav } from "@/components/HeroNav";
-import { getSiteNavLinks } from "@/lib/navLinks";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { ReviewScoreCard } from "@/components/ReviewScore";
 import { FaqSection } from "@/components/FaqSection";
@@ -62,7 +62,7 @@ export default async function RoomPage({ params, searchParams }: Props) {
   const [property, room, siteNavLinks] = await Promise.all([
     client.fetch(PROPERTY_PAGE_QUERY, { slug }),
     getUplistingRoom(roomId).catch(() => null),
-    getSiteNavLinks(),
+    getGuestSiteNavLinks(),
   ]);
 
   if (!property || !room) notFound();
@@ -104,7 +104,7 @@ export default async function RoomPage({ params, searchParams }: Props) {
         <p className="mb-3 text-xs font-medium tracking-widest text-forest-green uppercase">
           {property.location}
         </p>
-        <h1 className="font-serif text-3xl leading-tight font-extrabold tracking-tight text-near-black sm:text-4xl">
+        <h1 className="font-serif text-3xl leading-tight font-extrabold tracking-tight text-forest-green sm:text-4xl">
           {room.name}
         </h1>
       </section>

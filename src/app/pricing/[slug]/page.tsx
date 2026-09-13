@@ -9,11 +9,9 @@ import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
 import { getPricingCounties } from "@/lib/fetchPricingCounties";
 import { client } from "@/sanity/client";
 import { LANDLORD_BLOG_POSTS_QUERY } from "@/sanity/queries";
-import { LANDLORD_SITE_NAV_LINKS, type NavLink } from "@/lib/navLinks";
+import { getLandlordSiteNavLinks } from "@/lib/navLinks";
 
 export const revalidate = 60;
-
-const NAV_LINKS: NavLink[] = [{ href: "/pricing", label: "All counties" }, ...LANDLORD_SITE_NAV_LINKS];
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -40,16 +38,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // of a section it doesn't have real content for.
 export default async function PricingCountyPage({ params }: Props) {
   const { slug } = await params;
-  const [counties, landlordPosts] = await Promise.all([
+  const [counties, landlordPosts, landlordSiteNavLinks] = await Promise.all([
     getPricingCounties(),
     client.fetch(LANDLORD_BLOG_POSTS_QUERY),
+    getLandlordSiteNavLinks(),
   ]);
   const county = counties.find((c) => c.slug === slug);
   if (!county) notFound();
 
+  const navLinks = [{ href: "/pricing", label: "All counties" }, ...landlordSiteNavLinks];
+
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
-      <HeroNav links={NAV_LINKS} variant="landlords" sticky ctaHref="/contact" ctaLabel="Contact us" />
+      <HeroNav links={navLinks} variant="landlords" sticky ctaHref="/contact" ctaLabel="Contact us" />
       <div className="mx-auto flex max-w-[1120px] flex-col px-6 pt-20 pb-16 sm:px-10 sm:pt-24 sm:pb-[104px]">
         <CountyPageContent county={county} />
       </div>
