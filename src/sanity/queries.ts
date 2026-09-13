@@ -439,6 +439,56 @@ export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
   }
 `);
 
+// ---- About page (singleton) ----
+
+export const ABOUT_PAGE_QUERY = defineQuery(`
+  *[_type == "aboutPage" && _id == "aboutPage"][0] {
+    heroBadge,
+    heroHeading,
+    heroBody,
+    heroImage,
+    whyEyebrow,
+    whyHeading,
+    whyBodyIntro,
+    whyBodyDetail,
+    whyBodyConclusion,
+    whyImages,
+    audiencesEyebrow,
+    audiencesHeading,
+    guestCardBody,
+    guestCardFootnote,
+    guestCardImage,
+    ownerCardBody,
+    ownerCardPills,
+    ownerCardImage,
+    principlesEyebrow,
+    principlesHeading,
+    principles[] {
+      title,
+      body
+    },
+    coverageEyebrow,
+    coverageHeading,
+    coverageBody,
+    coverageImage,
+    coveragePrimaryCtaLabel,
+    coverageSecondaryCtaLabel,
+    regions[] {
+      name,
+      status,
+      muted
+    },
+    complianceEyebrow,
+    complianceHeading,
+    complianceBody,
+    closingHeading,
+    closingBody,
+    closingPrimaryCtaLabel,
+    closingSecondaryCtaLabel,
+    ${seoProjection}
+  }
+`);
+
 // Onboarded properties for the corporate-stays "Partner with us" image
 // grid — a live query against propertyPage, not stored on the singleton
 // above, so the grid never goes stale as properties are added or removed.
@@ -567,7 +617,7 @@ export const SITEMAP_QUERY = defineQuery(`
       _type == "propertyPage" => "/stays/" + slug.current,
       _type == "areaGuide" => "/areas/" + slug.current,
       _type == "landlordPage" => "/landlords/" + slug.current,
-      slug.current
+      "/" + slug.current
     ),
     _updatedAt
   }
@@ -593,7 +643,7 @@ export const LLMS_TXT_QUERY = defineQuery(`
       _type == "propertyPage" => "/stays/" + slug.current,
       _type == "areaGuide" => "/areas/" + slug.current,
       _type == "landlordPage" => "/landlords/" + slug.current,
-      slug.current
+      "/" + slug.current
     ),
     "title": coalesce(name, title, areaName, ""),
     "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")
