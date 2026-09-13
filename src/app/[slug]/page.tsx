@@ -7,7 +7,7 @@ import { buildMetadata, SITE_URL } from "@/sanity/metadata";
 import { buildUplistingBookingUrl } from "@/sanity/uplisting";
 import { JsonLd, buildBreadcrumbSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
-import { getSiteNavLinks } from "@/lib/navLinks";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
 import { CountUp } from "@/components/CountUp";
 import { ItineraryTimeline } from "@/components/ItineraryTimeline";
@@ -24,7 +24,7 @@ async function getData(slug: string) {
   const [page, siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(LANDING_PAGE_QUERY, { slug }),
     client.fetch(SITE_SETTINGS_QUERY),
-    getSiteNavLinks(),
+    getGuestSiteNavLinks(),
   ]);
   return { page, siteSettings, siteNavLinks };
 }
@@ -653,7 +653,7 @@ export default async function LandingPage({ params }: Props) {
                       {item.tag}
                     </span>
                   )}
-                  {item.title && <h3 className="font-serif font-bold text-near-black">{item.title}</h3>}
+                  {item.title && <h3 className="font-serif font-bold text-forest-green">{item.title}</h3>}
                   {item.description && (
                     <p className="mt-1 text-[13px] leading-normal text-near-black/65">{item.description}</p>
                   )}

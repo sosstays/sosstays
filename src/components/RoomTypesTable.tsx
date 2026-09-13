@@ -1,10 +1,7 @@
-import { Poppins } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/image";
 import { getUplistingRoom, getUplistingCalendar } from "@/lib/uplisting/client";
-
-const poppins = Poppins({ subsets: ["latin"], weight: ["600"] });
 
 const PRICE_WINDOW_DAYS = 30;
 
@@ -120,7 +117,7 @@ export async function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTy
                   </div>
                 )}
                 <div>
-                  <p className={`mb-1.5 text-base font-semibold text-forest-green ${poppins.className}`}>
+                  <p className="mb-1.5 text-base font-semibold text-forest-green">
                     {room.name}
                   </p>
                   {room.bedConfiguration && (
@@ -146,7 +143,7 @@ export async function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTy
             const priceCell =
               fromNightly !== null ? (
                 <span className="flex flex-wrap items-baseline gap-x-1.5">
-                  <span className={`text-base font-semibold text-forest-green ${poppins.className}`}>
+                  <span className="text-base font-semibold text-forest-green">
                     €{fromNightly.toFixed(0)}
                   </span>
                   <span className="text-xs text-near-black/60">/ night</span>

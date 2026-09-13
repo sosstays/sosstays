@@ -121,7 +121,7 @@ export function CorporateLeadForm() {
 
       {stage === "form" && step === 0 && (
         <div className="flex flex-col gap-4.5">
-          <h3 className="font-serif text-lg font-bold text-near-black sm:text-xl">Let&apos;s start with you</h3>
+          <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">Let&apos;s start with you</h3>
           <div className="grid grid-cols-1 gap-4.5 sm:grid-cols-2">
             <label className="flex flex-col gap-1.5 text-sm text-near-black">
               <span>
@@ -181,7 +181,7 @@ export function CorporateLeadForm() {
 
       {stage === "form" && step === 1 && (
         <div className="flex flex-col gap-4.5">
-          <h3 className="font-serif text-lg font-bold text-near-black sm:text-xl">What do you need?</h3>
+          <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">What do you need?</h3>
           <div className="grid grid-cols-1 gap-4.5 sm:grid-cols-2">
             <label className="flex flex-col gap-1.5 text-sm text-near-black">
               <span>Location needed</span>
@@ -228,7 +228,7 @@ export function CorporateLeadForm() {
 
       {stage === "form" && step === 2 && (
         <div className="flex flex-col gap-4.5">
-          <h3 className="font-serif text-lg font-bold text-near-black sm:text-xl">Anything else?</h3>
+          <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">Anything else?</h3>
           <label className="flex flex-col gap-1.5 text-sm text-near-black">
             <span>Message</span>
             <textarea

@@ -20,7 +20,7 @@ export function OnboardingTimeline() {
         <p className="mb-2.5 text-xs font-semibold tracking-widest text-maroon uppercase">
           Getting started
         </p>
-        <h2 className="font-serif text-3xl font-bold text-near-black sm:text-4xl">
+        <h2 className="font-serif text-3xl font-bold text-maroon sm:text-4xl">
           Live in about a week
         </h2>
       </div>

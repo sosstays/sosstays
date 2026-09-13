@@ -39,12 +39,12 @@ export function portableTextToMarkdownSource(blocks: PortableTextBlock[] | undef
 export const blogBodyComponents: PortableTextComponents = {
   block: {
     h2: ({ children }) => (
-      <h2 className="mt-14 mb-5 font-serif text-2xl font-semibold tracking-tight text-[#1C1C1C] first:mt-0">
+      <h2 className="mt-14 mb-5 font-serif text-2xl font-semibold tracking-tight text-forest-green first:mt-0">
         {children}
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="mt-10 mb-4 font-serif text-xl font-semibold tracking-tight text-[#1C1C1C]">
+      <h3 className="mt-10 mb-4 font-serif text-xl font-semibold tracking-tight text-forest-green">
         {children}
       </h3>
     ),

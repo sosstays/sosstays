@@ -62,7 +62,7 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
   if (session.status !== "complete") {
     return shell(
       <div className="text-center">
-        <h1 className="mb-4 font-serif text-3xl font-extrabold tracking-tight text-near-black">
+        <h1 className="mb-4 font-serif text-3xl font-extrabold tracking-tight text-forest-green">
           Payment didn&apos;t go through
         </h1>
         <p className="mb-8 text-near-black/70">Your card wasn&apos;t charged. You can try again below.</p>
@@ -84,7 +84,7 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
           <circle cx="50" cy="50" r="38" stroke="var(--light-sage)" strokeWidth="3" />
           <path d="M34 51l11 11 22-23" stroke="var(--forest-green)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <h1 className="mb-2.5 font-serif text-[clamp(2.25rem,4vw,3.25rem)] leading-[1.05] font-extrabold tracking-tight text-near-black">
+        <h1 className="mb-2.5 font-serif text-[clamp(2.25rem,4vw,3.25rem)] leading-[1.05] font-extrabold tracking-tight text-forest-green">
           That&apos;s your break sorted.
         </h1>
         <p className="mx-auto max-w-[420px] text-lg leading-[1.55] text-near-black/70">

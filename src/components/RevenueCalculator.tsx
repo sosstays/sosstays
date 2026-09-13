@@ -307,7 +307,7 @@ export function RevenueCalculator({
 
           {step === 1 && (
             <div className="flex flex-col gap-4.5">
-              <h3 className="font-serif text-lg font-bold text-near-black sm:text-xl">
+              <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">
                 Your property details
               </h3>
               <p className="text-sm text-near-black/60">
@@ -385,7 +385,7 @@ export function RevenueCalculator({
 
           {step === 2 && (
             <div className="flex flex-col gap-4.5">
-              <h3 className="font-serif text-lg font-bold text-near-black sm:text-xl">
+              <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">
                 Your current performance
               </h3>
               <p className="text-sm text-near-black/60">
@@ -515,7 +515,7 @@ export function RevenueCalculator({
 
           {step === 3 && (
             <div className="flex flex-col gap-4.5">
-              <h3 className="font-serif text-lg font-bold text-near-black sm:text-xl">
+              <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">
                 One last thing
               </h3>
               <p className="text-sm text-near-black/60">This helps us tailor your results accurately.</p>
@@ -676,7 +676,7 @@ function ResultsPanel({
   return (
     <div>
       <div className="mb-9 text-center">
-        <h2 className="font-serif text-3xl font-bold text-near-black">
+        <h2 className="font-serif text-3xl font-bold text-maroon">
           Your Revenue Potential with Sos Stays
         </h2>
         <p className="mt-1.5 text-sm text-near-black/60">
@@ -857,7 +857,7 @@ function EstimateGate({
         }}
         className="mx-4 flex w-full max-w-[380px] flex-col gap-3.5 rounded-[14px] border border-sage-grey/40 bg-cream p-6 shadow-lg sm:p-7"
       >
-        <h4 className="font-serif text-lg font-bold text-near-black">Your numbers are ready</h4>
+        <h4 className="font-serif text-lg font-bold text-maroon">Your numbers are ready</h4>
         <p className="text-[13px] leading-relaxed text-near-black/70">
           Pop in your details and we&apos;ll unlock your full breakdown straightaway.
         </p>

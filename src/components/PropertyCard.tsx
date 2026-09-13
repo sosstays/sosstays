@@ -105,7 +105,7 @@ export function PropertyCard({
       <div className={surface === "framed" ? "pt-5" : "pt-6 sm:max-w-[60%] sm:pt-7"}>
         <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{location}</p>
         <div className="mb-3.5 flex flex-wrap items-center gap-3.5">
-          <h3 className="font-serif text-lg font-bold text-near-black sm:text-2xl">{name}</h3>
+          <h3 className="font-serif text-lg font-bold text-forest-green sm:text-2xl">{name}</h3>
           {!hideSleeps && sleeps && (
             <span className="rounded-full bg-light-sage/35 px-3.5 py-1.5 text-sm font-semibold whitespace-nowrap text-forest-green">
               Sleeps {sleeps}

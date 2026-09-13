@@ -5,7 +5,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { portableTextToMarkdownSource } from "@/sanity/portableText";
 import { HeroNav } from "@/components/HeroNav";
 import { MarkdownContent } from "@/components/MarkdownContent";
-import { getSiteNavLinks } from "@/lib/navLinks";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function TermsAndConditionsPage() {
   const [page, siteNavLinks] = await Promise.all([
     client.fetch(TERMS_PAGE_QUERY),
-    getSiteNavLinks(),
+    getGuestSiteNavLinks(),
   ]);
   if (!page) notFound();
 
@@ -28,7 +28,7 @@ export default async function TermsAndConditionsPage() {
       <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="min-h-screen bg-cream font-sans">
         <div className="mx-auto max-w-3xl px-4 py-12">
-          <h1 className="font-serif text-4xl font-semibold text-near-black">{page.title}</h1>
+          <h1 className="font-serif text-4xl font-semibold text-forest-green">{page.title}</h1>
           {page.lastUpdated && (
             <p className="mt-2 text-sm text-near-black/60">
               Last updated{" "}

@@ -119,7 +119,7 @@ export function LandlordLeadForm({
 
       {stage === "form" && step === 0 && (
         <div className="flex flex-col gap-4.5">
-          <h3 id="situation-label" className="font-serif text-lg font-bold text-near-black sm:text-xl">
+          <h3 id="situation-label" className="font-serif text-lg font-bold text-maroon sm:text-xl">
             Which best describes you? <span className="text-error-red">*</span>
           </h3>
           <div role="radiogroup" aria-labelledby="situation-label" className="flex flex-col gap-2.5">
@@ -163,7 +163,7 @@ export function LandlordLeadForm({
 
       {stage === "form" && step === 1 && (
         <div className="flex flex-col gap-3.5">
-          <h3 className="font-serif text-lg font-bold text-near-black sm:text-xl">
+          <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">
             Where is it, and what makes it special?
           </h3>
           <p className="text-[13px] text-near-black/60">
@@ -200,7 +200,7 @@ export function LandlordLeadForm({
 
       {stage === "form" && step === 2 && (
         <div className="flex flex-col gap-4.5">
-          <h3 className="font-serif text-lg font-bold text-near-black sm:text-xl">
+          <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">
             Almost there
           </h3>
           <label className="flex flex-col gap-1.5 text-sm text-near-black">

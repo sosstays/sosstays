@@ -15,7 +15,7 @@ import { SocialIcons } from "@/components/SocialIcons";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { DisqusComments } from "@/components/DisqusComments";
 import { BlogPostListItem } from "@/components/BlogPostListItem";
-import { getSiteNavLinks } from "@/lib/navLinks";
+import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
@@ -41,7 +41,7 @@ export default async function BlogPostPage({ params }: Props) {
   const [post, siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(BLOG_POST_QUERY, { slug }),
     client.fetch(SITE_SETTINGS_QUERY),
-    getSiteNavLinks(),
+    getGuestSiteNavLinks(),
   ]);
   if (!post) notFound();
 
@@ -78,7 +78,7 @@ export default async function BlogPostPage({ params }: Props) {
 
         {/* HEADER */}
         <header className="mx-auto max-w-6xl px-4 pt-5 sm:px-8">
-          <Reveal as="h1" className="max-w-3xl font-serif text-4xl leading-[1.05] font-bold tracking-tight text-[#1C1C1C] sm:text-5xl">
+          <Reveal as="h1" className="max-w-3xl font-serif text-4xl leading-[1.05] font-bold tracking-tight text-forest-green sm:text-5xl">
             {post.title}
           </Reveal>
           <div className="mt-6 flex flex-wrap items-center gap-4 text-[13px] text-near-black/60">

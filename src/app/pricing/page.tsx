@@ -3,7 +3,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { CitySelectDropdown } from "@/components/pricing/CitySelectDropdown";
 import { getPricingCounties } from "@/lib/fetchPricingCounties";
-import { LANDLORD_SITE_NAV_LINKS } from "@/lib/navLinks";
+import { getLandlordSiteNavLinks } from "@/lib/navLinks";
 import { COMMISSION_FROM } from "@/lib/businessFacts";
 import { Reveal } from "@/components/Reveal";
 
@@ -17,13 +17,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PricingPage() {
-  const counties = await getPricingCounties();
+  const [counties, landlordSiteNavLinks] = await Promise.all([
+    getPricingCounties(),
+    getLandlordSiteNavLinks(),
+  ]);
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <section className="relative flex min-h-screen flex-col items-center justify-center bg-maroon px-8 pt-[180px] pb-20 text-center sm:px-14 sm:pt-[200px]">
         <HeroNav
-          links={LANDLORD_SITE_NAV_LINKS}
+          links={landlordSiteNavLinks}
           variant="landlords"
           ctaHref="/contact"
           ctaLabel="Contact us"

@@ -200,7 +200,7 @@ export default async function SearchPage({
       </div>
 
       <div className="mx-auto max-w-6xl px-8 pb-12 sm:px-14">
-        <h1 className="font-serif text-4xl font-semibold text-near-black">
+        <h1 className="font-serif text-4xl font-semibold text-forest-green">
           {criteriaBits.length > 0 ? "Available stays" : "All stays"}
         </h1>
         <p className="mt-2 text-near-black/60">
@@ -242,7 +242,7 @@ export default async function SearchPage({
 
             {otherProperties.length > 0 && (
               <div className="mt-16">
-                <h2 className="font-serif text-2xl font-semibold text-near-black">
+                <h2 className="font-serif text-2xl font-semibold text-forest-green">
                   Other properties you might also be interested in
                 </h2>
                 <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">

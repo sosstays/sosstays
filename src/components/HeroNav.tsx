@@ -17,8 +17,8 @@ function handleHashNavClick(e: React.MouseEvent<HTMLAnchorElement>, href: string
   if (hashIndex === -1) return;
 
   // A bare "#foo" (no path prefix) always targets the current page — e.g.
-  // LANDLORD_NAV_LINKS' "#faq" means "this page" on /landlords, not "/".
-  // Only an explicit path prefix (like SITE_NAV_LINKS' "/#stays") should be
+  // the landlord nav's "#faq" means "this page" on /landlords, not "/".
+  // Only an explicit path prefix (like the guest nav's "/#stays") should be
   // compared against a literal path.
   const path = href.slice(0, hashIndex) || window.location.pathname;
   const hash = href.slice(hashIndex);
