@@ -133,7 +133,7 @@ export default async function BookPage({ params, searchParams }: Props) {
   }
 
   return shell(
-    <div className="grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
+    <div className="grid gap-10 lg:grid-cols-[1fr_380px] lg:items-start">
       <BookingCheckout
         slug={slug}
         propertyId={propertyIdOverride}

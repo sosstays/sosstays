@@ -120,8 +120,12 @@ export function BookingCheckout({
   }
 
   if (clientSecret && stripePromise) {
+    // No border/background here — Stripe's embedded_page iframe already
+    // draws its own card chrome via branding_settings (see api/checkout/
+    // session), so wrapping it in another bordered box just doubles the
+    // frame at the edges. overflow-hidden still clips it to our radius.
     return (
-      <div className="overflow-hidden rounded-[18px] border border-border-subtle bg-bright-cream">
+      <div className="overflow-hidden rounded-[18px] shadow-[0_1px_3px_rgba(30,26,15,0.08)]">
         <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret }}>
           <EmbeddedCheckout />
         </EmbeddedCheckoutProvider>
@@ -130,7 +134,7 @@ export function BookingCheckout({
   }
 
   return (
-    <div className="overflow-hidden rounded-[18px] border border-border-subtle bg-bright-cream">
+    <div className="overflow-hidden rounded-[18px] border border-border-subtle bg-bright-cream shadow-[0_1px_3px_rgba(30,26,15,0.08)]">
       <div className="flex items-center justify-between border-b border-dashed border-border-subtle bg-pale-sage/40 px-[26px] py-[15px]">
         <span className="text-xs font-semibold tracking-[0.06em] text-forest-green uppercase">
           Secure checkout

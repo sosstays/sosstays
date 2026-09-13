@@ -133,7 +133,7 @@ function mockQuote({
     checkOut,
     numberOfNights: nights,
     numberOfGuests,
-    currency: "GBP",
+    currency: "EUR",
     averagePricePerNight: nightlyRate,
     cleaningFee,
     accommodationTotal,
