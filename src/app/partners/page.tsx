@@ -162,7 +162,7 @@ export default async function PartnersPage() {
                   delay={i * 100}
                   className="flex flex-col rounded-[18px] border border-sage-grey/25 bg-cream p-8"
                 >
-                  <h3 className="font-serif mb-2.5 text-xl font-bold text-near-black">{tier.title}</h3>
+                  <h3 className="font-serif mb-2.5 text-xl font-bold text-maroon">{tier.title}</h3>
                   <p className="text-[15px] leading-loose text-near-black/70">{tier.body}</p>
                 </Reveal>
               ))}
@@ -195,7 +195,7 @@ export default async function PartnersPage() {
                   i % 3 !== 2 ? "lg:border-r lg:pr-8" : ""
                 } ${i % 3 !== 0 ? "lg:pl-8" : ""} ${i % 2 === 1 ? "sm:pl-8" : ""}`}
               >
-                <h3 className="font-serif mb-2.5 text-lg font-bold text-near-black">{cat.title}</h3>
+                <h3 className="font-serif mb-2.5 text-lg font-bold text-maroon">{cat.title}</h3>
                 <p className="text-[15px] leading-loose text-near-black/70">{cat.body}</p>
               </Reveal>
             ))}

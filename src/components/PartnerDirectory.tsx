@@ -92,7 +92,7 @@ export function PartnerDirectory({
                   </span>
                 )}
               </div>
-              <h3 className="font-serif mb-1.5 text-xl font-bold text-near-black">{partner.name}</h3>
+              <h3 className="font-serif mb-1.5 text-xl font-bold text-maroon">{partner.name}</h3>
               <p className="mb-3 text-sm font-medium text-near-black/55">{partner.tagline}</p>
               <p className="flex-1 text-[15px] leading-loose text-near-black/70">{partner.description}</p>
               <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-maroon">
@@ -116,7 +116,7 @@ export function PartnerDirectory({
               <span className="mb-3 text-[11px] font-semibold tracking-widest text-muted-maroon uppercase">
                 {cat.label}
               </span>
-              <h3 className="font-serif mb-2.5 text-lg font-bold text-near-black">Still building this out</h3>
+              <h3 className="font-serif mb-2.5 text-lg font-bold text-maroon">Still building this out</h3>
               <p className="flex-1 text-[15px] leading-loose text-near-black/70">
                 {`We haven't signed a ${cat.label.toLowerCase()} partner yet — if that's your business, apply below and be the first.`}
               </p>

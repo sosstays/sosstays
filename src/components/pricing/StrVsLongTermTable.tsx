@@ -19,7 +19,7 @@ export function StrVsLongTermTable() {
         <p className="mb-2.5 text-xs font-semibold tracking-widest text-forest-green uppercase">
           Already renting, or already hosting?
         </p>
-        <h2 className="font-serif text-3xl font-bold text-near-black sm:text-4xl">
+        <h2 className="font-serif text-3xl font-bold text-maroon sm:text-4xl">
           Short-term management vs. long-term letting
         </h2>
         <p className="mx-auto mt-3 max-w-[56ch] text-sm leading-relaxed text-near-black/65">

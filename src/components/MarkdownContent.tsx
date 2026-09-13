@@ -25,7 +25,7 @@ export function MarkdownContent({ source }: { source: string }) {
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="mt-7 mb-2 font-serif text-lg font-bold text-near-black">
+            <h3 className="mt-7 mb-2 font-serif text-lg font-bold text-forest-green">
               {children}
             </h3>
           ),

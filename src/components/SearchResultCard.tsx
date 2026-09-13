@@ -72,7 +72,7 @@ function RoomRow({
 
       <div className="flex min-w-0 flex-1 flex-col justify-center">
         <div className="flex flex-wrap items-center gap-x-2">
-          <h4 className="truncate font-serif text-base font-bold text-near-black">{room.name}</h4>
+          <h4 className="truncate font-serif text-base font-bold text-forest-green">{room.name}</h4>
           {room.fromPricePerNight !== undefined && (
             <span className="shrink-0 text-sm font-semibold text-forest-green">
               ~€{room.fromPricePerNight} / night
@@ -143,7 +143,7 @@ export function SearchResultCard({
         <div className="pt-4">
           <p className="mb-2 text-xs tracking-widest text-near-black/55 uppercase">{location}</p>
           <div className="flex flex-wrap items-center gap-3">
-            <h3 className="font-serif text-lg font-bold text-near-black">{name}</h3>
+            <h3 className="font-serif text-lg font-bold text-forest-green">{name}</h3>
             {sleeps && (
               <span className="rounded-full bg-light-sage/35 px-3.5 py-1.5 text-sm font-semibold whitespace-nowrap text-forest-green">
                 Sleeps {sleeps}

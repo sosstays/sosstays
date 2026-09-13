@@ -64,7 +64,7 @@ export function ThingsToDoTabs({ items: itemsProp }: { items: Activity[] | null 
             )}
             <div className="flex flex-1 flex-col gap-1.5 p-4">
               <div className="flex items-start justify-between gap-2">
-                <h4 className="font-serif text-[15px] font-bold text-near-black">
+                <h4 className="font-serif text-[15px] font-bold text-forest-green">
                   {item.title}
                 </h4>
                 {item.tag && (

@@ -377,7 +377,7 @@ export default async function CorporateStaysPage() {
             {howSteps.map((step, i) => (
               <Reveal key={step.title} delay={i * 80}>
                 <div className="mb-3.5 text-3xl font-extrabold text-light-sage">{step.number}</div>
-                <h3 className="mb-2 text-base font-semibold text-near-black">{step.title}</h3>
+                <h3 className="mb-2 text-base font-semibold text-maroon">{step.title}</h3>
                 <p className="text-sm leading-relaxed text-near-black/65">{step.body}</p>
               </Reveal>
             ))}
