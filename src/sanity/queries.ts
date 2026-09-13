@@ -623,6 +623,22 @@ export const SITEMAP_QUERY = defineQuery(`
   }
 `);
 
+// Singleton-backed static pages (about, corporate-stays, privacy-policy,
+// terms) — the sitemap wants their real _updatedAt and noIndex flag rather
+// than treating them as unchanging routes.
+export const SITEMAP_SINGLETONS_QUERY = defineQuery(`
+  *[_type in ["aboutPage", "corporateStaysPage", "privacyPolicyPage", "termsPage"]] {
+    "href": select(
+      _type == "aboutPage" => "/about",
+      _type == "corporateStaysPage" => "/corporate-stays",
+      _type == "privacyPolicyPage" => "/privacy-policy",
+      _type == "termsPage" => "/terms-and-conditions"
+    ),
+    _updatedAt,
+    "noIndex": noIndex == true
+  }
+`);
+
 // ---- llms.txt ----
 // Same shape as the sitemap query, but keeps a title + one-line summary
 // per entry so llms.txt can render human/LLM-readable link descriptions
