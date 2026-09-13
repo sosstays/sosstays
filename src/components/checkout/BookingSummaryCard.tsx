@@ -29,7 +29,7 @@ export function BookingSummaryCard({
   quote: StayQuote;
 }) {
   return (
-    <div className="overflow-hidden rounded-[18px] border border-border-subtle bg-bright-cream">
+    <div className="overflow-hidden rounded-[18px] border border-border-subtle bg-bright-cream shadow-[0_1px_3px_rgba(30,26,15,0.08)]">
       {property.coverImage ? (
         <div className="relative h-[178px] w-full">
           <Image

@@ -129,7 +129,7 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
               {typeof session.amount_total === "number"
                 ? new Intl.NumberFormat("en-GB", {
                     style: "currency",
-                    currency: session.currency?.toUpperCase() ?? "GBP",
+                    currency: session.currency?.toUpperCase() ?? "EUR",
                   }).format(session.amount_total / 100)
                 : "—"}
             </dd>

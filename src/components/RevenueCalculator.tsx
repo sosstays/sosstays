@@ -412,7 +412,7 @@ export function RevenueCalculator({
 
               <div>
                 <label className="mb-1 block text-sm text-near-black">
-                  Average nightly rate (€ or £)
+                  Average nightly rate (€)
                 </label>
                 <div className="mb-2 text-center font-serif text-3xl text-maroon">€{adr}</div>
                 <input
@@ -432,7 +432,7 @@ export function RevenueCalculator({
 
               <div className="flex flex-col gap-2 text-sm text-near-black">
                 <span>
-                  Your current monthly revenue (€ or £) <span className="text-error-red">*</span>
+                  Your current monthly revenue (€) <span className="text-error-red">*</span>
                 </span>
                 <div className="flex flex-wrap gap-2.5">
                   <button

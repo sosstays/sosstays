@@ -142,10 +142,10 @@ function mockStayQuote(checkIn: string, checkOut: string): StayQuote {
   const nightlyRate = 120;
   const cleaningFee = 45;
   console.warn(
-    `[uplistingApi] UPLISTING_MOCK_QUOTES is on — returning a fake £${nightlyRate}/night quote instead of calling Uplisting. Do not enable this outside local dev.`
+    `[uplistingApi] UPLISTING_MOCK_QUOTES is on — returning a fake €${nightlyRate}/night quote instead of calling Uplisting. Do not enable this outside local dev.`
   );
   return {
-    currency: "GBP",
+    currency: "EUR",
     numberOfNights: nights,
     accommodationTotal: nights * nightlyRate,
     cleaningFee,
@@ -203,7 +203,7 @@ export async function getStayQuote({
   }
 
   return {
-    currency: attrs.currency ?? "GBP",
+    currency: attrs.currency ?? "EUR",
     numberOfNights: attrs.number_of_nights ?? 0,
     accommodationTotal: attrs.accommodation_total ?? 0,
     cleaningFee: attrs.cleaning_fee ?? 0,
