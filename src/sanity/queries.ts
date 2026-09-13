@@ -445,25 +445,13 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
   *[_type == "aboutPage" && _id == "aboutPage"][0] {
     heroBadge,
     heroHeading,
-    heroBody,
     heroImage,
-    whyEyebrow,
-    whyHeading,
-    whyBodyIntro,
-    whyBodyDetail,
-    whyBodyConclusion,
-    whyImages,
-    audiencesEyebrow,
-    audiencesHeading,
-    guestCardBody,
-    guestCardFootnote,
-    guestCardImage,
-    ownerCardBody,
-    ownerCardPills,
-    ownerCardImage,
-    principlesEyebrow,
-    principlesHeading,
-    principles[] {
+    introParagraph1,
+    introParagraph2,
+    introParagraph3,
+    whatWeDoEyebrow,
+    whatWeDoHeading,
+    whatWeDoItems[] {
       title,
       body
     },
@@ -471,20 +459,51 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
     coverageHeading,
     coverageBody,
     coverageImage,
-    coveragePrimaryCtaLabel,
-    coverageSecondaryCtaLabel,
     regions[] {
       name,
       status,
       muted
     },
-    complianceEyebrow,
-    complianceHeading,
-    complianceBody,
-    closingHeading,
-    closingBody,
-    closingPrimaryCtaLabel,
-    closingSecondaryCtaLabel,
+    staysHeading,
+    featuredStays[] {
+      name,
+      href,
+      description
+    },
+    teamEyebrow,
+    teamHeading,
+    teamIntro,
+    teamMembers[] {
+      name,
+      title,
+      plainTitle,
+      bio,
+      photo
+    },
+    workWithUsEyebrow,
+    workWithUsHeading,
+    workWithUsIntro,
+    workWithUsCategories[] {
+      title,
+      body
+    },
+    workWithUsPartnerNote,
+    workWithUsContactLine,
+    ownershipHeading,
+    ownershipBody,
+    ownershipCroLinkLabel,
+    ownershipCroLinkUrl,
+    reachUsHeading,
+    reachUsEmail,
+    reachUsWhatsapp,
+    reachUsWhatsappUrl,
+    reachUsInstagramHandle,
+    reachUsInstagramUrl,
+    faqHeading,
+    faqs[] {
+      question,
+      answer
+    },
     ${seoProjection}
   }
 `);
