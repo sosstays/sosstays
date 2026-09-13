@@ -3,15 +3,11 @@ import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { CitySelectDropdown } from "@/components/pricing/CitySelectDropdown";
 import { getPricingCounties } from "@/lib/fetchPricingCounties";
-import type { NavLink } from "@/lib/navLinks";
+import { LANDLORD_SITE_NAV_LINKS } from "@/lib/navLinks";
 import { COMMISSION_FROM } from "@/lib/businessFacts";
 import { Reveal } from "@/components/Reveal";
 
 export const revalidate = 60;
-
-const NAV_LINKS: NavLink[] = [
-  { href: "/landlords#how-it-works", label: "How it works" },
-];
 
 const TITLE = "Airbnb & Short-Term Rental Management Pricing — Sos Stays";
 const DESCRIPTION = `Commission-only Airbnb and short-term rental management pricing across Ireland — from ${COMMISSION_FROM}, no setup fee, no retainer. Find pricing and rules for your county.`;
@@ -27,7 +23,7 @@ export default async function PricingPage() {
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <section className="relative flex min-h-screen flex-col items-center justify-center bg-maroon px-8 pt-[180px] pb-20 text-center sm:px-14 sm:pt-[200px]">
         <HeroNav
-          links={NAV_LINKS}
+          links={LANDLORD_SITE_NAV_LINKS}
           variant="landlords"
           ctaHref="/contact"
           ctaLabel="Contact us"

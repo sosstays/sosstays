@@ -46,6 +46,14 @@ export const LANDLORD_NAV_LINKS: NavLink[] = [
   { href: "#faq", label: "FAQ" },
 ];
 
+// Same two sections as LANDLORD_NAV_LINKS, but qualified back to /landlords
+// — for landlord-facing pages (pricing pages) that don't own those
+// sections themselves, so the hashes still resolve.
+export const LANDLORD_SITE_NAV_LINKS: NavLink[] = [
+  { href: "/landlords#how-it-works", label: "How it works" },
+  { href: "/landlords#faq", label: "FAQ" },
+];
+
 // "Send your SOS" is the CTA button (see HeroNav's ctaHref/ctaLabel), not a
 // plain nav link, so it's kept out of this list.
 export const CORPORATE_STAYS_NAV_LINKS: NavLink[] = [
