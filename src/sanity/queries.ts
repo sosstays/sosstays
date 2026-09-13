@@ -567,7 +567,7 @@ export const SITEMAP_QUERY = defineQuery(`
       _type == "propertyPage" => "/stays/" + slug.current,
       _type == "areaGuide" => "/areas/" + slug.current,
       _type == "landlordPage" => "/landlords/" + slug.current,
-      slug.current
+      "/" + slug.current
     ),
     _updatedAt
   }
@@ -593,7 +593,7 @@ export const LLMS_TXT_QUERY = defineQuery(`
       _type == "propertyPage" => "/stays/" + slug.current,
       _type == "areaGuide" => "/areas/" + slug.current,
       _type == "landlordPage" => "/landlords/" + slug.current,
-      slug.current
+      "/" + slug.current
     ),
     "title": coalesce(name, title, areaName, ""),
     "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")
