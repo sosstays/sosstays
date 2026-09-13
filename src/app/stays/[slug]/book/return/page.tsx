@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Poppins } from "next/font/google";
 import type { Metadata } from "next";
 import { client } from "@/sanity/client";
 import { PROPERTY_BOOKING_QUERY } from "@/sanity/queries";
@@ -8,8 +7,6 @@ import { urlFor } from "@/sanity/image";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
-
-const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -32,7 +29,7 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
   const { session_id: sessionId } = await searchParams;
 
   const shell = (children: React.ReactNode) => (
-    <main className={`${poppins.className} min-h-screen overflow-x-hidden bg-cream font-sans text-near-black`}>
+    <main className="min-h-screen overflow-x-hidden bg-cream font-sans text-near-black">
       <header className="flex items-center justify-between px-8 py-[22px] sm:px-14">
         <Link href="/" className="flex items-center">
           <Logo className="h-[30px] w-auto text-forest-green" />

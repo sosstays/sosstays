@@ -1,9 +1,6 @@
-import { Poppins } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/image";
-
-const poppins = Poppins({ subsets: ["latin"], weight: ["600"] });
 
 type RoomType = {
   name: string;
@@ -63,7 +60,7 @@ export function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTypes?: 
                   </div>
                 )}
                 <div>
-                  <p className={`mb-1.5 text-base font-semibold text-forest-green ${poppins.className}`}>
+                  <p className="mb-1.5 text-base font-semibold text-forest-green">
                     {room.name}
                   </p>
                   {room.bedConfiguration && (

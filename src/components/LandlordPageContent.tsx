@@ -1,6 +1,5 @@
 import Image from "next/image";
 import landlordHeroImage from "@/assets/images/landlord.png";
-import { Poppins } from "next/font/google";
 import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY, AUDIENCE_TABS_QUERY, LANDLORD_BLOG_POSTS_QUERY } from "@/sanity/queries";
 import { JsonLd, buildServiceSchema } from "@/sanity/jsonld";
@@ -60,8 +59,6 @@ const MARKET_STATS = [
   { stat: "80%+", caption: "peak-season occupancy across the corridor" },
   { stat: "€150+", caption: "average nightly rate for comparable properties" },
 ];
-
-const poppins = Poppins({ subsets: ["latin"], weight: ["500", "600", "700"] });
 
 // Shared decorative squiggle used as a faint background accent in the
 // "11pm problem" and spotlight sections below.
@@ -340,7 +337,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 className="rounded-[10px] border border-sage-grey/40 p-6"
               >
                 <div
-                  className={`mb-2.5 text-[28px] font-bold text-maroon ${poppins.className}`}
+                  className="mb-2.5 text-[28px] font-bold text-maroon"
                 >
                   {item.stat}
                 </div>
@@ -400,7 +397,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           {MARKET_STATS.map((item, i) => (
             <Reveal key={item.caption} delay={i * 90} className="px-2 text-center">
               <div
-                className={`text-3xl font-extrabold text-maroon ${poppins.className}`}
+                className="text-3xl font-extrabold text-maroon"
               >
                 {item.stat}
               </div>
@@ -458,7 +455,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               <div className="mt-9 grid gap-6.5">
                 <Reveal delay={340} className="border-t border-maroon/15 pt-5.5">
                   <span
-                    className={`text-4xl font-bold tracking-tight text-maroon ${poppins.className}`}
+                    className="text-4xl font-bold tracking-tight text-maroon"
                   >
                     ~24% underpriced
                   </span>
@@ -469,7 +466,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 </Reveal>
                 <Reveal delay={420} className="border-t border-maroon/15 pt-5.5">
                   <span
-                    className={`text-4xl font-bold tracking-tight text-maroon ${poppins.className}`}
+                    className="text-4xl font-bold tracking-tight text-maroon"
                   >
                     93% occupancy uplift
                   </span>
@@ -501,7 +498,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           {PROCESS_STEPS.map((step, i) => (
             <Reveal key={step.number} delay={i * 100}>
               <div
-                className={`mb-3.5 text-3xl font-extrabold text-light-sage ${poppins.className}`}
+                className="mb-3.5 text-3xl font-extrabold text-light-sage"
               >
                 {step.number}
               </div>
