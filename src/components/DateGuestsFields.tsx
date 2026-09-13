@@ -102,7 +102,7 @@ function GuestsIcon({ className = "" }: { className?: string }) {
   );
 }
 
-export type DateGuestsValue = { checkIn: Date | null; checkOut: Date | null; guests: number };
+export type DateGuestsValue = { checkIn: Date | null; checkOut: Date | null; guests: number; kids: number };
 
 // The date-range + guest-count pickers shared by the big pill SearchBar
 // and RoomBookingBar's compact sticky bar. Fully self-contained (owns its
@@ -112,6 +112,7 @@ export function DateGuestsFields({
   initialCheckIn,
   initialCheckOut,
   initialGuests = 1,
+  initialKids = 0,
   maxGuests = 16,
   unavailableDates,
   datesLabel = "Check-in – Check-out",
@@ -122,6 +123,7 @@ export function DateGuestsFields({
   initialCheckIn?: string; // YYYY-MM-DD
   initialCheckOut?: string; // YYYY-MM-DD
   initialGuests?: number;
+  initialKids?: number;
   maxGuests?: number;
   /** ISO (YYYY-MM-DD) dates that can't be checked into or booked through. */
   unavailableDates?: Set<string>;
@@ -139,8 +141,10 @@ export function DateGuestsFields({
   const [showCalendar, setShowCalendar] = useState(false);
   const [viewMonth, setViewMonth] = useState(() => startOfMonth(parseISODate(initialCheckIn) ?? today));
 
-  const [guests, setGuests] = useState(initialGuests);
+  const [adults, setAdults] = useState(initialGuests);
+  const [kids, setKids] = useState(initialKids);
   const [showGuests, setShowGuests] = useState(false);
+  const guests = adults + kids;
 
   const calendarRef = useRef<HTMLDivElement>(null);
   const guestsRef = useRef<HTMLDivElement>(null);
@@ -155,12 +159,12 @@ export function DateGuestsFields({
   }, []);
 
   useEffect(() => {
-    onChange?.({ checkIn, checkOut, guests });
+    onChange?.({ checkIn, checkOut, guests, kids });
     // onChange intentionally excluded — parents pass a fresh function each
     // render, and re-firing on that alone (rather than on real value
     // changes) would defeat the point of this effect.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkIn, checkOut, guests]);
+  }, [checkIn, checkOut, guests, kids]);
 
   function isDayBlocked(day: Date) {
     return day < today || Boolean(unavailableDates?.has(toISODate(day)));
@@ -289,25 +293,55 @@ export function DateGuestsFields({
         </button>
 
         {showGuests && (
-          <div className={`${POPOVER_BASE} ${popoverPosition(layout)} right-0 w-56 p-4 sm:left-0 sm:right-auto`}>
+          <div className={`${POPOVER_BASE} ${popoverPosition(layout)} right-0 w-64 p-4 sm:left-0 sm:right-auto`}>
             <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-near-black">Guests</span>
+              <span className="text-sm font-semibold text-near-black">Adults</span>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => setGuests((g) => Math.max(1, g - 1))}
-                  disabled={guests <= 1}
-                  aria-label="Decrease guests"
+                  onClick={() => setAdults((a) => Math.max(1, a - 1))}
+                  disabled={adults <= 1}
+                  aria-label="Decrease adults"
                   className="flex h-8 w-8 items-center justify-center rounded-full border border-sage-grey/60 text-near-black transition-colors hover:border-forest-green hover:text-forest-green disabled:opacity-30"
                 >
                   −
                 </button>
-                <span className="w-4 text-center text-near-black">{guests}</span>
+                <span className="w-4 text-center text-near-black">{adults}</span>
                 <button
                   type="button"
-                  onClick={() => setGuests((g) => Math.min(maxGuests, g + 1))}
+                  onClick={() => setAdults((a) => Math.min(maxGuests - kids, a + 1))}
                   disabled={guests >= maxGuests}
-                  aria-label="Increase guests"
+                  aria-label="Increase adults"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-sage-grey/60 text-near-black transition-colors hover:border-forest-green hover:text-forest-green disabled:opacity-30"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-3 flex items-center justify-between border-t border-sage-grey/30 pt-3">
+              <div>
+                <span className="text-sm font-semibold text-near-black">Kids</span>
+                <span className="ml-1.5 rounded-full bg-light-forest-green px-2 py-0.5 text-[10px] font-semibold tracking-wide text-forest-green uppercase">
+                  Free
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setKids((k) => Math.max(0, k - 1))}
+                  disabled={kids <= 0}
+                  aria-label="Decrease kids"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-sage-grey/60 text-near-black transition-colors hover:border-forest-green hover:text-forest-green disabled:opacity-30"
+                >
+                  −
+                </button>
+                <span className="w-4 text-center text-near-black">{kids}</span>
+                <button
+                  type="button"
+                  onClick={() => setKids((k) => Math.min(maxGuests - adults, k + 1))}
+                  disabled={guests >= maxGuests}
+                  aria-label="Increase kids"
                   className="flex h-8 w-8 items-center justify-center rounded-full border border-sage-grey/60 text-near-black transition-colors hover:border-forest-green hover:text-forest-green disabled:opacity-30"
                 >
                   +

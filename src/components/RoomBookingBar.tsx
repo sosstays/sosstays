@@ -78,7 +78,7 @@ export function RoomBookingBar({
   const router = useRouter();
   const [days, setDays] = useState<Map<string, CalendarDay>>(new Map());
   const [loadingCalendar, setLoadingCalendar] = useState(true);
-  const [selection, setSelection] = useState<DateGuestsValue>({ checkIn: null, checkOut: null, guests: initialGuests ?? 1 });
+  const [selection, setSelection] = useState<DateGuestsValue>({ checkIn: null, checkOut: null, guests: initialGuests ?? 1, kids: 0 });
   const [checking, setChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -117,17 +117,20 @@ export function RoomBookingBar({
     // Mirrors what Uplisting's own checkout totals up (see StayDirect) —
     // the sticky bar was previously showing accommodation alone, which
     // undercounts the real price by the cleaning fee (and any taxes).
-    const extraGuests = Math.max(0, selection.guests - fees.extraGuestThreshold);
+    // Kids stay free — only paying (adult) guests count toward per-guest
+    // and per-person fees.
+    const payingGuests = selection.guests - selection.kids;
+    const extraGuests = Math.max(0, payingGuests - fees.extraGuestThreshold);
     const feesTotal =
       fees.cleaningFee +
       extraGuests * fees.extraGuestFee +
       fees.taxPerBooking +
       accommodation * (fees.taxPerBookingPercent / 100) +
       fees.taxPerNight * nights.length +
-      fees.taxPerPersonPerNight * selection.guests * nights.length;
+      fees.taxPerPersonPerNight * payingGuests * nights.length;
 
     return { nights: nights.length, total: accommodation + feesTotal };
-  }, [selection.checkIn, selection.checkOut, selection.guests, days, fees]);
+  }, [selection.checkIn, selection.checkOut, selection.guests, selection.kids, days, fees]);
 
   // Before any dates are picked, fall back to the cheapest available
   // night in the fetched window — a real rate off the room's own

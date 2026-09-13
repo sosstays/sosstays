@@ -66,6 +66,7 @@ export function SearchBar({
     checkIn: parseISODate(initialCheckIn),
     checkOut: parseISODate(initialCheckOut),
     guests: initialGuests,
+    kids: 0,
   });
 
   const locationRef = useRef<HTMLDivElement>(null);
