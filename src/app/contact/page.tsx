@@ -14,8 +14,9 @@ export const revalidate = 60;
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
     {
-      title: "Contact Us | Sos Stays",
-      description: "Get in touch with Sos Stays — questions about a stay, or want us to manage your property.",
+      title: "Contact Sos Stays | Drogheda, Co. Louth",
+      description:
+        "Contact Sos Stays in Drogheda. Email hello@sosstays.com, WhatsApp +353 89 480 1345, or send the form. Irish company, CRO 746631.",
     },
     "/contact",
   );
@@ -51,6 +52,35 @@ export default async function ContactPage() {
           <div className="order-1 lg:order-2">
             <Reveal as="h1" className="font-serif mb-5 text-4xl font-bold tracking-tight text-forest-green sm:text-5xl">
               Contact Us
+            </Reveal>
+
+            <Reveal delay={100} className="mb-10 rounded-2xl bg-pale-sage p-6 sm:p-7">
+              <h2 className="font-serif mb-3 text-lg font-bold text-deep-forest">Get in touch</h2>
+              <p className="text-[15px] leading-relaxed text-near-black/80">
+                Sos Stays Power Rangers Ltd, CRO 746631
+                <br />
+                The Mill Enterprise Centre
+                <br />
+                Drogheda, Co. Louth
+                <br />
+                Ireland
+              </p>
+              <p className="mt-4 text-[15px] leading-relaxed text-near-black/80">
+                Email:{" "}
+                <a href="mailto:hello@sosstays.com" className="font-semibold text-forest-green underline">
+                  hello@sosstays.com
+                </a>
+                {" · "}
+                WhatsApp:{" "}
+                <a
+                  href="https://wa.me/353894801345"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-forest-green underline"
+                >
+                  +353 89 480 1345
+                </a>
+              </p>
             </Reveal>
 
             <Reveal delay={150} className="border-t border-sage-grey/50 pt-12">
