@@ -15,6 +15,13 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
 export type Partner = {
   _id: string;
   _type: "partner";
@@ -24,6 +31,14 @@ export type Partner = {
   name: string;
   slug?: Slug;
   tagline: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
   category:
     | "cleaning"
     | "photography"
@@ -38,17 +53,26 @@ export type Partner = {
   profileBody?: string;
 };
 
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x: number;
+  y: number;
+  height: number;
+  width: number;
+};
+
 export type Slug = {
   _type: "slug";
   current: string;
   source?: string;
-};
-
-export type SanityImageAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
 export type PartnersPage = {
@@ -94,6 +118,16 @@ export type PartnersPage = {
     _type: "whoWeWantCategory";
     _key: string;
   }>;
+  spotlightHeading?: string;
+  spotlightBody?: string;
+  spotlightImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
   directoryEyebrow?: string;
   directoryHeading?: string;
   becomePartnerEyebrow?: string;
@@ -109,22 +143,6 @@ export type PartnersPage = {
     _type: "image";
   };
   noIndex?: boolean;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x: number;
-  y: number;
-  height: number;
-  width: number;
 };
 
 export type AboutPage = {
@@ -955,6 +973,7 @@ export type BlogPost = {
         _key: string;
       }
   >;
+  featured?: boolean;
   publishedAt: string;
   author?: {
     name?: string;
@@ -1237,12 +1256,12 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
-  | Partner
-  | Slug
   | SanityImageAssetReference
-  | PartnersPage
+  | Partner
   | SanityImageCrop
   | SanityImageHotspot
+  | Slug
+  | PartnersPage
   | AboutPage
   | CorporateStaysPage
   | PropertyPageReference
@@ -1276,7 +1295,7 @@ export type AllSanitySchemaTypes =
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: BLOG_POSTS_QUERY
-// Query: *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {    _id,    title,    "slug": slug.current,    excerpt,    coverImage,    publishedAt,    author,    tags  }
+// Query: *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {    _id,    title,    "slug": slug.current,    excerpt,    coverImage,    publishedAt,    author,    tags,    featured  }
 export type BLOG_POSTS_QUERY_RESULT = Array<{
   _id: string;
   title: string;
@@ -1304,6 +1323,7 @@ export type BLOG_POSTS_QUERY_RESULT = Array<{
     };
   } | null;
   tags: Array<string> | null;
+  featured: boolean | null;
 }>;
 
 // Source: ../web/src/sanity/queries.ts
@@ -2341,7 +2361,7 @@ export type CORPORATE_ONBOARDED_PROPERTIES_QUERY_RESULT = Array<{
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: PARTNERS_PAGE_QUERY
-// Query: *[_type == "partnersPage" && _id == "partnersPage"][0] {    heroBadge,    heroHeading,    heroImage,    introParagraph1,    introParagraph2,    introParagraph3,    tiersEyebrow,    tiersHeading,    tiers[] {      title,      body    },    tiersNote,    whoWeWantEyebrow,    whoWeWantHeading,    whoWeWantCategories[] {      title,      body,      tag    },    directoryEyebrow,    directoryHeading,    becomePartnerEyebrow,    becomePartnerHeading,    becomePartnerIntro,      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
+// Query: *[_type == "partnersPage" && _id == "partnersPage"][0] {    heroBadge,    heroHeading,    heroImage,    introParagraph1,    introParagraph2,    introParagraph3,    tiersEyebrow,    tiersHeading,    tiers[] {      title,      body    },    tiersNote,    whoWeWantEyebrow,    whoWeWantHeading,    whoWeWantCategories[] {      title,      body,      tag    },    spotlightHeading,    spotlightBody,    spotlightImage,    directoryEyebrow,    directoryHeading,    becomePartnerEyebrow,    becomePartnerHeading,    becomePartnerIntro,      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
 export type PARTNERS_PAGE_QUERY_RESULT = {
   heroBadge: string | null;
   heroHeading: string;
@@ -2376,6 +2396,16 @@ export type PARTNERS_PAGE_QUERY_RESULT = {
       | "social-content"
       | "tours-experiences";
   }> | null;
+  spotlightHeading: string | null;
+  spotlightBody: string | null;
+  spotlightImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
   directoryEyebrow: string | null;
   directoryHeading: string | null;
   becomePartnerEyebrow: string | null;
@@ -2397,7 +2427,7 @@ export type PARTNERS_PAGE_QUERY_RESULT = {
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: PARTNERS_QUERY
-// Query: *[_type == "partner"] | order(featured desc, name asc) {    _id,    name,    "slug": slug.current,    tagline,    category,    description,    href,    featured  }
+// Query: *[_type == "partner"] | order(featured desc, name asc) {    _id,    name,    "slug": slug.current,    tagline,    category,    description,    href,    featured,    image  }
 export type PARTNERS_QUERY_RESULT = Array<{
   _id: string;
   name: string;
@@ -2413,11 +2443,19 @@ export type PARTNERS_QUERY_RESULT = Array<{
   description: string;
   href: string;
   featured: boolean | null;
+  image: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
 }>;
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: PARTNER_BY_SLUG_QUERY
-// Query: *[_type == "partner" && featured == true && slug.current == $slug][0] {    _id,    name,    "slug": slug.current,    tagline,    category,    description,    href,    featured,    profileIntro,    profileBody  }
+// Query: *[_type == "partner" && featured == true && slug.current == $slug][0] {    _id,    name,    "slug": slug.current,    tagline,    category,    description,    href,    featured,    image,    profileIntro,    profileBody  }
 export type PARTNER_BY_SLUG_QUERY_RESULT = {
   _id: string;
   name: string;
@@ -2433,6 +2471,14 @@ export type PARTNER_BY_SLUG_QUERY_RESULT = {
   description: string;
   href: string;
   featured: boolean | null;
+  image: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
   profileIntro: string | null;
   profileBody: string | null;
 } | null;
@@ -2825,7 +2871,7 @@ export type COUNTY_PRICING_STATS_QUERY_RESULT = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt,\n    author,\n    tags\n  }\n': BLOG_POSTS_QUERY_RESULT;
+    '\n  *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt,\n    author,\n    tags,\n    featured\n  }\n': BLOG_POSTS_QUERY_RESULT;
     '\n  *[_type == "blogPost" && defined(slug.current) && "landlord" in tags] | order(publishedAt desc) [0...3] {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt,\n    author,\n    tags\n  }\n': LANDLORD_BLOG_POSTS_QUERY_RESULT;
     '\n  *[_type == "blogPost" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    body,\n    publishedAt,\n    author,\n    tags,\n    relatedAreaGuides[]-> {\n      _id,\n      areaName,\n      "slug": slug.current,\n      heroImage\n    },\n    promotedProperty-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      priceLabel,\n      "coverImage": gallery[0]\n    },\n    "relatedPosts": *[_type == "blogPost" && defined(slug.current) && _id != ^._id] | order(publishedAt desc) [0...3] {\n      _id,\n      title,\n      "slug": slug.current,\n      coverImage,\n      publishedAt\n    },\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': BLOG_POST_QUERY_RESULT;
     '\n  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {\n    _id,\n    name,\n    "slug": slug.current,\n    location,\n    shortDescription,\n    sleeps,\n    "coverImage": gallery[0],\n    uplistingPropertySlug,\n    roomTypes[] {\n      name,\n      roomId,\n      image,\n      bedConfiguration,\n      guests\n    }\n  }\n': PROPERTY_PAGES_QUERY_RESULT;
@@ -2846,9 +2892,9 @@ declare module "@sanity/client" {
     '\n  *[_type == "corporateStaysPage" && _id == "corporateStaysPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroBody,\n    heroPrimaryCtaLabel,\n    heroSecondaryCtaLabel,\n    heroFacts,\n    heroImages,\n    whoEyebrow,\n    whoHeading,\n    whoBody,\n    whoCards[] {\n      title,\n      body,\n      image\n    },\n    howEyebrow,\n    howHeading,\n    howBody,\n    howSteps[] {\n      title,\n      body\n    },\n    coverageEyebrow,\n    coverageHeading,\n    coverageAreas[] {\n      county,\n      live,\n      body\n    },\n    coverageNote,\n    includedEyebrow,\n    includedHeading,\n    includedFeatures[] {\n      title,\n      body,\n      icon\n    },\n    partnerEyebrow,\n    partnerHeading,\n    partnerBody,\n    partnerCtaLabel,\n    partnerCtaUrl,\n    faqEyebrow,\n    faqHeading,\n    faqs[] {\n      question,\n      answer\n    },\n    closingHeading,\n    closingBody,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': CORPORATE_STAYS_PAGE_QUERY_RESULT;
     '\n  *[_type == "aboutPage" && _id == "aboutPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroImage,\n    introParagraph1,\n    introParagraph2,\n    introParagraph3,\n    whatWeDoEyebrow,\n    whatWeDoHeading,\n    whatWeDoItems[] {\n      title,\n      body\n    },\n    coverageEyebrow,\n    coverageHeading,\n    coverageBody,\n    coverageImage,\n    regions[] {\n      name,\n      status,\n      muted\n    },\n    staysHeading,\n    featuredStays[] {\n      name,\n      href,\n      description\n    },\n    teamEyebrow,\n    teamHeading,\n    teamIntro,\n    teamMembers[] {\n      name,\n      title,\n      plainTitle,\n      bio,\n      photo\n    },\n    workWithUsEyebrow,\n    workWithUsHeading,\n    workWithUsIntro,\n    workWithUsCategories[] {\n      title,\n      body\n    },\n    workWithUsPartnerNote,\n    workWithUsContactLine,\n    ownershipHeading,\n    ownershipBody,\n    ownershipCroLinkLabel,\n    ownershipCroLinkUrl,\n    reachUsHeading,\n    reachUsEmail,\n    reachUsWhatsapp,\n    reachUsWhatsappUrl,\n    reachUsInstagramHandle,\n    reachUsInstagramUrl,\n    faqHeading,\n    faqs[] {\n      question,\n      answer\n    },\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...8] {\n    _id,\n    name,\n    "slug": slug.current,\n    location,\n    "coverImage": gallery[0]\n  }\n': CORPORATE_ONBOARDED_PROPERTIES_QUERY_RESULT;
-    '\n  *[_type == "partnersPage" && _id == "partnersPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroImage,\n    introParagraph1,\n    introParagraph2,\n    introParagraph3,\n    tiersEyebrow,\n    tiersHeading,\n    tiers[] {\n      title,\n      body\n    },\n    tiersNote,\n    whoWeWantEyebrow,\n    whoWeWantHeading,\n    whoWeWantCategories[] {\n      title,\n      body,\n      tag\n    },\n    directoryEyebrow,\n    directoryHeading,\n    becomePartnerEyebrow,\n    becomePartnerHeading,\n    becomePartnerIntro,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': PARTNERS_PAGE_QUERY_RESULT;
-    '\n  *[_type == "partner"] | order(featured desc, name asc) {\n    _id,\n    name,\n    "slug": slug.current,\n    tagline,\n    category,\n    description,\n    href,\n    featured\n  }\n': PARTNERS_QUERY_RESULT;
-    '\n  *[_type == "partner" && featured == true && slug.current == $slug][0] {\n    _id,\n    name,\n    "slug": slug.current,\n    tagline,\n    category,\n    description,\n    href,\n    featured,\n    profileIntro,\n    profileBody\n  }\n': PARTNER_BY_SLUG_QUERY_RESULT;
+    '\n  *[_type == "partnersPage" && _id == "partnersPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroImage,\n    introParagraph1,\n    introParagraph2,\n    introParagraph3,\n    tiersEyebrow,\n    tiersHeading,\n    tiers[] {\n      title,\n      body\n    },\n    tiersNote,\n    whoWeWantEyebrow,\n    whoWeWantHeading,\n    whoWeWantCategories[] {\n      title,\n      body,\n      tag\n    },\n    spotlightHeading,\n    spotlightBody,\n    spotlightImage,\n    directoryEyebrow,\n    directoryHeading,\n    becomePartnerEyebrow,\n    becomePartnerHeading,\n    becomePartnerIntro,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': PARTNERS_PAGE_QUERY_RESULT;
+    '\n  *[_type == "partner"] | order(featured desc, name asc) {\n    _id,\n    name,\n    "slug": slug.current,\n    tagline,\n    category,\n    description,\n    href,\n    featured,\n    image\n  }\n': PARTNERS_QUERY_RESULT;
+    '\n  *[_type == "partner" && featured == true && slug.current == $slug][0] {\n    _id,\n    name,\n    "slug": slug.current,\n    tagline,\n    category,\n    description,\n    href,\n    featured,\n    image,\n    profileIntro,\n    profileBody\n  }\n': PARTNER_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "partner" && featured == true && defined(slug.current)][].slug.current\n': FEATURED_PARTNER_SLUGS_QUERY_RESULT;
     '{\n  "properties": *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...3] {\n    _id, name, "slug": slug.current, location, shortDescription, sleeps,\n    "coverImage": gallery[0], "gallery": gallery[0...3]\n  },\n  "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {\n    _id, areaName, "slug": slug.current, heroImage, introduction\n  }\n}': HOMEPAGE_QUERY_RESULT;
     '\n  *[_type == "landingPage" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    heroEyebrow,\n    heroHeadline,\n    heroSubtext,\n    heroTags,\n    heroImage,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl,\n    marqueeItems,\n    distanceStat,\n    distanceLabel,\n    destinationName,\n    distanceText,\n    geographyHeading,\n    proximityStats[] {\n      value,\n      label\n    },\n    directBookingBadge,\n    directBookingHeadline,\n    directBookingText,\n    directBookingSavingsPercent,\n    directBookingComparisonNote,\n    featuredProperty-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      sleeps,\n      bedrooms,\n      beds,\n      bathrooms,\n      reviewScore,\n      reviewCount,\n      amenities,\n      roomTypes,\n      "coverImage": gallery[0],\n      "gallery": gallery[0...3],\n      uplistingPropertySlug\n    },\n    infoSections[] {\n      eyebrow,\n      heading,\n      body,\n      layout,\n      items[] {\n        title,\n        description,\n        tag,\n        image,\n        link\n      }\n    },\n    pricingTiers[] {\n      amount,\n      label\n    },\n    pricingNote,\n    pricingLink,\n    pricingLinkLabel,\n    itineraryEyebrow,\n    itineraryHeading,\n    itineraryText,\n    itineraryDays[] {\n      dayLabel,\n      items[] {\n        time,\n        title,\n        description\n      }\n    },\n    relatedAreaGuide-> {\n      areaName,\n      "slug": slug.current,\n      thingsToDo\n    },\n    finalCtaHeadline,\n    finalCtaText,\n    finalCtaSecondaryLabel,\n    finalCtaSecondaryUrl,\n    stickyBarEnabled,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': LANDING_PAGE_QUERY_RESULT;

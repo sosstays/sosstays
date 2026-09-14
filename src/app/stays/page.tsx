@@ -58,7 +58,6 @@ export default async function StaysIndexPage() {
                   coverImage={property.coverImage}
                   surface="framed"
                   hideSleeps
-                  hideCta
                 />
               </Reveal>
             ))}

@@ -24,7 +24,8 @@ export const BLOG_POSTS_QUERY = defineQuery(`
     coverImage,
     publishedAt,
     author,
-    tags
+    tags,
+    featured
   }
 `);
 
@@ -545,6 +546,9 @@ export const PARTNERS_PAGE_QUERY = defineQuery(`
       body,
       tag
     },
+    spotlightHeading,
+    spotlightBody,
+    spotlightImage,
     directoryEyebrow,
     directoryHeading,
     becomePartnerEyebrow,
@@ -567,7 +571,8 @@ export const PARTNERS_QUERY = defineQuery(`
     category,
     description,
     href,
-    featured
+    featured,
+    image
   }
 `);
 
@@ -581,6 +586,7 @@ export const PARTNER_BY_SLUG_QUERY = defineQuery(`
     description,
     href,
     featured,
+    image,
     profileIntro,
     profileBody
   }

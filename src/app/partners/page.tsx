@@ -8,7 +8,13 @@ import { Reveal } from "@/components/Reveal";
 import { PartnerDirectory } from "@/components/PartnerDirectory";
 import { PartnerLeadForm } from "@/components/PartnerLeadForm";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
-import { PARTNER_CATEGORIES, DEFAULT_PARTNERS, getEmptyCategories, type Partner } from "@/lib/partnersData";
+import {
+  PARTNER_CATEGORIES,
+  DEFAULT_PARTNERS,
+  DEFAULT_SPOTLIGHT_IMAGE,
+  getEmptyCategories,
+  type Partner,
+} from "@/lib/partnersData";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -95,9 +101,18 @@ export default async function PartnersPage() {
   const tiers = data?.tiers?.length ? data.tiers : DEFAULT_TIERS;
   const whoWeWant = data?.whoWeWantCategories?.length ? data.whoWeWantCategories : DEFAULT_WHO_WE_WANT;
   const partners: Partner[] = partnersFromSanity?.length
-    ? partnersFromSanity.map((p) => ({ ...p, slug: p.slug ?? p._id, featured: p.featured ?? false }))
+    ? partnersFromSanity.map((p) => ({
+        ...p,
+        slug: p.slug ?? p._id,
+        featured: p.featured ?? false,
+        image: p.image ? { src: urlFor(p.image).width(900).url(), alt: p.image.alt ?? "" } : undefined,
+      }))
     : DEFAULT_PARTNERS;
   const emptyCategories = getEmptyCategories(partners);
+
+  const spotlightImage: ImageSlot = data?.spotlightImage
+    ? { src: urlFor(data.spotlightImage).width(1600).url(), alt: data.spotlightImage.alt ?? "" }
+    : DEFAULT_SPOTLIGHT_IMAGE;
 
   return (
     <>
@@ -199,6 +214,26 @@ export default async function PartnersPage() {
                 <p className="text-[15px] leading-loose text-near-black/70">{cat.body}</p>
               </Reveal>
             ))}
+          </div>
+        </section>
+
+        {/* SPOTLIGHT IMAGE */}
+        <section className="relative overflow-hidden bg-maroon">
+          <Image src={spotlightImage.src} alt={spotlightImage.alt} fill className="object-cover opacity-[.38]" />
+          <div
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(0deg, rgba(71,45,48,.92), rgba(71,45,48,.55))" }}
+          />
+          <div className="relative mx-auto max-w-[820px] px-8 py-24 text-center sm:px-14 sm:py-32">
+            <Reveal>
+              <h2 className="font-serif mb-5 text-[28px] leading-[1.15] font-bold tracking-tight text-cream sm:text-4xl">
+                {data?.spotlightHeading || "The kind of local businesses already on the list"}
+              </h2>
+              <p className="text-lg leading-loose text-cream/80">
+                {data?.spotlightBody ||
+                  "From family days out to the person who takes the photos that actually sell a stay — a look at who we're already working with."}
+              </p>
+            </Reveal>
           </div>
         </section>
 

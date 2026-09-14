@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/image";
 
-type BlogPost = {
+export type BlogPost = {
   _id: string;
   slug: string;
   title: string;
@@ -11,6 +11,7 @@ type BlogPost = {
   publishedAt?: string;
   author?: { name?: string; avatar?: any } | null;
   tags?: string[] | null;
+  featured?: boolean | null;
 };
 
 const dateFormatter = new Intl.DateTimeFormat("en-IE", {
@@ -29,7 +30,7 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="block overflow-hidden rounded-[10px] border border-sage-grey/40 bg-light-forest-green"
+      className="flex h-full flex-col overflow-hidden rounded-[10px] border border-sage-grey/40 bg-cream"
     >
       {post.coverImage ? (
         <div className="relative h-40">
@@ -43,10 +44,10 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
       ) : (
         <div className="h-40 bg-light-sage/25" />
       )}
-      <div className="p-5">
+      <div className="flex flex-1 flex-col p-5">
         <div className="mb-2 flex items-center gap-2.5 text-xs text-near-black/60">
           {primaryTag && (
-            <span className="rounded-full bg-cream px-2.5 py-1 font-semibold text-forest-green">
+            <span className="rounded-full bg-light-sage/35 px-2.5 py-1 font-semibold text-forest-green">
               {primaryTag}
             </span>
           )}
@@ -56,10 +57,10 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
         <h3 className="mb-2 font-serif text-lg font-bold text-forest-green">{post.title}</h3>
 
         {post.excerpt && (
-          <p className="mb-3 text-sm leading-relaxed text-near-black/70">{post.excerpt}</p>
+          <p className="mb-3 flex-1 text-sm leading-relaxed text-near-black/70">{post.excerpt}</p>
         )}
 
-        <div className="flex items-center gap-2.5">
+        <div className="mt-auto flex items-center gap-2.5">
           {post.author?.avatar ? (
             <div className="relative h-7 w-7 flex-none overflow-hidden rounded-full">
               <Image
@@ -70,7 +71,7 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
               />
             </div>
           ) : (
-            <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-cream text-xs font-semibold text-forest-green">
+            <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-light-sage/35 text-xs font-semibold text-forest-green">
               {authorName.charAt(0)}
             </div>
           )}

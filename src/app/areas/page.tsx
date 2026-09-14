@@ -1,9 +1,10 @@
 import { client } from "@/sanity/client";
 import { AREA_GUIDES_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
+import { portableTextToPlain } from "@/sanity/portableText";
 import { HeroNav } from "@/components/HeroNav";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
-import { AreaGuideCard } from "@/components/AreaGuideCard";
+import { ImageOverlayCard } from "@/components/ImageOverlayCard";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
@@ -39,7 +40,13 @@ export default async function AreasIndexPage() {
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {areas.map((area: any, i: number) => (
               <Reveal key={area._id} delay={Math.min(i, 5) * 90}>
-                <AreaGuideCard guide={area} />
+                <ImageOverlayCard
+                  title={area.areaName}
+                  description={area.introduction ? portableTextToPlain(area.introduction, 100) : undefined}
+                  image={area.heroImage}
+                  href={`/areas/${area.slug}`}
+                  heightClassName="h-[300px]"
+                />
               </Reveal>
             ))}
           </div>

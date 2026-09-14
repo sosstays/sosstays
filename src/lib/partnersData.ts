@@ -21,6 +21,8 @@ export const PARTNER_CATEGORIES: PartnerCategory[] = [
   { slug: "hospitality-days-out", label: "Hospitality & Days Out" },
 ];
 
+export type PartnerImage = { src: string; alt: string };
+
 export type Partner = {
   slug: string;
   name: string;
@@ -29,8 +31,14 @@ export type Partner = {
   description: string;
   href: string; // external site/booking link
   featured: boolean;
+  image?: PartnerImage;
   profileIntro?: string;
   profileBody?: string;
+};
+
+export const DEFAULT_SPOTLIGHT_IMAGE: PartnerImage = {
+  src: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=1600&q=80",
+  alt: "",
 };
 
 export const DEFAULT_PARTNERS: Partner[] = [
@@ -43,6 +51,10 @@ export const DEFAULT_PARTNERS: Partner[] = [
       "The go-to for a wet Tuesday or a birthday that needs sorting — we send families here more than anywhere else.",
     href: "https://www.funtasia.net/",
     featured: true,
+    image: {
+      src: "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=900&q=80",
+      alt: "",
+    },
     profileIntro: "Family entertainment centre, Drogheda",
     profileBody:
       "The go-to for a wet Tuesday or a birthday that needs sorting — we send families here more than anywhere else. Full profile content to come.",
@@ -56,6 +68,10 @@ export const DEFAULT_PARTNERS: Partner[] = [
       "A proper reset after a day of driving around — we point guests here when they want to slow down for an afternoon.",
     href: "#",
     featured: false,
+    image: {
+      src: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=900&q=80",
+      alt: "",
+    },
   },
 ];
 

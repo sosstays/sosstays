@@ -138,7 +138,6 @@ export default async function HomePage() {
                   coverImage={property.coverImage}
                   surface="framed"
                   hideSleeps
-                  hideCta
                 />
               </Reveal>
             ))}
