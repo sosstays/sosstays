@@ -11,6 +11,7 @@ import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
 import { CountUp } from "@/components/CountUp";
 import { ItineraryTimeline } from "@/components/ItineraryTimeline";
+import { ImageOverlayCard } from "@/components/ImageOverlayCard";
 import { StickyBookingBar } from "@/components/StickyBookingBar";
 import { ComparisonBars } from "@/components/ComparisonBars";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
@@ -728,28 +729,13 @@ export default async function LandingPage({ params }: Props) {
 
           <div className="mt-11 grid grid-cols-1 gap-5 sm:grid-cols-3">
             {page.relatedAreaGuide.thingsToDo.slice(0, 3).map((item, i) => (
-              <Reveal
-                key={item.title}
-                delay={i * 100}
-                as="a"
-                href={`/areas/${page.relatedAreaGuide!.slug}`}
-                className="group relative block h-[380px] overflow-hidden rounded-[18px] bg-deep-forest"
-              >
-                {item.image && (
-                  <Image
-                    src={urlFor(item.image).width(800).height(1000).url()}
-                    alt={item.image.alt ?? item.title}
-                    fill
-                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/88 to-42% to-transparent" />
-                <div className="absolute right-6.5 bottom-6 left-6.5">
-                  <h3 className="font-serif text-xl font-bold text-cream">{item.title}</h3>
-                  {item.description && (
-                    <p className="mt-2 text-sm leading-relaxed text-cream/82">{item.description}</p>
-                  )}
-                </div>
+              <Reveal key={item.title} delay={i * 100}>
+                <ImageOverlayCard
+                  title={item.title}
+                  description={item.description}
+                  image={item.image}
+                  href={`/areas/${page.relatedAreaGuide!.slug}`}
+                />
               </Reveal>
             ))}
           </div>
