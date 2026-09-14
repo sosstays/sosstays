@@ -20,8 +20,6 @@ export type PropertyCardProps = {
   surface?: "plain" | "framed";
   /** Omits the short description — used where the card sits beside its own room list (search results). */
   hideDescription?: boolean;
-  /** Omits the "Have a look" pill — used where the card sits beside its own room list (search results). */
-  hideCta?: boolean;
   /** Omits the "Sleeps N" pill. */
   hideSleeps?: boolean;
 };
@@ -36,7 +34,6 @@ export function PropertyCard({
   gallery,
   surface = "plain",
   hideDescription = false,
-  hideCta = false,
   hideSleeps = false,
 }: PropertyCardProps) {
   // GROQ returns `null` (not `undefined`) for an empty array field, which
@@ -113,12 +110,7 @@ export function PropertyCard({
           )}
         </div>
         {!hideDescription && shortDescription && (
-          <p className="mb-6 leading-relaxed text-near-black/70">{shortDescription}</p>
-        )}
-        {!hideCta && (
-          <span className="inline-flex items-center gap-2 rounded-full bg-forest-green px-6 py-3.5 text-[15px] font-semibold text-cream transition-colors duration-300 group-hover:bg-light-sage group-hover:text-forest-green">
-            Have a look →
-          </span>
+          <p className="leading-relaxed text-near-black/70">{shortDescription}</p>
         )}
       </div>
     </>

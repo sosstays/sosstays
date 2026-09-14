@@ -257,7 +257,6 @@ export default async function SearchPage({
                       coverImage={property.coverImage}
                       surface="framed"
                       hideDescription
-                      hideCta
                     />
                   ))}
                 </div>
@@ -277,7 +276,6 @@ export default async function SearchPage({
                 coverImage={property.coverImage}
                 surface="framed"
                 hideDescription
-                hideCta
               />
             ))}
           </div>
