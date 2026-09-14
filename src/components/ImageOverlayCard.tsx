@@ -48,7 +48,7 @@ export function ImageOverlayCard({
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(to top, color-mix(in srgb, ${overlayColor} 94%, transparent) 0%, color-mix(in srgb, ${overlayColor} 55%, transparent) 38%, transparent 72%)`,
+          background: `linear-gradient(to top, ${overlayColor} 0%, color-mix(in srgb, ${overlayColor} 78%, transparent) 38%, transparent 72%)`,
         }}
       />
       <div className="absolute right-6.5 bottom-6 left-6.5">
