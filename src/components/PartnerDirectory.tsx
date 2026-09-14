@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type { Partner, PartnerCategory } from "@/lib/partnersData";
 
@@ -80,30 +81,46 @@ export function PartnerDirectory({
           {filteredPartners.map((partner) => (
             <div
               key={partner.slug}
-              className="flex h-full flex-col rounded-[18px] border border-sage-grey/25 bg-cream p-7"
+              className="flex h-full flex-col overflow-hidden rounded-[18px] border border-sage-grey/25 bg-cream"
             >
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="text-[11px] font-semibold tracking-widest text-muted-maroon uppercase">
-                  {categoryLabel(partner.category)}
-                </span>
-                {partner.featured && (
-                  <span className="rounded-full bg-maroon px-2.5 py-0.5 text-[10.5px] font-semibold tracking-wide text-cream uppercase">
-                    Featured Partner
-                  </span>
+              <div className="relative h-40 w-full bg-pale-sage">
+                {partner.image ? (
+                  <Image
+                    src={partner.image.src}
+                    alt={partner.image.alt || partner.name}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-warm-cream text-3xl font-semibold text-maroon">
+                    {partner.name.charAt(0)}
+                  </div>
                 )}
               </div>
-              <h3 className="font-serif mb-1.5 text-xl font-bold text-maroon">{partner.name}</h3>
-              <p className="mb-3 text-sm font-medium text-near-black/55">{partner.tagline}</p>
-              <p className="flex-1 text-[15px] leading-loose text-near-black/70">{partner.description}</p>
-              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-maroon">
-                {partner.featured && (
-                  <Link href={`/partners/${partner.slug}`} className="underline underline-offset-2">
-                    Read more →
-                  </Link>
-                )}
-                <a href={partner.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
-                  Visit {partner.name} →
-                </a>
+              <div className="flex h-full flex-col p-7">
+                <div className="mb-3 flex flex-wrap items-center gap-2">
+                  <span className="text-[11px] font-semibold tracking-widest text-muted-maroon uppercase">
+                    {categoryLabel(partner.category)}
+                  </span>
+                  {partner.featured && (
+                    <span className="rounded-full bg-maroon px-2.5 py-0.5 text-[10.5px] font-semibold tracking-wide text-cream uppercase">
+                      Featured Partner
+                    </span>
+                  )}
+                </div>
+                <h3 className="font-serif mb-1.5 text-xl font-bold text-maroon">{partner.name}</h3>
+                <p className="mb-3 text-sm font-medium text-near-black/55">{partner.tagline}</p>
+                <p className="flex-1 text-[15px] leading-loose text-near-black/70">{partner.description}</p>
+                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-maroon">
+                  {partner.featured && (
+                    <Link href={`/partners/${partner.slug}`} className="underline underline-offset-2">
+                      Read more →
+                    </Link>
+                  )}
+                  <a href={partner.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+                    Visit {partner.name} →
+                  </a>
+                </div>
               </div>
             </div>
           ))}

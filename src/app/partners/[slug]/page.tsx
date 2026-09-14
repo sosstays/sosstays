@@ -1,6 +1,8 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { client } from "@/sanity/client";
 import { PARTNER_BY_SLUG_QUERY, FEATURED_PARTNER_SLUGS_QUERY } from "@/sanity/queries";
+import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { Reveal } from "@/components/Reveal";
@@ -23,6 +25,7 @@ async function getPartner(slug: string): Promise<Partner | null> {
       ...partner,
       slug: partner.slug ?? slug,
       featured: partner.featured ?? true,
+      image: partner.image ? { src: urlFor(partner.image).width(1200).url(), alt: partner.image.alt ?? "" } : undefined,
       profileIntro: partner.profileIntro ?? undefined,
       profileBody: partner.profileBody ?? undefined,
     };
@@ -74,6 +77,14 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
             </Reveal>
           </div>
         </section>
+
+        {partner.image && (
+          <div className="mx-auto -mt-12 max-w-[820px] px-8 sm:-mt-16 sm:px-14">
+            <div className="relative h-[260px] w-full overflow-hidden rounded-[18px] sm:h-[360px]">
+              <Image src={partner.image.src} alt={partner.image.alt || partner.name} fill className="object-cover" />
+            </div>
+          </div>
+        )}
 
         <section className="mx-auto max-w-[820px] px-8 py-20 sm:px-14">
           <Reveal>
