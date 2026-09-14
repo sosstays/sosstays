@@ -46,7 +46,7 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
       <div className="p-5">
         <div className="mb-2 flex items-center gap-2.5 text-xs text-near-black/60">
           {primaryTag && (
-            <span className="rounded-full bg-cream px-2.5 py-1 font-semibold text-forest-green">
+            <span className="rounded-full bg-light-sage/35 px-2.5 py-1 font-semibold text-forest-green">
               {primaryTag}
             </span>
           )}
@@ -70,7 +70,7 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
               />
             </div>
           ) : (
-            <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-cream text-xs font-semibold text-forest-green">
+            <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-light-sage/35 text-xs font-semibold text-forest-green">
               {authorName.charAt(0)}
             </div>
           )}
