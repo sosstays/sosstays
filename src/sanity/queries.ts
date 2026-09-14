@@ -24,7 +24,8 @@ export const BLOG_POSTS_QUERY = defineQuery(`
     coverImage,
     publishedAt,
     author,
-    tags
+    tags,
+    featured
   }
 `);
 

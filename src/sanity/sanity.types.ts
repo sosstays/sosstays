@@ -973,6 +973,7 @@ export type BlogPost = {
         _key: string;
       }
   >;
+  featured?: boolean;
   publishedAt: string;
   author?: {
     name?: string;
@@ -1294,7 +1295,7 @@ export type AllSanitySchemaTypes =
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: BLOG_POSTS_QUERY
-// Query: *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {    _id,    title,    "slug": slug.current,    excerpt,    coverImage,    publishedAt,    author,    tags  }
+// Query: *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {    _id,    title,    "slug": slug.current,    excerpt,    coverImage,    publishedAt,    author,    tags,    featured  }
 export type BLOG_POSTS_QUERY_RESULT = Array<{
   _id: string;
   title: string;
@@ -1322,6 +1323,7 @@ export type BLOG_POSTS_QUERY_RESULT = Array<{
     };
   } | null;
   tags: Array<string> | null;
+  featured: boolean | null;
 }>;
 
 // Source: ../web/src/sanity/queries.ts
@@ -2869,7 +2871,7 @@ export type COUNTY_PRICING_STATS_QUERY_RESULT = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt,\n    author,\n    tags\n  }\n': BLOG_POSTS_QUERY_RESULT;
+    '\n  *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt,\n    author,\n    tags,\n    featured\n  }\n': BLOG_POSTS_QUERY_RESULT;
     '\n  *[_type == "blogPost" && defined(slug.current) && "landlord" in tags] | order(publishedAt desc) [0...3] {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    publishedAt,\n    author,\n    tags\n  }\n': LANDLORD_BLOG_POSTS_QUERY_RESULT;
     '\n  *[_type == "blogPost" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    body,\n    publishedAt,\n    author,\n    tags,\n    relatedAreaGuides[]-> {\n      _id,\n      areaName,\n      "slug": slug.current,\n      heroImage\n    },\n    promotedProperty-> {\n      _id,\n      name,\n      "slug": slug.current,\n      location,\n      shortDescription,\n      priceLabel,\n      "coverImage": gallery[0]\n    },\n    "relatedPosts": *[_type == "blogPost" && defined(slug.current) && _id != ^._id] | order(publishedAt desc) [0...3] {\n      _id,\n      title,\n      "slug": slug.current,\n      coverImage,\n      publishedAt\n    },\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': BLOG_POST_QUERY_RESULT;
     '\n  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {\n    _id,\n    name,\n    "slug": slug.current,\n    location,\n    shortDescription,\n    sleeps,\n    "coverImage": gallery[0],\n    uplistingPropertySlug,\n    roomTypes[] {\n      name,\n      roomId,\n      image,\n      bedConfiguration,\n      guests\n    }\n  }\n': PROPERTY_PAGES_QUERY_RESULT;

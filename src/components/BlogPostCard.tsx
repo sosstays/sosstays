@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/image";
 
-type BlogPost = {
+export type BlogPost = {
   _id: string;
   slug: string;
   title: string;
@@ -11,6 +11,7 @@ type BlogPost = {
   publishedAt?: string;
   author?: { name?: string; avatar?: any } | null;
   tags?: string[] | null;
+  featured?: boolean | null;
 };
 
 const dateFormatter = new Intl.DateTimeFormat("en-IE", {
