@@ -29,7 +29,7 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="block overflow-hidden rounded-[10px] border border-sage-grey/40 bg-light-forest-green"
+      className="block overflow-hidden rounded-[10px] border border-sage-grey/40 bg-cream"
     >
       {post.coverImage ? (
         <div className="relative h-40">
