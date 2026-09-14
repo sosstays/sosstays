@@ -12,7 +12,12 @@ type ImageOverlayCardProps = {
   tag?: string;
   /** Tailwind height class for the card. Defaults to the landing-page template's size. */
   heightClassName?: string;
+  /** Any CSS color for the bottom-up shadow that keeps the title/description
+   *  readable over the photo. Defaults to the brand forest green. */
+  overlayColor?: string;
 };
+
+const DEFAULT_OVERLAY_COLOR = "var(--forest-green)";
 
 // Full-bleed photo card with a dark gradient overlay and the title/
 // description set directly on the image. Originally built inline for
@@ -28,6 +33,7 @@ export function ImageOverlayCard({
   external,
   tag,
   heightClassName = "h-[380px]",
+  overlayColor = DEFAULT_OVERLAY_COLOR,
 }: ImageOverlayCardProps) {
   const content = (
     <>
@@ -39,7 +45,12 @@ export function ImageOverlayCard({
           className="object-cover transition-transform duration-1000 group-hover:scale-110"
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/88 to-42% to-transparent" />
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(to top, color-mix(in srgb, ${overlayColor} 94%, transparent) 0%, color-mix(in srgb, ${overlayColor} 55%, transparent) 38%, transparent 72%)`,
+        }}
+      />
       <div className="absolute right-6.5 bottom-6 left-6.5">
         {tag && (
           <span className="mb-2 inline-block rounded-full bg-cream/18 px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.16em] text-cream uppercase backdrop-blur-sm">
