@@ -12,6 +12,7 @@ import { Reveal } from "@/components/Reveal";
 import { CountUp } from "@/components/CountUp";
 import { ItineraryTimeline } from "@/components/ItineraryTimeline";
 import { ImageOverlayCard } from "@/components/ImageOverlayCard";
+import { PropertyCard } from "@/components/PropertyCard";
 import { StickyBookingBar } from "@/components/StickyBookingBar";
 import { ComparisonBars } from "@/components/ComparisonBars";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
@@ -433,33 +434,15 @@ export default async function LandingPage({ params }: Props) {
               </Reveal>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                 {property.roomTypes.map((room, i) => (
-                  <Reveal
-                    key={room.name}
-                    delay={60 + i * 80}
-                    className="group overflow-hidden rounded-[18px] border border-sage-grey/40 bg-white shadow-[0_4px_16px_hsl(220_20%_20%/0.07)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_44px_hsl(220_20%_20%/0.16)]"
-                  >
-                    <div className="relative h-[210px] overflow-hidden">
-                      {room.image && (
-                        <Image
-                          src={urlFor(room.image).width(800).height(560).url()}
-                          alt={room.image.alt ?? room.name}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                      )}
-                      {i === 0 && (
-                        <span className="absolute top-3.5 left-3.5 rounded-full bg-maroon px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-cream uppercase">
-                          The kids&apos; pick
-                        </span>
-                      )}
-                    </div>
-                    <div className="p-5.5 pt-5.5">
-                      <div className="font-serif text-lg font-bold text-near-black">{room.name}</div>
-                      <div className="mt-2 text-sm leading-relaxed text-near-black/65">
-                        {room.bedConfiguration}
-                        {room.guests ? ` — sleeps ${room.guests}.` : "."}
-                      </div>
-                    </div>
+                  <Reveal key={room.name} delay={60 + i * 80}>
+                    <PropertyCard
+                      name={room.name}
+                      shortDescription={`${room.bedConfiguration}${room.guests ? ` — sleeps ${room.guests}.` : "."}`}
+                      coverImage={room.image}
+                      tag={i === 0 ? "The kids' pick" : undefined}
+                      surface="framed"
+                      hideSleeps
+                    />
                   </Reveal>
                 ))}
               </div>

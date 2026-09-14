@@ -5,13 +5,17 @@ import { urlFor } from "@/sanity/image";
 type SanityImageWithAlt = { alt?: string } & Record<string, unknown>;
 
 export type PropertyCardProps = {
-  slug: string;
+  /** Builds the link to `/stays/${slug}`. Omit for a non-clickable card (e.g. a room type). */
+  slug?: string;
   name: string;
-  location: string;
+  /** Omitted entirely when not passed — e.g. room type cards have no location. */
+  location?: string;
   shortDescription?: string | null;
   sleeps?: number | null;
   coverImage?: SanityImageWithAlt | null;
   gallery?: SanityImageWithAlt[] | null;
+  /** Small badge pinned to the top-right corner of the image, e.g. "The kids' pick". */
+  tag?: string;
   /**
    * "plain" sits directly on the page background (homepage's featured
    * stay). "framed" wraps it in a white surface + shadow (area guide's
@@ -32,6 +36,7 @@ export function PropertyCard({
   sleeps,
   coverImage,
   gallery,
+  tag,
   surface = "plain",
   hideDescription = false,
   hideSleeps = false,
@@ -99,8 +104,14 @@ export function PropertyCard({
         </div>
       ) : null}
 
-      <div className={surface === "framed" ? "pt-5" : "pt-6 sm:max-w-[60%] sm:pt-7"}>
-        <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{location}</p>
+      {tag && (
+        <span className="absolute top-3.5 right-3.5 z-10 rounded-full bg-maroon px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-cream uppercase">
+          {tag}
+        </span>
+      )}
+
+      <div className={`flex flex-1 flex-col ${surface === "framed" ? "pt-5" : "pt-6 sm:max-w-[60%] sm:pt-7"}`}>
+        {location && <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{location}</p>}
         <div className="mb-3.5 flex flex-wrap items-center gap-3.5">
           <h3 className="font-serif text-lg font-bold text-forest-green sm:text-2xl">{name}</h3>
           {!hideSleeps && sleeps && (
@@ -110,22 +121,24 @@ export function PropertyCard({
           )}
         </div>
         {!hideDescription && shortDescription && (
-          <p className="leading-relaxed text-near-black/70">{shortDescription}</p>
+          <p className="flex-1 leading-relaxed text-near-black/70">{shortDescription}</p>
         )}
       </div>
     </>
   );
 
-  return (
-    <Link
-      href={`/stays/${slug}`}
-      className={
-        surface === "framed"
-          ? "group block rounded-[18px] border border-sage-grey/40 p-5 shadow-[0_12px_32px_-18px_rgba(63,82,64,0.2)] transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_24px_48px_-16px_rgba(63,82,64,0.32)]"
-          : "group block transition-transform duration-300 ease-out hover:-translate-y-1"
-      }
-    >
-      {card}
-    </Link>
-  );
+  const className =
+    surface === "framed"
+      ? "group relative flex h-full flex-col rounded-[18px] border border-sage-grey/40 p-5 shadow-[0_12px_32px_-18px_rgba(63,82,64,0.2)] transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_24px_48px_-16px_rgba(63,82,64,0.32)]"
+      : "group relative flex h-full flex-col transition-transform duration-300 ease-out hover:-translate-y-1";
+
+  if (slug) {
+    return (
+      <Link href={`/stays/${slug}`} className={className}>
+        {card}
+      </Link>
+    );
+  }
+
+  return <div className={className}>{card}</div>;
 }
