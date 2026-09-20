@@ -19,12 +19,25 @@ import { ReviewScoreCard } from "@/components/ReviewScore";
 import { FaqSection } from "@/components/FaqSection";
 import { AreaGuideCard } from "@/components/AreaGuideCard";
 import { RoomTypesTable } from "@/components/RoomTypesTable";
+import { SearchResultCard, type SearchResultRoom } from "@/components/SearchResultCard";
+import { SearchBar } from "@/components/SearchBar";
+import { searchUplistingAvailability } from "@/lib/uplisting/client";
+import { withApproxPrices } from "@/lib/uplisting/approxPrice";
 import { BookNowCta, PropertyOverview } from "@/components/PropertyOverview";
 import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: re-fetch at most once a minute
 
 type Props = { params: Promise<{ slug: string }> };
+type PageProps = Props & {
+  searchParams: Promise<{ check_in?: string; check_out?: string; guests?: string }>;
+};
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+function formatDateLabel(iso: string) {
+  return new Date(`${iso}T00:00:00`).toLocaleDateString("en-IE", { day: "numeric", month: "short", year: "numeric" });
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -33,8 +46,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildMetadata(property.seo, `/stays/${slug}`);
 }
 
-export default async function PropertyPage({ params }: Props) {
+export default async function PropertyPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const { check_in, check_out, guests } = await searchParams;
   const [property, siteSettings, siteNavLinks] = await Promise.all([
     client.fetch(PROPERTY_PAGE_QUERY, { slug }),
     client.fetch(SITE_SETTINGS_QUERY),
@@ -80,6 +94,50 @@ export default async function PropertyPage({ params }: Props) {
     { name: "Stays", url: `${SITE_URL}/stays` },
     { name: property.name, url: `${SITE_URL}/stays/${slug}` },
   ]);
+
+  // Room search: dates and/or guest count from the property-page search
+  // bar. Like /search, matching is against Uplisting's live availability
+  // (a room is available when its roomId — the Uplisting property_slug —
+  // comes back), scoped here to just this property's own rooms. If the
+  // lookup fails, fall back to listing every room rather than an empty
+  // table that reads as "fully booked".
+  const checkIn = check_in && ISO_DATE.test(check_in) ? check_in : undefined;
+  const checkOut = check_out && ISO_DATE.test(check_out) ? check_out : undefined;
+  const guestCount = Number(guests) > 0 ? Number(guests) : undefined;
+  const hasRoomSearch = hasBookableRooms && Boolean(checkIn || checkOut || guestCount);
+
+  const allRooms: SearchResultRoom[] = property.roomTypes ?? [];
+  const availability = hasRoomSearch
+    ? await searchUplistingAvailability({ checkIn, checkOut, guests: guestCount }).catch((error) => {
+        console.error("Uplisting availability search failed:", error);
+        return null;
+      })
+    : null;
+  const availableRoomIds = availability ? new Set(availability.map((room) => room.propertySlug)) : null;
+  // Uplisting's calendar (used for pricing) is keyed by numeric property
+  // id, not the property_slug Sanity's roomTypes[].roomId stores — the
+  // availability search carries both, so build the lookup once.
+  const slugToPropertyId = new Map((availability ?? []).map((room) => [room.propertySlug, room.id]));
+  const matchedRooms: SearchResultRoom[] = availableRoomIds
+    ? await Promise.all(
+        allRooms
+          .filter((room) => room.roomId && availableRoomIds.has(room.roomId))
+          .map(async (room) => ({
+            ...room,
+            fromPricePerNight:
+              checkIn && checkOut && room.roomId
+                ? await withApproxPrices(slugToPropertyId.get(room.roomId), checkIn, checkOut)
+                : undefined,
+          }))
+      )
+    : [];
+  const roomSearchSummary = [
+    checkIn && checkOut ? `${formatDateLabel(checkIn)} – ${formatDateLabel(checkOut)}` : null,
+    guestCount ? `${guestCount} guest${guestCount === 1 ? "" : "s"}` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   const faqSchema = buildFaqSchema(property.faqs);
   const mapEmbedSrc = await toGoogleMapsEmbedSrc(property.locationLink, `${property.location}, Ireland`);
 
@@ -150,35 +208,86 @@ export default async function PropertyPage({ params }: Props) {
 
       {/* AVAILABILITY BAR */}
       <section className="mx-auto max-w-6xl px-8 pt-7 sm:px-14">
-        <div className="flex flex-wrap items-center justify-between gap-5 rounded-[10px] border border-sage-grey/40 px-6 py-5">
-          <div className="flex items-center gap-3.5">
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--forest-green)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="flex-none"
-            >
-              <rect x="4" y="5" width="16" height="16" rx="2" />
-              <path d="M8 3v4M16 3v4M4 11h16" />
-            </svg>
-            <span className="text-[15px] font-medium text-near-black">
-              Check availability for your dates
-            </span>
+        {hasBookableRooms ? (
+          // Submits back to this page (GET); the results render right
+          // below the bar off the resulting query params. The
+          // #availability fragment keeps the guest on them afterwards.
+          <div id="availability" className="scroll-mt-24">
+            <SearchBar
+              action={`/stays/${slug}#availability`}
+              hideLocation
+              initialCheckIn={checkIn}
+              initialCheckOut={checkOut}
+              initialGuests={guestCount}
+            />
+
+            {hasRoomSearch && (
+              <div className="mt-7">
+                <p className="mb-4 text-sm text-near-black/60">
+                  {availableRoomIds ? (
+                    <>
+                      {roomSearchSummary}
+                      {roomSearchSummary && " · "}
+                      <Link href={`/stays/${slug}`} className="font-medium text-forest-green underline">
+                        Clear search
+                      </Link>
+                    </>
+                  ) : (
+                    "We couldn't check live availability just now — see the room types below, or get in touch and we'll confirm dates directly."
+                  )}
+                </p>
+                {availableRoomIds &&
+                  (matchedRooms.length > 0 ? (
+                    <SearchResultCard
+                      slug={slug}
+                      name={property.name}
+                      location={property.location}
+                      sleeps={property.sleeps ?? undefined}
+                      coverImage={property.gallery?.[0]}
+                      rooms={matchedRooms}
+                      checkIn={checkIn}
+                      checkOut={checkOut}
+                      guests={guestCount}
+                    />
+                  ) : (
+                    <p className="rounded-[10px] border border-sage-grey/40 px-6 py-8 text-near-black/70">
+                      No rooms at {property.name} are available for those dates — try a different range.
+                    </p>
+                  ))}
+              </div>
+            )}
           </div>
-          <BookNowCta
-            bookingUrl={bookingUrl}
-            external={bookingIsExternal}
-            label={bookingLabel}
-            bgColor="forest-green"
-            color="cream"
-            className="px-7 py-3.5 text-[15px] font-semibold"
-          />
-        </div>
+        ) : (
+          <div className="flex flex-wrap items-center justify-between gap-5 rounded-[10px] border border-sage-grey/40 px-6 py-5">
+            <div className="flex items-center gap-3.5">
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--forest-green)"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="flex-none"
+              >
+                <rect x="4" y="5" width="16" height="16" rx="2" />
+                <path d="M8 3v4M16 3v4M4 11h16" />
+              </svg>
+              <span className="text-[15px] font-medium text-near-black">
+                Check availability for your dates
+              </span>
+            </div>
+            <BookNowCta
+              bookingUrl={bookingUrl}
+              external={bookingIsExternal}
+              label={bookingLabel}
+              bgColor="forest-green"
+              color="cream"
+              className="px-7 py-3.5 text-[15px] font-semibold"
+            />
+          </div>
+        )}
       </section>
 
       {/* STORY + REVIEWS */}

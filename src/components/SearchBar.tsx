@@ -52,6 +52,10 @@ type SearchBarProps = {
   initialCheckIn?: string; // YYYY-MM-DD
   initialCheckOut?: string; // YYYY-MM-DD
   initialGuests?: number;
+  /** Where the form submits (GET). Defaults to the site-wide /search page; a property page points this at itself to filter its own rooms. */
+  action?: string;
+  /** Drops the location picker — for a bar already scoped to a single property, where "where" is answered by the page itself. */
+  hideLocation?: boolean;
 };
 
 export function SearchBar({
@@ -59,6 +63,8 @@ export function SearchBar({
   initialCheckIn,
   initialCheckOut,
   initialGuests = 1,
+  action = "/search",
+  hideLocation = false,
 }: SearchBarProps = {}) {
   const [location, setLocation] = useState(initialLocation);
   const [showLocations, setShowLocations] = useState(false);
@@ -83,54 +89,58 @@ export function SearchBar({
 
   return (
     <form
-      action="/search"
+      action={action}
       method="GET"
-      className="mx-auto flex w-full max-w-6xl flex-col gap-7 rounded-[28px] bg-cream p-5 shadow-[0_24px_48px_-16px_rgba(23,25,23,0.28)] sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:p-3 sm:pl-7"
+      className={`mx-auto flex w-full max-w-6xl flex-col gap-7 rounded-[28px] bg-cream p-5 shadow-[0_24px_48px_-16px_rgba(23,25,23,0.28)] sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:p-3 ${hideLocation ? "sm:pl-3" : "sm:pl-7"}`}
     >
-      <input type="hidden" name="location" value={location} />
+      {!hideLocation && <input type="hidden" name="location" value={location} />}
       <input type="hidden" name="check_in" value={dateGuests.checkIn ? toISODate(dateGuests.checkIn) : ""} />
       <input type="hidden" name="check_out" value={dateGuests.checkOut ? toISODate(dateGuests.checkOut) : ""} />
       <input type="hidden" name="guests" value={dateGuests.guests} />
 
-      {/* Location */}
-      <div ref={locationRef} className="relative min-w-0 flex-1 sm:pr-6">
-        <label className={FIELD_LABEL}>Location</label>
-        <button
-          type="button"
-          onClick={() => setShowLocations((v) => !v)}
-          className="flex w-full items-center gap-2 text-left text-near-black"
-        >
-          <PinIcon />
-          <span className={`min-w-0 truncate ${location ? "" : "text-near-black/40"}`}>
-            {location || "Where are you going?"}
-          </span>
-          <span className="ml-auto shrink-0 text-near-black/50">
-            <ChevronIcon />
-          </span>
-        </button>
+      {!hideLocation && (
+        <>
+          {/* Location */}
+          <div ref={locationRef} className="relative min-w-0 flex-1 sm:pr-6">
+            <label className={FIELD_LABEL}>Location</label>
+            <button
+              type="button"
+              onClick={() => setShowLocations((v) => !v)}
+              className="flex w-full items-center gap-2 text-left text-near-black"
+            >
+              <PinIcon />
+              <span className={`min-w-0 truncate ${location ? "" : "text-near-black/40"}`}>
+                {location || "Where are you going?"}
+              </span>
+              <span className="ml-auto shrink-0 text-near-black/50">
+                <ChevronIcon />
+              </span>
+            </button>
 
-        {showLocations && (
-          <ul className={`${POPOVER} left-0 w-64 overflow-hidden py-2`}>
-            {SEARCH_LOCATIONS.map(({ label }) => (
-              <li key={label}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLocation(label);
-                    setShowLocations(false);
-                  }}
-                  className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-near-black hover:bg-light-forest-green"
-                >
-                  <PinIcon />
-                  {label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+            {showLocations && (
+              <ul className={`${POPOVER} left-0 w-64 overflow-hidden py-2`}>
+                {SEARCH_LOCATIONS.map(({ label }) => (
+                  <li key={label}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLocation(label);
+                        setShowLocations(false);
+                      }}
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-near-black hover:bg-light-forest-green"
+                    >
+                      <PinIcon />
+                      {label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
-      <div className="hidden h-10 w-px bg-sage-grey/40 sm:block" />
+          <div className="hidden h-10 w-px bg-sage-grey/40 sm:block" />
+        </>
+      )}
 
       <DateGuestsFields
         initialCheckIn={initialCheckIn}
