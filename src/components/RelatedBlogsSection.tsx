@@ -39,7 +39,7 @@ export function RelatedBlogsSection({
   return (
     <section className={`px-8 py-24 sm:px-14 sm:py-28 ${t.section}`}>
       <div className="mx-auto max-w-6xl">
-        <div className="mb-10 text-center">
+        <div className="mb-12 text-center">
           <Eyebrow className="mb-2.5" tone={t.eyebrowTone}>{eyebrow}</Eyebrow>
           <h2 className={`font-serif text-3xl font-bold tracking-tight sm:text-4xl ${t.heading}`}>
             {heading}

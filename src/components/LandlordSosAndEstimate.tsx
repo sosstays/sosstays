@@ -47,7 +47,7 @@ export function LandlordSosAndEstimate() {
       {/* SEND YOUR SOS */}
       <section id="send-sos" className="bg-cream px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-[640px]">
-          <div className="mb-10 text-center">
+          <div className="mb-12 text-center">
             <Eyebrow className="mb-2.5" delay={0}>Send your SOS</Eyebrow>
             <Reveal as="h2" delay={100} className="mb-4 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               Tell us about your place
@@ -67,7 +67,7 @@ export function LandlordSosAndEstimate() {
       {/* PROCESS */}
       <section className="bg-maroon px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-14 text-center">
+          <div className="mb-12 text-center">
             <Eyebrow className="mb-2.5" tone="sage" delay={0}>Process</Eyebrow>
             <Reveal as="h2" delay={100} className="font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
               What happens after you send your SOS
@@ -99,7 +99,7 @@ export function LandlordSosAndEstimate() {
           {/* Kept mounted (just hidden) rather than conditionally removed, so
               hiding it on results doesn't shift the calculator to a new
               sibling position and force React to remount it mid-flow. */}
-          <div className={showResults ? "hidden" : "mx-auto mb-9 max-w-[640px] text-center"}>
+          <div className={showResults ? "hidden" : "mx-auto mb-12 max-w-[640px] text-center"}>
             <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-maroon sm:text-3xl">
               Get your estimate
             </h2>

@@ -349,7 +349,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
 
       {/* PROOF POINTS / MARKET DATA */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
-        <div className="mb-4 text-center">
+        <div className="mb-12 text-center">
           <Eyebrow className="mb-2.5" delay={0}>Market data — Boyne–Mournes corridor</Eyebrow>
           <Reveal as="h2" delay={100} className="mb-3.5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
             What this corridor is actually doing
@@ -359,7 +359,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             portfolio, which is still one house deep.
           </Reveal>
         </div>
-        <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
           {MARKET_STATS.map((item, i) => (
             <Reveal key={item.caption} delay={i * 90} className="px-2 text-center">
               <div
@@ -376,7 +376,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       </section>
 
       {/* SPOTLIGHT — RATHESCAR GROVE */}
-      <section className="mx-auto max-w-6xl px-8 pb-24 sm:px-14">
+      <section className="mx-auto max-w-6xl px-8 pb-24 sm:px-14 sm:pb-28">
         <Reveal className="grid grid-cols-1 items-stretch overflow-hidden rounded-[18px] lg:grid-cols-2">
           <div className="relative min-h-[320px] overflow-hidden bg-near-black lg:min-h-[520px]">
             <Image
