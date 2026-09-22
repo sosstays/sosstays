@@ -181,7 +181,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       />
 
       {/* THE 11PM PROBLEM */}
-      <section className="relative overflow-hidden bg-warm-cream px-8 py-24 sm:px-14 sm:py-28">
+      <section className="relative overflow-hidden bg-cream px-8 py-24 sm:px-14 sm:py-28">
         <div
           aria-hidden
           className="pointer-events-none absolute -bottom-44 -left-36 h-[520px] w-[520px] opacity-[0.16]"
@@ -261,22 +261,22 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       </section>
 
       {/* THE GAP */}
-      <section className="px-8 py-24 sm:px-14 sm:py-28">
+      <section className="bg-maroon px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-wrap items-end justify-between gap-12">
             <div>
-              <Eyebrow as="span" tone="maroon" delay={0}>The gap</Eyebrow>
-              <Reveal as="h2" delay={120} className="mt-5 max-w-[24ch] font-serif text-3xl leading-[0.98] font-bold tracking-tight text-maroon sm:text-5xl">
+              <Eyebrow as="span" tone="sage" delay={0}>The gap</Eyebrow>
+              <Reveal as="h2" delay={120} className="mt-5 max-w-[24ch] font-serif text-3xl leading-[0.98] font-bold tracking-tight text-cream sm:text-5xl">
                 A fifth to a third of the revenue, left on the table.
               </Reveal>
             </div>
-            <Reveal as="p" delay={180} className="max-w-[36ch] text-base leading-relaxed text-near-black/70">
+            <Reveal as="p" delay={180} className="max-w-[36ch] text-base leading-relaxed text-cream/80">
               A market benchmark for this corridor, not a guess. Same house,
               same owner — run properly, priced against live demand.
             </Reveal>
           </div>
 
-          <Reveal delay={220} className="mt-12 rounded-[18px] border border-sage-grey/40 bg-white px-8 pt-10 pb-7 shadow-sm sm:px-10">
+          <Reveal delay={220} className="mt-12 rounded-[18px] border border-maroon/15 bg-cream px-8 pt-10 pb-7 shadow-sm sm:px-10">
             <div className="flex flex-wrap items-start justify-between gap-6">
               <div className="flex flex-wrap gap-8">
                 <div>
@@ -313,7 +313,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       {/* HOW IT WORKS */}
       <section
         id="how-it-works"
-        className="bg-light-sage/15 px-8 py-24 sm:px-14 sm:py-28"
+        className="bg-cream px-8 py-24 sm:px-14 sm:py-28"
       >
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
@@ -402,7 +402,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       </section>
 
       {/* SPOTLIGHT — RATHESCAR GROVE */}
-      <section className="mx-auto max-w-6xl px-8 pb-24 sm:px-14">
+      <section className="mx-auto max-w-6xl bg-maroon px-8 pb-24 sm:px-14">
         <Reveal className="grid grid-cols-1 items-stretch overflow-hidden rounded-[18px] lg:grid-cols-2">
           <div className="relative min-h-[320px] overflow-hidden bg-near-black lg:min-h-[520px]">
             <Image
@@ -415,7 +415,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               Rathescar Grove &middot; Drogheda
             </span>
           </div>
-          <div className="relative overflow-hidden border border-l-0 border-sage-grey/40 bg-warm-cream p-8 sm:p-14">
+          <div className="relative overflow-hidden border border-l-0 border-sage-grey/40 bg-cream p-8 sm:p-14">
             <div
               aria-hidden
               className="pointer-events-none absolute -top-28 -right-28 h-[420px] w-[420px] opacity-[0.14]"
@@ -474,10 +474,10 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       <LandlordSosAndEstimate />
 
       {/* PROCESS */}
-      <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
+      <section className="mx-auto max-w-6xl bg-maroon px-8 py-24 sm:px-14 sm:py-28">
         <div className="mb-14 text-center">
-          <Eyebrow className="mb-2.5" delay={0}>Process</Eyebrow>
-          <Reveal as="h2" delay={100} className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+          <Eyebrow className="mb-2.5" tone="sage" delay={0}>Process</Eyebrow>
+          <Reveal as="h2" delay={100} className="font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
             What happens after you send your SOS
           </Reveal>
         </div>
@@ -485,14 +485,14 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           {PROCESS_STEPS.map((step, i) => (
             <Reveal key={step.number} delay={i * 100}>
               <div
-                className="mb-3.5 text-3xl font-extrabold text-light-sage"
+                className="mb-3.5 text-3xl font-extrabold text-cream/40"
               >
                 {step.number}
               </div>
-              <h3 className="mb-2 text-base font-semibold text-maroon">
+              <h3 className="mb-2 text-base font-semibold text-cream">
                 {step.title}
               </h3>
-              <p className="text-sm leading-relaxed text-near-black/65">
+              <p className="text-sm leading-relaxed text-cream/70">
                 {step.description}
               </p>
             </Reveal>
