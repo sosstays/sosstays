@@ -14,6 +14,7 @@ import { GapChart } from "@/components/GapChart";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
+import { StatCardGrid } from "@/components/StatCardGrid";
 import { COMMISSION_RANGE, MAINTENANCE_AUTHORITY_EUR } from "@/lib/businessFacts";
 
 type LandlordPage = {
@@ -25,41 +26,42 @@ type LandlordPage = {
   faqs?: { question: string; answer: string }[] | null;
 };
 
+// Both grids below share the StatCardGrid component — `value` carries the
+// headline figure, `unit` an optional lighter-weight symbol next to it, so
+// numbers like "20–35%" don't read as one flat block.
 const HOW_IT_WORKS_STATS = [
   {
-    stat: COMMISSION_RANGE,
+    value: COMMISSION_RANGE,
     title: "Commission only",
-    description:
-      "Of gross booking revenue. Cleaning fees excluded. No setup fee, no monthly retainer.",
+    caption: "Of gross booking revenue. Cleaning fees excluded. No setup fee, no monthly retainer.",
   },
   {
-    stat: "€0",
+    value: "€0",
     title: "No booking, no fee",
-    description:
-      "We only get paid when your property does. Nothing owed on empty nights.",
+    caption: "We only get paid when your property does. Nothing owed on empty nights.",
   },
   {
-    stat: `€${MAINTENANCE_AUTHORITY_EUR}`,
+    value: `€${MAINTENANCE_AUTHORITY_EUR}`,
     title: "Maintenance authority",
-    description: `We handle anything up to €${MAINTENANCE_AUTHORITY_EUR} without bothering you. Above that, we call first.`,
+    caption: `We handle anything up to €${MAINTENANCE_AUTHORITY_EUR} without bothering you. Above that, we call first.`,
   },
   {
-    stat: "Your call",
+    value: "Your call",
     title: "Cleaning",
-    description:
-      "Keep your existing cleaner, or we source one from our network. Either way, it's covered.",
+    caption: "Keep your existing cleaner, or we source one from our network. Either way, it's covered.",
   },
 ];
 
-// `value` carries the number, `unit` the symbol — rendered at different
-// sizes/weights so the digits read as the headline and the %/×/+ as a
-// lighter annotation, instead of the whole string reading as one flat block.
 const MARKET_STATS = [
   { value: "20–35", unit: "%", caption: "typical underearning for hosts managing solo" },
   { value: "2–3", unit: "×", caption: "revenue potential vs. a long-term let, corridor-wide" },
   { value: "80", unit: "%", caption: "peak-season occupancy across the corridor" },
   { value: "€150", unit: "+", caption: "average nightly rate for comparable properties" },
 ];
+
+// Muted khaki-beige used to tint two of the four cards in each stat grid,
+// checkerboard-style, instead of a flat row of identical cards.
+const STAT_CARD_ACCENT = "#e6e3cc";
 
 // Shared decorative squiggle used as a faint background accent in the
 // "11pm problem" and spotlight sections below.
@@ -314,38 +316,12 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 earn. No setup fee, no contract that locks you in.
               </Reveal>
 
-              <div className="grid grid-cols-2 gap-5">
-                {HOW_IT_WORKS_STATS.map((item, i) => {
-                  const inverted = i === 1 || i === 2;
-                  return (
-                    <Reveal
-                      key={item.title}
-                      delay={240 + i * 90}
-                      className={
-                        inverted
-                          ? "rounded-[10px] bg-maroon p-5 sm:p-6"
-                          : "rounded-[10px] border border-sage-grey/40 p-5 sm:p-6"
-                      }
-                    >
-                      <div
-                        className={`mb-2 text-2xl font-bold sm:text-[28px] ${inverted ? "text-cream" : "text-maroon"}`}
-                      >
-                        {item.stat}
-                      </div>
-                      <h3
-                        className={`mb-1.5 text-sm font-semibold sm:text-base ${inverted ? "text-cream" : "text-maroon"}`}
-                      >
-                        {item.title}
-                      </h3>
-                      <p
-                        className={`text-[12.5px] leading-relaxed sm:text-[13px] ${inverted ? "text-cream/75" : "text-near-black/65"}`}
-                      >
-                        {item.description}
-                      </p>
-                    </Reveal>
-                  );
-                })}
-              </div>
+              <StatCardGrid
+                items={HOW_IT_WORKS_STATS}
+                columns={2}
+                cardBg={[undefined, STAT_CARD_ACCENT, STAT_CARD_ACCENT, undefined]}
+                baseDelay={240}
+              />
 
               <Reveal delay={620} className="mt-5 rounded-[18px] border border-sage-grey/40 px-6 py-5">
                 <h3 className="mb-1.5 text-base font-semibold text-maroon">
@@ -378,19 +354,11 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             portfolio, which is still one house deep.
           </Reveal>
         </div>
-        <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {MARKET_STATS.map((item, i) => (
-            <Reveal key={item.caption} delay={i * 90} className="px-2 text-center">
-              <div className="text-4xl font-extrabold tracking-tight text-maroon sm:text-5xl">
-                {item.value}
-                <span className="text-2xl font-medium text-maroon/55 sm:text-3xl">{item.unit}</span>
-              </div>
-              <p className="mt-2 text-[13px] leading-normal text-near-black/60">
-                {item.caption}
-              </p>
-            </Reveal>
-          ))}
-        </div>
+        <StatCardGrid
+          items={MARKET_STATS}
+          columns={4}
+          cardBg={[undefined, STAT_CARD_ACCENT, STAT_CARD_ACCENT, undefined]}
+        />
       </section>
 
       {/* SPOTLIGHT — RATHESCAR GROVE */}
