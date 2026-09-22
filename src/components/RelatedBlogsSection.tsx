@@ -1,15 +1,23 @@
-import { BlogPostListItem, type BlogPostListItemPost } from "@/components/BlogPostListItem";
+import { ImageOverlayCard } from "@/components/ImageOverlayCard";
 import { Eyebrow } from "@/components/Eyebrow";
 
+type RelatedBlogPost = {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  coverImage?: { alt?: string } & Record<string, unknown>;
+};
+
 // Page-end version of the blog post page's sidebar "Related blogs" list —
-// same row item, laid out as a row across the page instead of stacked in a
-// narrow column, for pages (pricing, landlords) that aren't a blog post.
+// the same full-bleed photo card as the blog index's featured post, laid
+// out as a row for pages (pricing, landlords) that aren't a blog post.
 export function RelatedBlogsSection({
   posts,
   eyebrow = "From the blog",
   heading = "Worth a read",
 }: {
-  posts: BlogPostListItemPost[];
+  posts: RelatedBlogPost[];
   eyebrow?: string;
   heading?: string;
 }) {
@@ -25,7 +33,15 @@ export function RelatedBlogsSection({
       </div>
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-3">
         {posts.map((post) => (
-          <BlogPostListItem key={post._id} post={post} />
+          <ImageOverlayCard
+            key={post._id}
+            title={post.title}
+            description={post.excerpt ?? undefined}
+            image={post.coverImage}
+            href={`/blog/${post.slug}`}
+            tag="Featured"
+            heightClassName="h-[380px]"
+          />
         ))}
       </div>
     </section>
