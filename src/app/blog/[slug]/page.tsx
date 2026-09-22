@@ -15,6 +15,7 @@ import { SocialIcons } from "@/components/SocialIcons";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { DisqusComments } from "@/components/DisqusComments";
 import { BlogPostListItem } from "@/components/BlogPostListItem";
+import { FaqSection } from "@/components/FaqSection";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -264,6 +265,14 @@ export default async function BlogPostPage({ params }: Props) {
             )}
           </Reveal>
         </div>
+
+        <FaqSection
+          id="faq"
+          eyebrow="FAQ"
+          heading="Questions worth answering"
+          items={post.faqs}
+          maxWidth="72rem"
+        />
 
         {/* LANDLORD CTA — maroon per the owner-context accent color */}
         <section className="mt-24 bg-maroon px-8 py-28 text-center sm:px-14">
