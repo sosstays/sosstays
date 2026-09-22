@@ -6,8 +6,7 @@ import { PROPERTY_BOOKING_QUERY } from "@/sanity/queries";
 import { getStayQuote, resolveUplistingPropertyId } from "@/lib/uplistingApi";
 import { Logo } from "@/components/Logo";
 import { StayDateForm } from "@/components/checkout/StayDateForm";
-import { BookingCheckout } from "@/components/checkout/BookingCheckout";
-import { BookingSummaryCard } from "@/components/checkout/BookingSummaryCard";
+import { CheckoutPanel } from "@/components/checkout/CheckoutPanel";
 import { PaymentBadge } from "@/components/checkout/PaymentBadge";
 
 type Props = {
@@ -133,30 +132,20 @@ export default async function BookPage({ params, searchParams }: Props) {
   }
 
   return shell(
-    <div className="grid gap-10 lg:grid-cols-[1fr_380px] lg:items-start">
-      <BookingCheckout
-        slug={slug}
-        propertyId={propertyIdOverride}
-        checkIn={checkIn!}
-        checkOut={checkOut!}
-        guests={guests!}
-        quote={quote}
-        addOns={property.addOns ?? []}
-      />
-      <div className="lg:sticky lg:top-6">
-        <BookingSummaryCard
-          property={{
-            name: property.name,
-            location: property.location,
-            coverImage: property.coverImage,
-            sleeps: property.sleeps,
-          }}
-          checkIn={checkIn!}
-          checkOut={checkOut!}
-          guests={guests!}
-          quote={quote}
-        />
-      </div>
-    </div>
+    <CheckoutPanel
+      slug={slug}
+      propertyId={propertyIdOverride}
+      checkIn={checkIn!}
+      checkOut={checkOut!}
+      guests={guests!}
+      quote={quote}
+      addOns={property.addOns ?? []}
+      property={{
+        name: property.name,
+        location: property.location,
+        coverImage: property.coverImage,
+        sleeps: property.sleeps,
+      }}
+    />
   );
 }
