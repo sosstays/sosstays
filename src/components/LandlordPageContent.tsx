@@ -357,7 +357,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         <StatCardGrid
           items={MARKET_STATS}
           columns={4}
-          cardBg={[undefined, STAT_CARD_ACCENT, STAT_CARD_ACCENT, undefined]}
+          cardBg={[undefined, STAT_CARD_ACCENT, undefined, STAT_CARD_ACCENT]}
         />
       </section>
 
