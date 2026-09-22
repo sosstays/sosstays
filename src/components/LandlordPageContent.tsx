@@ -13,6 +13,8 @@ import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
 import { GapChart } from "@/components/GapChart";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
+import { StatCardGrid } from "@/components/StatCardGrid";
 import { COMMISSION_RANGE, MAINTENANCE_AUTHORITY_EUR } from "@/lib/businessFacts";
 
 type LandlordPage = {
@@ -24,41 +26,42 @@ type LandlordPage = {
   faqs?: { question: string; answer: string }[] | null;
 };
 
+// Both grids below share the StatCardGrid component — `value` carries the
+// headline figure, `unit` an optional lighter-weight symbol next to it, so
+// numbers like "20–35%" don't read as one flat block.
 const HOW_IT_WORKS_STATS = [
   {
-    stat: COMMISSION_RANGE,
+    value: COMMISSION_RANGE,
     title: "Commission only",
-    description:
-      "Of gross booking revenue. Cleaning fees excluded. No setup fee, no monthly retainer.",
+    caption: "Of gross booking revenue. Cleaning fees excluded. No setup fee, no monthly retainer.",
   },
   {
-    stat: "€0",
+    value: "€0",
     title: "No booking, no fee",
-    description:
-      "We only get paid when your property does. Nothing owed on empty nights.",
+    caption: "We only get paid when your property does. Nothing owed on empty nights.",
   },
   {
-    stat: `€${MAINTENANCE_AUTHORITY_EUR}`,
+    value: `€${MAINTENANCE_AUTHORITY_EUR}`,
     title: "Maintenance authority",
-    description: `We handle anything up to €${MAINTENANCE_AUTHORITY_EUR} without bothering you. Above that, we call first.`,
+    caption: `We handle anything up to €${MAINTENANCE_AUTHORITY_EUR} without bothering you. Above that, we call first.`,
   },
   {
-    stat: "Your call",
+    value: "Your call",
     title: "Cleaning",
-    description:
-      "Keep your existing cleaner, or we source one from our network. Either way, it's covered.",
+    caption: "Keep your existing cleaner, or we source one from our network. Either way, it's covered.",
   },
 ];
 
 const MARKET_STATS = [
-  { stat: "20–35%", caption: "typical underearning for hosts managing solo" },
-  {
-    stat: "2–3×",
-    caption: "revenue potential vs. a long-term let, corridor-wide",
-  },
-  { stat: "80%+", caption: "peak-season occupancy across the corridor" },
-  { stat: "€150+", caption: "average nightly rate for comparable properties" },
+  { value: "20–35", unit: "%", caption: "typical underearning for hosts managing solo" },
+  { value: "2–3", unit: "×", caption: "revenue potential vs. a long-term let, corridor-wide" },
+  { value: "80", unit: "%", caption: "peak-season occupancy across the corridor" },
+  { value: "€150", unit: "+", caption: "average nightly rate for comparable properties" },
 ];
+
+// Muted khaki-beige used to tint two of the four cards in each stat grid,
+// checkerboard-style, instead of a flat row of identical cards.
+const STAT_CARD_ACCENT = "#e6e3cc";
 
 // Shared decorative squiggle used as a faint background accent in the
 // "11pm problem" and spotlight sections below.
@@ -70,32 +73,6 @@ const ELEVEN_PM_MESSAGES = [
   { text: "Sorry, can I swap Friday? Something has come up.", meta: "23:02 · Cleaner" },
   { text: "Also is there a travel cot? Booked for 4 but we are 5.", meta: "23:15 · Guest" },
   { text: "Reminder: your rate for August is below market average.", meta: "07:58 · Booking.com" },
-];
-
-const PROCESS_STEPS = [
-  {
-    number: "01",
-    title: "A call",
-    description:
-      "Fifteen minutes. We ask about the property, you ask about us.",
-  },
-  {
-    number: "02",
-    title: "A walkthrough",
-    description: "We come see the place in person and work out what it needs.",
-  },
-  {
-    number: "03",
-    title: "An agreement",
-    description:
-      "Plain terms, commission rate confirmed, nothing buried in small print.",
-  },
-  {
-    number: "04",
-    title: "Handover",
-    description:
-      "Listing goes live, calendar's ours to run, you go back to just owning the place.",
-  },
 ];
 
 export async function LandlordPageContent({ page }: { page: LandlordPage }) {
@@ -180,7 +157,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       />
 
       {/* THE 11PM PROBLEM */}
-      <section className="relative overflow-hidden bg-warm-cream px-8 py-24 sm:px-14 sm:py-28">
+      <section className="relative overflow-hidden bg-cream px-8 py-24 sm:px-14 sm:py-28">
         <div
           aria-hidden
           className="pointer-events-none absolute -bottom-44 -left-36 h-[520px] w-[520px] opacity-[0.16]"
@@ -198,10 +175,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         </div>
         <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 lg:grid-cols-2">
           <div>
-            <Reveal as="span" className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
-              <span className="inline-block h-px w-5.5 bg-current" />
-              The 11pm problem
-            </Reveal>
+            <Eyebrow as="span" tone="maroon" delay={0}>The 11pm problem</Eyebrow>
             <Reveal as="h2" delay={120} className="mt-5 max-w-[20ch] font-serif text-4xl leading-[0.98] font-bold tracking-tight text-maroon sm:text-6xl">
               It&apos;s 11pm and the gate code doesn&apos;t work.
             </Reveal>
@@ -263,25 +237,22 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       </section>
 
       {/* THE GAP */}
-      <section className="px-8 py-24 sm:px-14 sm:py-28">
+      <section className="bg-maroon px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-wrap items-end justify-between gap-12">
             <div>
-              <Reveal as="span" className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
-                <span className="inline-block h-px w-5.5 bg-current" />
-                The gap
-              </Reveal>
-              <Reveal as="h2" delay={120} className="mt-5 max-w-[24ch] font-serif text-3xl leading-[0.98] font-bold tracking-tight text-maroon sm:text-5xl">
+              <Eyebrow as="span" tone="sage" delay={0}>The gap</Eyebrow>
+              <Reveal as="h2" delay={120} className="mt-5 max-w-[24ch] font-serif text-3xl leading-[0.98] font-bold tracking-tight text-cream sm:text-5xl">
                 A fifth to a third of the revenue, left on the table.
               </Reveal>
             </div>
-            <Reveal as="p" delay={180} className="max-w-[36ch] text-base leading-relaxed text-near-black/70">
+            <Reveal as="p" delay={180} className="max-w-[36ch] text-base leading-relaxed text-cream/80">
               A market benchmark for this corridor, not a guess. Same house,
               same owner — run properly, priced against live demand.
             </Reveal>
           </div>
 
-          <Reveal delay={220} className="mt-12 rounded-[18px] border border-sage-grey/40 bg-white px-8 pt-10 pb-7 shadow-sm sm:px-10">
+          <Reveal delay={220} className="mt-12 rounded-[18px] border border-maroon/15 bg-cream px-8 pt-10 pb-7 shadow-sm sm:px-10">
             <div className="flex flex-wrap items-start justify-between gap-6">
               <div className="flex flex-wrap gap-8">
                 <div>
@@ -318,61 +289,52 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       {/* HOW IT WORKS */}
       <section
         id="how-it-works"
-        className="bg-light-sage/15 px-8 py-24 sm:px-14 sm:py-28"
+        className="bg-cream px-8 py-24 sm:px-14 sm:py-28"
       >
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
-            <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
-              How it works
-            </Reveal>
+            <Eyebrow className="mb-2.5" delay={0}>How it works</Eyebrow>
             <Reveal as="h2" delay={100} className="mb-5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               Exactly what handing off looks like
             </Reveal>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {HOW_IT_WORKS_STATS.map((item, i) => (
-              <Reveal
-                key={item.title}
-                delay={i * 90}
-                className="rounded-[10px] border border-sage-grey/40 p-6"
-              >
-                <div
-                  className="mb-2.5 text-[28px] font-bold text-maroon"
-                >
-                  {item.stat}
-                </div>
-                <h3 className="mb-2 text-base font-semibold text-maroon">
-                  {item.title}
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+            <Reveal delay={140} className="relative aspect-[4/5] overflow-hidden rounded-[18px] lg:aspect-auto lg:h-full lg:min-h-[460px]">
+              <Image
+                src="https://cdn.sanity.io/images/owyw3r12/production/40dc60f00ea5310155c6c0afe1baac921c5f9c58-1376x768.jpg?fit=max&w=1200"
+                alt="Handing over the keys to your property"
+                fill
+                className="object-cover"
+              />
+            </Reveal>
+
+            <div>
+              <Reveal as="p" delay={200} className="mb-7 max-w-[54ch] text-[15px] leading-relaxed text-near-black/70">
+                Full property management — guest messages, pricing, cleaning,
+                maintenance — for a single commission on what you actually
+                earn. No setup fee, no contract that locks you in.
+              </Reveal>
+
+              <StatCardGrid
+                items={HOW_IT_WORKS_STATS}
+                columns={2}
+                cardBg={[undefined, STAT_CARD_ACCENT, STAT_CARD_ACCENT, undefined]}
+                baseDelay={240}
+              />
+
+              <Reveal delay={620} className="mt-5 rounded-[18px] border border-sage-grey/40 px-6 py-5">
+                <h3 className="mb-1.5 text-base font-semibold text-maroon">
+                  Still your property
                 </h3>
-                <p className="text-[13px] leading-relaxed text-near-black/65">
-                  {item.description}
+                <p className="text-sm leading-relaxed text-near-black/65">
+                  Block off personal-use dates any time you like. No minimum
+                  commitment — stay as long as it&apos;s working for you,
+                  leave when it isn&apos;t.
                 </p>
               </Reveal>
-            ))}
+            </div>
           </div>
-          <Reveal delay={240} className="mt-7 rounded-[18px] px-8 py-7 border border-sage-grey/40">
-            <h3 className="mb-1.5 text-base font-semibold text-maroon">
-              Still your property
-            </h3>
-            <p className="text-sm leading-relaxed text-near-black/65">
-              Block off personal-use dates any time you like. No minimum
-              commitment — stay as long as it&apos;s working for you, leave when
-              it isn&apos;t.
-            </p>
-          </Reveal>
-
-          <Reveal as="p" delay={300} className="mx-auto mt-9 max-w-[720px] text-[15px] leading-relaxed text-near-black/70">
-            We take that off your hands. Full property management — guest
-            communication, pricing, cleaning coordination, maintenance — for a
-            single commission on what you actually earn per night. No setup fee,
-            no monthly retainer, no contract that locks you in if it&apos;s not
-            working. <br></br> This isn&apos;t a marketing agency bolt-on. We run the
-            entire operation end to end, not just your listing photos or pricing
-            calendar — every guest message, every check-in, every cleaner
-            handoff, every repair call. You stay in control of the property; we
-            handle everything that isn&apos;t the property itself.
-          </Reveal>
         </div>
       </section>
 
@@ -382,10 +344,8 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
 
       {/* PROOF POINTS / MARKET DATA */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
-        <div className="mb-4 text-center">
-          <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
-            Market data — Boyne–Mournes corridor
-          </Reveal>
+        <div className="mb-12 text-center">
+          <Eyebrow className="mb-2.5" delay={0}>Market data — Boyne–Mournes corridor</Eyebrow>
           <Reveal as="h2" delay={100} className="mb-3.5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
             What this corridor is actually doing
           </Reveal>
@@ -394,24 +354,15 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             portfolio, which is still one house deep.
           </Reveal>
         </div>
-        <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {MARKET_STATS.map((item, i) => (
-            <Reveal key={item.caption} delay={i * 90} className="px-2 text-center">
-              <div
-                className="text-3xl font-extrabold text-maroon"
-              >
-                {item.stat}
-              </div>
-              <p className="mt-2 text-[13px] leading-normal text-near-black/60">
-                {item.caption}
-              </p>
-            </Reveal>
-          ))}
-        </div>
+        <StatCardGrid
+          items={MARKET_STATS}
+          columns={4}
+          cardBg={[undefined, STAT_CARD_ACCENT, undefined, STAT_CARD_ACCENT]}
+        />
       </section>
 
       {/* SPOTLIGHT — RATHESCAR GROVE */}
-      <section className="mx-auto max-w-6xl px-8 pb-24 sm:px-14">
+      <section className="mx-auto max-w-6xl px-8 pb-24 sm:px-14 sm:pb-28">
         <Reveal className="grid grid-cols-1 items-stretch overflow-hidden rounded-[18px] lg:grid-cols-2">
           <div className="relative min-h-[320px] overflow-hidden bg-near-black lg:min-h-[520px]">
             <Image
@@ -424,7 +375,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               Rathescar Grove &middot; Drogheda
             </span>
           </div>
-          <div className="relative overflow-hidden border border-l-0 border-sage-grey/40 bg-warm-cream p-8 sm:p-14">
+          <div className="relative overflow-hidden border border-l-0 border-sage-grey/40 bg-cream p-8 sm:p-14">
             <div
               aria-hidden
               className="pointer-events-none absolute -top-28 -right-28 h-[420px] w-[420px] opacity-[0.14]"
@@ -441,10 +392,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               </svg>
             </div>
             <div className="relative">
-              <Reveal as="span" delay={100} className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
-                <span className="inline-block h-px w-5.5 bg-current" />
-                An honest early spotlight
-              </Reveal>
+              <Eyebrow as="span" tone="maroon" delay={100}>An honest early spotlight</Eyebrow>
               <Reveal as="h3" delay={180} className="mt-5 max-w-[22ch] font-serif text-3xl leading-[1.02] font-bold tracking-tight text-maroon sm:text-4xl">
                 What we found on our first property
               </Reveal>
@@ -483,36 +431,14 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         </Reveal>
       </section>
 
-      <LandlordSosAndEstimate />
+      <RelatedBlogsSection
+        posts={landlordPosts}
+        heading="Worth a read before you send your SOS"
+        theme="maroon"
+        cardOverlayColor="var(--maroon)"
+      />
 
-      {/* PROCESS */}
-      <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
-        <div className="mb-14 text-center">
-          <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
-            Process
-          </Reveal>
-          <Reveal as="h2" delay={100} className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
-            What happens after you send your SOS
-          </Reveal>
-        </div>
-        <div className="grid grid-cols-1 gap-9 sm:grid-cols-2 lg:grid-cols-4">
-          {PROCESS_STEPS.map((step, i) => (
-            <Reveal key={step.number} delay={i * 100}>
-              <div
-                className="mb-3.5 text-3xl font-extrabold text-light-sage"
-              >
-                {step.number}
-              </div>
-              <h3 className="mb-2 text-base font-semibold text-maroon">
-                {step.title}
-              </h3>
-              <p className="text-sm leading-relaxed text-near-black/65">
-                {step.description}
-              </p>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      <LandlordSosAndEstimate />
 
       <FaqSection
         id="faq"
@@ -527,9 +453,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       {/* FINAL CTA */}
       <section className="bg-maroon px-8 py-24 text-center sm:px-14 sm:py-28">
         <div className="mx-auto max-w-[560px]">
-          <Reveal as="p" className="mb-4.5 text-xs tracking-widest text-light-sage uppercase">
-            Send your SOS
-          </Reveal>
+          <Eyebrow className="mb-4.5" tone="sage" delay={0}>Send your SOS</Eyebrow>
           <Reveal as="h2" delay={120} className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
             Ready to hand over the keys?
           </Reveal>
@@ -549,8 +473,6 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           </Reveal>
         </div>
       </section>
-
-      <RelatedBlogsSection posts={landlordPosts} heading="Worth a read before you send your SOS" />
     </main>
   );
 }

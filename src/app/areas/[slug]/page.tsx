@@ -18,6 +18,7 @@ import { ThingsToDoTabs } from "@/components/ThingsToDoTabs";
 import { PropertyCard } from "@/components/PropertyCard";
 import { FaqSection } from "@/components/FaqSection";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -70,9 +71,9 @@ export default async function AreaGuidePage({ params }: Props) {
         <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" />
 
         <div className="absolute inset-x-8 bottom-11 text-center sm:inset-x-14 sm:text-left">
-          <Reveal as="p" className="mb-3.5 text-xs font-medium tracking-widest text-light-sage uppercase">
+          <Eyebrow className="mb-3.5" tone="sage" delay={0}>
             Areas / {guide.areaName}
-          </Reveal>
+          </Eyebrow>
           <Reveal as="h1" delay={130} className="font-serif text-4xl leading-[1.08] font-extrabold tracking-tight text-cream sm:text-6xl">
             {guide.areaName}
           </Reveal>

@@ -1,3 +1,5 @@
+import { Eyebrow } from "@/components/Eyebrow";
+
 type Row = { label: string; str: string; longTerm: string };
 
 // Speaks to both audiences reading this page — hosts already running an
@@ -16,9 +18,7 @@ export function StrVsLongTermTable() {
   return (
     <section className="mx-auto max-w-5xl px-8 py-16 sm:px-14">
       <div className="mb-8 text-center">
-        <p className="mb-2.5 text-xs font-semibold tracking-widest text-forest-green uppercase">
-          Already renting, or already hosting?
-        </p>
+        <Eyebrow className="mb-2.5" tone="forest">Already renting, or already hosting?</Eyebrow>
         <h2 className="font-serif text-3xl font-bold text-maroon sm:text-4xl">
           Short-term management vs. long-term letting
         </h2>

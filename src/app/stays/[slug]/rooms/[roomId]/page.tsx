@@ -14,6 +14,7 @@ import { FaqSection } from "@/components/FaqSection";
 import { AreaGuideCard } from "@/components/AreaGuideCard";
 import { PropertyOverview } from "@/components/PropertyOverview";
 import { RoomBookingBar } from "@/components/RoomBookingBar";
+import { Eyebrow } from "@/components/Eyebrow";
 import type { Metadata } from "next";
 
 // Live Uplisting data (photos, description, room counts) — not worth
@@ -101,9 +102,7 @@ export default async function RoomPage({ params, searchParams }: Props) {
 
       {/* TITLE BLOCK */}
       <section className="mx-auto max-w-6xl px-8 pt-9 sm:px-14">
-        <p className="mb-3 text-xs font-medium tracking-widest text-forest-green uppercase">
-          {property.location}
-        </p>
+        <Eyebrow className="mb-3" tone="forest">{property.location}</Eyebrow>
         <h1 className="font-serif text-3xl leading-tight font-extrabold tracking-tight text-forest-green sm:text-4xl">
           {room.name}
         </h1>
@@ -159,7 +158,7 @@ export default async function RoomPage({ params, searchParams }: Props) {
 
       {/* AREAS */}
       <section id="areas" className="mx-auto max-w-6xl px-8 py-14 sm:px-14">
-        <p className="mb-2 text-xs tracking-widest text-near-black/55 uppercase">Areas</p>
+        <Eyebrow className="mb-2">Areas</Eyebrow>
         <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-forest-green">
           In the area
         </h2>

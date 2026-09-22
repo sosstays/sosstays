@@ -6,6 +6,7 @@ import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 import { FaqSection } from "@/components/FaqSection";
 import { CoverageMap } from "@/components/CoverageMap";
 import { CorporateLeadForm } from "@/components/CorporateLeadForm";
@@ -317,7 +318,7 @@ export default async function CorporateStaysPage() {
       <section id="who" className="bg-cream px-8 pt-24 pb-16 sm:px-14 sm:pt-28 sm:pb-20">
         <div className="mx-auto max-w-6xl">
           <Reveal className="max-w-[640px]">
-            <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{data?.whoEyebrow || "Who we house"}</p>
+            <Eyebrow className="mb-2.5">{data?.whoEyebrow || "Who we house"}</Eyebrow>
             <h2 className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               {data?.whoHeading || "A hotel room is overkill for a month."}
             </h2>
@@ -362,7 +363,7 @@ export default async function CorporateStaysPage() {
         <div className="mx-auto max-w-6xl">
           <Reveal className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-[560px]">
-              <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{data?.howEyebrow || "How it works"}</p>
+              <Eyebrow className="mb-2.5">{data?.howEyebrow || "How it works"}</Eyebrow>
               <h2 className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
                 {data?.howHeading || "Three steps, no procurement portal."}
               </h2>
@@ -414,7 +415,7 @@ export default async function CorporateStaysPage() {
 
           <div>
             <Reveal>
-              <p className="mb-2.5 text-xs tracking-widest text-light-sage uppercase">{data?.coverageEyebrow || "Where we operate"}</p>
+              <Eyebrow className="mb-2.5" tone="sage">{data?.coverageEyebrow || "Where we operate"}</Eyebrow>
               <h2 className="text-balance font-serif text-3xl leading-tight font-bold tracking-tight text-cream sm:text-4xl">
                 {data?.coverageHeading || "Live in Louth, expanding down the east coast and into the mid-west."}
               </h2>
@@ -455,7 +456,7 @@ export default async function CorporateStaysPage() {
       <section id="included" className="bg-cream px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-6xl">
           <Reveal className="max-w-[600px]">
-            <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{data?.includedEyebrow || "What's included"}</p>
+            <Eyebrow className="mb-2.5">{data?.includedEyebrow || "What's included"}</Eyebrow>
             <h2 className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               {data?.includedHeading || "Move-in ready, managed for the whole stay."}
             </h2>
@@ -492,9 +493,7 @@ export default async function CorporateStaysPage() {
         <div className="mx-auto max-w-6xl">
           <Reveal className="flex flex-wrap items-end justify-between gap-8">
             <div className="max-w-[560px]">
-              <p className="mb-2.5 text-xs tracking-widest text-light-sage uppercase">
-                {data?.partnerEyebrow || "For property owners"}
-              </p>
+              <Eyebrow className="mb-2.5" tone="sage">{data?.partnerEyebrow || "For property owners"}</Eyebrow>
               <h2 className="font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
                 {data?.partnerHeading || "Own a property along the corridor?"}
               </h2>
@@ -550,7 +549,7 @@ export default async function CorporateStaysPage() {
       <section id="brief" className="bg-cream px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-[640px]">
           <Reveal className="mb-10 text-center">
-            <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">Send your SOS</p>
+            <Eyebrow className="mb-2.5">Send your SOS</Eyebrow>
             <h2 className="mb-4 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               Company, headcount, dates, county.
             </h2>

@@ -6,6 +6,7 @@ import { getPricingCounties } from "@/lib/fetchPricingCounties";
 import { getLandlordSiteNavLinks } from "@/lib/navLinks";
 import { COMMISSION_FROM } from "@/lib/businessFacts";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export const revalidate = 60;
 
@@ -31,9 +32,9 @@ export default async function PricingPage() {
           ctaHref="/contact"
           ctaLabel="Contact us"
         />
-        <Reveal as="span" className="mb-4 inline-block text-xs font-medium tracking-widest text-light-sage uppercase">
+        <Eyebrow as="span" className="mb-4" tone="sage" delay={0}>
           Sos Stays · Pricing
-        </Reveal>
+        </Eyebrow>
         <Reveal as="h1" delay={130} className="mx-auto mb-4 max-w-[640px] font-serif text-4xl leading-[1.15] font-bold tracking-tight text-cream sm:text-5xl">
           Simple, commission-only pricing —{" "}
           <em className="text-light-sage italic">from {COMMISSION_FROM}</em>
