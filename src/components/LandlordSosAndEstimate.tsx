@@ -37,14 +37,14 @@ export function LandlordSosAndEstimate() {
   return (
     <>
       {/* SEND YOUR SOS */}
-      <section id="send-sos" className="px-8 py-24 sm:px-14 sm:py-28">
+      <section id="send-sos" className="bg-maroon px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-[640px]">
           <div className="mb-10 text-center">
-            <Eyebrow className="mb-2.5" delay={0}>Send your SOS</Eyebrow>
-            <Reveal as="h2" delay={100} className="mb-4 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+            <Eyebrow className="mb-2.5" tone="sage" delay={0}>Send your SOS</Eyebrow>
+            <Reveal as="h2" delay={100} className="mb-4 font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
               Tell us about your place
             </Reveal>
-            <Reveal as="p" delay={180} className="mx-auto max-w-[480px] text-sm text-near-black/60">
+            <Reveal as="p" delay={180} className="mx-auto max-w-[480px] text-sm text-cream/70">
               Three quick steps — we&apos;ll be in touch within a day or two.
               Right after, you can run a free revenue estimate for your
               property.

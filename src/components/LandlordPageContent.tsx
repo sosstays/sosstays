@@ -402,7 +402,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       </section>
 
       {/* SPOTLIGHT — RATHESCAR GROVE */}
-      <section className="mx-auto max-w-6xl bg-maroon px-8 pb-24 sm:px-14">
+      <section className="mx-auto max-w-6xl px-8 pb-24 sm:px-14">
         <Reveal className="grid grid-cols-1 items-stretch overflow-hidden rounded-[18px] lg:grid-cols-2">
           <div className="relative min-h-[320px] overflow-hidden bg-near-black lg:min-h-[520px]">
             <Image
