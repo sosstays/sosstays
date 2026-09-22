@@ -53,7 +53,6 @@ export function RelatedBlogsSection({
               description={post.excerpt ?? undefined}
               image={post.coverImage}
               href={`/blog/${post.slug}`}
-              tag="Featured"
               heightClassName="h-[380px]"
               overlayColor={cardOverlayColor}
             />

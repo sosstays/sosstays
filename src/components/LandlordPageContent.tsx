@@ -57,7 +57,7 @@ const HOW_IT_WORKS_STATS = [
 const MARKET_STATS = [
   { value: "20–35", unit: "%", caption: "typical underearning for hosts managing solo" },
   { value: "2–3", unit: "×", caption: "revenue potential vs. a long-term let, corridor-wide" },
-  { value: "80", unit: "%+", caption: "peak-season occupancy across the corridor" },
+  { value: "80", unit: "%", caption: "peak-season occupancy across the corridor" },
   { value: "€150", unit: "+", caption: "average nightly rate for comparable properties" },
 ];
 
@@ -300,8 +300,8 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
             <Reveal delay={140} className="relative aspect-[4/5] overflow-hidden rounded-[18px] lg:aspect-auto lg:h-full lg:min-h-[460px]">
               <Image
-                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=80"
-                alt="A model house and keys on a table, standing in for handing your property over to us"
+                src="https://cdn.sanity.io/images/owyw3r12/production/40dc60f00ea5310155c6c0afe1baac921c5f9c58-1376x768.jpg?fit=max&w=1200"
+                alt="Handing over the keys to your property"
                 fill
                 className="object-cover"
               />
