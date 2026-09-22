@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { client } from "@/sanity/client";
 import { PROPERTY_BOOKING_QUERY } from "@/sanity/queries";
 import { getStayQuote, resolveUplistingPropertyId } from "@/lib/uplistingApi";
@@ -25,6 +26,13 @@ export async function POST(request: NextRequest) {
   }
   const { slug, checkIn, checkOut, guests, promotionCode, propertyId, addOnIds } = stayParams.data;
   const { guestName, guestEmail, guestPhone } = guestDetails.data;
+  // Our own promo-code field (see BookingCheckout + api/checkout/promo) — a
+  // Stripe Promotion Code id, distinct from `promotionCode` above which is
+  // Uplisting's own promo system passed straight through to the quote.
+  const promotionCodeId =
+    typeof (body as Record<string, unknown>)?.promotionCodeId === "string"
+      ? ((body as Record<string, string>).promotionCodeId || undefined)
+      : undefined;
 
   const property = await client.fetch(PROPERTY_BOOKING_QUERY, { slug });
   if (!property) {
@@ -65,13 +73,31 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Could not fetch a price quote" }, { status: 502 });
   }
 
+  // Re-verify the promo code against Stripe rather than trusting the
+  // discount amount the client showed in the summary card — the id is all
+  // that's trusted, everything about its validity is re-checked here.
+  if (promotionCodeId) {
+    let promo;
+    try {
+      promo = await stripe.promotionCodes.retrieve(promotionCodeId, { expand: ["promotion.coupon"] });
+    } catch (error) {
+      console.error("Stripe promotion code re-verification failed", error);
+      return NextResponse.json({ error: "Promo code is no longer valid" }, { status: 400 });
+    }
+    const coupon = promo.promotion.coupon as Stripe.Coupon | null;
+    const currencyMismatch = !coupon || coupon.amount_off == null || coupon.currency !== quote.currency.toLowerCase();
+    if (!promo.active || !coupon?.valid || currencyMismatch) {
+      return NextResponse.json({ error: "Promo code is no longer valid" }, { status: 400 });
+    }
+  }
+
   let session;
   try {
     session = await stripe.checkout.sessions.create({
       ui_mode: "embedded_page",
       mode: "payment",
       customer_email: guestEmail,
-      allow_promotion_codes: true,
+      ...(promotionCodeId ? { discounts: [{ promotion_code: promotionCodeId }] } : { allow_promotion_codes: true }),
       // Matches the site's palette/type/radius as closely as embedded
       // Checkout's server-side branding controls allow — there's no
       // client-side Appearance API for ui_mode: embedded_page, neither

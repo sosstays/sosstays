@@ -2,6 +2,8 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/image";
 import { formatCurrency } from "@/lib/utils";
 import type { StayQuote } from "@/lib/uplistingApi";
+import type { CheckoutAddOn } from "@/components/checkout/AddOnSelector";
+import type { AppliedPromo } from "@/components/checkout/BookingCheckout";
 
 function formatDate(iso: string) {
   return new Date(`${iso}T00:00:00`).toLocaleDateString("en-GB", {
@@ -21,13 +23,19 @@ export function BookingSummaryCard({
   checkOut,
   guests,
   quote,
+  addOns = [],
+  promo = null,
 }: {
   property: { name: string; location?: string | null; coverImage?: unknown; sleeps?: number | null };
   checkIn: string;
   checkOut: string;
   guests: number;
   quote: StayQuote;
+  addOns?: CheckoutAddOn[];
+  promo?: AppliedPromo | null;
 }) {
+  const addOnsTotal = addOns.reduce((sum, addOn) => sum + addOn.price, 0);
+  const grandTotal = Math.max(0, quote.total + addOnsTotal - (promo?.discountAmount ?? 0));
   return (
     <div className="overflow-hidden rounded-[18px] border border-border-subtle bg-bright-cream shadow-[0_1px_3px_rgba(30,26,15,0.08)]">
       {property.coverImage ? (
@@ -93,6 +101,18 @@ export function BookingSummaryCard({
               <span className="text-near-black">{formatCurrency(quote.cleaningFee, quote.currency)}</span>
             </div>
           )}
+          {addOns.map((addOn) => (
+            <div key={addOn._id} className="flex justify-between">
+              <span className="text-near-black/60">{addOn.name}</span>
+              <span className="text-near-black">{formatCurrency(addOn.price, quote.currency)}</span>
+            </div>
+          ))}
+          {promo && (
+            <div className="flex justify-between">
+              <span className="text-forest-green">Promo ({promo.code})</span>
+              <span className="text-forest-green">−{formatCurrency(promo.discountAmount, quote.currency)}</span>
+            </div>
+          )}
         </div>
 
         <div className="h-px bg-border-subtle" />
@@ -100,7 +120,7 @@ export function BookingSummaryCard({
         <div className="flex items-baseline justify-between">
           <span className="font-semibold text-near-black">Total</span>
           <span className="text-[1.75rem] font-bold tracking-tight text-near-black">
-            {formatCurrency(quote.total, quote.currency)}
+            {formatCurrency(grandTotal, quote.currency)}
           </span>
         </div>
       </div>

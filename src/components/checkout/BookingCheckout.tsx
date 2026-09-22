@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe-js";
 import { Button } from "@/components/Button";
@@ -10,6 +10,11 @@ import { PaymentBadge } from "@/components/checkout/PaymentBadge";
 import type { StayQuote } from "@/lib/uplistingApi";
 
 export type { CheckoutAddOn };
+
+// A Stripe fixed-amount promo code the guest has successfully applied —
+// see api/checkout/promo, which looks this up. Percent-off coupons aren't
+// supported yet (see that route for why).
+export type AppliedPromo = { code: string; promotionCodeId: string; discountAmount: number };
 
 // Loaded once at module scope, outside the component, per Stripe's guidance —
 // recreating the Stripe object on every render breaks Checkout's iframe.
@@ -32,6 +37,8 @@ type Props = {
   /** A specific room's Uplisting property id, overriding the property-level one — see RoomBookingBar. */
   propertyId?: number;
   addOns?: CheckoutAddOn[];
+  /** Called whenever the selected add-ons or applied promo change, so a parent can keep the summary card in sync. */
+  onSummaryChange?: (summary: { selectedAddOns: CheckoutAddOn[]; promo: AppliedPromo | null }) => void;
 };
 
 function useAddOnSelection(addOns: CheckoutAddOn[]) {
@@ -62,6 +69,7 @@ export function BookingCheckout({
   guests,
   quote,
   addOns = [],
+  onSummaryChange,
 }: Props) {
   const [guestName, setGuestName] = useState("");
   const [guestEmail, setGuestEmail] = useState("");
@@ -71,7 +79,52 @@ export function BookingCheckout({
   const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   const addOnSelection = useAddOnSelection(addOns);
-  const total = quote.total + addOnSelection.total;
+
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [promoStatus, setPromoStatus] = useState<"idle" | "checking" | "applied" | "invalid" | "error">("idle");
+  const [promoError, setPromoError] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null);
+
+  const total = Math.max(0, quote.total + addOnSelection.total - (appliedPromo?.discountAmount ?? 0));
+
+  useEffect(() => {
+    onSummaryChange?.({
+      selectedAddOns: addOns.filter((addOn) => addOnSelection.selectedIds.includes(addOn._id)),
+      promo: appliedPromo,
+    });
+  }, [addOns, addOnSelection.selectedIds, appliedPromo, onSummaryChange]);
+
+  async function applyPromoCode() {
+    const code = promoCodeInput.trim();
+    if (!code) return;
+    setPromoStatus("checking");
+    setPromoError("");
+    try {
+      const res = await fetch("/api/checkout/promo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, currency: quote.currency }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.valid) {
+        setPromoStatus("invalid");
+        setPromoError(data.error || "That promo code isn't valid.");
+        return;
+      }
+      setAppliedPromo({ code, promotionCodeId: data.promotionCodeId, discountAmount: data.discountAmount });
+      setPromoStatus("applied");
+    } catch {
+      setPromoStatus("error");
+      setPromoError("Couldn't check that code — please try again.");
+    }
+  }
+
+  function clearPromoCode() {
+    setAppliedPromo(null);
+    setPromoStatus("idle");
+    setPromoError("");
+    setPromoCodeInput("");
+  }
 
   const fetchClientSecret = useCallback(() => {
     if (!clientSecret) throw new Error("No client secret available yet");
@@ -102,6 +155,7 @@ export function BookingCheckout({
           checkOut,
           guests,
           addOnIds: addOnSelection.selectedIds,
+          promotionCodeId: appliedPromo?.promotionCodeId,
           guestName: guestName.trim(),
           guestEmail: guestEmail.trim(),
           guestPhone: guestPhone.trim() || undefined,
@@ -185,6 +239,48 @@ export function BookingCheckout({
           onToggle={addOnSelection.toggle}
           currency={quote.currency}
         />
+
+        <div className="flex flex-col gap-1.5">
+          <span className="text-sm text-near-black">Promo code</span>
+          {appliedPromo ? (
+            <div className="flex items-center justify-between rounded-[10px] border border-forest-green bg-light-forest-green/30 px-3.5 py-2.5">
+              <span className="text-[15px] text-near-black">
+                <strong className="font-medium">{appliedPromo.code}</strong> applied — −
+                {formatCurrency(appliedPromo.discountAmount, quote.currency)}
+              </span>
+              <button
+                type="button"
+                onClick={clearPromoCode}
+                className="text-[13px] font-medium text-near-black/60 underline"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                value={promoCodeInput}
+                onChange={(e) => {
+                  setPromoCodeInput(e.target.value);
+                  if (promoStatus !== "idle") setPromoStatus("idle");
+                }}
+                placeholder="Enter code"
+                className="min-w-0 flex-1 border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={applyPromoCode}
+                disabled={!promoCodeInput.trim() || promoStatus === "checking"}
+                className="flex-none self-end pb-1.5 text-[13px] font-semibold text-forest-green underline decoration-dotted underline-offset-2 disabled:opacity-50"
+              >
+                {promoStatus === "checking" ? "Checking…" : "Apply"}
+              </button>
+            </div>
+          )}
+          {(promoStatus === "invalid" || promoStatus === "error") && (
+            <p className="text-[13px] text-error-red">{promoError}</p>
+          )}
+        </div>
 
         {error && (
           <p role="alert" className="text-[13px] text-error-red">
