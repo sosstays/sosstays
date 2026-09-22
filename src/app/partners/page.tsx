@@ -5,6 +5,7 @@ import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 import { PartnerDirectory } from "@/components/PartnerDirectory";
 import { PartnerLeadForm } from "@/components/PartnerLeadForm";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
@@ -163,9 +164,7 @@ export default async function PartnersPage() {
         <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
             <Reveal className="mb-14 max-w-[720px]">
-              <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-                {data?.tiersEyebrow || "How we work with partners"}
-              </p>
+              <Eyebrow className="mb-4">{data?.tiersEyebrow || "How we work with partners"}</Eyebrow>
               <h2 className="font-serif text-[30px] leading-[1.1] font-bold tracking-tight text-maroon sm:text-4xl">
                 {data?.tiersHeading || "Two tiers, not a logo wall"}
               </h2>
@@ -194,9 +193,7 @@ export default async function PartnersPage() {
         {/* WHO WE'RE LOOKING FOR */}
         <section className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal className="mb-14 max-w-[720px]">
-            <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-              {data?.whoWeWantEyebrow || "Who we're looking for"}
-            </p>
+            <Eyebrow className="mb-4">{data?.whoWeWantEyebrow || "Who we're looking for"}</Eyebrow>
             <h2 className="font-serif text-[30px] leading-[1.1] font-bold tracking-tight text-maroon sm:text-4xl">
               {data?.whoWeWantHeading || "Six kinds of good people"}
             </h2>
@@ -241,9 +238,7 @@ export default async function PartnersPage() {
         <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
             <Reveal className="mb-12 max-w-[720px]">
-              <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-                {data?.directoryEyebrow || "The directory"}
-              </p>
+              <Eyebrow className="mb-4">{data?.directoryEyebrow || "The directory"}</Eyebrow>
               <h2 className="font-serif text-[30px] leading-[1.1] font-bold tracking-tight text-maroon sm:text-4xl">
                 {data?.directoryHeading || "Partner directory"}
               </h2>
@@ -257,9 +252,7 @@ export default async function PartnersPage() {
         {/* BECOME A PARTNER */}
         <section className="mx-auto max-w-[820px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal className="mb-10">
-            <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-              {data?.becomePartnerEyebrow || "Become a partner"}
-            </p>
+            <Eyebrow className="mb-4">{data?.becomePartnerEyebrow || "Become a partner"}</Eyebrow>
             <h2 className="font-serif mb-4 text-[30px] leading-[1.1] font-bold tracking-tight text-maroon sm:text-4xl">
               {data?.becomePartnerHeading || "Tell us about your business"}
             </h2>

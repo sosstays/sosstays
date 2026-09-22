@@ -1,3 +1,5 @@
+import { Eyebrow } from "@/components/Eyebrow";
+
 const STEPS = [
   {
     value: "5",
@@ -17,9 +19,7 @@ export function OnboardingTimeline() {
   return (
     <section className="mx-auto max-w-5xl px-8 py-16 sm:px-14">
       <div className="mb-10 text-center">
-        <p className="mb-2.5 text-xs font-semibold tracking-widest text-maroon uppercase">
-          Getting started
-        </p>
+        <Eyebrow className="mb-2.5" tone="maroon">Getting started</Eyebrow>
         <h2 className="font-serif text-3xl font-bold text-maroon sm:text-4xl">
           Live in about a week
         </h2>

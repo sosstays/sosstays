@@ -4,6 +4,7 @@ import { useState } from "react";
 import { LandlordLeadForm } from "@/components/LandlordLeadForm";
 import { RevenueCalculator } from "@/components/RevenueCalculator";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 import type { LandlordContact } from "@/lib/landlordHandoff";
 
 // Both sections live in one client component so the estimate calculator can
@@ -39,9 +40,7 @@ export function LandlordSosAndEstimate() {
       <section id="send-sos" className="px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-[640px]">
           <div className="mb-10 text-center">
-            <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
-              Send your SOS
-            </Reveal>
+            <Eyebrow className="mb-2.5" delay={0}>Send your SOS</Eyebrow>
             <Reveal as="h2" delay={100} className="mb-4 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               Tell us about your place
             </Reveal>

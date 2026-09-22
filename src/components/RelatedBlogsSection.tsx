@@ -1,4 +1,5 @@
 import { BlogPostListItem, type BlogPostListItemPost } from "@/components/BlogPostListItem";
+import { Eyebrow } from "@/components/Eyebrow";
 
 // Page-end version of the blog post page's sidebar "Related blogs" list —
 // same row item, laid out as a row across the page instead of stacked in a
@@ -17,7 +18,7 @@ export function RelatedBlogsSection({
   return (
     <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
       <div className="mb-10 text-center">
-        <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{eyebrow}</p>
+        <Eyebrow className="mb-2.5">{eyebrow}</Eyebrow>
         <h2 className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
           {heading}
         </h2>

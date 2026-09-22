@@ -13,6 +13,7 @@ import { RelatedBlogsSection } from "@/components/RelatedBlogsSection";
 import { GapChart } from "@/components/GapChart";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 import { COMMISSION_RANGE, MAINTENANCE_AUTHORITY_EUR } from "@/lib/businessFacts";
 
 type LandlordPage = {
@@ -198,10 +199,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         </div>
         <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 lg:grid-cols-2">
           <div>
-            <Reveal as="span" className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
-              <span className="inline-block h-px w-5.5 bg-current" />
-              The 11pm problem
-            </Reveal>
+            <Eyebrow as="span" tone="maroon" delay={0}>The 11pm problem</Eyebrow>
             <Reveal as="h2" delay={120} className="mt-5 max-w-[20ch] font-serif text-4xl leading-[0.98] font-bold tracking-tight text-maroon sm:text-6xl">
               It&apos;s 11pm and the gate code doesn&apos;t work.
             </Reveal>
@@ -267,10 +265,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-wrap items-end justify-between gap-12">
             <div>
-              <Reveal as="span" className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
-                <span className="inline-block h-px w-5.5 bg-current" />
-                The gap
-              </Reveal>
+              <Eyebrow as="span" tone="maroon" delay={0}>The gap</Eyebrow>
               <Reveal as="h2" delay={120} className="mt-5 max-w-[24ch] font-serif text-3xl leading-[0.98] font-bold tracking-tight text-maroon sm:text-5xl">
                 A fifth to a third of the revenue, left on the table.
               </Reveal>
@@ -322,9 +317,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       >
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
-            <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
-              How it works
-            </Reveal>
+            <Eyebrow className="mb-2.5" delay={0}>How it works</Eyebrow>
             <Reveal as="h2" delay={100} className="mb-5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
               Exactly what handing off looks like
             </Reveal>
@@ -383,9 +376,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       {/* PROOF POINTS / MARKET DATA */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
         <div className="mb-4 text-center">
-          <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
-            Market data — Boyne–Mournes corridor
-          </Reveal>
+          <Eyebrow className="mb-2.5" delay={0}>Market data — Boyne–Mournes corridor</Eyebrow>
           <Reveal as="h2" delay={100} className="mb-3.5 font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
             What this corridor is actually doing
           </Reveal>
@@ -441,10 +432,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               </svg>
             </div>
             <div className="relative">
-              <Reveal as="span" delay={100} className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-widest text-muted-maroon uppercase">
-                <span className="inline-block h-px w-5.5 bg-current" />
-                An honest early spotlight
-              </Reveal>
+              <Eyebrow as="span" tone="maroon" delay={100}>An honest early spotlight</Eyebrow>
               <Reveal as="h3" delay={180} className="mt-5 max-w-[22ch] font-serif text-3xl leading-[1.02] font-bold tracking-tight text-maroon sm:text-4xl">
                 What we found on our first property
               </Reveal>
@@ -488,9 +476,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       {/* PROCESS */}
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
         <div className="mb-14 text-center">
-          <Reveal as="p" className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">
-            Process
-          </Reveal>
+          <Eyebrow className="mb-2.5" delay={0}>Process</Eyebrow>
           <Reveal as="h2" delay={100} className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
             What happens after you send your SOS
           </Reveal>
@@ -527,9 +513,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       {/* FINAL CTA */}
       <section className="bg-maroon px-8 py-24 text-center sm:px-14 sm:py-28">
         <div className="mx-auto max-w-[560px]">
-          <Reveal as="p" className="mb-4.5 text-xs tracking-widest text-light-sage uppercase">
-            Send your SOS
-          </Reveal>
+          <Eyebrow className="mb-4.5" tone="sage" delay={0}>Send your SOS</Eyebrow>
           <Reveal as="h2" delay={120} className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
             Ready to hand over the keys?
           </Reveal>

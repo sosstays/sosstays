@@ -6,6 +6,7 @@ import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 import { FaqSection } from "@/components/FaqSection";
 import { AccordionPanel } from "@/components/Accordion";
 import { SocialIcons } from "@/components/SocialIcons";
@@ -287,9 +288,7 @@ export default async function AboutUsPage() {
         <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
             <Reveal className="mb-14 max-w-[620px]">
-              <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-                {data?.whatWeDoEyebrow || "What we do"}
-              </p>
+              <Eyebrow className="mb-4">{data?.whatWeDoEyebrow || "What we do"}</Eyebrow>
               <h2 className="font-serif text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl">
                 {data?.whatWeDoHeading || "Three ways we work"}
               </h2>
@@ -322,9 +321,7 @@ export default async function AboutUsPage() {
           />
           <div className="relative mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-14 px-8 py-24 sm:px-14 sm:py-32 lg:grid-cols-2 lg:gap-16">
             <Reveal>
-              <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-light-sage uppercase">
-                {data?.coverageEyebrow || "Where we operate"}
-              </p>
+              <Eyebrow className="mb-4" tone="sage">{data?.coverageEyebrow || "Where we operate"}</Eyebrow>
               <h2 className="font-serif mb-6 text-[30px] leading-[1.1] font-bold tracking-tight text-cream sm:text-4xl lg:text-[42px]">
                 {data?.coverageHeading || "Home ground, not the only ground"}
               </h2>
@@ -403,9 +400,7 @@ export default async function AboutUsPage() {
         <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
             <Reveal className="mb-14 max-w-[720px]">
-              <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-                {data?.teamEyebrow || "Meet the team"}
-              </p>
+              <Eyebrow className="mb-4">{data?.teamEyebrow || "Meet the team"}</Eyebrow>
               <h2 className="font-serif mb-4 text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl">
                 {data?.teamHeading || "Meet the team"}
               </h2>
@@ -450,9 +445,7 @@ export default async function AboutUsPage() {
         {/* WORK WITH US */}
         <section className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal className="mb-12 max-w-[720px]">
-            <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-              {data?.workWithUsEyebrow || "Work with us"}
-            </p>
+            <Eyebrow className="mb-4">{data?.workWithUsEyebrow || "Work with us"}</Eyebrow>
             <h2 className="font-serif mb-4 text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl">
               {data?.workWithUsHeading || "Work with us"}
             </h2>

@@ -2,6 +2,7 @@
 
 import { useState, type CSSProperties } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export type AudienceTabContent = {
   label: string;
@@ -147,9 +148,7 @@ export function AudienceTabs({
     >
       <Tabs value={String(active)} onValueChange={(v) => setActive(Number(v))}>
         <div className="mb-12 text-center">
-          <p className="mb-5 text-xs tracking-widest text-near-black/55 uppercase">
-            {eyebrow}
-          </p>
+          <Eyebrow className="mb-5">{eyebrow}</Eyebrow>
           <TabsList className="mx-auto flex w-fit flex-wrap justify-center gap-2">
             {tabs.map((t, i) => (
               <TabsTrigger

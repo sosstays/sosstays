@@ -17,6 +17,7 @@ import { DisqusComments } from "@/components/DisqusComments";
 import { BlogPostListItem } from "@/components/BlogPostListItem";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -267,9 +268,7 @@ export default async function BlogPostPage({ params }: Props) {
         {/* LANDLORD CTA — maroon per the owner-context accent color */}
         <section className="mt-24 bg-maroon px-8 py-28 text-center sm:px-14">
           <div className="mx-auto max-w-xl">
-            <Reveal as="p" className="mb-4 text-xs font-medium tracking-widest text-light-sage uppercase">
-              For landlords
-            </Reveal>
+            <Eyebrow className="mb-4" tone="sage" delay={0}>For landlords</Eyebrow>
             <Reveal as="h2" delay={120} className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
               Got a place worth minding?
             </Reveal>

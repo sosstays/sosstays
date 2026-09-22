@@ -5,6 +5,7 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/image";
 import { portableTextToPlain } from "@/sanity/portableText";
 import { Button } from "@/components/Button";
+import { Eyebrow } from "@/components/Eyebrow";
 
 type Area = {
   _id: string;
@@ -68,9 +69,7 @@ export function AreaSpotlightCarousel({ areas }: { areas: Area[] }) {
 
           <div className="relative flex h-full items-center px-8 sm:px-14">
             <div className="max-w-[520px]">
-              <p className="mb-5 text-xs font-medium tracking-widest text-light-sage uppercase">
-                Where to start
-              </p>
+              <Eyebrow className="mb-5" tone="sage">Where to start</Eyebrow>
               <h2 className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
                 {area.areaName}
               </h2>

@@ -1,3 +1,5 @@
+import { Eyebrow } from "@/components/Eyebrow";
+
 type FaqItem = { question: string; answer: string };
 
 // Shared FAQ accordion used on the property, area guide, and landlords
@@ -37,7 +39,9 @@ export function FaqSection({
     <section id={id} className={`mx-auto pb-24 ${padded ? "px-8 sm:px-14" : ""}`} style={{ maxWidth }}>
       <div className={centered ? "mb-11 text-center" : "mb-6"}>
         {eyebrow && (
-          <p className="mb-2.5 text-xs tracking-widest text-near-black/55 uppercase">{eyebrow}</p>
+          <Eyebrow className="mb-2.5" tone={accent === "maroon" ? "maroon" : "neutral"}>
+            {eyebrow}
+          </Eyebrow>
         )}
         <h2
           className={`font-serif font-bold tracking-tight ${accentClass} ${
