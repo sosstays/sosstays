@@ -6,6 +6,7 @@ import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 import { FaqSection } from "@/components/FaqSection";
 import { AccordionPanel } from "@/components/Accordion";
 import { SocialIcons } from "@/components/SocialIcons";
@@ -77,16 +78,19 @@ const DEFAULT_FEATURED_STAYS = [
   {
     name: "Howard's Way",
     href: "/stays/howards-way-liscannor",
+    location: "Liscannor, Co. Clare",
     description: "A 4-bed house above Liscannor Bay, sleeps 8, five minutes from the Cliffs of Moher.",
   },
   {
     name: "Rathescar Grove Guest House",
     href: "/stays/rathescar-grove-guest-house",
+    location: "Ardee, Co. Louth",
     description: "A guest house outside Ardee, your base for the Boyne Valley.",
   },
   {
     name: "Tinneshrule Farm Lodge",
     href: "/stays/tinneshrule-farm-lodge",
+    location: "Ferns, Co. Wexford",
     description: "A working-farm studio in Ferns. No TV, strong WiFi, does what it says on the tin.",
   },
 ];
@@ -284,9 +288,7 @@ export default async function AboutUsPage() {
         <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
             <Reveal className="mb-14 max-w-[620px]">
-              <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-                {data?.whatWeDoEyebrow || "What we do"}
-              </p>
+              <Eyebrow className="mb-4">{data?.whatWeDoEyebrow || "What we do"}</Eyebrow>
               <h2 className="font-serif text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl">
                 {data?.whatWeDoHeading || "Three ways we work"}
               </h2>
@@ -319,9 +321,7 @@ export default async function AboutUsPage() {
           />
           <div className="relative mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-14 px-8 py-24 sm:px-14 sm:py-32 lg:grid-cols-2 lg:gap-16">
             <Reveal>
-              <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-light-sage uppercase">
-                {data?.coverageEyebrow || "Where we operate"}
-              </p>
+              <Eyebrow className="mb-4" tone="sage">{data?.coverageEyebrow || "Where we operate"}</Eyebrow>
               <h2 className="font-serif mb-6 text-[30px] leading-[1.1] font-bold tracking-tight text-cream sm:text-4xl lg:text-[42px]">
                 {data?.coverageHeading || "Home ground, not the only ground"}
               </h2>
@@ -351,20 +351,48 @@ export default async function AboutUsPage() {
             </h2>
           </Reveal>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {featuredStays.map((stay: { name: string; href: string; description: string }, i: number) => (
-              <Reveal key={stay.href} delay={i * 100}>
-                <Link
-                  href={stay.href}
-                  className="group flex h-full flex-col rounded-[18px] border border-sage-grey/25 bg-pale-sage/40 p-7 transition-colors hover:bg-pale-sage/70"
-                >
-                  <h3 className="font-serif mb-2.5 text-xl font-bold text-deep-forest group-hover:underline">
-                    {stay.name}
-                  </h3>
-                  <p className="flex-1 text-[15px] leading-loose text-near-black/70">{stay.description}</p>
-                  <span className="mt-4 text-sm font-semibold text-forest-green">See the stay →</span>
-                </Link>
-              </Reveal>
-            ))}
+            {featuredStays.map(
+              (
+                stay: {
+                  name: string;
+                  href: string;
+                  location?: string;
+                  description: string;
+                  image?: { alt?: string } | null;
+                },
+                i: number
+              ) => (
+                <Reveal key={stay.href} delay={i * 100}>
+                  <Link
+                    href={stay.href}
+                    className="group flex h-full flex-col overflow-hidden rounded-[18px] border border-sage-grey/25 bg-cream p-3 transition-colors hover:bg-pale-sage/40"
+                  >
+                    {stay.image ? (
+                      <div className="relative mb-4 aspect-[4/3] w-full overflow-hidden rounded-[14px]">
+                        <Image
+                          src={urlFor(stay.image).width(600).height(450).url()}
+                          alt={stay.image.alt ?? stay.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : null}
+                    <div className="flex flex-1 flex-col px-2 pb-2">
+                      {stay.location ? (
+                        <p className="mb-2 text-xs font-semibold tracking-widest text-near-black/50 uppercase">
+                          {stay.location}
+                        </p>
+                      ) : null}
+                      <h3 className="font-serif mb-2.5 text-xl font-bold text-deep-forest group-hover:underline">
+                        {stay.name}
+                      </h3>
+                      <p className="flex-1 text-[15px] leading-loose text-near-black/70">{stay.description}</p>
+                      <span className="mt-4 text-sm font-semibold text-forest-green">See the stay →</span>
+                    </div>
+                  </Link>
+                </Reveal>
+              )
+            )}
           </div>
         </section>
 
@@ -372,9 +400,7 @@ export default async function AboutUsPage() {
         <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
             <Reveal className="mb-14 max-w-[720px]">
-              <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-                {data?.teamEyebrow || "Meet the team"}
-              </p>
+              <Eyebrow className="mb-4">{data?.teamEyebrow || "Meet the team"}</Eyebrow>
               <h2 className="font-serif mb-4 text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl">
                 {data?.teamHeading || "Meet the team"}
               </h2>
@@ -419,9 +445,7 @@ export default async function AboutUsPage() {
         {/* WORK WITH US */}
         <section className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal className="mb-12 max-w-[720px]">
-            <p className="font-serif mb-4 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-              {data?.workWithUsEyebrow || "Work with us"}
-            </p>
+            <Eyebrow className="mb-4">{data?.workWithUsEyebrow || "Work with us"}</Eyebrow>
             <h2 className="font-serif mb-4 text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl">
               {data?.workWithUsHeading || "Work with us"}
             </h2>

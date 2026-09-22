@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/Button";
 import { Logo } from "@/components/Logo";
 import { PlatformIcon, type Platform } from "@/components/PlatformIcons";
+import { Eyebrow } from "@/components/Eyebrow";
 import { urlFor } from "@/sanity/image";
 
 type SanityImageWithAlt = { alt?: string } & Record<string, unknown>;
@@ -159,12 +160,9 @@ export function HostsModule({ data }: { data: HostsModuleData | null }) {
             }}
           >
             {data.eyebrow && (
-              <div className="flex items-center gap-2.5">
-                <span className="block h-px w-6 bg-light-sage" />
-                <span className="text-xs font-semibold tracking-widest text-light-sage uppercase">
-                  {data.eyebrow}
-                </span>
-              </div>
+              <Eyebrow as="div" tone="sage">
+                {data.eyebrow}
+              </Eyebrow>
             )}
             {data.heading && (
               <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-tight text-cream text-balance sm:text-5xl">
@@ -231,9 +229,9 @@ export function HostsModule({ data }: { data: HostsModuleData | null }) {
               }}
             >
               {data.stepperEyebrow && (
-                <span className="text-xs font-semibold tracking-widest text-light-sage uppercase">
+                <Eyebrow as="span" tone="sage">
                   {data.stepperEyebrow}
-                </span>
+                </Eyebrow>
               )}
               {data.stepperHeading && (
                 <h3 className="font-serif text-2xl font-semibold text-cream sm:text-[28px]">

@@ -12,6 +12,7 @@ import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 import { HostsModule } from "@/components/HostsModule";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 import { SearchBar } from "@/components/SearchBar";
 import type { Metadata } from "next";
 
@@ -65,9 +66,9 @@ export default async function HomePage() {
         <div className="relative z-10 mx-auto flex min-h-[94vh] w-[calc(100%-4rem)] flex-col items-center justify-center gap-10 pt-28 pb-10 text-center sm:w-[calc(100%-7rem)] sm:pt-32">
           <div className="w-full">
             {hero?.eyebrow && (
-              <p className="mb-3 text-xs font-semibold tracking-widest text-light-sage uppercase sm:mb-5">
+              <Eyebrow className="mb-3 sm:mb-5" tone="sage">
                 {hero.eyebrow}
-              </p>
+              </Eyebrow>
             )}
             <h1 className="mb-4 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:mb-6 sm:text-6xl">
               {headingLines.map((line: string, i: number) => (
@@ -162,9 +163,7 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
           <div>
-            <Reveal as="p" className="mb-2 text-xs tracking-widest text-near-black/55 uppercase">
-              Follow along
-            </Reveal>
+            <Eyebrow className="mb-2" delay={0}>Follow along</Eyebrow>
             <Reveal as="h2" delay={100} className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
               On Instagram
             </Reveal>
@@ -186,9 +185,7 @@ export default async function HomePage() {
       {/* LANDLORD CTA — maroon per the owner-context accent color */}
       <section id="landlords" className="bg-maroon px-8 py-28 text-center sm:px-14">
         <div className="mx-auto max-w-xl">
-          <Reveal as="p" className="mb-4 text-xs font-medium tracking-widest text-light-sage uppercase">
-            For landlords
-          </Reveal>
+          <Eyebrow className="mb-4" tone="sage" delay={0}>For landlords</Eyebrow>
           <Reveal as="h2" delay={120} className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
             Already self-managing your Airbnb?
           </Reveal>

@@ -2,6 +2,7 @@
 
 import { useState, type CSSProperties } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Eyebrow } from "@/components/Eyebrow";
 
 export type AudienceTabContent = {
   label: string;
@@ -143,19 +144,21 @@ export function AudienceTabs({
   return (
     <section
       id="who-we-work-with"
-      className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28"
+      className="bg-maroon px-8 py-24 sm:px-14 sm:py-28"
     >
-      <Tabs value={String(active)} onValueChange={(v) => setActive(Number(v))}>
+      <Tabs
+        value={String(active)}
+        onValueChange={(v) => setActive(Number(v))}
+        className="mx-auto max-w-6xl"
+      >
         <div className="mb-12 text-center">
-          <p className="mb-5 text-xs tracking-widest text-near-black/55 uppercase">
-            {eyebrow}
-          </p>
+          <Eyebrow className="mb-5" tone="sage">{eyebrow}</Eyebrow>
           <TabsList className="mx-auto flex w-fit flex-wrap justify-center gap-2">
             {tabs.map((t, i) => (
               <TabsTrigger
                 key={t.label}
                 value={String(i)}
-                className="rounded-full border border-sage-grey px-[18px] py-2.5 text-[13.5px] font-medium whitespace-nowrap text-forest-green transition-colors duration-200 data-[state=active]:border-maroon data-[state=active]:bg-maroon data-[state=active]:text-cream"
+                className="rounded-full border border-cream/25 px-[18px] py-2.5 text-[13.5px] font-medium whitespace-nowrap text-cream/75 transition-colors duration-200 data-[state=active]:border-cream data-[state=active]:bg-cream data-[state=active]:text-maroon"
               >
                 {t.label}
               </TabsTrigger>
@@ -165,26 +168,26 @@ export function AudienceTabs({
 
         <TabsContent
           value={String(active)}
-          className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-11"
+          className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-11"
         >
           <div className="flex flex-col gap-5.5 pt-1.5">
-            <h2 className="min-h-[54px] text-balance font-serif text-2xl leading-[1.08] font-bold tracking-tight text-forest-green sm:min-h-[66px] sm:text-3xl lg:min-h-[92px] lg:text-4xl">
+            <h2 className="min-h-[54px] text-balance font-serif text-2xl leading-[1.08] font-bold tracking-tight text-cream sm:min-h-[66px] sm:text-3xl lg:min-h-[92px] lg:text-4xl">
               {tab.heading}
             </h2>
-            <p className="max-w-[56ch] text-base leading-relaxed text-near-black">
+            <p className="max-w-[56ch] text-base leading-relaxed text-cream/85">
               {tab.body}
             </p>
             <ul className="mt-1.5 list-none">
               {tab.checklist.map((item, i) => (
                 <li
                   key={item}
-                  className={`flex items-start gap-3 py-2.75 ${i === 0 ? "" : "border-t border-sage-grey/40"}`}
+                  className={`flex items-start gap-3 py-2.75 ${i === 0 ? "" : "border-t border-cream/20"}`}
                 >
                   <span className="relative mt-0.75 h-4.5 w-4.5 flex-none">
-                    <span className="absolute inset-0 block rounded-full border border-light-sage" />
-                    <span className="absolute inset-[5px] block rounded-full bg-maroon" />
+                    <span className="absolute inset-0 block rounded-full border border-cream/40" />
+                    <span className="absolute inset-[5px] block rounded-full bg-cream" />
                   </span>
-                  <span className="text-[15px] leading-relaxed text-near-black">
+                  <span className="text-[15px] leading-relaxed text-cream/90">
                     {item}
                   </span>
                 </li>
@@ -192,8 +195,8 @@ export function AudienceTabs({
             </ul>
           </div>
 
-          <div className="mx-auto flex w-full max-w-md flex-col rounded-2xl border border-light-sage bg-light-forest-green p-6.5 lg:max-w-none">
-            <div className="flex min-h-0 flex-1 items-center justify-center">
+          <div className="mx-auto flex w-full flex-col self-center rounded-2xl">
+            <div className="flex items-center justify-center">
               <svg
               viewBox="0 0 460 420"
               className="block w-full overflow-visible"
@@ -202,7 +205,8 @@ export function AudienceTabs({
               <path
                 d="M74 96c34-38 96-52 148-40 44 10 62 40 100 46 44 7 76-6 96 22 22 30 4 78-18 116-24 42-30 84-72 110-44 27-108 24-152 2-46-23-70-64-88-108-18-44-48-108-14-148z"
                 fill="var(--cream)"
-                stroke="var(--light-sage)"
+                stroke="var(--maroon)"
+                strokeOpacity={0.25}
                 strokeWidth={1.5}
               />
               <path
@@ -232,7 +236,7 @@ export function AudienceTabs({
                 cy={230}
                 r={70}
                 fill="none"
-                stroke="var(--forest-green)"
+                stroke="var(--cream)"
                 strokeWidth={1}
                 strokeDasharray="3 8"
                 style={ringStyle}
@@ -290,13 +294,13 @@ export function AudienceTabs({
               <g style={roamingPersonStyle}>
                 <circle
                   r={11}
-                  fill="var(--light-forest-green)"
-                  stroke="var(--forest-green)"
+                  fill="var(--cream)"
+                  stroke="var(--maroon)"
                   strokeWidth={1}
                 />
                 <g
                   fill="none"
-                  stroke="var(--forest-green)"
+                  stroke="var(--maroon)"
                   strokeWidth={1.4}
                   strokeLinecap="round"
                 >

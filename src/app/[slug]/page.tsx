@@ -9,6 +9,7 @@ import { JsonLd, buildBreadcrumbSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
+import { Eyebrow } from "@/components/Eyebrow";
 import { CountUp } from "@/components/CountUp";
 import { ItineraryTimeline } from "@/components/ItineraryTimeline";
 import { ImageOverlayCard } from "@/components/ImageOverlayCard";
@@ -114,9 +115,9 @@ export default async function LandingPage({ params }: Props) {
 
         <div className="relative mx-auto w-full max-w-6xl">
           {page.heroEyebrow && (
-            <Reveal as="p" className="mb-3.5 text-[13px] font-semibold tracking-[0.22em] text-light-sage uppercase">
+            <Eyebrow className="mb-3.5" tone="sage" delay={0}>
               {page.heroEyebrow}
-            </Reveal>
+            </Eyebrow>
           )}
           <h1 className="max-w-[15ch] font-serif text-[clamp(2.75rem,6.6vw,6.5rem)] leading-[0.98] font-extrabold tracking-tight text-cream">
             {page.heroHeadline}
@@ -617,11 +618,7 @@ export default async function LandingPage({ params }: Props) {
       {/* OTHER INFO SECTIONS — generic fallback for any section not using layout: "photoGrid" */}
       {otherSections.map((section, i) => (
         <section key={i} className="mx-auto max-w-6xl px-8 pt-16 sm:px-14">
-          {section.eyebrow && (
-            <p className="mb-2 text-xs font-semibold tracking-widest text-near-black/55 uppercase">
-              {section.eyebrow}
-            </p>
-          )}
+          {section.eyebrow && <Eyebrow className="mb-2">{section.eyebrow}</Eyebrow>}
           {section.heading && (
             <h2 className="mb-2 font-serif text-[26px] font-bold tracking-tight text-forest-green">
               {section.heading}
@@ -662,9 +659,9 @@ export default async function LandingPage({ params }: Props) {
       {page.itineraryDays && page.itineraryDays.length > 0 && (
         <section className="mx-auto max-w-6xl px-8 pt-28 sm:px-14">
           {page.itineraryEyebrow && (
-            <Reveal as="p" className="mb-3.5 text-[13px] font-semibold tracking-[0.2em] text-forest-green/80 uppercase">
+            <Eyebrow className="mb-3.5" tone="forest" delay={0}>
               {page.itineraryEyebrow}
-            </Reveal>
+            </Eyebrow>
           )}
           {page.itineraryHeading && (
             <Reveal
