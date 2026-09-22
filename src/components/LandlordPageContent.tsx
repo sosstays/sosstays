@@ -73,32 +73,6 @@ const ELEVEN_PM_MESSAGES = [
   { text: "Reminder: your rate for August is below market average.", meta: "07:58 · Booking.com" },
 ];
 
-const PROCESS_STEPS = [
-  {
-    number: "01",
-    title: "A call",
-    description:
-      "Fifteen minutes. We ask about the property, you ask about us.",
-  },
-  {
-    number: "02",
-    title: "A walkthrough",
-    description: "We come see the place in person and work out what it needs.",
-  },
-  {
-    number: "03",
-    title: "An agreement",
-    description:
-      "Plain terms, commission rate confirmed, nothing buried in small print.",
-  },
-  {
-    number: "04",
-    title: "Handover",
-    description:
-      "Listing goes live, calendar's ours to run, you go back to just owning the place.",
-  },
-];
-
 export async function LandlordPageContent({ page }: { page: LandlordPage }) {
   const [siteSettings, audienceTabs, landlordPosts, landlordNavLinks] = await Promise.all([
     client.fetch(SITE_SETTINGS_QUERY),
@@ -471,34 +445,14 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         </Reveal>
       </section>
 
-      <LandlordSosAndEstimate />
+      <RelatedBlogsSection
+        posts={landlordPosts}
+        heading="Worth a read before you send your SOS"
+        theme="maroon"
+        cardOverlayColor="var(--maroon)"
+      />
 
-      {/* PROCESS */}
-      <section className="mx-auto max-w-6xl bg-maroon px-8 py-24 sm:px-14 sm:py-28">
-        <div className="mb-14 text-center">
-          <Eyebrow className="mb-2.5" tone="sage" delay={0}>Process</Eyebrow>
-          <Reveal as="h2" delay={100} className="font-serif text-3xl font-bold tracking-tight text-cream sm:text-4xl">
-            What happens after you send your SOS
-          </Reveal>
-        </div>
-        <div className="grid grid-cols-1 gap-9 sm:grid-cols-2 lg:grid-cols-4">
-          {PROCESS_STEPS.map((step, i) => (
-            <Reveal key={step.number} delay={i * 100}>
-              <div
-                className="mb-3.5 text-3xl font-extrabold text-cream/40"
-              >
-                {step.number}
-              </div>
-              <h3 className="mb-2 text-base font-semibold text-cream">
-                {step.title}
-              </h3>
-              <p className="text-sm leading-relaxed text-cream/70">
-                {step.description}
-              </p>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      <LandlordSosAndEstimate />
 
       <FaqSection
         id="faq"
@@ -533,12 +487,6 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
           </Reveal>
         </div>
       </section>
-
-      <RelatedBlogsSection
-        posts={landlordPosts}
-        heading="Worth a read before you send your SOS"
-        cardOverlayColor="var(--maroon)"
-      />
     </main>
   );
 }
