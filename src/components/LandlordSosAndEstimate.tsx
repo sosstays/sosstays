@@ -42,26 +42,6 @@ export function LandlordSosAndEstimate() {
   const [contact, setContact] = useState<LandlordContact | null>(null);
   const [showResults, setShowResults] = useState(false);
 
-  // Kept mounted (just hidden) rather than conditionally removed, so hiding
-  // it on results doesn't shift the calculator to a new sibling position
-  // and force React to remount it mid-flow.
-  const formIntro = (
-    <div className={showResults ? "hidden" : "mx-auto max-w-[640px] text-center"}>
-      <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-maroon sm:text-3xl">
-        Get your estimate
-      </h2>
-      <p className="mb-4 text-[15px] leading-relaxed text-near-black/70">
-        Pop in your occupancy and current annual revenue and the calculator will give you a quick,
-        honest estimate of what your property could be earning.
-      </p>
-      <p className="text-[15px] leading-relaxed text-near-black/70">
-        This is a basic estimation tool to give you a starting point. Once we have your details,
-        we&apos;ll come back with a proper custom proposal — projected figures based on your
-        actual property, area and season, not just the averages.
-      </p>
-    </div>
-  );
-
   return (
     <>
       {/* SEND YOUR SOS */}
@@ -116,6 +96,23 @@ export function LandlordSosAndEstimate() {
       {/* GET YOUR ESTIMATE */}
       <section id="calculator" className="bg-cream px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-6xl">
+          {/* Kept mounted (just hidden) rather than conditionally removed, so
+              hiding it on results doesn't shift the calculator to a new
+              sibling position and force React to remount it mid-flow. */}
+          <div className={showResults ? "hidden" : "mx-auto mb-9 max-w-[640px] text-center"}>
+            <h2 className="mb-5 font-serif text-2xl font-bold tracking-tight text-maroon sm:text-3xl">
+              Get your estimate
+            </h2>
+            <p className="mb-4 text-[15px] leading-relaxed text-near-black/70">
+              Pop in your occupancy and current annual revenue and the calculator will give you a quick,
+              honest estimate of what your property could be earning.
+            </p>
+            <p className="text-[15px] leading-relaxed text-near-black/70">
+              This is a basic estimation tool to give you a starting point. Once we have your details,
+              we&apos;ll come back with a proper custom proposal — projected figures based on your
+              actual property, area and season, not just the averages.
+            </p>
+          </div>
           <RevenueCalculator
             // Remounts once the lead form hands over a name/email, so the
             // calculator's contact gate re-evaluates with the new props
@@ -124,7 +121,6 @@ export function LandlordSosAndEstimate() {
             initialName={contact?.name}
             initialEmail={contact?.email}
             onResultsShown={() => setShowResults(true)}
-            formIntro={formIntro}
           />
         </div>
       </section>
