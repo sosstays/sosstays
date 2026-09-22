@@ -195,7 +195,7 @@ export function AudienceTabs({
             </ul>
           </div>
 
-          <div className="mx-auto flex w-full max-w-md flex-col self-start rounded-2xl border border-cream/25 bg-cream p-6.5 lg:max-w-none">
+          <div className="mx-auto flex w-full max-w-md flex-col self-start rounded-2xl border border-cream/25 p-6.5 lg:max-w-none">
             <div className="flex items-center justify-center">
               <svg
               viewBox="0 0 460 420"
@@ -236,7 +236,7 @@ export function AudienceTabs({
                 cy={230}
                 r={70}
                 fill="none"
-                stroke="var(--forest-green)"
+                stroke="var(--cream)"
                 strokeWidth={1}
                 strokeDasharray="3 8"
                 style={ringStyle}
@@ -246,7 +246,7 @@ export function AudienceTabs({
                 <path
                   key={i}
                   d={`M230 230 L${x} ${y}`}
-                  stroke="var(--forest-green)"
+                  stroke="var(--cream)"
                   strokeWidth={1.2}
                   fill="none"
                   pathLength={1}
@@ -294,13 +294,13 @@ export function AudienceTabs({
               <g style={roamingPersonStyle}>
                 <circle
                   r={11}
-                  fill="var(--light-forest-green)"
-                  stroke="var(--forest-green)"
+                  fill="var(--cream)"
+                  stroke="var(--maroon)"
                   strokeWidth={1}
                 />
                 <g
                   fill="none"
-                  stroke="var(--forest-green)"
+                  stroke="var(--maroon)"
                   strokeWidth={1.4}
                   strokeLinecap="round"
                 >
