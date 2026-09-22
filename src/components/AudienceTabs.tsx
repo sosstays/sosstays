@@ -144,9 +144,13 @@ export function AudienceTabs({
   return (
     <section
       id="who-we-work-with"
-      className="mx-auto max-w-6xl bg-maroon px-8 py-24 sm:px-14 sm:py-28"
+      className="bg-maroon px-8 py-24 sm:px-14 sm:py-28"
     >
-      <Tabs value={String(active)} onValueChange={(v) => setActive(Number(v))}>
+      <Tabs
+        value={String(active)}
+        onValueChange={(v) => setActive(Number(v))}
+        className="mx-auto max-w-6xl"
+      >
         <div className="mb-12 text-center">
           <Eyebrow className="mb-5" tone="sage">{eyebrow}</Eyebrow>
           <TabsList className="mx-auto flex w-fit flex-wrap justify-center gap-2">
@@ -191,8 +195,8 @@ export function AudienceTabs({
             </ul>
           </div>
 
-          <div className="mx-auto flex w-full max-w-md flex-col rounded-2xl border border-cream/25 bg-cream p-6.5 lg:max-w-none">
-            <div className="flex min-h-0 flex-1 items-center justify-center">
+          <div className="mx-auto flex w-full max-w-md flex-col self-start rounded-2xl border border-cream/25 bg-cream p-6.5 lg:max-w-none">
+            <div className="flex items-center justify-center">
               <svg
               viewBox="0 0 460 420"
               className="block w-full overflow-visible"
