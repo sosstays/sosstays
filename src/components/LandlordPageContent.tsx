@@ -297,49 +297,55 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             </Reveal>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {HOW_IT_WORKS_STATS.map((item, i) => (
-              <Reveal
-                key={item.title}
-                delay={i * 90}
-                className="rounded-[10px] border border-sage-grey/40 p-6"
-              >
-                <div
-                  className="mb-2.5 text-[28px] font-bold text-maroon"
-                >
-                  {item.stat}
-                </div>
-                <h3 className="mb-2 text-base font-semibold text-maroon">
-                  {item.title}
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+            <Reveal delay={140} className="relative aspect-[4/5] overflow-hidden rounded-[18px] lg:aspect-auto lg:h-full lg:min-h-[460px]">
+              <Image
+                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=80"
+                alt="A model house and keys on a table, standing in for handing your property over to us"
+                fill
+                className="object-cover"
+              />
+            </Reveal>
+
+            <div>
+              <Reveal as="p" delay={200} className="mb-7 max-w-[54ch] text-[15px] leading-relaxed text-near-black/70">
+                Full property management — guest messages, pricing, cleaning,
+                maintenance — for a single commission on what you actually
+                earn. No setup fee, no contract that locks you in.
+              </Reveal>
+
+              <div className="grid grid-cols-2 gap-5">
+                {HOW_IT_WORKS_STATS.map((item, i) => (
+                  <Reveal
+                    key={item.title}
+                    delay={240 + i * 90}
+                    className="rounded-[10px] border border-sage-grey/40 p-5 sm:p-6"
+                  >
+                    <div className="mb-2 text-2xl font-bold text-maroon sm:text-[28px]">
+                      {item.stat}
+                    </div>
+                    <h3 className="mb-1.5 text-sm font-semibold text-maroon sm:text-base">
+                      {item.title}
+                    </h3>
+                    <p className="text-[12.5px] leading-relaxed text-near-black/65 sm:text-[13px]">
+                      {item.description}
+                    </p>
+                  </Reveal>
+                ))}
+              </div>
+
+              <Reveal delay={620} className="mt-5 rounded-[18px] border border-sage-grey/40 px-6 py-5">
+                <h3 className="mb-1.5 text-base font-semibold text-maroon">
+                  Still your property
                 </h3>
-                <p className="text-[13px] leading-relaxed text-near-black/65">
-                  {item.description}
+                <p className="text-sm leading-relaxed text-near-black/65">
+                  Block off personal-use dates any time you like. No minimum
+                  commitment — stay as long as it&apos;s working for you,
+                  leave when it isn&apos;t.
                 </p>
               </Reveal>
-            ))}
+            </div>
           </div>
-          <Reveal delay={240} className="mt-7 rounded-[18px] px-8 py-7 border border-sage-grey/40">
-            <h3 className="mb-1.5 text-base font-semibold text-maroon">
-              Still your property
-            </h3>
-            <p className="text-sm leading-relaxed text-near-black/65">
-              Block off personal-use dates any time you like. No minimum
-              commitment — stay as long as it&apos;s working for you, leave when
-              it isn&apos;t.
-            </p>
-          </Reveal>
-
-          <Reveal as="p" delay={300} className="mx-auto mt-9 max-w-[720px] text-[15px] leading-relaxed text-near-black/70">
-            We take that off your hands. Full property management — guest
-            communication, pricing, cleaning coordination, maintenance — for a
-            single commission on what you actually earn per night. No setup fee,
-            no monthly retainer, no contract that locks you in if it&apos;s not
-            working. <br></br> This isn&apos;t a marketing agency bolt-on. We run the
-            entire operation end to end, not just your listing photos or pricing
-            calendar — every guest message, every check-in, every cleaner
-            handoff, every repair call. You stay in control of the property; we
-            handle everything that isn&apos;t the property itself.
-          </Reveal>
         </div>
       </section>
 
