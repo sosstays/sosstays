@@ -195,7 +195,7 @@ export function AudienceTabs({
             </ul>
           </div>
 
-          <div className="mx-auto flex w-full max-w-md flex-col self-start rounded-2xl border border-cream/25 p-6.5 lg:max-w-none">
+          <div className="mx-auto flex w-full max-w-md flex-col self-start rounded-2xl p-6.5 lg:max-w-none">
             <div className="flex items-center justify-center">
               <svg
               viewBox="0 0 460 420"
@@ -204,7 +204,7 @@ export function AudienceTabs({
             >
               <path
                 d="M74 96c34-38 96-52 148-40 44 10 62 40 100 46 44 7 76-6 96 22 22 30 4 78-18 116-24 42-30 84-72 110-44 27-108 24-152 2-46-23-70-64-88-108-18-44-48-108-14-148z"
-                fill="var(--pale-sage)"
+                fill="var(--cream)"
                 stroke="var(--maroon)"
                 strokeOpacity={0.25}
                 strokeWidth={1.5}
@@ -246,7 +246,7 @@ export function AudienceTabs({
                 <path
                   key={i}
                   d={`M230 230 L${x} ${y}`}
-                  stroke="var(--cream)"
+                  stroke="var(--forest-green)"
                   strokeWidth={1.2}
                   fill="none"
                   pathLength={1}
