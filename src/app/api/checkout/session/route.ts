@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
       ui_mode: "embedded_page",
       mode: "payment",
       customer_email: guestEmail,
+      allow_promotion_codes: true,
       // Matches the site's palette/type/radius as closely as embedded
       // Checkout's server-side branding controls allow — there's no
       // client-side Appearance API for ui_mode: embedded_page, neither
