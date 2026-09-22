@@ -16,10 +16,13 @@ export function RelatedBlogsSection({
   posts,
   eyebrow = "From the blog",
   heading = "Worth a read",
+  cardOverlayColor,
 }: {
   posts: RelatedBlogPost[];
   eyebrow?: string;
   heading?: string;
+  /** Overrides ImageOverlayCard's default forest-green photo tint, e.g. "var(--maroon)" for a maroon-themed page. */
+  cardOverlayColor?: string;
 }) {
   if (!posts || posts.length === 0) return null;
 
@@ -41,6 +44,7 @@ export function RelatedBlogsSection({
             href={`/blog/${post.slug}`}
             tag="Featured"
             heightClassName="h-[380px]"
+            overlayColor={cardOverlayColor}
           />
         ))}
       </div>

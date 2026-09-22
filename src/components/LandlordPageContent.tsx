@@ -534,7 +534,11 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         </div>
       </section>
 
-      <RelatedBlogsSection posts={landlordPosts} heading="Worth a read before you send your SOS" />
+      <RelatedBlogsSection
+        posts={landlordPosts}
+        heading="Worth a read before you send your SOS"
+        cardOverlayColor="var(--maroon)"
+      />
     </main>
   );
 }
