@@ -168,7 +168,7 @@ export function AudienceTabs({
 
         <TabsContent
           value={String(active)}
-          className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-11"
+          className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-11"
         >
           <div className="flex flex-col gap-5.5 pt-1.5">
             <h2 className="min-h-[54px] text-balance font-serif text-2xl leading-[1.08] font-bold tracking-tight text-cream sm:min-h-[66px] sm:text-3xl lg:min-h-[92px] lg:text-4xl">
@@ -195,7 +195,7 @@ export function AudienceTabs({
             </ul>
           </div>
 
-          <div className="mx-auto flex w-full max-w-md flex-col self-start rounded-2xl p-6.5 lg:max-w-none">
+          <div className="mx-auto flex w-full flex-col self-center rounded-2xl">
             <div className="flex items-center justify-center">
               <svg
               viewBox="0 0 460 420"
