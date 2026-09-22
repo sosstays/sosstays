@@ -315,23 +315,36 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
               </Reveal>
 
               <div className="grid grid-cols-2 gap-5">
-                {HOW_IT_WORKS_STATS.map((item, i) => (
-                  <Reveal
-                    key={item.title}
-                    delay={240 + i * 90}
-                    className="rounded-[10px] border border-sage-grey/40 p-5 sm:p-6"
-                  >
-                    <div className="mb-2 text-2xl font-bold text-maroon sm:text-[28px]">
-                      {item.stat}
-                    </div>
-                    <h3 className="mb-1.5 text-sm font-semibold text-maroon sm:text-base">
-                      {item.title}
-                    </h3>
-                    <p className="text-[12.5px] leading-relaxed text-near-black/65 sm:text-[13px]">
-                      {item.description}
-                    </p>
-                  </Reveal>
-                ))}
+                {HOW_IT_WORKS_STATS.map((item, i) => {
+                  const inverted = i === 1 || i === 2;
+                  return (
+                    <Reveal
+                      key={item.title}
+                      delay={240 + i * 90}
+                      className={
+                        inverted
+                          ? "rounded-[10px] bg-maroon p-5 sm:p-6"
+                          : "rounded-[10px] border border-sage-grey/40 p-5 sm:p-6"
+                      }
+                    >
+                      <div
+                        className={`mb-2 text-2xl font-bold sm:text-[28px] ${inverted ? "text-cream" : "text-maroon"}`}
+                      >
+                        {item.stat}
+                      </div>
+                      <h3
+                        className={`mb-1.5 text-sm font-semibold sm:text-base ${inverted ? "text-cream" : "text-maroon"}`}
+                      >
+                        {item.title}
+                      </h3>
+                      <p
+                        className={`text-[12.5px] leading-relaxed sm:text-[13px] ${inverted ? "text-cream/75" : "text-near-black/65"}`}
+                      >
+                        {item.description}
+                      </p>
+                    </Reveal>
+                  );
+                })}
               </div>
 
               <Reveal delay={620} className="mt-5 rounded-[18px] border border-sage-grey/40 px-6 py-5">
