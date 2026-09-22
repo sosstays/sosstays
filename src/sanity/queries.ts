@@ -469,7 +469,9 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
     featuredStays[] {
       name,
       href,
-      description
+      location,
+      description,
+      image
     },
     teamEyebrow,
     teamHeading,

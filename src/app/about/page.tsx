@@ -77,16 +77,19 @@ const DEFAULT_FEATURED_STAYS = [
   {
     name: "Howard's Way",
     href: "/stays/howards-way-liscannor",
+    location: "Liscannor, Co. Clare",
     description: "A 4-bed house above Liscannor Bay, sleeps 8, five minutes from the Cliffs of Moher.",
   },
   {
     name: "Rathescar Grove Guest House",
     href: "/stays/rathescar-grove-guest-house",
+    location: "Ardee, Co. Louth",
     description: "A guest house outside Ardee, your base for the Boyne Valley.",
   },
   {
     name: "Tinneshrule Farm Lodge",
     href: "/stays/tinneshrule-farm-lodge",
+    location: "Ferns, Co. Wexford",
     description: "A working-farm studio in Ferns. No TV, strong WiFi, does what it says on the tin.",
   },
 ];
@@ -351,20 +354,48 @@ export default async function AboutUsPage() {
             </h2>
           </Reveal>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {featuredStays.map((stay: { name: string; href: string; description: string }, i: number) => (
-              <Reveal key={stay.href} delay={i * 100}>
-                <Link
-                  href={stay.href}
-                  className="group flex h-full flex-col rounded-[18px] border border-sage-grey/25 bg-pale-sage/40 p-7 transition-colors hover:bg-pale-sage/70"
-                >
-                  <h3 className="font-serif mb-2.5 text-xl font-bold text-deep-forest group-hover:underline">
-                    {stay.name}
-                  </h3>
-                  <p className="flex-1 text-[15px] leading-loose text-near-black/70">{stay.description}</p>
-                  <span className="mt-4 text-sm font-semibold text-forest-green">See the stay →</span>
-                </Link>
-              </Reveal>
-            ))}
+            {featuredStays.map(
+              (
+                stay: {
+                  name: string;
+                  href: string;
+                  location?: string;
+                  description: string;
+                  image?: { alt?: string } | null;
+                },
+                i: number
+              ) => (
+                <Reveal key={stay.href} delay={i * 100}>
+                  <Link
+                    href={stay.href}
+                    className="group flex h-full flex-col overflow-hidden rounded-[18px] border border-sage-grey/25 bg-cream p-3 transition-colors hover:bg-pale-sage/40"
+                  >
+                    {stay.image ? (
+                      <div className="relative mb-4 aspect-[4/3] w-full overflow-hidden rounded-[14px]">
+                        <Image
+                          src={urlFor(stay.image).width(600).height(450).url()}
+                          alt={stay.image.alt ?? stay.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : null}
+                    <div className="flex flex-1 flex-col px-2 pb-2">
+                      {stay.location ? (
+                        <p className="mb-2 text-xs font-semibold tracking-widest text-near-black/50 uppercase">
+                          {stay.location}
+                        </p>
+                      ) : null}
+                      <h3 className="font-serif mb-2.5 text-xl font-bold text-deep-forest group-hover:underline">
+                        {stay.name}
+                      </h3>
+                      <p className="flex-1 text-[15px] leading-loose text-near-black/70">{stay.description}</p>
+                      <span className="mt-4 text-sm font-semibold text-forest-green">See the stay →</span>
+                    </div>
+                  </Link>
+                </Reveal>
+              )
+            )}
           </div>
         </section>
 
