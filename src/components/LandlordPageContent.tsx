@@ -51,14 +51,14 @@ const HOW_IT_WORKS_STATS = [
   },
 ];
 
+// `value` carries the number, `unit` the symbol — rendered at different
+// sizes/weights so the digits read as the headline and the %/×/+ as a
+// lighter annotation, instead of the whole string reading as one flat block.
 const MARKET_STATS = [
-  { stat: "20–35%", caption: "typical underearning for hosts managing solo" },
-  {
-    stat: "2–3×",
-    caption: "revenue potential vs. a long-term let, corridor-wide",
-  },
-  { stat: "80%+", caption: "peak-season occupancy across the corridor" },
-  { stat: "€150+", caption: "average nightly rate for comparable properties" },
+  { value: "20–35", unit: "%", caption: "typical underearning for hosts managing solo" },
+  { value: "2–3", unit: "×", caption: "revenue potential vs. a long-term let, corridor-wide" },
+  { value: "80", unit: "%+", caption: "peak-season occupancy across the corridor" },
+  { value: "€150", unit: "+", caption: "average nightly rate for comparable properties" },
 ];
 
 // Shared decorative squiggle used as a faint background accent in the
@@ -362,10 +362,9 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
         <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
           {MARKET_STATS.map((item, i) => (
             <Reveal key={item.caption} delay={i * 90} className="px-2 text-center">
-              <div
-                className="text-3xl font-extrabold text-maroon"
-              >
-                {item.stat}
+              <div className="text-4xl font-extrabold tracking-tight text-maroon sm:text-5xl">
+                {item.value}
+                <span className="text-2xl font-medium text-maroon/55 sm:text-3xl">{item.unit}</span>
               </div>
               <p className="mt-2 text-[13px] leading-normal text-near-black/60">
                 {item.caption}
