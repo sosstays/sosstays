@@ -34,12 +34,12 @@ export function GapChart() {
   }, [node]);
 
   return (
-    <div ref={setNode} className="mt-7 -mx-2 overflow-x-auto sm:mx-0">
+    <div ref={setNode} className="mt-7">
       <svg
         viewBox="0 0 1080 400"
         role="img"
         aria-label="Chart comparing managed and self-managed revenue across a season, with a 20 to 35 percent gap"
-        className="block h-auto w-full min-w-[640px]"
+        className="block h-auto w-full"
       >
         <g stroke="#efe6e0" strokeWidth="1">
           <line x1="40" y1="40" x2="1040" y2="40" />
