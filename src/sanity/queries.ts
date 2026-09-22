@@ -55,6 +55,7 @@ export const BLOG_POST_QUERY = defineQuery(`
     publishedAt,
     author,
     tags,
+    faqs,
     relatedAreaGuides[]-> {
       _id,
       areaName,
