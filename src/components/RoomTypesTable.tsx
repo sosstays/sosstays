@@ -78,6 +78,13 @@ function ChevronIcon() {
 export async function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTypes?: RoomType[] | null }) {
   if (!roomTypes || roomTypes.length === 0) return null;
 
+  // Whole-house properties (e.g. tinnashrule-farm-lodge, howards-way-liscannor)
+  // list room types purely as info — none of them carry a PMS roomId, since
+  // the whole property is a single booking rather than separately bookable
+  // rooms. Drop the Price and link-arrow columns entirely in that case
+  // instead of rendering empty cells for every row.
+  const isBookablePerRoom = roomTypes.some((room) => room.roomId);
+
   const prices = await Promise.all(
     roomTypes.map((room) => (room.roomId ? getFromNightlyPrice(room.roomId) : Promise.resolve(null)))
   );
@@ -91,8 +98,12 @@ export async function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTy
             <th className="w-40 border-l border-cream/15 px-6 py-4 text-sm font-semibold text-cream">
               Number of guests
             </th>
-            <th className="w-36 border-l border-cream/15 px-6 py-4 text-sm font-semibold text-cream">Price</th>
-            <th className="w-10 border-l border-cream/15 px-3 py-4" aria-hidden="true" />
+            {isBookablePerRoom && (
+              <>
+                <th className="w-36 border-l border-cream/15 px-6 py-4 text-sm font-semibold text-cream">Price</th>
+                <th className="w-10 border-l border-cream/15 px-3 py-4" aria-hidden="true" />
+              </>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -178,22 +189,26 @@ export async function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTy
                     guestsCell
                   )}
                 </td>
-                <td className="border-l border-sage-grey/40 px-6 py-5">
-                  {href ? (
-                    <Link href={href} className="contents">
-                      {priceCell}
-                    </Link>
-                  ) : (
-                    priceCell
-                  )}
-                </td>
-                <td className="border-l border-sage-grey/40 px-3 py-5 text-center">
-                  {href ? (
-                    <Link href={href} className="contents">
-                      <ChevronIcon />
-                    </Link>
-                  ) : null}
-                </td>
+                {isBookablePerRoom && (
+                  <>
+                    <td className="border-l border-sage-grey/40 px-6 py-5">
+                      {href ? (
+                        <Link href={href} className="contents">
+                          {priceCell}
+                        </Link>
+                      ) : (
+                        priceCell
+                      )}
+                    </td>
+                    <td className="border-l border-sage-grey/40 px-3 py-5 text-center">
+                      {href ? (
+                        <Link href={href} className="contents">
+                          <ChevronIcon />
+                        </Link>
+                      ) : null}
+                    </td>
+                  </>
+                )}
               </tr>
             );
           })}

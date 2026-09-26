@@ -22,8 +22,31 @@ type SosPropertyPage = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   coverImage?: any;
   uplistingPropertySlug?: string;
+  uplistingPropertyId?: number;
+  wholeHouseAvailabilityId?: string;
   roomTypes?: SearchResultRoom[];
 };
+
+// Mirrors the on-site-checkout-over-external-link preference in
+// /stays/[slug]/page.tsx, minus the Site Settings subdomain fallback (not
+// needed here since both whole-house properties already have a real
+// uplistingPropertyId) — kept in one place if that changes.
+function buildWholeHouseBookNowUrl(
+  property: SosPropertyPage,
+  checkIn?: string,
+  checkOut?: string,
+  guests?: number
+): string | null {
+  if (property.uplistingPropertyId) {
+    const params = new URLSearchParams();
+    if (checkIn) params.set("checkIn", checkIn);
+    if (checkOut) params.set("checkOut", checkOut);
+    if (guests) params.set("guests", String(guests));
+    const query = params.toString();
+    return `/stays/${property.slug}/book${query ? `?${query}` : ""}`;
+  }
+  return property.uplistingPropertySlug?.startsWith("http") ? property.uplistingPropertySlug : null;
+}
 
 type SearchPageParams = {
   location?: string;
@@ -98,22 +121,49 @@ export default async function SearchPage({
   // Sanity's roomTypes[].roomId is the Uplisting room ID for that room —
   // a property "matches" a search when at least one of its rooms is
   // among the available listings Uplisting just returned.
+  //
+  // Whole-house properties (e.g. tinnashrule-farm-lodge, howards-way-liscannor)
+  // don't carry a roomId on any roomTypes entry, since the whole property is
+  // one booking rather than separately bookable rooms — those instead match
+  // on the property's own wholeHouseAvailabilityId (note: NOT
+  // uplistingPropertySlug, which on these properties holds a booking URL/
+  // placeholder rather than the real Uplisting property_slug). matchedRooms
+  // stays empty for them, so SearchResultCard shows the property as
+  // available without listing individual rooms.
   const matchedProperties = availableSlugs
     ? properties
-        .map((property) => ({
-          property,
-          matchedRooms: (property.roomTypes ?? []).filter(
+        .map((property) => {
+          const matchedRooms = (property.roomTypes ?? []).filter(
             (room) => room.roomId && availableSlugs.has(room.roomId)
-          ),
-        }))
-        .filter((entry) => entry.matchedRooms.length > 0)
+          );
+          const wholeHouseMatch =
+            matchedRooms.length === 0 &&
+            Boolean(
+              property.wholeHouseAvailabilityId && availableSlugs.has(property.wholeHouseAvailabilityId)
+            );
+          return { property, matchedRooms, wholeHouseMatch };
+        })
+        .filter((entry) => entry.matchedRooms.length > 0 || entry.wholeHouseMatch)
     : [];
 
   const matchedPropertiesWithPrices =
     check_in && check_out
       ? await Promise.all(
-          matchedProperties.map(async ({ property, matchedRooms }) => ({
+          matchedProperties.map(async ({ property, matchedRooms, wholeHouseMatch }) => ({
             property,
+            wholeHouseMatch,
+            wholeHousePricePerNight: wholeHouseMatch
+              ? await withApproxPrices(
+                  property.wholeHouseAvailabilityId
+                    ? slugToPropertyId.get(property.wholeHouseAvailabilityId)
+                    : undefined,
+                  check_in,
+                  check_out
+                )
+              : undefined,
+            bookNowUrl: wholeHouseMatch
+              ? buildWholeHouseBookNowUrl(property, check_in, check_out, guestCount)
+              : null,
             matchedRooms: await Promise.all(
               matchedRooms.map(async (room) => ({
                 ...room,
@@ -126,7 +176,13 @@ export default async function SearchPage({
             ),
           }))
         )
-      : matchedProperties;
+      : matchedProperties.map((entry) => ({
+          ...entry,
+          wholeHousePricePerNight: undefined,
+          bookNowUrl: entry.wholeHouseMatch
+            ? buildWholeHouseBookNowUrl(entry.property, check_in, check_out, guestCount)
+            : null,
+        }));
 
   const showMatches = hasSearchCriteria && availableSlugs !== null;
 
@@ -168,20 +224,25 @@ export default async function SearchPage({
         {showMatches ? (
           <>
             <div className="mt-10 flex flex-col gap-12">
-              {matchedPropertiesWithPrices.map(({ property, matchedRooms }) => (
-                <SearchResultCard
-                  key={property._id}
-                  slug={property.slug}
-                  name={property.name}
-                  location={property.location}
-                  sleeps={property.sleeps}
-                  coverImage={property.coverImage}
-                  rooms={matchedRooms}
-                  checkIn={check_in}
-                  checkOut={check_out}
-                  guests={guestCount}
-                />
-              ))}
+              {matchedPropertiesWithPrices.map(
+                ({ property, matchedRooms, wholeHouseMatch, wholeHousePricePerNight, bookNowUrl }) => (
+                  <SearchResultCard
+                    key={property._id}
+                    slug={property.slug}
+                    name={property.name}
+                    location={property.location}
+                    sleeps={property.sleeps}
+                    coverImage={property.coverImage}
+                    rooms={matchedRooms}
+                    wholeHouseMatch={wholeHouseMatch}
+                    wholeHousePricePerNight={wholeHousePricePerNight}
+                    bookNowUrl={bookNowUrl}
+                    checkIn={check_in}
+                    checkOut={check_out}
+                    guests={guestCount}
+                  />
+                )
+              )}
             </div>
             {matchedProperties.length === 0 && (
               <p className="mt-8 text-near-black/60">

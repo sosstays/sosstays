@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/image";
+import { BookNowCta } from "@/components/PropertyOverview";
 
 type SanityImageWithAlt = { alt?: string } & Record<string, unknown>;
 
@@ -21,6 +22,12 @@ export type SearchResultCardProps = {
   sleeps?: number;
   coverImage?: SanityImageWithAlt;
   rooms: SearchResultRoom[];
+  /** Whole-house property (e.g. tinnashrule-farm-lodge) matched on its own Uplisting slug rather than a specific room — shown as available without a room list. */
+  wholeHouseMatch?: boolean;
+  /** Average nightly rate for the whole house over the searched dates — set only alongside wholeHouseMatch. */
+  wholeHousePricePerNight?: number;
+  /** Where the whole house's own Book Now button should go — on-site checkout, an external booking link, or null if neither is configured. */
+  bookNowUrl?: string | null;
   checkIn?: string;
   checkOut?: string;
   guests?: number;
@@ -119,6 +126,9 @@ export function SearchResultCard({
   sleeps,
   coverImage,
   rooms,
+  wholeHouseMatch = false,
+  wholeHousePricePerNight,
+  bookNowUrl,
   checkIn,
   checkOut,
   guests,
@@ -154,17 +164,40 @@ export function SearchResultCard({
       </Link>
 
       <div className="flex flex-1 flex-col gap-3">
-        <p className="text-xs tracking-widest text-near-black/55 uppercase">
-          {rooms.length} room{rooms.length === 1 ? "" : "s"} available
-        </p>
-        {rooms.map((room, index) => (
-          <RoomRow
-            key={room.roomId}
-            room={room}
-            delay={1.1 + index * 0.15}
-            href={room.roomId ? buildRoomHref(slug, room.roomId, checkIn, checkOut, guests) : null}
-          />
-        ))}
+        {wholeHouseMatch ? (
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-[14px] border border-sage-grey/40 p-4">
+            <div>
+              <p className="text-sm font-semibold text-forest-green">Available for your dates</p>
+              {wholeHousePricePerNight !== undefined && (
+                <p className="mt-1 text-sm text-near-black/70">
+                  ~€{wholeHousePricePerNight} <span className="text-near-black/50">/ night</span>
+                </p>
+              )}
+            </div>
+            <BookNowCta
+              bookingUrl={bookNowUrl ?? null}
+              external={Boolean(bookNowUrl?.startsWith("http"))}
+              label="Book now"
+              bgColor="forest-green"
+              color="cream"
+              className="px-6 py-3 text-sm font-semibold"
+            />
+          </div>
+        ) : (
+          <>
+            <p className="text-xs tracking-widest text-near-black/55 uppercase">
+              {rooms.length} room{rooms.length === 1 ? "" : "s"} available
+            </p>
+            {rooms.map((room, index) => (
+              <RoomRow
+                key={room.roomId}
+                room={room}
+                delay={1.1 + index * 0.15}
+                href={room.roomId ? buildRoomHref(slug, room.roomId, checkIn, checkOut, guests) : null}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

@@ -73,10 +73,25 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
           propertySlug: property.uplistingPropertySlug,
         })
       : null;
+
+  // Dates/guests the guest already entered in this page's own availability
+  // search bar — carried through to the on-site checkout link below so
+  // /book doesn't ask for them a second time.
+  const checkIn = check_in && ISO_DATE.test(check_in) ? check_in : undefined;
+  const checkOut = check_out && ISO_DATE.test(check_out) ? check_out : undefined;
+  const guestCount = Number(guests) > 0 ? Number(guests) : undefined;
+
   // When uplistingPropertyId is also set, prefer the on-site embedded
   // checkout (/book) over Uplisting's own hosted page, so pricing and
   // payment stay on this site.
-  const genericBookingUrl = property.uplistingPropertyId ? `/stays/${slug}/book` : externalBookingUrl;
+  const bookNowParams = new URLSearchParams();
+  if (checkIn) bookNowParams.set("checkIn", checkIn);
+  if (checkOut) bookNowParams.set("checkOut", checkOut);
+  if (guestCount) bookNowParams.set("guests", String(guestCount));
+  const bookNowQuery = bookNowParams.toString();
+  const genericBookingUrl = property.uplistingPropertyId
+    ? `/stays/${slug}/book${bookNowQuery ? `?${bookNowQuery}` : ""}`
+    : externalBookingUrl;
 
   // A property page covers a whole guesthouse, which can have several
   // separately-bookable Uplisting rooms — there's no single checkout link
@@ -90,6 +105,12 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
   const bookingIsExternal = Boolean(bookingUrl?.startsWith("http"));
   const bookingLabel = hasBookableRooms ? "See room types" : "Book now";
 
+  // Whole-house properties (room types are informational only, no roomId
+  // set) still get a live availability check, scoped to the property's own
+  // wholeHouseAvailabilityId — just without a room list, since there's
+  // nothing to pick between.
+  const hasWholeHouseAvailability = !hasBookableRooms && Boolean(property.wholeHouseAvailabilityId);
+
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", url: SITE_URL },
     { name: "Stays", url: `${SITE_URL}/stays` },
@@ -97,28 +118,36 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
   ]);
 
   // Room search: dates and/or guest count from the property-page search
-  // bar. Like /search, matching is against Uplisting's live availability
-  // (a room is available when its roomId — the Uplisting property_slug —
-  // comes back), scoped here to just this property's own rooms. If the
-  // lookup fails, fall back to listing every room rather than an empty
-  // table that reads as "fully booked".
-  const checkIn = check_in && ISO_DATE.test(check_in) ? check_in : undefined;
-  const checkOut = check_out && ISO_DATE.test(check_out) ? check_out : undefined;
-  const guestCount = Number(guests) > 0 ? Number(guests) : undefined;
-  const hasRoomSearch = hasBookableRooms && Boolean(checkIn || checkOut || guestCount);
+  // bar (parsed above, alongside genericBookingUrl). Like /search, matching
+  // is against Uplisting's live availability (a room is available when its
+  // roomId — the Uplisting property_slug — comes back), scoped here to just
+  // this property's own rooms. If the lookup fails, fall back to listing
+  // every room rather than an empty table that reads as "fully booked".
+  const hasDateSearch = Boolean(checkIn || checkOut || guestCount);
+  const hasRoomSearch = hasBookableRooms && hasDateSearch;
+  const hasWholeHouseSearch = hasWholeHouseAvailability && hasDateSearch;
 
   const allRooms: SearchResultRoom[] = property.roomTypes ?? [];
-  const availability = hasRoomSearch
-    ? await searchUplistingAvailability({ checkIn, checkOut, guests: guestCount }).catch((error) => {
-        console.error("Uplisting availability search failed:", error);
-        return null;
-      })
-    : null;
+  const availability =
+    hasRoomSearch || hasWholeHouseSearch
+      ? await searchUplistingAvailability({ checkIn, checkOut, guests: guestCount }).catch((error) => {
+          console.error("Uplisting availability search failed:", error);
+          return null;
+        })
+      : null;
   const availableRoomIds = availability ? new Set(availability.map((room) => room.propertySlug)) : null;
+  const wholeHouseAvailable =
+    hasWholeHouseSearch && availableRoomIds
+      ? availableRoomIds.has(property.wholeHouseAvailabilityId)
+      : null;
   // Uplisting's calendar (used for pricing) is keyed by numeric property
   // id, not the property_slug Sanity's roomTypes[].roomId stores — the
   // availability search carries both, so build the lookup once.
   const slugToPropertyId = new Map((availability ?? []).map((room) => [room.propertySlug, room.id]));
+  const wholeHousePricePerNight =
+    wholeHouseAvailable && checkIn && checkOut
+      ? await withApproxPrices(slugToPropertyId.get(property.wholeHouseAvailabilityId), checkIn, checkOut)
+      : undefined;
   const matchedRooms: SearchResultRoom[] = availableRoomIds
     ? await Promise.all(
         allRooms
@@ -207,7 +236,62 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
 
       {/* AVAILABILITY BAR */}
       <section className="mx-auto max-w-6xl px-8 pt-7 sm:px-14">
-        {hasBookableRooms ? (
+        {hasWholeHouseAvailability ? (
+          <div id="availability" className="scroll-mt-24">
+            <SearchBar
+              action={`/stays/${slug}#availability`}
+              hideLocation
+              initialCheckIn={checkIn}
+              initialCheckOut={checkOut}
+              initialGuests={guestCount}
+            />
+
+            {hasWholeHouseSearch && (
+              <div className="mt-7">
+                <p className="mb-4 text-sm text-near-black/60">
+                  {availableRoomIds ? (
+                    <>
+                      {roomSearchSummary}
+                      {roomSearchSummary && " · "}
+                      <Link href={`/stays/${slug}`} className="font-medium text-forest-green underline">
+                        Clear search
+                      </Link>
+                    </>
+                  ) : (
+                    "We couldn't check live availability just now — get in touch and we'll confirm dates directly."
+                  )}
+                </p>
+                {availableRoomIds &&
+                  (wholeHouseAvailable ? (
+                    <div className="flex flex-wrap items-center justify-between gap-5 rounded-[10px] border border-sage-grey/40 px-6 py-5">
+                      <div>
+                        <span className="block text-[15px] font-semibold text-forest-green">
+                          Available for your dates
+                        </span>
+                        {wholeHousePricePerNight !== undefined && (
+                          <span className="mt-1 block text-sm text-near-black/70">
+                            ~€{wholeHousePricePerNight} <span className="text-near-black/50">/ night</span>
+                          </span>
+                        )}
+                      </div>
+                      <BookNowCta
+                        bookingUrl={genericBookingUrl}
+                        external={Boolean(genericBookingUrl?.startsWith("http"))}
+                        label="Book now"
+                        bgColor="forest-green"
+                        color="cream"
+                        className="px-7 py-3.5 text-[15px] font-semibold"
+                      />
+                    </div>
+                  ) : (
+                    <p className="rounded-[10px] border border-sage-grey/40 px-6 py-8 text-near-black/70">
+                      {property.name} isn&apos;t available for those dates — try a different range.
+                    </p>
+                  ))}
+              </div>
+            )}
+          </div>
+        ) : hasBookableRooms ? (
           // Submits back to this page (GET); the results render right
           // below the bar off the resulting query params. The
           // #availability fragment keeps the guest on them afterwards.

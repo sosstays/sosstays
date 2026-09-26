@@ -94,6 +94,8 @@ export const PROPERTY_PAGES_QUERY = defineQuery(`
     sleeps,
     "coverImage": gallery[0],
     uplistingPropertySlug,
+    uplistingPropertyId,
+    wholeHouseAvailabilityId,
     roomTypes[] {
       name,
       roomId,
@@ -148,6 +150,7 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     reviewCategories,
     uplistingPropertySlug,
     uplistingPropertyId,
+    wholeHouseAvailabilityId,
     faqs,
     relatedAreaGuides[]-> {
       _id,
