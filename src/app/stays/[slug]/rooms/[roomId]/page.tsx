@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { client } from "@/sanity/client";
-import { PROPERTY_PAGE_QUERY } from "@/sanity/queries";
+import { PROPERTY_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { SITE_URL } from "@/sanity/metadata";
 import { JsonLd, buildBreadcrumbSchema, buildFaqSchema } from "@/sanity/jsonld";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
@@ -60,13 +60,18 @@ export default async function RoomPage({ params, searchParams }: Props) {
   const { slug, roomId } = await params;
   const { check_in, check_out, guests } = await searchParams;
 
-  const [property, room, siteNavLinks] = await Promise.all([
+  const [property, room, siteNavLinks, siteSettings] = await Promise.all([
     client.fetch(PROPERTY_PAGE_QUERY, { slug }),
     getUplistingRoom(roomId).catch(() => null),
     getGuestSiteNavLinks(),
+    client.fetch(SITE_SETTINGS_QUERY),
   ]);
 
   if (!property || !room) notFound();
+
+  const whatsappUrl = siteSettings?.socialLinks?.find(
+    (link: { platform: string; url: string }) => link.platform === "whatsapp",
+  )?.url;
 
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", url: SITE_URL },
@@ -192,6 +197,7 @@ export default async function RoomPage({ params, searchParams }: Props) {
         initialGuests={guests ? Number(guests) : undefined}
         maxGuests={room.maximumCapacity}
         fees={room.fees}
+        whatsappUrl={whatsappUrl}
       />
     </main>
   );
