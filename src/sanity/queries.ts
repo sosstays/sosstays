@@ -269,7 +269,8 @@ export const AUDIENCE_TABS_QUERY = defineQuery(`
       label,
       heading,
       body,
-      checklist
+      checklist,
+      image
     }
   }
 `);
@@ -454,7 +455,6 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
     introParagraph1,
     introParagraph2,
     introParagraph3,
-    audienceImage,
     coverageEyebrow,
     coverageHeading,
     coverageBody,

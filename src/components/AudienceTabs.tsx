@@ -10,6 +10,9 @@ export type AudienceTabContent = {
   heading: string;
   body: string;
   checklist: string[];
+  /** Resolved (urlFor'd) at the page level, like every other image on
+   *  the site — see the `image` prop below for how it's used. */
+  image?: { src: string; alt: string } | null;
 };
 
 // Marker positions on the 460x420 map SVG — index 0 is the central hub,
@@ -78,16 +81,17 @@ function PersonIcon({ style }: { style?: CSSProperties }) {
 export function AudienceTabs({
   eyebrow,
   tabs,
-  rightImage,
+  useImages = false,
   theme = "maroon",
   showChecklist = true,
 }: {
   eyebrow: string;
   tabs: AudienceTabContent[];
-  /** Swaps the animated coverage-map illustration for a plain photo —
-   *  used on pages (like /about) that want this component's copy and
-   *  tab-switching behaviour without the landlord-page-specific map. */
-  rightImage?: { src: string; alt: string };
+  /** Swaps the animated coverage-map illustration for each tab's own
+   *  `image` (see AudienceTabContent) — used on pages (like /about) that
+   *  want this component's copy and tab-switching behaviour without the
+   *  landlord-page-specific map. The image changes as the active tab does. */
+  useImages?: boolean;
   /** "maroon" is the landlord-page look this component was built for.
    *  "forest" matches the About page's dark-section color (same as its
    *  "Where we operate" section) instead. */
@@ -215,9 +219,9 @@ export function AudienceTabs({
           </div>
 
           <div className="mx-auto flex w-full flex-col self-center rounded-2xl">
-            {rightImage ? (
-              <div className="relative aspect-[460/420] w-full overflow-hidden rounded-2xl">
-                <Image src={rightImage.src} alt={rightImage.alt} fill className="object-cover" />
+            {useImages && tab.image ? (
+              <div className="relative mx-auto aspect-[4/3] w-full max-w-[420px] overflow-hidden rounded-2xl">
+                <Image key={tab.image.src} src={tab.image.src} alt={tab.image.alt} fill className="object-cover" />
               </div>
             ) : (
               <div className="flex items-center justify-center">

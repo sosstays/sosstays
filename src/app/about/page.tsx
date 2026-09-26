@@ -163,9 +163,14 @@ export default async function AboutUsPage() {
     ? { src: urlFor(data.coverageImage).width(1800).url(), alt: data.coverageImage.alt ?? "" }
     : DEFAULT_COVERAGE_IMAGE;
 
-  const audienceImage: ImageSlot = data?.audienceImage
-    ? { src: urlFor(data.audienceImage).width(1200).url(), alt: data.audienceImage.alt ?? "" }
-    : DEFAULT_AUDIENCE_IMAGE;
+  // Each tab carries its own Sanity image (falls back to a shared default
+  // per tab, same as every other image slot on this page, if an editor
+  // hasn't set one yet) — resolved here rather than in AudienceTabs so the
+  // component stays a plain presentational client component.
+  const audienceTabsWithImages = audienceTabs?.tabs?.map((tab) => ({
+    ...tab,
+    image: tab.image ? { src: urlFor(tab.image).width(900).url(), alt: tab.image.alt ?? "" } : DEFAULT_AUDIENCE_IMAGE,
+  }));
 
   const regions = data?.regions?.length ? data.regions : DEFAULT_REGIONS;
   const featuredStays = data?.featuredStays?.length ? data.featuredStays : DEFAULT_FEATURED_STAYS;
@@ -319,12 +324,12 @@ export default async function AboutUsPage() {
           </Reveal>
         </section>
 
-        {/* WHO WE WORK WITH — same component/copy as /landlords, own image */}
-        {audienceTabs?.tabs?.length === 4 && (
+        {/* WHO WE WORK WITH — same component/copy as /landlords, own per-tab image */}
+        {audienceTabs && audienceTabsWithImages?.length === 4 && (
           <AudienceTabs
             eyebrow={audienceTabs.eyebrow}
-            tabs={audienceTabs.tabs}
-            rightImage={audienceImage}
+            tabs={audienceTabsWithImages}
+            useImages
             theme="forest"
             showChecklist={false}
           />

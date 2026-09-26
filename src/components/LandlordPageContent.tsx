@@ -339,7 +339,14 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
       </section>
 
       {audienceTabs?.tabs?.length === 4 && (
-        <AudienceTabs eyebrow={audienceTabs.eyebrow} tabs={audienceTabs.tabs} />
+        // This page renders the animated coverage-map illustration, not
+        // per-tab photos, so the raw Sanity `image` field (unresolved —
+        // urlFor happens only where an image is actually used, see /about)
+        // is dropped here rather than passed through untransformed.
+        <AudienceTabs
+          eyebrow={audienceTabs.eyebrow}
+          tabs={audienceTabs.tabs.map(({ image, ...tab }) => tab)}
+        />
       )}
 
       {/* PROOF POINTS / MARKET DATA */}
