@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { client } from "@/sanity/client";
-import { ABOUT_PAGE_QUERY, AUDIENCE_TABS_QUERY } from "@/sanity/queries";
+import { ABOUT_PAGE_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
@@ -57,6 +57,21 @@ const DEFAULT_AUDIENCE_IMAGE: ImageSlot = {
   src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
   alt: "",
 };
+
+const DEFAULT_WHAT_WE_DO = [
+  {
+    title: "Guest stays",
+    body: "Self-catering houses and a guest house you can book direct, without paying the Airbnb premium.",
+  },
+  {
+    title: "Landlord management",
+    body: "Listings, pricing, guest messaging, cleaning coordination and owner statements, sorted. Commission-only, from 15% of rental revenue. No setup fee, no retainer, no booking, no fee.",
+  },
+  {
+    title: "Corporate & contractor stays",
+    body: "Weekly and monthly furnished houses, one invoice, no fuss.",
+  },
+];
 
 const DEFAULT_REGIONS = [
   { name: "Louth & Meath", status: "Home ground", muted: false },
@@ -149,11 +164,7 @@ const DEFAULT_FAQS = [
 ];
 
 export default async function AboutUsPage() {
-  const [data, audienceTabs, siteNavLinks] = await Promise.all([
-    client.fetch(ABOUT_PAGE_QUERY),
-    client.fetch(AUDIENCE_TABS_QUERY),
-    getGuestSiteNavLinks(),
-  ]);
+  const [data, siteNavLinks] = await Promise.all([client.fetch(ABOUT_PAGE_QUERY), getGuestSiteNavLinks()]);
 
   const heroImage: ImageSlot = data?.heroImage
     ? { src: urlFor(data.heroImage).width(1800).url(), alt: data.heroImage.alt ?? "" }
@@ -163,13 +174,22 @@ export default async function AboutUsPage() {
     ? { src: urlFor(data.coverageImage).width(1800).url(), alt: data.coverageImage.alt ?? "" }
     : DEFAULT_COVERAGE_IMAGE;
 
-  // Each tab carries its own Sanity image (falls back to a shared default
-  // per tab, same as every other image slot on this page, if an editor
-  // hasn't set one yet) — resolved here rather than in AudienceTabs so the
-  // component stays a plain presentational client component.
-  const audienceTabsWithImages = audienceTabs?.tabs?.map((tab) => ({
-    ...tab,
-    image: tab.image ? { src: urlFor(tab.image).width(900).url(), alt: tab.image.alt ?? "" } : DEFAULT_AUDIENCE_IMAGE,
+  const whatWeDoItems = data?.whatWeDoItems?.length ? data.whatWeDoItems : DEFAULT_WHAT_WE_DO;
+
+  // This page's own three service lines, shown via the same tabbed
+  // component as /landlords (see AudienceTabs) — each item's title doubles
+  // as both the tab label and its heading. Falls back to a shared default
+  // photo per item, same as every other image slot on this page, if an
+  // editor hasn't set one yet — resolved here rather than in AudienceTabs
+  // so the component stays a plain presentational client component.
+  const whatWeDoTabs = (
+    whatWeDoItems as { title: string; body: string; image?: { alt?: string | null } | null }[]
+  ).map((item) => ({
+    label: item.title,
+    heading: item.title,
+    body: item.body,
+    checklist: [] as string[],
+    image: item.image ? { src: urlFor(item.image).width(900).url(), alt: item.image.alt ?? "" } : DEFAULT_AUDIENCE_IMAGE,
   }));
 
   const regions = data?.regions?.length ? data.regions : DEFAULT_REGIONS;
@@ -324,11 +344,12 @@ export default async function AboutUsPage() {
           </Reveal>
         </section>
 
-        {/* WHO WE WORK WITH — same component/copy as /landlords, own per-tab image */}
-        {audienceTabs && audienceTabsWithImages?.length === 4 && (
+        {/* WHAT WE DO — same tabbed component as /landlords' audience tabs,
+            this page's own three service lines instead */}
+        {whatWeDoTabs.length > 0 && (
           <AudienceTabs
-            eyebrow={audienceTabs.eyebrow}
-            tabs={audienceTabsWithImages}
+            eyebrow={data?.whatWeDoEyebrow || "What we do"}
+            tabs={whatWeDoTabs}
             useImages
             theme="cream"
             showChecklist={false}

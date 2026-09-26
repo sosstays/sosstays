@@ -456,6 +456,12 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
     introParagraph1,
     introParagraph2,
     introParagraph3,
+    whatWeDoEyebrow,
+    whatWeDoItems[] {
+      title,
+      body,
+      image
+    },
     coverageEyebrow,
     coverageHeading,
     coverageBody,
