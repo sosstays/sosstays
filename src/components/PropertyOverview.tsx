@@ -77,13 +77,32 @@ function BathroomsIcon() {
   );
 }
 
-function TypeIcon() {
+// Whole building, booked as one unit — a roofline over full walls.
+function HouseIcon() {
   return (
     <svg {...overviewIconProps}>
       <path d="M4 11.5 12 4l8 7.5" />
       <path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9" />
     </svg>
   );
+}
+
+// A single room within a shared property (e.g. Rathescar's separately
+// bookable rooms) — a door, distinct from the whole-house roofline.
+function RoomIcon() {
+  return (
+    <svg {...overviewIconProps}>
+      <rect x="6" y="3" width="12" height="18" rx="1" />
+      <circle cx="14.5" cy="12" r="1" fill="var(--forest-green)" stroke="none" />
+    </svg>
+  );
+}
+
+// "Type" covers a mix of PMS-driven values (Entire House, Room) and
+// free-text building styles (Cottage, Villa, ...) — only the booking-unit
+// ones get their own icon; everything else falls back to the house glyph.
+function typeIconFor(type: string) {
+  return type.toLowerCase() === "room" ? RoomIcon : HouseIcon;
 }
 
 export function PropertyOverview({
@@ -104,7 +123,7 @@ export function PropertyOverview({
     { label: "Beds", value: beds, Icon: BedsIcon },
     { label: "Bedrooms", value: bedrooms, Icon: BedroomsIcon },
     { label: "Bathrooms", value: bathrooms, Icon: BathroomsIcon },
-    { label: "Type", value: type, Icon: TypeIcon },
+    { label: "Type", value: type, Icon: type ? typeIconFor(type) : HouseIcon },
   ].filter((item) => item.value !== null && item.value !== undefined && item.value !== "");
 
   if (items.length === 0) return null;

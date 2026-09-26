@@ -494,7 +494,6 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
       title,
       body
     },
-    workWithUsPartnerNote,
     workWithUsContactLine,
     ownershipHeading,
     ownershipBody,
@@ -661,7 +660,8 @@ export const LANDING_PAGE_QUERY = defineQuery(`
       roomTypes,
       "coverImage": gallery[0],
       "gallery": gallery[0...3],
-      uplistingPropertySlug
+      uplistingPropertySlug,
+      uplistingPropertyId
     },
     infoSections[] {
       eyebrow,

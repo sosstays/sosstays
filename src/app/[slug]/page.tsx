@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { client } from "@/sanity/client";
-import { LANDING_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { LANDING_PAGE_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata, SITE_URL } from "@/sanity/metadata";
-import { buildUplistingBookingUrl } from "@/sanity/uplisting";
 import { JsonLd, buildBreadcrumbSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
@@ -24,12 +23,11 @@ export const revalidate = 60;
 type Props = { params: Promise<{ slug: string }> };
 
 async function getData(slug: string) {
-  const [page, siteSettings, siteNavLinks] = await Promise.all([
+  const [page, siteNavLinks] = await Promise.all([
     client.fetch(LANDING_PAGE_QUERY, { slug }),
-    client.fetch(SITE_SETTINGS_QUERY),
     getGuestSiteNavLinks(),
   ]);
-  return { page, siteSettings, siteNavLinks };
+  return { page, siteNavLinks };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -67,17 +65,29 @@ function StatNumber({ text, className }: { text: string; className?: string }) {
 
 export default async function LandingPage({ params }: Props) {
   const { slug } = await params;
-  const { page, siteSettings, siteNavLinks } = await getData(slug);
+  const { page, siteNavLinks } = await getData(slug);
   if (!page) notFound();
 
-  const bookingUrl =
-    page.primaryCtaUrl ||
-    (page.featuredProperty?.uplistingPropertySlug && siteSettings?.bookingSubdomainUrl
-      ? buildUplistingBookingUrl({
-          bookingSubdomain: siteSettings.bookingSubdomainUrl,
-          propertySlug: page.featuredProperty.uplistingPropertySlug,
-        })
-      : undefined);
+  // Always route to the on-site checkout (or, for a property booked by
+  // separate rooms rather than a single listing, its room types section)
+  // rather than reconstructing an off-site Uplisting URL from
+  // uplistingPropertySlug/bookingSubdomainUrl — in practice that field has
+  // held placeholder values (e.g. a bare booking-domain URL with no
+  // property attached) rather than real per-listing slugs. A CMS-set
+  // primaryCtaUrl still wins when present, so editors can still send a
+  // page somewhere else entirely.
+  const featuredHasBookableRooms = (page.featuredProperty?.roomTypes ?? []).some(
+    (room: { roomId?: string }) => room.roomId
+  );
+  const featuredPropertyBookingUrl = page.featuredProperty
+    ? page.featuredProperty.uplistingPropertyId
+      ? `/stays/${page.featuredProperty.slug}/book`
+      : featuredHasBookableRooms
+        ? `/stays/${page.featuredProperty.slug}#room-types`
+        : `/stays/${page.featuredProperty.slug}`
+    : undefined;
+  const bookingUrl = page.primaryCtaUrl || featuredPropertyBookingUrl;
+  const bookingUrlIsExternal = Boolean(bookingUrl?.startsWith("http"));
 
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", url: SITE_URL },
@@ -147,8 +157,8 @@ export default async function LandingPage({ params }: Props) {
             {bookingUrl && (
               <a
                 href={bookingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={bookingUrlIsExternal ? "_blank" : undefined}
+                rel={bookingUrlIsExternal ? "noopener noreferrer" : undefined}
                 className="inline-flex items-center gap-2.5 rounded-full bg-cream px-8.5 py-4.5 text-base font-semibold text-deep-forest transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(0,0,0,0.28)]"
               >
                 {page.primaryCtaLabel || "Book direct"} →
@@ -411,8 +421,8 @@ export default async function LandingPage({ params }: Props) {
                 {bookingUrl && (
                   <a
                     href={bookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={bookingUrlIsExternal ? "_blank" : undefined}
+                    rel={bookingUrlIsExternal ? "noopener noreferrer" : undefined}
                     className="inline-flex items-center rounded-full bg-forest-green px-7.5 py-4 text-[15px] font-semibold text-cream transition-all duration-200 hover:-translate-y-0.5 hover:brightness-90"
                   >
                     Check dates &amp; book direct
@@ -484,8 +494,8 @@ export default async function LandingPage({ params }: Props) {
                 {bookingUrl && (
                   <a
                     href={bookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={bookingUrlIsExternal ? "_blank" : undefined}
+                    rel={bookingUrlIsExternal ? "noopener noreferrer" : undefined}
                     className="mt-7.5 inline-flex items-center rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(0,0,0,0.3)]"
                   >
                     {page.primaryCtaLabel || "Book direct"} →
@@ -747,8 +757,8 @@ export default async function LandingPage({ params }: Props) {
                 {bookingUrl && (
                   <a
                     href={bookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={bookingUrlIsExternal ? "_blank" : undefined}
+                    rel={bookingUrlIsExternal ? "noopener noreferrer" : undefined}
                     className="inline-flex items-center rounded-full bg-cream px-8.5 py-4.5 text-base font-semibold text-deep-forest transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(0,0,0,0.3)]"
                   >
                     {page.primaryCtaLabel || "Book direct"} →

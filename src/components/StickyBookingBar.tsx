@@ -16,6 +16,7 @@ export function StickyBookingBar({
   ctaLabel: string;
   ctaHref: string;
 }) {
+  const ctaIsExternal = ctaHref.startsWith("http");
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -44,8 +45,8 @@ export function StickyBookingBar({
         </div>
         <a
           href={ctaHref}
-          target="_blank"
-          rel="noopener noreferrer"
+          target={ctaIsExternal ? "_blank" : undefined}
+          rel={ctaIsExternal ? "noopener noreferrer" : undefined}
           className="inline-flex items-center rounded-full bg-cream px-6.5 py-3 text-sm font-semibold text-deep-forest transition-transform duration-200 hover:-translate-y-0.5"
         >
           {ctaLabel} →
