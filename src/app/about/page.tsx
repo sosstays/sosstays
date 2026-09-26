@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { client } from "@/sanity/client";
-import { ABOUT_PAGE_QUERY } from "@/sanity/queries";
+import { ABOUT_PAGE_QUERY, AUDIENCE_TABS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
+import { Button } from "@/components/Button";
+import { AudienceTabs } from "@/components/AudienceTabs";
 import { FaqSection } from "@/components/FaqSection";
-import { AccordionPanel } from "@/components/Accordion";
 import { SocialIcons } from "@/components/SocialIcons";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import type { Metadata } from "next";
@@ -52,20 +53,10 @@ const DEFAULT_COVERAGE_IMAGE: ImageSlot = {
   alt: "",
 };
 
-const DEFAULT_WHAT_WE_DO = [
-  {
-    title: "Guest stays",
-    body: "Self-catering houses and a guest house you can book direct, without paying the Airbnb premium.",
-  },
-  {
-    title: "Landlord management",
-    body: "Listings, pricing, guest messaging, cleaning coordination and owner statements, sorted. Commission-only, from 15% of rental revenue. No setup fee, no retainer, no booking, no fee.",
-  },
-  {
-    title: "Corporate & contractor stays",
-    body: "Weekly and monthly furnished houses, one invoice, no fuss.",
-  },
-];
+const DEFAULT_AUDIENCE_IMAGE: ImageSlot = {
+  src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
+  alt: "",
+};
 
 const DEFAULT_REGIONS = [
   { name: "Louth & Meath", status: "Home ground", muted: false },
@@ -157,52 +148,12 @@ const DEFAULT_FAQS = [
   },
 ];
 
-function GuestKeyIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M3 10.5L12 3l9 7.5M5 9.5V20h14V9.5M9.5 20v-6h5v6"
-        stroke="var(--forest-green)"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function LandlordIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M4 21V8l8-5 8 5v13M9 21v-6h6v6M9 11h.01M15 11h.01"
-        stroke="var(--maroon)"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function CorporateIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M4 7h16v12H4V7Zm4 0V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M4 12h16"
-        stroke="var(--deep-forest)"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-const WHAT_WE_DO_ICONS = [GuestKeyIcon, LandlordIcon, CorporateIcon];
-
 export default async function AboutUsPage() {
-  const [data, siteNavLinks] = await Promise.all([client.fetch(ABOUT_PAGE_QUERY), getGuestSiteNavLinks()]);
+  const [data, audienceTabs, siteNavLinks] = await Promise.all([
+    client.fetch(ABOUT_PAGE_QUERY),
+    client.fetch(AUDIENCE_TABS_QUERY),
+    getGuestSiteNavLinks(),
+  ]);
 
   const heroImage: ImageSlot = data?.heroImage
     ? { src: urlFor(data.heroImage).width(1800).url(), alt: data.heroImage.alt ?? "" }
@@ -212,7 +163,10 @@ export default async function AboutUsPage() {
     ? { src: urlFor(data.coverageImage).width(1800).url(), alt: data.coverageImage.alt ?? "" }
     : DEFAULT_COVERAGE_IMAGE;
 
-  const whatWeDoItems = data?.whatWeDoItems?.length ? data.whatWeDoItems : DEFAULT_WHAT_WE_DO;
+  const audienceImage: ImageSlot = data?.audienceImage
+    ? { src: urlFor(data.audienceImage).width(1200).url(), alt: data.audienceImage.alt ?? "" }
+    : DEFAULT_AUDIENCE_IMAGE;
+
   const regions = data?.regions?.length ? data.regions : DEFAULT_REGIONS;
   const featuredStays = data?.featuredStays?.length ? data.featuredStays : DEFAULT_FEATURED_STAYS;
   const teamMembers = data?.teamMembers?.length ? data.teamMembers : DEFAULT_TEAM;
@@ -227,42 +181,123 @@ export default async function AboutUsPage() {
   const ownershipCroLinkLabel = data?.ownershipCroLinkLabel || "Companies Registration Office";
   const ownershipCroLinkUrl = data?.ownershipCroLinkUrl || "https://www.cro.ie/";
 
+  // Ownership & contact details render as two extra FAQ entries (same
+  // accordion, same styling) rather than a separate section — see FaqSection.
+  const combinedFaqs = [
+    ...faqs,
+    {
+      question: data?.ownershipHeading || "Who owns Sos Stays",
+      answer: (
+        <>
+          <p>
+            {data?.ownershipBody ||
+              "Power Rangers Ltd, trading as Sos Stays. Registered in Ireland, CRO 746631. Registered office: The Mill Enterprise Centre, Drogheda, Co. Louth, Ireland."}
+          </p>
+          <p className="mt-3">
+            You can check the company on the{" "}
+            <a href={ownershipCroLinkUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-forest-green underline">
+              {ownershipCroLinkLabel}
+            </a>{" "}
+            register.
+          </p>
+        </>
+      ),
+    },
+    {
+      question: data?.reachUsHeading || "How to reach us",
+      answer: (
+        <>
+          <ul className="flex flex-col gap-2">
+            <li>
+              Email:{" "}
+              <a href={`mailto:${reachUsEmail}`} className="font-semibold text-forest-green underline">
+                {reachUsEmail}
+              </a>
+            </li>
+            <li>
+              WhatsApp:{" "}
+              <a href={reachUsWhatsappUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-forest-green underline">
+                {reachUsWhatsapp}
+              </a>
+            </li>
+            <li>
+              Instagram:{" "}
+              <a href={reachUsInstagramUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-forest-green underline">
+                {reachUsInstagramHandle}
+              </a>
+            </li>
+            <li>
+              <Link href="/contact" className="font-semibold text-forest-green underline">
+                Contact form
+              </Link>
+            </li>
+          </ul>
+          <SocialIcons
+            links={[
+              { platform: "instagram", url: reachUsInstagramUrl },
+              { platform: "whatsapp", url: reachUsWhatsappUrl },
+            ]}
+            className="mt-3 bg-cream text-forest-green hover:bg-forest-green hover:text-cream"
+          />
+        </>
+      ),
+    },
+  ];
+
   return (
     <>
-      <HeroNav links={siteNavLinks} ctaHref="/landlords" ctaLabel="Send your SOS" sticky />
       <main className="overflow-x-hidden bg-cream text-near-black">
         {/* HERO */}
-        <section className="relative flex min-h-[60vh] items-center overflow-hidden bg-deep-forest">
-          <Image src={heroImage.src} alt={heroImage.alt} fill priority className="object-cover opacity-40" />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(100deg, rgba(38,52,37,.94) 8%, rgba(38,52,37,.55) 60%, rgba(38,52,37,.25) 100%)",
-            }}
-          />
-          <div
-            aria-hidden
-            className="about-drift pointer-events-none absolute top-[8%] right-[-90px] w-[440px] opacity-10 [animation:about-drift_22s_ease-in-out_infinite]"
-            style={{
-              backgroundImage: "url('/logo-varient-sm.svg')",
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              aspectRatio: "387.54 / 398.11",
-              filter: "brightness(0) invert(1)",
-            }}
-          />
-          <div className="relative mx-auto w-full max-w-[1200px] px-8 py-24 sm:px-14">
-            <Reveal className="font-serif mb-8 inline-block rounded-full border border-cream/30 px-[18px] py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
-              {data?.heroBadge || "About us"}
-            </Reveal>
-            <Reveal
-              as="h1"
-              delay={120}
-              className="font-serif max-w-[20ch] text-[38px] leading-[1.08] font-extrabold tracking-tight text-cream sm:text-6xl lg:text-[74px]"
-            >
-              {data?.heroHeading || "We're Sos Stays. We sell the break, not just the booking."}
-            </Reveal>
+        <section className="relative flex flex-col overflow-hidden bg-deep-forest">
+          {/* Nav renders in normal flow here (not as an absolute overlay), so
+              it occupies its own space at the top of the section and the
+              image below never sits underneath it. */}
+          <HeroNav links={siteNavLinks} ctaHref="/landlords" ctaLabel="Send your SOS" sticky />
+
+          <div className="relative flex-1 px-8 py-16 sm:px-14 sm:py-24">
+            <Image src={heroImage.src} alt={heroImage.alt} fill priority className="object-cover object-top" />
+            <div className="absolute inset-0 bg-deep-forest/55" />
+            <div
+              aria-hidden
+              className="about-drift pointer-events-none absolute top-[8%] right-[-90px] w-[440px] opacity-10 [animation:about-drift_22s_ease-in-out_infinite]"
+              style={{
+                backgroundImage: "url('/logo-varient-sm.svg')",
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                aspectRatio: "387.54 / 398.11",
+                filter: "brightness(0) invert(1)",
+              }}
+            />
+
+            <div className="relative z-10">
+              <div className="max-w-[600px] text-left">
+                <Reveal as="span" className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
+                  {data?.heroBadge || "About us"}
+                </Reveal>
+                <Reveal
+                  as="h1"
+                  delay={130}
+                  className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl"
+                >
+                  {data?.heroHeading || "We're Sos Stays. We sell the break, not just the booking."}
+                </Reveal>
+                <Reveal as="p" delay={260} className="mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
+                  {data?.introParagraph1 ||
+                    "Sós is the Irish word for a break. That's the whole idea, really — we named the company after the thing we're actually selling."}
+                </Reveal>
+                <Reveal delay={390} className="flex flex-wrap justify-start gap-4">
+                  <Button
+                    link="#who-we-work-with"
+                    variant="primary"
+                    bgColor="cream"
+                    color="forest-green"
+                    animateColor="forest-green"
+                  >
+                    See what we do →
+                  </Button>
+                </Reveal>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -284,33 +319,16 @@ export default async function AboutUsPage() {
           </Reveal>
         </section>
 
-        {/* WHAT WE DO */}
-        <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
-          <div className="mx-auto max-w-[1200px]">
-            <Reveal className="mb-14 max-w-[620px]">
-              <Eyebrow className="mb-4">{data?.whatWeDoEyebrow || "What we do"}</Eyebrow>
-              <h2 className="font-serif text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl">
-                {data?.whatWeDoHeading || "Three ways we work"}
-              </h2>
-            </Reveal>
-            <div className="grid grid-cols-1 gap-7 md:grid-cols-3">
-              {whatWeDoItems.map((item: { title: string; body: string }, i: number) => {
-                const Icon = WHAT_WE_DO_ICONS[i] ?? GuestKeyIcon;
-                return (
-                  <Reveal
-                    key={item.title}
-                    delay={i * 100}
-                    className="flex flex-col rounded-[18px] border border-sage-grey/25 bg-cream p-8"
-                  >
-                    <Icon />
-                    <h3 className="font-serif mt-5 mb-2.5 text-xl font-bold text-deep-forest">{item.title}</h3>
-                    <p className="text-[15px] leading-loose text-near-black/70">{item.body}</p>
-                  </Reveal>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+        {/* WHO WE WORK WITH — same component/copy as /landlords, own image */}
+        {audienceTabs?.tabs?.length === 4 && (
+          <AudienceTabs
+            eyebrow={audienceTabs.eyebrow}
+            tabs={audienceTabs.tabs}
+            rightImage={audienceImage}
+            theme="forest"
+            showChecklist={false}
+          />
+        )}
 
         {/* WHERE WE OPERATE */}
         <section className="relative overflow-hidden bg-deep-forest">
@@ -469,10 +487,6 @@ export default async function AboutUsPage() {
             ))}
           </div>
           <Reveal delay={300} className="mt-9">
-            <p className="mb-2 text-sm italic text-near-black/55">
-              {data?.workWithUsPartnerNote ||
-                "A dedicated partnerships page with full partner profiles is coming — this is a teaser until that's built."}
-            </p>
             <p className="text-base leading-loose text-near-black">
               {(data?.workWithUsContactLine ||
                 "Send a line about what you do and where you're based to hello@sosstays.com — no CV required, just tell us straight."
@@ -487,62 +501,9 @@ export default async function AboutUsPage() {
           </Reveal>
         </section>
 
-        {/* WHO OWNS US / HOW TO REACH US — collapsed accordions */}
-        <section className="bg-pale-sage px-8 py-16 sm:px-14">
-          <div className="mx-auto max-w-[820px] border-t border-sage-grey/40">
-            <AccordionPanel title={data?.ownershipHeading || "Who owns Sos Stays"}>
-              <p>
-                {data?.ownershipBody ||
-                  "Power Rangers Ltd, trading as Sos Stays. Registered in Ireland, CRO 746631. Registered office: The Mill Enterprise Centre, Drogheda, Co. Louth, Ireland."}
-              </p>
-              <p className="mt-3">
-                You can check the company on the{" "}
-                <a href={ownershipCroLinkUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-forest-green underline">
-                  {ownershipCroLinkLabel}
-                </a>{" "}
-                register.
-              </p>
-            </AccordionPanel>
-            <AccordionPanel title={data?.reachUsHeading || "How to reach us"}>
-              <ul className="flex flex-col gap-2">
-                <li>
-                  Email:{" "}
-                  <a href={`mailto:${reachUsEmail}`} className="font-semibold text-forest-green underline">
-                    {reachUsEmail}
-                  </a>
-                </li>
-                <li>
-                  WhatsApp:{" "}
-                  <a href={reachUsWhatsappUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-forest-green underline">
-                    {reachUsWhatsapp}
-                  </a>
-                </li>
-                <li>
-                  Instagram:{" "}
-                  <a href={reachUsInstagramUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-forest-green underline">
-                    {reachUsInstagramHandle}
-                  </a>
-                </li>
-                <li>
-                  <Link href="/contact" className="font-semibold text-forest-green underline">
-                    Contact form
-                  </Link>
-                </li>
-              </ul>
-              <SocialIcons
-                links={[
-                  { platform: "instagram", url: reachUsInstagramUrl },
-                  { platform: "whatsapp", url: reachUsWhatsappUrl },
-                ]}
-                className="bg-cream text-forest-green hover:bg-forest-green hover:text-cream"
-              />
-            </AccordionPanel>
-          </div>
-        </section>
-
-        {/* FAQ */}
+        {/* FAQ — includes ownership & contact details as regular FAQ items */}
         <div className="pt-16">
-          <FaqSection heading={data?.faqHeading || "FAQ"} items={faqs} accent="forest-green" />
+          <FaqSection heading={data?.faqHeading || "FAQ"} items={combinedFaqs} accent="forest-green" />
         </div>
       </main>
     </>

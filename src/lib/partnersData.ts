@@ -32,6 +32,10 @@ export type Partner = {
   href: string; // external site/booking link
   featured: boolean;
   image?: PartnerImage;
+  /** When set, "Read more" and the /partners/[slug] profile route both
+   *  point here instead — used for partners that already have a dedicated
+   *  page elsewhere on the site (e.g. an SEO landing page). */
+  profileHref?: string;
   profileIntro?: string;
   profileBody?: string;
 };
@@ -55,9 +59,7 @@ export const DEFAULT_PARTNERS: Partner[] = [
       src: "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=900&q=80",
       alt: "",
     },
-    profileIntro: "Family entertainment centre, Drogheda",
-    profileBody:
-      "The go-to for a wet Tuesday or a birthday that needs sorting — we send families here more than anywhere else. Full profile content to come.",
+    profileHref: "/hotels-near-funtasia",
   },
   {
     slug: "tranquil-space",

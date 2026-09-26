@@ -137,7 +137,7 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
       : null;
   const availableRoomIds = availability ? new Set(availability.map((room) => room.propertySlug)) : null;
   const wholeHouseAvailable =
-    hasWholeHouseSearch && availableRoomIds
+    hasWholeHouseSearch && availableRoomIds && property.wholeHouseAvailabilityId
       ? availableRoomIds.has(property.wholeHouseAvailabilityId)
       : null;
   // Uplisting's calendar (used for pricing) is keyed by numeric property
@@ -145,7 +145,7 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
   // availability search carries both, so build the lookup once.
   const slugToPropertyId = new Map((availability ?? []).map((room) => [room.propertySlug, room.id]));
   const wholeHousePricePerNight =
-    wholeHouseAvailable && checkIn && checkOut
+    wholeHouseAvailable && checkIn && checkOut && property.wholeHouseAvailabilityId
       ? await withApproxPrices(slugToPropertyId.get(property.wholeHouseAvailabilityId), checkIn, checkOut)
       : undefined;
   const matchedRooms: SearchResultRoom[] = availableRoomIds

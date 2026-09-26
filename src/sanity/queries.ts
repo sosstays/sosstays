@@ -454,12 +454,7 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
     introParagraph1,
     introParagraph2,
     introParagraph3,
-    whatWeDoEyebrow,
-    whatWeDoHeading,
-    whatWeDoItems[] {
-      title,
-      body
-    },
+    audienceImage,
     coverageEyebrow,
     coverageHeading,
     coverageBody,
@@ -577,7 +572,8 @@ export const PARTNERS_QUERY = defineQuery(`
     description,
     href,
     featured,
-    image
+    image,
+    profileHref
   }
 `);
 
@@ -592,13 +588,17 @@ export const PARTNER_BY_SLUG_QUERY = defineQuery(`
     href,
     featured,
     image,
+    profileHref,
     profileIntro,
     profileBody
   }
 `);
 
+// Only slugs without a profileHref override — those partners' profile
+// pages redirect elsewhere (see PartnerProfilePage), so there's nothing
+// to statically generate at /partners/[slug] for them.
 export const FEATURED_PARTNER_SLUGS_QUERY = defineQuery(`
-  *[_type == "partner" && featured == true && defined(slug.current)][].slug.current
+  *[_type == "partner" && featured == true && defined(slug.current) && !defined(profileHref)][].slug.current
 `);
 
 // ---- Homepage feed ----

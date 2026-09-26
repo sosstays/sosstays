@@ -6,6 +6,7 @@ import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
+import { Button } from "@/components/Button";
 import { PartnerDirectory } from "@/components/PartnerDirectory";
 import { PartnerLeadForm } from "@/components/PartnerLeadForm";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
@@ -107,6 +108,7 @@ export default async function PartnersPage() {
         slug: p.slug ?? p._id,
         featured: p.featured ?? false,
         image: p.image ? { src: urlFor(p.image).width(900).url(), alt: p.image.alt ?? "" } : undefined,
+        profileHref: p.profileHref ?? undefined,
       }))
     : DEFAULT_PARTNERS;
   const emptyCategories = getEmptyCategories(partners);
@@ -117,28 +119,53 @@ export default async function PartnersPage() {
 
   return (
     <>
-      <HeroNav links={siteNavLinks} ctaHref="/landlords" ctaLabel="Send your SOS" sticky />
       <main className="overflow-x-hidden bg-cream text-near-black">
         {/* HERO */}
-        <section className="relative flex min-h-[60vh] items-center overflow-hidden bg-maroon">
-          <Image src={heroImage.src} alt={heroImage.alt} fill priority className="object-cover opacity-40" />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: "linear-gradient(100deg, rgba(71,45,48,.94) 8%, rgba(71,45,48,.55) 60%, rgba(71,45,48,.25) 100%)",
-            }}
+        <section className="relative flex flex-col overflow-hidden bg-maroon">
+          {/* Nav renders in normal flow here (not as an absolute overlay), so
+              it occupies its own space at the top of the section and the
+              image below never sits underneath it. */}
+          <HeroNav
+            links={siteNavLinks}
+            variant="landlords"
+            ctaHref="/landlords"
+            ctaLabel="Send your SOS"
+            sticky
           />
-          <div className="relative mx-auto w-full max-w-[1200px] px-8 py-24 sm:px-14">
-            <Reveal className="font-serif mb-8 inline-block rounded-full border border-cream/30 px-[18px] py-2 text-xs font-semibold tracking-widest text-cream/80 uppercase">
-              {data?.heroBadge || "Partners"}
-            </Reveal>
-            <Reveal
-              as="h1"
-              delay={120}
-              className="font-serif max-w-[22ch] text-[38px] leading-[1.08] font-extrabold tracking-tight text-cream sm:text-6xl lg:text-[68px]"
-            >
-              {data?.heroHeading || "We're better with good people around us. Let's work together."}
-            </Reveal>
+
+          <div className="relative flex-1 px-8 py-16 sm:px-14 sm:py-24">
+            <Image src={heroImage.src} alt={heroImage.alt} fill priority className="object-cover object-top" />
+            <div className="absolute inset-0 bg-maroon/45" />
+
+            <div className="relative z-10">
+              <div className="max-w-[600px] text-left">
+                <Reveal as="span" className="mb-7 inline-block rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-cream/80 uppercase">
+                  {data?.heroBadge || "Partners"}
+                </Reveal>
+                <Reveal
+                  as="h1"
+                  delay={130}
+                  className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl"
+                >
+                  {data?.heroHeading || "We're better with good people around us. Let's work together."}
+                </Reveal>
+                <Reveal as="p" delay={260} className="mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
+                  {data?.introParagraph1 ||
+                    "Cleaners, photographers, tour operators and local businesses — see how we work together, and how to get listed."}
+                </Reveal>
+                <Reveal delay={390} className="flex flex-wrap justify-start gap-4">
+                  <Button
+                    link="#become-a-partner"
+                    variant="primary"
+                    bgColor="cream"
+                    color="maroon"
+                    animateColor="maroon"
+                  >
+                    Become a partner →
+                  </Button>
+                </Reveal>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -250,7 +277,7 @@ export default async function PartnersPage() {
         </section>
 
         {/* BECOME A PARTNER */}
-        <section className="mx-auto max-w-[820px] px-8 py-24 sm:px-14 sm:py-28">
+        <section id="become-a-partner" className="mx-auto max-w-[820px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal className="mb-10">
             <Eyebrow className="mb-4">{data?.becomePartnerEyebrow || "Become a partner"}</Eyebrow>
             <h2 className="font-serif mb-4 text-[30px] leading-[1.1] font-bold tracking-tight text-maroon sm:text-4xl">

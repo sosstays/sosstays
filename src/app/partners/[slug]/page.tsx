@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { client } from "@/sanity/client";
 import { PARTNER_BY_SLUG_QUERY, FEATURED_PARTNER_SLUGS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
@@ -15,7 +15,7 @@ export const revalidate = 60;
 export async function generateStaticParams() {
   const slugs = await client.fetch(FEATURED_PARTNER_SLUGS_QUERY);
   if (slugs?.length) return slugs.map((slug: string) => ({ slug }));
-  return DEFAULT_PARTNERS.filter((p) => p.featured).map((p) => ({ slug: p.slug }));
+  return DEFAULT_PARTNERS.filter((p) => p.featured && !p.profileHref).map((p) => ({ slug: p.slug }));
 }
 
 async function getPartner(slug: string): Promise<Partner | null> {
@@ -26,6 +26,7 @@ async function getPartner(slug: string): Promise<Partner | null> {
       slug: partner.slug ?? slug,
       featured: partner.featured ?? true,
       image: partner.image ? { src: urlFor(partner.image).width(1200).url(), alt: partner.image.alt ?? "" } : undefined,
+      profileHref: partner.profileHref ?? undefined,
       profileIntro: partner.profileIntro ?? undefined,
       profileBody: partner.profileBody ?? undefined,
     };
@@ -53,6 +54,7 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
   const { slug } = await params;
   const partner = await getPartner(slug);
   if (!partner) notFound();
+  if (partner.profileHref) permanentRedirect(partner.profileHref);
 
   const siteNavLinks = await getGuestSiteNavLinks();
 

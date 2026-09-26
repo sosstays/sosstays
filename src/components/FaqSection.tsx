@@ -1,6 +1,7 @@
+import type { ReactNode } from "react";
 import { Eyebrow } from "@/components/Eyebrow";
 
-type FaqItem = { question: string; answer: string };
+type FaqItem = { question: string; answer: ReactNode };
 
 // Shared FAQ accordion used on the property, area guide, and landlords
 // pages. `centered` + `eyebrow` reproduce the landlords page's larger,
@@ -69,7 +70,7 @@ export function FaqSection({
                 <path d="M12 5v14M5 12h14" />
               </svg>
             </summary>
-            <p className="mt-3 text-sm leading-relaxed text-near-black/70">{faq.answer}</p>
+            <div className="mt-3 text-sm leading-relaxed text-near-black/70">{faq.answer}</div>
           </details>
         ))}
       </div>

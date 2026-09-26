@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import type { Partner, PartnerCategory } from "@/lib/partnersData";
+import { Button } from "@/components/Button";
 
 // Search + multi-select tag filter over the partner list. Featured
 // partners always sort to the top of the results regardless of which
@@ -110,16 +110,32 @@ export function PartnerDirectory({
                 </div>
                 <h3 className="font-serif mb-1.5 text-xl font-bold text-maroon">{partner.name}</h3>
                 <p className="mb-3 text-sm font-medium text-near-black/55">{partner.tagline}</p>
-                <p className="flex-1 text-[15px] leading-loose text-near-black/70">{partner.description}</p>
-                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-maroon">
+                <p className="text-[15px] leading-loose text-near-black/70">{partner.description}</p>
+                <div className="mt-5 flex flex-wrap gap-3">
                   {partner.featured && (
-                    <Link href={`/partners/${partner.slug}`} className="underline underline-offset-2">
+                    <Button
+                      link={partner.profileHref || `/partners/${partner.slug}`}
+                      variant="primary"
+                      bgColor="maroon"
+                      color="cream"
+                      animateBgColor="maroon"
+                      animateColor="cream"
+                      size="sm"
+                    >
                       Read more →
-                    </Link>
+                    </Button>
                   )}
-                  <a href={partner.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+                  <Button
+                    link={partner.href}
+                    external
+                    variant="secondary"
+                    color="maroon"
+                    animateBgColor="maroon"
+                    animateColor="cream"
+                    size="sm"
+                  >
                     Visit {partner.name} →
-                  </a>
+                  </Button>
                 </div>
               </div>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
+import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Eyebrow } from "@/components/Eyebrow";
 
@@ -77,9 +78,22 @@ function PersonIcon({ style }: { style?: CSSProperties }) {
 export function AudienceTabs({
   eyebrow,
   tabs,
+  rightImage,
+  theme = "maroon",
+  showChecklist = true,
 }: {
   eyebrow: string;
   tabs: AudienceTabContent[];
+  /** Swaps the animated coverage-map illustration for a plain photo —
+   *  used on pages (like /about) that want this component's copy and
+   *  tab-switching behaviour without the landlord-page-specific map. */
+  rightImage?: { src: string; alt: string };
+  /** "maroon" is the landlord-page look this component was built for.
+   *  "forest" matches the About page's dark-section color (same as its
+   *  "Where we operate" section) instead. */
+  theme?: "maroon" | "forest";
+  /** Set false to drop the checklist under the tab body copy. */
+  showChecklist?: boolean;
 }) {
   const [active, setActive] = useState(0);
   const tab = tabs[active];
@@ -141,10 +155,13 @@ export function AudienceTabs({
   const m0AsPerson = active === 2;
   const m2AsPerson = active === 3;
 
+  const bgClass = theme === "forest" ? "bg-deep-forest" : "bg-maroon";
+  const activeTabTextClass = theme === "forest" ? "data-[state=active]:text-deep-forest" : "data-[state=active]:text-maroon";
+
   return (
     <section
       id="who-we-work-with"
-      className="bg-maroon px-8 py-24 sm:px-14 sm:py-28"
+      className={`${bgClass} px-8 py-24 sm:px-14 sm:py-28`}
     >
       <Tabs
         value={String(active)}
@@ -158,7 +175,7 @@ export function AudienceTabs({
               <TabsTrigger
                 key={t.label}
                 value={String(i)}
-                className="rounded-full border border-cream/25 px-[18px] py-2.5 text-[13.5px] font-medium whitespace-nowrap text-cream/75 transition-colors duration-200 data-[state=active]:border-cream data-[state=active]:bg-cream data-[state=active]:text-maroon"
+                className={`rounded-full border border-cream/25 px-[18px] py-2.5 text-[13.5px] font-medium whitespace-nowrap text-cream/75 transition-colors duration-200 data-[state=active]:border-cream data-[state=active]:bg-cream ${activeTabTextClass}`}
               >
                 {t.label}
               </TabsTrigger>
@@ -177,31 +194,38 @@ export function AudienceTabs({
             <p className="max-w-[56ch] text-base leading-relaxed text-cream/85">
               {tab.body}
             </p>
-            <ul className="mt-1.5 list-none">
-              {tab.checklist.map((item, i) => (
-                <li
-                  key={item}
-                  className={`flex items-start gap-3 py-2.75 ${i === 0 ? "" : "border-t border-cream/20"}`}
-                >
-                  <span className="relative mt-0.75 h-4.5 w-4.5 flex-none">
-                    <span className="absolute inset-0 block rounded-full border border-cream/40" />
-                    <span className="absolute inset-[5px] block rounded-full bg-cream" />
-                  </span>
-                  <span className="text-[15px] leading-relaxed text-cream/90">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {showChecklist && (
+              <ul className="mt-1.5 list-none">
+                {tab.checklist.map((item, i) => (
+                  <li
+                    key={item}
+                    className={`flex items-start gap-3 py-2.75 ${i === 0 ? "" : "border-t border-cream/20"}`}
+                  >
+                    <span className="relative mt-0.75 h-4.5 w-4.5 flex-none">
+                      <span className="absolute inset-0 block rounded-full border border-cream/40" />
+                      <span className="absolute inset-[5px] block rounded-full bg-cream" />
+                    </span>
+                    <span className="text-[15px] leading-relaxed text-cream/90">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="mx-auto flex w-full flex-col self-center rounded-2xl">
-            <div className="flex items-center justify-center">
-              <svg
-              viewBox="0 0 460 420"
-              className="block w-full overflow-visible"
-              style={{ height: "auto" }}
-            >
+            {rightImage ? (
+              <div className="relative aspect-[460/420] w-full overflow-hidden rounded-2xl">
+                <Image src={rightImage.src} alt={rightImage.alt} fill className="object-cover" />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center">
+                <svg
+                  viewBox="0 0 460 420"
+                  className="block w-full overflow-visible"
+                  style={{ height: "auto" }}
+                >
               <path
                 d="M74 96c34-38 96-52 148-40 44 10 62 40 100 46 44 7 76-6 96 22 22 30 4 78-18 116-24 42-30 84-72 110-44 27-108 24-152 2-46-23-70-64-88-108-18-44-48-108-14-148z"
                 fill="var(--cream)"
@@ -308,8 +332,9 @@ export function AudienceTabs({
                   <path d="M-5 5.6c0-3.6 10-3.6 10 0" />
                 </g>
               </g>
-            </svg>
-          </div>
+                </svg>
+              </div>
+            )}
           </div>
         </TabsContent>
       </Tabs>
