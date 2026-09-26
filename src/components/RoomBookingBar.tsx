@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DateGuestsFields, toISODate, type DateGuestsValue } from "@/components/DateGuestsFields";
+import { MinStayNotice } from "@/components/MinStayNotice";
 import type { UplistingRoomFees } from "@/lib/uplisting/client";
 
-type CalendarDay = { date: string; available: boolean; dayRate: number };
+type CalendarDay = { date: string; available: boolean; dayRate: number; minimumLengthOfStay: number };
 
 const CALENDAR_WINDOW_DAYS = 120;
 
@@ -64,6 +65,7 @@ export function RoomBookingBar({
   initialCheckOut,
   initialGuests,
   maxGuests,
+  whatsappUrl,
 }: {
   /** The property page's Sanity slug — /stays/[slug]/book is where "Book now" leads. */
   slug: string;
@@ -74,6 +76,8 @@ export function RoomBookingBar({
   initialCheckOut?: string;
   initialGuests?: number;
   maxGuests?: number;
+  /** Surfaced on MinStayNotice's CTA when a selection falls short of the minimum stay. */
+  whatsappUrl?: string;
 }) {
   const router = useRouter();
   const [days, setDays] = useState<Map<string, CalendarDay>>(new Map());
@@ -81,6 +85,10 @@ export function RoomBookingBar({
   const [selection, setSelection] = useState<DateGuestsValue>({ checkIn: null, checkOut: null, guests: initialGuests ?? 1, kids: 0 });
   const [checking, setChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Required nights, set only by the pre-booking re-check in
+  // handleBookNow — kept separate from `error` so it renders as
+  // MinStayNotice instead of a plain sentence.
+  const [minStayError, setMinStayError] = useState<number | null>(null);
 
   // Get-quote-on-load: pull a window of calendar days up front so the
   // picker can gray out blocked dates and show a live total as soon as
@@ -103,6 +111,26 @@ export function RoomBookingBar({
     });
     return set;
   }, [days]);
+
+  const minNightsByCheckIn = useMemo(() => {
+    const map = new Map<string, number>();
+    days.forEach((day, date) => {
+      if (day.minimumLengthOfStay > 1) map.set(date, day.minimumLengthOfStay);
+    });
+    return map;
+  }, [days]);
+
+  // Guards the case where DateGuestsFields' own min-stay check ran against
+  // a since-stale calendar (e.g. the property's min-stay rule changed
+  // after this bar's initial fetch) — recomputed from the same `days` the
+  // picker itself used, so it should normally agree with the picker.
+  // Holds the *required* night count when violated, null otherwise.
+  const minStayViolation = useMemo(() => {
+    if (!selection.checkIn || !selection.checkOut) return null;
+    const nights = nightsInRange(selection.checkIn, selection.checkOut);
+    const required = days.get(toISODate(selection.checkIn))?.minimumLengthOfStay ?? 1;
+    return nights.length < required ? required : null;
+  }, [selection.checkIn, selection.checkOut, days]);
 
   const quote = useMemo(() => {
     if (!selection.checkIn || !selection.checkOut) return null;
@@ -146,6 +174,7 @@ export function RoomBookingBar({
   const handleChange = useCallback((value: DateGuestsValue) => {
     setSelection(value);
     setError(null);
+    setMinStayError(null);
   }, []);
 
   async function handleBookNow() {
@@ -153,6 +182,7 @@ export function RoomBookingBar({
 
     setChecking(true);
     setError(null);
+    setMinStayError(null);
     try {
       const from = toISODate(selection.checkIn);
       const to = toISODate(selection.checkOut);
@@ -161,14 +191,19 @@ export function RoomBookingBar({
 
       const nights = nightsInRange(selection.checkIn, selection.checkOut);
       const stillAvailable = nights.every((night) => freshMap.get(night)?.available !== false);
+      const requiredNights = freshMap.get(from)?.minimumLengthOfStay ?? 1;
 
-      if (!stillAvailable) {
+      if (!stillAvailable || nights.length < requiredNights) {
         setDays((prev) => {
           const merged = new Map(prev);
           freshMap.forEach((day, date) => merged.set(date, day));
           return merged;
         });
-        setError("Those dates just got booked elsewhere — pick different ones.");
+        if (!stillAvailable) {
+          setError("Those dates just got booked elsewhere — pick different ones.");
+        } else {
+          setMinStayError(requiredNights);
+        }
         return;
       }
 
@@ -182,7 +217,8 @@ export function RoomBookingBar({
     }
   }
 
-  const canBook = Boolean(selection.checkIn && selection.checkOut && !checking);
+  const canBook = Boolean(selection.checkIn && selection.checkOut && !checking && !minStayViolation);
+  const minNightsToShow = minStayError ?? minStayViolation;
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-cream/10 bg-deep-forest/95 px-8 py-3.5 backdrop-blur-md sm:px-14">
@@ -215,6 +251,8 @@ export function RoomBookingBar({
             initialGuests={initialGuests}
             maxGuests={maxGuests}
             unavailableDates={unavailableDates}
+            minNightsByCheckIn={minNightsByCheckIn}
+            whatsappUrl={whatsappUrl}
             theme="dark"
             layout="bar"
             onChange={handleChange}
@@ -231,7 +269,13 @@ export function RoomBookingBar({
         </div>
       </div>
 
-      {error && <p className="mx-auto mt-2 max-w-6xl text-sm text-light-sage">{error}</p>}
+      {minNightsToShow ? (
+        <div className="mx-auto mt-2 max-w-6xl">
+          <MinStayNotice minNights={minNightsToShow} whatsappUrl={whatsappUrl} />
+        </div>
+      ) : (
+        error && <p className="mx-auto mt-2 max-w-6xl text-sm text-light-sage">{error}</p>
+      )}
     </div>
   );
 }
