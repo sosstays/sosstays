@@ -60,6 +60,14 @@ const DEFAULT_COLUMNS: FooterColumn[] = [
       { label: "Terms & conditions", href: "/terms-and-conditions" },
     ],
   },
+  {
+    title: "Explore",
+    links: [
+      { label: "Hotels near Funtasia", href: "/hotels-near-funtasia" },
+      { label: "Hotels near Newgrange", href: "/hotels-near-newgrange" },
+      { label: "Hotels near Cliffs of Moher", href: "/hotels-near-cliffs-of-moher" },
+    ],
+  },
 ];
 
 // The one footer used on every page. Content comes from the Sanity
@@ -82,8 +90,8 @@ export function Footer({
   return (
     <footer className="border-t border-sage-grey/40 bg-cream font-sans text-near-black">
       <div className="mx-auto max-w-6xl px-4 py-12">
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
-          <div className="col-span-2 sm:col-span-1">
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="col-span-2 sm:col-span-3 lg:col-span-1">
             <Link href="/" className="flex items-center">
               <Image src="/logo.svg" alt="Sos Stays" width={126} height={80} className="h-10 w-auto" />
             </Link>
