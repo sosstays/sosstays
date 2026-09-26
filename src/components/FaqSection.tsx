@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Plus } from "lucide-react";
 import { Eyebrow } from "@/components/Eyebrow";
 
 type FaqItem = { question: string; answer: ReactNode };
@@ -57,18 +58,11 @@ export function FaqSection({
           <details key={i} className="group border-b border-sage-grey/40 py-4.5">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-normal text-near-black marker:content-none [&::-webkit-details-marker]:hidden">
               {faq.question}
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
+              <Plus
+                size={16}
+                strokeWidth={2}
                 className="flex-none text-near-black/45 transition-transform duration-200 group-open:rotate-45"
-              >
-                <path d="M12 5v14M5 12h14" />
-              </svg>
+              />
             </summary>
             <div className="mt-3 text-sm leading-relaxed text-near-black/70">{faq.answer}</div>
           </details>

@@ -1,3 +1,4 @@
+import { Users, BedDouble, DoorClosed, Bath, Home, DoorOpen } from "lucide-react";
 import { Button, type ButtonColor } from "@/components/Button";
 
 export function BookNowCta({
@@ -26,76 +27,36 @@ export function BookNowCta({
 }
 
 const overviewIconProps = {
-  width: 30,
-  height: 30,
-  viewBox: "0 0 24 24",
-  fill: "none",
+  size: 30,
   stroke: "var(--forest-green)",
   strokeWidth: 2,
-  strokeLinecap: "round" as const,
-  strokeLinejoin: "round" as const,
 };
 
 function GuestsIcon() {
-  return (
-    <svg {...overviewIconProps}>
-      <circle cx="9" cy="8" r="3" />
-      <path d="M3 20c0-3 2.5-5 6-5s6 2 6 5" />
-      <circle cx="17" cy="9" r="2.3" />
-      <path d="M15.5 12c2.6.2 4.5 2 4.5 5" />
-    </svg>
-  );
+  return <Users {...overviewIconProps} />;
 }
 
 function BedsIcon() {
-  return (
-    <svg {...overviewIconProps}>
-      <path d="M3 19v-8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8" />
-      <path d="M3 17h18" />
-      <path d="M3 19v2M21 19v2" />
-      <path d="M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3" />
-    </svg>
-  );
+  return <BedDouble {...overviewIconProps} />;
 }
 
 function BedroomsIcon() {
-  return (
-    <svg {...overviewIconProps}>
-      <rect x="4" y="4" width="16" height="16" rx="2" />
-      <path d="M4 12h6v8" />
-    </svg>
-  );
+  return <DoorClosed {...overviewIconProps} />;
 }
 
 function BathroomsIcon() {
-  return (
-    <svg {...overviewIconProps}>
-      <path d="M4 12h16v3a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-3Z" />
-      <path d="M6 12V6a2 2 0 0 1 3.5-1.3" />
-      <path d="M8 20v1.5M16 20v1.5" />
-    </svg>
-  );
+  return <Bath {...overviewIconProps} />;
 }
 
 // Whole building, booked as one unit — a roofline over full walls.
 function HouseIcon() {
-  return (
-    <svg {...overviewIconProps}>
-      <path d="M4 11.5 12 4l8 7.5" />
-      <path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9" />
-    </svg>
-  );
+  return <Home {...overviewIconProps} />;
 }
 
 // A single room within a shared property (e.g. Rathescar's separately
 // bookable rooms) — a door, distinct from the whole-house roofline.
 function RoomIcon() {
-  return (
-    <svg {...overviewIconProps}>
-      <rect x="6" y="3" width="12" height="18" rx="1" />
-      <circle cx="14.5" cy="12" r="1" fill="var(--forest-green)" stroke="none" />
-    </svg>
-  );
+  return <DoorOpen {...overviewIconProps} />;
 }
 
 // "Type" covers a mix of PMS-driven values (Entire House, Room) and

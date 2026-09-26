@@ -5,6 +5,7 @@ import { CORPORATE_STAYS_PAGE_QUERY, CORPORATE_ONBOARDED_PROPERTIES_QUERY } from
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { Button } from "@/components/Button";
+import { DynamicIcon } from "@/components/DynamicIcon";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
 import { FaqSection } from "@/components/FaqSection";
@@ -113,73 +114,28 @@ const DEFAULT_COVERAGE_AREAS = [
   },
 ];
 
-function SofaIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M6 10V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2" />
-      <path d="M3 12a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 15.5Z" />
-      <path d="M4 17v2a1 1 0 0 0 1 1h1v-2M19 17v2a1 1 0 0 1-1 1h-1v-2" />
-    </svg>
-  );
-}
-
-function WifiIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M2.5 8.5a15 15 0 0 1 19 0" />
-      <path d="M5.5 12.3a10.5 10.5 0 0 1 13 0" />
-      <path d="M8.7 16a5.7 5.7 0 0 1 6.6 0" />
-      <circle cx="12" cy="19.3" r="1.1" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
-
-function ContactIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M4.5 13v-1.5a7.5 7.5 0 0 1 15 0V13" />
-      <rect x="2.5" y="12.5" width="4" height="6" rx="1.4" />
-      <rect x="17.5" y="12.5" width="4" height="6" rx="1.4" />
-      <path d="M19.5 18.5v.7a2.8 2.8 0 0 1-2.8 2.8H14" />
-    </svg>
-  );
-}
-
-function ClipboardCheckIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect x="5" y="4.2" width="14" height="17" rx="2" />
-      <path d="M9 4.2v-.7a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v.7" />
-      <path d="M8.7 13.2 11 15.5l4.3-4.3" />
-    </svg>
-  );
-}
-
-const ICONS = { sofa: SofaIcon, wifi: WifiIcon, contact: ContactIcon, clipboard: ClipboardCheckIcon } as const;
-type IconName = keyof typeof ICONS;
-
-type IncludedFeature = { title: string; body: string; Icon: (typeof ICONS)[IconName] };
+type IncludedFeature = { title: string; body: string; icon: string };
 
 const DEFAULT_INCLUDED: IncludedFeature[] = [
   {
     title: "Fully furnished",
     body: "Beds made, kitchen equipped, living space set up for a crew rather than a single guest.",
-    Icon: SofaIcon,
+    icon: "sofa",
   },
   {
     title: "Free WiFi in every stay",
     body: "Connected from day one, so evenings and remote paperwork both work.",
-    Icon: WifiIcon,
+    icon: "wifi",
   },
   {
     title: "One dedicated contact",
     body: "The same person for questions, issues and extensions — for the length of the stay.",
-    Icon: ContactIcon,
+    icon: "headset",
   },
   {
     title: "Confirmed before you commit",
     body: "Amenities vary by property, so we confirm the specifics of your stay in writing first.",
-    Icon: ClipboardCheckIcon,
+    icon: "clipboard-check",
   },
 ];
 
@@ -253,7 +209,7 @@ export default async function CorporateStaysPage() {
     ? data.includedFeatures.map((f: NonNullable<typeof data.includedFeatures>[number]) => ({
         title: f.title,
         body: f.body,
-        Icon: ICONS[f.icon as IconName] ?? SofaIcon,
+        icon: f.icon ?? "sofa",
       }))
     : DEFAULT_INCLUDED;
 
@@ -471,7 +427,7 @@ export default async function CorporateStaysPage() {
                     className="pointer-events-none absolute -top-10 -right-10 h-28 w-28 rounded-full bg-maroon/[0.06] transition-transform duration-500 group-hover:scale-125"
                   />
                   <span className="relative inline-flex h-12 w-12 flex-none items-center justify-center rounded-full bg-maroon/10 text-maroon transition-transform duration-300 group-hover:scale-110 group-hover:bg-maroon group-hover:text-cream">
-                    <item.Icon className="h-6 w-6" />
+                    <DynamicIcon name={item.icon} strokeWidth={1.6} className="h-6 w-6" />
                   </span>
                   <h3 className="relative mt-5 mb-1.5 text-base font-semibold text-maroon">{item.title}</h3>
                   <p className="relative text-sm leading-relaxed text-near-black/65">{item.body}</p>

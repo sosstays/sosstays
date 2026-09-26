@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { CheckCircle2 } from "lucide-react";
 import type { Metadata } from "next";
 import { client } from "@/sanity/client";
 import { PROPERTY_BOOKING_QUERY } from "@/sanity/queries";
@@ -80,10 +81,12 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
   return shell(
     <>
       <div className="pb-8 text-center">
-        <svg width="72" height="72" viewBox="0 0 100 100" fill="none" className="mx-auto mb-4">
-          <circle cx="50" cy="50" r="38" stroke="var(--light-sage)" strokeWidth="3" />
-          <path d="M34 51l11 11 22-23" stroke="var(--forest-green)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <CheckCircle2
+          size={72}
+          stroke="var(--forest-green)"
+          strokeWidth={1.75}
+          className="mx-auto mb-4"
+        />
         <h1 className="mb-2.5 font-serif text-[clamp(2.25rem,4vw,3.25rem)] leading-[1.05] font-extrabold tracking-tight text-forest-green">
           That&apos;s your break sorted.
         </h1>

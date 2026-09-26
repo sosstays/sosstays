@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { countiesForRegion, type County, type Region } from "@/lib/pricingCounties";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,14 +25,11 @@ export function CitySelectDropdown({ counties: allCounties }: { counties: County
     <DropdownMenu>
       <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2.5 rounded-full border border-cream/30 bg-cream/10 px-6 py-3.5 text-sm font-semibold text-cream transition-colors outline-none hover:bg-cream/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream">
         Select your city
-        <svg
+        <ChevronDown
           aria-hidden="true"
-          viewBox="0 0 20 20"
-          fill="none"
+          strokeWidth={1.6}
           className="h-3.5 w-3.5 flex-none transition-transform data-[state=open]:rotate-180"
-        >
-          <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="center">

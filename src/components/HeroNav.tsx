@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
@@ -109,23 +110,9 @@ export function HeroNav({
             className={`flex h-8 w-8 flex-none items-center justify-center ${iconColor} sm:hidden`}
           >
             {open ? (
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <path
-                  d="M4 4l12 12M16 4L4 16"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <X size={20} strokeWidth={1.6} aria-hidden="true" />
             ) : (
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <path
-                  d="M2.5 5.5h15M2.5 10h15M2.5 14.5h15"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <Menu size={20} strokeWidth={1.6} aria-hidden="true" />
             )}
           </button>
         </div>

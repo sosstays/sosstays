@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { User, ChevronRight } from "lucide-react";
 import { urlFor } from "@/sanity/image";
 import { getUplistingRoom, getUplistingCalendar } from "@/lib/uplisting/client";
 
@@ -43,35 +44,16 @@ async function getFromNightlyPrice(roomId: string): Promise<number | null> {
 }
 
 function GuestIcon() {
-  return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className="inline-block"
-    >
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7v1H4v-1Z" />
-    </svg>
-  );
+  return <User size={15} fill="currentColor" strokeWidth={0} className="inline-block" />;
 }
 
 function ChevronIcon() {
   return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
+    <ChevronRight
+      size={16}
       strokeWidth={2.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
       className="inline-block flex-none text-forest-green/60"
-    >
-      <path d="M9 6l6 6-6 6" />
-    </svg>
+    />
   );
 }
 

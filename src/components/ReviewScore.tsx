@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Info } from "lucide-react";
 
 function useInView<T extends HTMLElement>() {
   const ref = useRef<T | null>(null);
@@ -111,19 +112,7 @@ export function ReviewScoreCard({
         </div>
         <p className="flex items-center gap-1.5 text-sm font-medium text-forest-green">
           We aim for 100% real reviews
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 16v-5M12 8h.01" />
-          </svg>
+          <Info size={15} strokeWidth={2} />
         </p>
       </div>
 

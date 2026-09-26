@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
+import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -38,20 +39,11 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <svg
+        <ChevronDown
           aria-hidden="true"
-          viewBox="0 0 20 20"
-          fill="none"
+          strokeWidth={1.6}
           className="h-3.5 w-3.5 flex-none text-near-black/50 transition-transform data-[state=open]:rotate-180"
-        >
-          <path
-            d="m5 7.5 5 5 5-5"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );

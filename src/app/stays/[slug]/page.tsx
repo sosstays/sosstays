@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { Calendar } from "lucide-react";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
 import { PROPERTY_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
@@ -343,20 +344,12 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-5 rounded-[10px] border border-sage-grey/40 px-6 py-5">
             <div className="flex items-center gap-3.5">
-              <svg
-                width="26"
-                height="26"
-                viewBox="0 0 24 24"
-                fill="none"
+              <Calendar
+                size={26}
                 stroke="var(--forest-green)"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                strokeWidth={2}
                 className="flex-none"
-              >
-                <rect x="4" y="5" width="16" height="16" rx="2" />
-                <path d="M8 3v4M16 3v4M4 11h16" />
-              </svg>
+              />
               <span className="text-[15px] font-medium text-near-black">
                 Check availability for your dates
               </span>

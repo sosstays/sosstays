@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ChevronDown, Calendar, Users } from "lucide-react";
 
 const WEEKDAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
@@ -76,30 +77,15 @@ function ChevronIcon({
   className?: string;
 }) {
   const rotation = direction === "down" ? "" : direction === "left" ? "rotate-90" : "-rotate-90";
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={`h-4 w-4 shrink-0 ${rotation} ${className}`}>
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  );
+  return <ChevronDown strokeWidth={1.75} className={`h-4 w-4 shrink-0 ${rotation} ${className}`} />;
 }
 
 function CalendarIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={`h-5 w-5 shrink-0 ${className}`}>
-      <rect x="3.5" y="5" width="17" height="16" rx="2.5" />
-      <path d="M3.5 9.5h17M8 3v4M16 3v4" strokeLinecap="round" />
-    </svg>
-  );
+  return <Calendar strokeWidth={1.75} className={`h-5 w-5 shrink-0 ${className}`} />;
 }
 
 function GuestsIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={`h-5 w-5 shrink-0 ${className}`}>
-      <circle cx="9" cy="8.5" r="3" />
-      <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" strokeLinecap="round" />
-      <path d="M16 8.75a2.75 2.75 0 1 0 0-5.5M20.5 20c0-2.8-2-5.1-4.7-5.7" strokeLinecap="round" />
-    </svg>
-  );
+  return <Users strokeWidth={1.75} className={`h-5 w-5 shrink-0 ${className}`} />;
 }
 
 export type DateGuestsValue = { checkIn: Date | null; checkOut: Date | null; guests: number; kids: number };

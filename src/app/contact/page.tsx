@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Mail } from "lucide-react";
 import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
@@ -66,9 +67,7 @@ export default async function ContactPage() {
                   aria-label="Email hello@sosstays.com"
                   className="flex items-center gap-2 font-semibold text-forest-green underline"
                 >
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 shrink-0">
-                    <path d="M4.125 4.875h15.75c1.035 0 1.875.84 1.875 1.875v10.5c0 1.035-.84 1.875-1.875 1.875H4.125a1.875 1.875 0 0 1-1.875-1.875V6.75c0-1.035.84-1.875 1.875-1.875Zm-.375 2.415v9.96c0 .207.168.375.375.375h15.75a.375.375 0 0 0 .375-.375V7.29l-7.905 5.27a.75.75 0 0 1-.84 0L3.75 7.29Zm.6-.915 7.65 5.1 7.65-5.1H4.35Z" />
-                  </svg>
+                  <Mail className="h-5 w-5 shrink-0" />
                   hello@sosstays.com
                 </a>
                 <a

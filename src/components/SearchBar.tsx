@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { MapPin, ChevronDown, Search } from "lucide-react";
 import { DateGuestsFields, toISODate, parseISODate, type DateGuestsValue } from "@/components/DateGuestsFields";
 import { SEARCH_LOCATIONS } from "@/lib/searchLocations";
 
@@ -8,42 +9,16 @@ const FIELD_LABEL = "mb-1 block truncate text-[11px] font-semibold tracking-wide
 const POPOVER = "absolute top-[calc(100%+12px)] z-20 mt-[10px] rounded-2xl bg-cream shadow-[0_16px_40px_-12px_rgba(23,25,23,0.3)]";
 
 function PinIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      className="h-5 w-5 shrink-0 text-forest-green"
-    >
-      <path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z" />
-      <circle cx="12" cy="9.5" r="2.25" />
-    </svg>
-  );
+  return <MapPin strokeWidth={1.75} className="h-5 w-5 shrink-0 text-forest-green" />;
 }
 
 function ChevronIcon({ direction = "down" }: { direction?: "down" | "left" | "right" }) {
   const rotation = direction === "down" ? "" : direction === "left" ? "rotate-90" : "-rotate-90";
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      className={`h-4 w-4 shrink-0 text-forest-green ${rotation}`}
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  );
+  return <ChevronDown strokeWidth={1.75} className={`h-4 w-4 shrink-0 text-forest-green ${rotation}`} />;
 }
 
 function SearchIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 shrink-0">
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5" strokeLinecap="round" />
-    </svg>
-  );
+  return <Search strokeWidth={2} className="h-4 w-4 shrink-0" />;
 }
 
 type SearchBarProps = {

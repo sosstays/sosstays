@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import { ArrowDown } from "lucide-react";
 import { client } from "@/sanity/client";
 import { LANDING_PAGE_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
@@ -201,15 +202,12 @@ export default async function LandingPage({ params }: Props) {
         )}
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <svg width="22" height="30" viewBox="0 0 22 30" fill="none" aria-hidden="true">
-            <path
-              d="M11 2v22M4 17l7 7 7-7"
-              stroke="rgba(254,254,227,0.62)"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ArrowDown
+            size={22}
+            stroke="rgba(254,254,227,0.62)"
+            strokeWidth={1.6}
+            aria-hidden="true"
+          />
         </div>
       </section>
 
