@@ -78,6 +78,46 @@ function PersonIcon({ style }: { style?: CSSProperties }) {
   );
 }
 
+// Every color this component uses, keyed by theme, so a new theme is one
+// entry here rather than a scatter of inline ternaries. "maroon" is the
+// landlord-page look this was built for; "forest" and "cream" match the
+// About page's dark and light section backgrounds respectively.
+const THEME = {
+  maroon: {
+    section: "bg-maroon",
+    eyebrowTone: "sage",
+    heading: "text-cream",
+    body: "text-cream/85",
+    tab: "border-cream/25 text-cream/75 data-[state=active]:border-cream data-[state=active]:bg-cream data-[state=active]:text-maroon",
+    checklistDivider: "border-cream/20",
+    checklistRing: "border-cream/40",
+    checklistDot: "bg-cream",
+    checklistText: "text-cream/90",
+  },
+  forest: {
+    section: "bg-deep-forest",
+    eyebrowTone: "sage",
+    heading: "text-cream",
+    body: "text-cream/85",
+    tab: "border-cream/25 text-cream/75 data-[state=active]:border-cream data-[state=active]:bg-cream data-[state=active]:text-deep-forest",
+    checklistDivider: "border-cream/20",
+    checklistRing: "border-cream/40",
+    checklistDot: "bg-cream",
+    checklistText: "text-cream/90",
+  },
+  cream: {
+    section: "bg-cream",
+    eyebrowTone: "forest",
+    heading: "text-forest-green",
+    body: "text-near-black/75",
+    tab: "border-forest-green/25 text-near-black/60 data-[state=active]:border-forest-green data-[state=active]:bg-forest-green data-[state=active]:text-cream",
+    checklistDivider: "border-forest-green/15",
+    checklistRing: "border-forest-green/35",
+    checklistDot: "bg-forest-green",
+    checklistText: "text-near-black/80",
+  },
+} as const;
+
 export function AudienceTabs({
   eyebrow,
   tabs,
@@ -92,10 +132,7 @@ export function AudienceTabs({
    *  want this component's copy and tab-switching behaviour without the
    *  landlord-page-specific map. The image changes as the active tab does. */
   useImages?: boolean;
-  /** "maroon" is the landlord-page look this component was built for.
-   *  "forest" matches the About page's dark-section color (same as its
-   *  "Where we operate" section) instead. */
-  theme?: "maroon" | "forest";
+  theme?: keyof typeof THEME;
   /** Set false to drop the checklist under the tab body copy. */
   showChecklist?: boolean;
 }) {
@@ -159,13 +196,12 @@ export function AudienceTabs({
   const m0AsPerson = active === 2;
   const m2AsPerson = active === 3;
 
-  const bgClass = theme === "forest" ? "bg-deep-forest" : "bg-maroon";
-  const activeTabTextClass = theme === "forest" ? "data-[state=active]:text-deep-forest" : "data-[state=active]:text-maroon";
+  const colors = THEME[theme];
 
   return (
     <section
       id="who-we-work-with"
-      className={`${bgClass} px-8 py-24 sm:px-14 sm:py-28`}
+      className={`${colors.section} px-8 py-24 sm:px-14 sm:py-28`}
     >
       <Tabs
         value={String(active)}
@@ -173,13 +209,13 @@ export function AudienceTabs({
         className="mx-auto max-w-6xl"
       >
         <div className="mb-12 text-center">
-          <Eyebrow className="mb-5" tone="sage">{eyebrow}</Eyebrow>
+          <Eyebrow className="mb-5" tone={colors.eyebrowTone}>{eyebrow}</Eyebrow>
           <TabsList className="mx-auto flex w-fit flex-wrap justify-center gap-2">
             {tabs.map((t, i) => (
               <TabsTrigger
                 key={t.label}
                 value={String(i)}
-                className={`rounded-full border border-cream/25 px-[18px] py-2.5 text-[13.5px] font-medium whitespace-nowrap text-cream/75 transition-colors duration-200 data-[state=active]:border-cream data-[state=active]:bg-cream ${activeTabTextClass}`}
+                className={`rounded-full border px-[18px] py-2.5 text-[13.5px] font-medium whitespace-nowrap transition-colors duration-200 ${colors.tab}`}
               >
                 {t.label}
               </TabsTrigger>
@@ -192,10 +228,10 @@ export function AudienceTabs({
           className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-11"
         >
           <div className="flex flex-col gap-5.5 pt-1.5">
-            <h2 className="min-h-[54px] text-balance font-serif text-2xl leading-[1.08] font-bold tracking-tight text-cream sm:min-h-[66px] sm:text-3xl lg:min-h-[92px] lg:text-4xl">
+            <h2 className={`min-h-[54px] text-balance font-serif text-2xl leading-[1.08] font-bold tracking-tight sm:min-h-[66px] sm:text-3xl lg:min-h-[92px] lg:text-4xl ${colors.heading}`}>
               {tab.heading}
             </h2>
-            <p className="max-w-[56ch] text-base leading-relaxed text-cream/85">
+            <p className={`max-w-[56ch] text-base leading-relaxed ${colors.body}`}>
               {tab.body}
             </p>
             {showChecklist && (
@@ -203,13 +239,13 @@ export function AudienceTabs({
                 {tab.checklist.map((item, i) => (
                   <li
                     key={item}
-                    className={`flex items-start gap-3 py-2.75 ${i === 0 ? "" : "border-t border-cream/20"}`}
+                    className={`flex items-start gap-3 py-2.75 ${i === 0 ? "" : `border-t ${colors.checklistDivider}`}`}
                   >
                     <span className="relative mt-0.75 h-4.5 w-4.5 flex-none">
-                      <span className="absolute inset-0 block rounded-full border border-cream/40" />
-                      <span className="absolute inset-[5px] block rounded-full bg-cream" />
+                      <span className={`absolute inset-0 block rounded-full border ${colors.checklistRing}`} />
+                      <span className={`absolute inset-[5px] block rounded-full ${colors.checklistDot}`} />
                     </span>
-                    <span className="text-[15px] leading-relaxed text-cream/90">
+                    <span className={`text-[15px] leading-relaxed ${colors.checklistText}`}>
                       {item}
                     </span>
                   </li>

@@ -150,7 +150,7 @@ export default async function PartnersPage() {
                   {data?.heroHeading || "We're better with good people around us. Let's work together."}
                 </Reveal>
                 <Reveal as="p" delay={260} className="mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
-                  {data?.introParagraph1 ||
+                  {data?.heroSubtext ||
                     "Cleaners, photographers, tour operators and local businesses — see how we work together, and how to get listed."}
                 </Reveal>
                 <Reveal delay={390} className="flex flex-wrap justify-start gap-4">

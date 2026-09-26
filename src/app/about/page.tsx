@@ -287,8 +287,8 @@ export default async function AboutUsPage() {
                   {data?.heroHeading || "We're Sos Stays. We sell the break, not just the booking."}
                 </Reveal>
                 <Reveal as="p" delay={260} className="mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
-                  {data?.introParagraph1 ||
-                    "Sós is the Irish word for a break. That's the whole idea, really — we named the company after the thing we're actually selling."}
+                  {data?.heroSubtext ||
+                    "Property management and direct bookings, run by a small team who actually knows every house on the books."}
                 </Reveal>
                 <Reveal delay={390} className="flex flex-wrap justify-start gap-4">
                   <Button
@@ -330,7 +330,7 @@ export default async function AboutUsPage() {
             eyebrow={audienceTabs.eyebrow}
             tabs={audienceTabsWithImages}
             useImages
-            theme="forest"
+            theme="cream"
             showChecklist={false}
           />
         )}

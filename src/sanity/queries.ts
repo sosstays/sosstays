@@ -451,6 +451,7 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
   *[_type == "aboutPage" && _id == "aboutPage"][0] {
     heroBadge,
     heroHeading,
+    heroSubtext,
     heroImage,
     introParagraph1,
     introParagraph2,
@@ -528,6 +529,7 @@ export const PARTNERS_PAGE_QUERY = defineQuery(`
   *[_type == "partnersPage" && _id == "partnersPage"][0] {
     heroBadge,
     heroHeading,
+    heroSubtext,
     heroImage,
     introParagraph1,
     introParagraph2,
