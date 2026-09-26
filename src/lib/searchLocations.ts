@@ -7,6 +7,7 @@
 export const SEARCH_LOCATIONS: { label: string; city: string }[] = [
   { label: "Drogheda", city: "Drogheda" },
   { label: "Wexford", city: "Ferns" },
+  { label: "Clare", city: "Liscannor" },
 ];
 
 export function resolveSearchCity(location?: string): string | undefined {

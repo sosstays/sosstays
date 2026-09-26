@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Calendar, Users } from "lucide-react";
+import { MinStayNotice } from "@/components/MinStayNotice";
 
 const WEEKDAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
@@ -90,6 +91,10 @@ function GuestsIcon({ className = "" }: { className?: string }) {
 
 export type DateGuestsValue = { checkIn: Date | null; checkOut: Date | null; guests: number; kids: number };
 
+function nightsBetween(checkIn: Date, checkOut: Date) {
+  return Math.round((startOfDay(checkOut).getTime() - startOfDay(checkIn).getTime()) / (1000 * 60 * 60 * 24));
+}
+
 // The date-range + guest-count pickers shared by the big pill SearchBar
 // and RoomBookingBar's compact sticky bar. Fully self-contained (owns its
 // own popover/month state) — the parent just reads the current selection
@@ -101,6 +106,8 @@ export function DateGuestsFields({
   initialKids = 0,
   maxGuests = 16,
   unavailableDates,
+  minNightsByCheckIn,
+  whatsappUrl,
   datesLabel = "Check-in – Check-out",
   theme = "light",
   layout = "form",
@@ -113,6 +120,10 @@ export function DateGuestsFields({
   maxGuests?: number;
   /** ISO (YYYY-MM-DD) dates that can't be checked into or booked through. */
   unavailableDates?: Set<string>;
+  /** ISO (YYYY-MM-DD) check-in date -> Uplisting's minimum-length-of-stay rule for arrivals that day. */
+  minNightsByCheckIn?: Map<string, number>;
+  /** Surfaced on MinStayNotice's CTA when a selection falls short of the minimum stay. */
+  whatsappUrl?: string;
   datesLabel?: string;
   /** "dark" swaps trigger text/icons for use on a dark bar background — popovers stay light either way. */
   theme?: "light" | "dark";
@@ -126,6 +137,11 @@ export function DateGuestsFields({
   const [checkOut, setCheckOut] = useState<Date | null>(() => parseISODate(initialCheckOut));
   const [showCalendar, setShowCalendar] = useState(false);
   const [viewMonth, setViewMonth] = useState(() => startOfMonth(parseISODate(initialCheckIn) ?? today));
+  // Set to the required minimum nights when the guest's attempted check-out
+  // falls short of it — null otherwise.
+  const [minStayBlock, setMinStayBlock] = useState<number | null>(null);
+
+  const minNightsForCheckIn = checkIn ? minNightsByCheckIn?.get(toISODate(checkIn)) ?? 1 : 1;
 
   const [adults, setAdults] = useState(initialGuests);
   const [kids, setKids] = useState(initialKids);
@@ -161,16 +177,25 @@ export function DateGuestsFields({
     if (!checkIn || checkOut || day < checkIn) {
       setCheckIn(day);
       setCheckOut(null);
+      setMinStayBlock(null);
     } else if (isSameDay(day, checkIn)) {
       setCheckOut(null);
+      setMinStayBlock(null);
     } else if (rangeHasUnavailableNight(checkIn, day, unavailableDates)) {
       // Can't complete a range through a blocked night — restart from
       // this day instead of silently doing nothing.
       setCheckIn(day);
       setCheckOut(null);
+      setMinStayBlock(null);
+    } else if (nightsBetween(checkIn, day) < minNightsForCheckIn) {
+      // Uplisting requires a longer stay for arrivals on this date — keep
+      // check-in as-is and tell the guest why their check-out didn't take,
+      // rather than silently booking a stay that'll fail at checkout.
+      setMinStayBlock(minNightsForCheckIn);
     } else {
       setCheckOut(day);
       setShowCalendar(false);
+      setMinStayBlock(null);
     }
   }
 
@@ -260,6 +285,17 @@ export function DateGuestsFields({
                 );
               })}
             </div>
+
+            {checkIn && !checkOut && minNightsForCheckIn > 1 && !minStayBlock && (
+              <p className="mt-3 text-center text-xs text-near-black/60">
+                {minNightsForCheckIn}-night minimum for a check-in on {formatShort(checkIn)}.
+              </p>
+            )}
+            {minStayBlock && (
+              <div className="mt-3">
+                <MinStayNotice minNights={minStayBlock} whatsappUrl={whatsappUrl} />
+              </div>
+            )}
           </div>
         )}
       </div>
