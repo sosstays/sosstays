@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { DynamicIcon } from "@/components/DynamicIcon";
 
@@ -12,18 +12,33 @@ export type FounderCardData = {
   highlights: { icon: string; text: string }[];
 };
 
-// Interactive founder grid for the About page. Opening a card widens it
-// into the next grid column (rather than growing taller) and slides in a
-// panel of icon + one-line facts beside the photo, within the shaded top
-// region — see the `highlights` field on teamMember in
-// studio/schemaTypes/documents/aboutPage.ts. Name/title sit in their own
-// full-width footer strip below, same two-tier shape as the reference card.
-// The photo is a transparent PNG cutout — see that field's description for
-// the recommended crop — so it's rendered bottom-aligned (object-contain +
-// object-bottom) with no frame around it, sitting flush with the bottom of
-// the shaded region.
+// Matches Tailwind's `sm` breakpoint — below it there's no room for the
+// highlights panel to open sideways next to the photo, so it opens
+// downward (full width) instead. See isWide below.
+const WIDE_QUERY = "(min-width: 640px)";
+
+// Interactive founder grid for the About page. From `sm` up, opening a card
+// widens it into the next grid column and slides the highlights panel in
+// beside the photo, within the shaded top region — see the `highlights`
+// field on teamMember in studio/schemaTypes/documents/aboutPage.ts. Below
+// that, the card stays full width and the panel drops down under the photo
+// instead, since there's no room to grow sideways on a phone screen. Name/
+// title sit in their own full-width footer strip below, same two-tier shape
+// as the reference card. The photo is a transparent PNG cutout — see that
+// field's description for the recommended crop — so it's rendered
+// bottom-aligned (object-contain + object-bottom) with no frame around it,
+// sitting flush with the bottom of the shaded region.
 export function FounderCards({ members }: { members: FounderCardData[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [isWide, setIsWide] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(WIDE_QUERY);
+    const update = () => setIsWide(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   return (
     <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
@@ -43,13 +58,14 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
               }
             }}
             className={`group flex cursor-pointer flex-col overflow-hidden rounded-[22px] border border-sage-grey/25 bg-cream text-left outline-none transition-shadow duration-300 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-forest-green ${
-              isOpen ? "sm:col-span-2" : ""
+              isOpen && isWide ? "sm:col-span-2" : ""
             }`}
           >
             {/* Shaded top region: photo (bottom-aligned, badge flush at the
-                corner) with the highlights panel sliding in beside it. */}
-            <div className="flex flex-row bg-pale-sage">
-              <div className="relative h-[260px] w-[180px] shrink-0 overflow-hidden sm:w-[220px]">
+                corner). From `sm` up the highlights panel slides in beside
+                it; below that it drops down underneath instead. */}
+            <div className="flex flex-col bg-pale-sage sm:flex-row">
+              <div className="relative h-[260px] w-full shrink-0 overflow-hidden sm:w-[220px]">
                 <span className="absolute top-0 left-0 z-10 rounded-br-2xl bg-light-sage py-1.5 pr-4 pl-3.5 text-[11px] font-bold tracking-widest text-deep-forest uppercase">
                   Co-Founder
                 </span>
@@ -58,7 +74,7 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
                     src={member.photo.src}
                     alt={member.photo.alt || member.name}
                     fill
-                    sizes="220px"
+                    sizes="(min-width: 640px) 220px, 100vw"
                     className="object-contain object-bottom transition-transform duration-500 ease-out group-hover:-translate-y-1.5"
                   />
                 ) : (
@@ -72,13 +88,23 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
 
               <div
                 className="overflow-hidden"
-                style={{
-                  maxWidth: isOpen ? "420px" : "0px",
-                  opacity: isOpen ? 1 : 0,
-                  transition: "max-width 440ms cubic-bezier(0.16,1,0.3,1), opacity 300ms ease 100ms",
-                }}
+                style={
+                  isWide
+                    ? {
+                        maxWidth: isOpen ? "420px" : "0px",
+                        maxHeight: "none",
+                        opacity: isOpen ? 1 : 0,
+                        transition: "max-width 440ms cubic-bezier(0.16,1,0.3,1), opacity 300ms ease 100ms",
+                      }
+                    : {
+                        maxWidth: "none",
+                        maxHeight: isOpen ? "600px" : "0px",
+                        opacity: isOpen ? 1 : 0,
+                        transition: "max-height 440ms cubic-bezier(0.16,1,0.3,1), opacity 300ms ease 100ms",
+                      }
+                }
               >
-                <div className="flex h-[260px] w-[min(420px,80vw)] flex-col justify-center gap-4 px-6 py-6">
+                <div className="flex w-full flex-col justify-center gap-4 px-6 py-6 sm:h-[260px] sm:w-[min(420px,80vw)]">
                   {member.highlights.map((h, hi) => (
                     <div key={hi} className="flex items-start gap-3">
                       <DynamicIcon
