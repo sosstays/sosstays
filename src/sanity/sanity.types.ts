@@ -224,7 +224,13 @@ export type AboutPage = {
     name: string;
     title: string;
     plainTitle: string;
-    bio: string;
+    bio?: string;
+    highlights?: Array<{
+      icon: string;
+      text: string;
+      _type: "founderHighlight";
+      _key: string;
+    }>;
     photo?: {
       asset?: SanityImageAssetReference;
       media?: unknown;
@@ -337,7 +343,7 @@ export type CorporateStaysPage = {
   includedFeatures?: Array<{
     title: string;
     body: string;
-    icon: "sofa" | "wifi" | "contact" | "clipboard";
+    icon: string;
     _type: "includedFeature";
     _key: string;
   }>;
@@ -2263,7 +2269,7 @@ export type CORPORATE_STAYS_PAGE_QUERY_RESULT = {
   includedFeatures: Array<{
     title: string;
     body: string;
-    icon: "clipboard" | "contact" | "sofa" | "wifi";
+    icon: string;
   }> | null;
   partnerEyebrow: string | null;
   partnerHeading: string | null;
@@ -2294,7 +2300,7 @@ export type CORPORATE_STAYS_PAGE_QUERY_RESULT = {
 
 // Source: ../web/src/sanity/queries.ts
 // Variable: ABOUT_PAGE_QUERY
-// Query: *[_type == "aboutPage" && _id == "aboutPage"][0] {    heroBadge,    heroHeading,    heroSubtext,    heroImage,    introParagraph1,    introParagraph2,    introParagraph3,    whatWeDoEyebrow,    whatWeDoItems[] {      title,      body,      image    },    coverageEyebrow,    coverageHeading,    coverageBody,    coverageImage,    regions[] {      name,      status,      muted    },    staysHeading,    featuredStays[] {      name,      href,      location,      description,      image    },    teamEyebrow,    teamHeading,    teamIntro,    teamMembers[] {      name,      title,      plainTitle,      bio,      photo    },    workWithUsEyebrow,    workWithUsHeading,    workWithUsIntro,    workWithUsCategories[] {      title,      body    },    workWithUsContactLine,    ownershipHeading,    ownershipBody,    ownershipCroLinkLabel,    ownershipCroLinkUrl,    reachUsHeading,    reachUsEmail,    reachUsWhatsapp,    reachUsWhatsappUrl,    reachUsInstagramHandle,    reachUsInstagramUrl,    faqHeading,    faqs[] {      question,      answer    },      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
+// Query: *[_type == "aboutPage" && _id == "aboutPage"][0] {    heroBadge,    heroHeading,    heroSubtext,    heroImage,    introParagraph1,    introParagraph2,    introParagraph3,    whatWeDoEyebrow,    whatWeDoItems[] {      title,      body,      image    },    coverageEyebrow,    coverageHeading,    coverageBody,    coverageImage,    regions[] {      name,      status,      muted    },    staysHeading,    featuredStays[] {      name,      href,      location,      description,      image    },    teamEyebrow,    teamHeading,    teamIntro,    teamMembers[] {      name,      title,      plainTitle,      highlights[] {        icon,        text      },      photo    },    workWithUsEyebrow,    workWithUsHeading,    workWithUsIntro,    workWithUsCategories[] {      title,      body    },    workWithUsContactLine,    ownershipHeading,    ownershipBody,    ownershipCroLinkLabel,    ownershipCroLinkUrl,    reachUsHeading,    reachUsEmail,    reachUsWhatsapp,    reachUsWhatsappUrl,    reachUsInstagramHandle,    reachUsInstagramUrl,    faqHeading,    faqs[] {      question,      answer    },      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
 export type ABOUT_PAGE_QUERY_RESULT = {
   heroBadge: string | null;
   heroHeading: string;
@@ -2361,7 +2367,10 @@ export type ABOUT_PAGE_QUERY_RESULT = {
     name: string;
     title: string;
     plainTitle: string;
-    bio: string;
+    highlights: Array<{
+      icon: string;
+      text: string;
+    }> | null;
     photo: {
       asset?: SanityImageAssetReference;
       media?: unknown;
@@ -2962,7 +2971,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "heroSection" && _id == "heroSection"][0] {\n    eyebrow,\n    heading,\n    body,\n    subBody,\n    image,\n    primaryCtaLabel,\n    primaryCtaUrl,\n    secondaryCtaLabel,\n    secondaryCtaUrl\n  }\n': HERO_SECTION_QUERY_RESULT;
     '\n  *[_type == "hostsModule" && _id == "hostsModule"][0] {\n    eyebrow,\n    heading,\n    body,\n    commissionRate,\n    commissionLabel,\n    commissionSuffix,\n    commissionNote,\n    ctaLabel,\n    ctaUrl,\n    stepperEyebrow,\n    stepperHeading,\n    steps[] {\n      title,\n      bullets,\n      image\n    },\n    marqueeHeading,\n    marqueeSubtext\n  }\n': HOSTS_MODULE_QUERY_RESULT;
     '\n  *[_type == "corporateStaysPage" && _id == "corporateStaysPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroBody,\n    heroPrimaryCtaLabel,\n    heroSecondaryCtaLabel,\n    heroFacts,\n    heroImages,\n    whoEyebrow,\n    whoHeading,\n    whoBody,\n    whoCards[] {\n      title,\n      body,\n      image\n    },\n    howEyebrow,\n    howHeading,\n    howBody,\n    howSteps[] {\n      title,\n      body\n    },\n    coverageEyebrow,\n    coverageHeading,\n    coverageAreas[] {\n      county,\n      live,\n      body\n    },\n    coverageNote,\n    includedEyebrow,\n    includedHeading,\n    includedFeatures[] {\n      title,\n      body,\n      icon\n    },\n    partnerEyebrow,\n    partnerHeading,\n    partnerBody,\n    partnerCtaLabel,\n    partnerCtaUrl,\n    faqEyebrow,\n    faqHeading,\n    faqs[] {\n      question,\n      answer\n    },\n    closingHeading,\n    closingBody,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': CORPORATE_STAYS_PAGE_QUERY_RESULT;
-    '\n  *[_type == "aboutPage" && _id == "aboutPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroSubtext,\n    heroImage,\n    introParagraph1,\n    introParagraph2,\n    introParagraph3,\n    whatWeDoEyebrow,\n    whatWeDoItems[] {\n      title,\n      body,\n      image\n    },\n    coverageEyebrow,\n    coverageHeading,\n    coverageBody,\n    coverageImage,\n    regions[] {\n      name,\n      status,\n      muted\n    },\n    staysHeading,\n    featuredStays[] {\n      name,\n      href,\n      location,\n      description,\n      image\n    },\n    teamEyebrow,\n    teamHeading,\n    teamIntro,\n    teamMembers[] {\n      name,\n      title,\n      plainTitle,\n      bio,\n      photo\n    },\n    workWithUsEyebrow,\n    workWithUsHeading,\n    workWithUsIntro,\n    workWithUsCategories[] {\n      title,\n      body\n    },\n    workWithUsContactLine,\n    ownershipHeading,\n    ownershipBody,\n    ownershipCroLinkLabel,\n    ownershipCroLinkUrl,\n    reachUsHeading,\n    reachUsEmail,\n    reachUsWhatsapp,\n    reachUsWhatsappUrl,\n    reachUsInstagramHandle,\n    reachUsInstagramUrl,\n    faqHeading,\n    faqs[] {\n      question,\n      answer\n    },\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': ABOUT_PAGE_QUERY_RESULT;
+    '\n  *[_type == "aboutPage" && _id == "aboutPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroSubtext,\n    heroImage,\n    introParagraph1,\n    introParagraph2,\n    introParagraph3,\n    whatWeDoEyebrow,\n    whatWeDoItems[] {\n      title,\n      body,\n      image\n    },\n    coverageEyebrow,\n    coverageHeading,\n    coverageBody,\n    coverageImage,\n    regions[] {\n      name,\n      status,\n      muted\n    },\n    staysHeading,\n    featuredStays[] {\n      name,\n      href,\n      location,\n      description,\n      image\n    },\n    teamEyebrow,\n    teamHeading,\n    teamIntro,\n    teamMembers[] {\n      name,\n      title,\n      plainTitle,\n      highlights[] {\n        icon,\n        text\n      },\n      photo\n    },\n    workWithUsEyebrow,\n    workWithUsHeading,\n    workWithUsIntro,\n    workWithUsCategories[] {\n      title,\n      body\n    },\n    workWithUsContactLine,\n    ownershipHeading,\n    ownershipBody,\n    ownershipCroLinkLabel,\n    ownershipCroLinkUrl,\n    reachUsHeading,\n    reachUsEmail,\n    reachUsWhatsapp,\n    reachUsWhatsappUrl,\n    reachUsInstagramHandle,\n    reachUsInstagramUrl,\n    faqHeading,\n    faqs[] {\n      question,\n      answer\n    },\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...8] {\n    _id,\n    name,\n    "slug": slug.current,\n    location,\n    "coverImage": gallery[0]\n  }\n': CORPORATE_ONBOARDED_PROPERTIES_QUERY_RESULT;
     '\n  *[_type == "partnersPage" && _id == "partnersPage"][0] {\n    heroBadge,\n    heroHeading,\n    heroSubtext,\n    heroImage,\n    introParagraph1,\n    introParagraph2,\n    introParagraph3,\n    tiersEyebrow,\n    tiersHeading,\n    tiers[] {\n      title,\n      body\n    },\n    tiersNote,\n    whoWeWantEyebrow,\n    whoWeWantHeading,\n    whoWeWantCategories[] {\n      title,\n      body,\n      tag\n    },\n    spotlightHeading,\n    spotlightBody,\n    spotlightImage,\n    directoryEyebrow,\n    directoryHeading,\n    becomePartnerEyebrow,\n    becomePartnerHeading,\n    becomePartnerIntro,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': PARTNERS_PAGE_QUERY_RESULT;
     '\n  *[_type == "partner"] | order(featured desc, name asc) {\n    _id,\n    name,\n    "slug": slug.current,\n    tagline,\n    category,\n    description,\n    href,\n    featured,\n    image,\n    profileHref\n  }\n': PARTNERS_QUERY_RESULT;

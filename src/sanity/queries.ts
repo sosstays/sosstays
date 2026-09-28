@@ -486,7 +486,10 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
       name,
       title,
       plainTitle,
-      bio,
+      highlights[] {
+        icon,
+        text
+      },
       photo
     },
     workWithUsEyebrow,
