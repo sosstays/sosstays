@@ -234,6 +234,41 @@ export async function getUplistingRoom(propertySlug: string): Promise<UplistingR
   return { ...room, photos, amenities, fees };
 }
 
+/**
+ * GET /properties, but returning just a property_slug -> numeric id map for
+ * the given slugs — used to resolve rooms that /availability didn't return
+ * (so the usual slugToPropertyId lookup built from an availability response
+ * doesn't cover them) into calendar-lookup-ready ids, e.g. to check whether
+ * a room missed the search only because of its minimum-stay rule. Lighter
+ * than getUplistingRoom: skips photos/amenities/fees parsing since callers
+ * here only need the id.
+ */
+export async function resolveUplistingPropertyIds(propertySlugs: string[]): Promise<Map<string, string>> {
+  const wanted = new Set(propertySlugs);
+  const map = new Map<string, string>();
+  if (wanted.size === 0) return map;
+
+  const res = await fetch(new URL("/properties", API_BASE_URL).toString(), {
+    headers: {
+      Authorization: authHeader(),
+      "Content-Type": "application/json",
+    },
+    next: { revalidate: 300 },
+  });
+
+  if (!res.ok) {
+    const detail = await res.text();
+    throw new Error(`Uplisting properties lookup failed (${res.status}): ${detail}`);
+  }
+
+  const body = (await res.json()) as { data?: JsonApiResource[] };
+  for (const entry of body.data ?? []) {
+    const slug = String(entry.attributes?.property_slug ?? "");
+    if (wanted.has(slug)) map.set(slug, String(entry.id));
+  }
+  return map;
+}
+
 export type UplistingCalendarDay = {
   date: string; // YYYY-MM-DD
   available: boolean;
