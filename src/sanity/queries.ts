@@ -795,3 +795,49 @@ export const COUNTY_PRICING_STATS_QUERY = defineQuery(`
     faqs
   }
 `);
+
+// ---- Shop ----
+
+export const SHOP_PAGE_QUERY = defineQuery(`
+  *[_type == "shopPage" && _id == "shopPage"][0] {
+    heroEyebrow,
+    heroHeading,
+    heroSubtext,
+    heroStats[] {
+      value,
+      label
+    },
+    vouchersBlurb,
+    goodsBlurb,
+    ${seoProjection}
+  }
+`);
+
+export const SHOP_PRODUCTS_QUERY = defineQuery(`
+  *[_type == "shopProduct" && enabled != false] | order(kind asc, name asc) {
+    _id,
+    kind,
+    name,
+    tagline,
+    badge,
+    price,
+    unit,
+    maxQuantity,
+    image,
+    shortDescription,
+    description,
+    includes,
+    deliveryNote
+  }
+`);
+
+// Minimal property list for the "which stay is this for" picker on a
+// goods purchase — deliberately leaner than PROPERTY_PAGES_QUERY, which
+// pulls a lot more than a delivery picker needs.
+export const SHOP_DELIVERY_PROPERTIES_QUERY = defineQuery(`
+  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {
+    _id,
+    name,
+    "slug": slug.current
+  }
+`);

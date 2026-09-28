@@ -22,6 +22,79 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
+export type ShopProduct = {
+  _id: string;
+  _type: "shopProduct";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  kind: "voucher" | "goods";
+  name: string;
+  tagline: string;
+  badge: string;
+  price: number;
+  unit: string;
+  maxQuantity: number;
+  image: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  shortDescription: string;
+  description: string;
+  includes: Array<string>;
+  deliveryNote: string;
+  enabled?: boolean;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x: number;
+  y: number;
+  height: number;
+  width: number;
+};
+
+export type ShopPage = {
+  _id: string;
+  _type: "shopPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  heroEyebrow?: string;
+  heroHeading: string;
+  heroSubtext?: string;
+  heroStats?: Array<{
+    value: string;
+    label: string;
+    _type: "heroStat";
+    _key: string;
+  }>;
+  vouchersBlurb?: string;
+  goodsBlurb?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  noIndex?: boolean;
+};
+
 export type Partner = {
   _id: string;
   _type: "partner";
@@ -52,22 +125,6 @@ export type Partner = {
   profileHref?: string;
   profileIntro?: string;
   profileBody?: string;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x: number;
-  y: number;
-  height: number;
-  width: number;
 };
 
 export type Slug = {
@@ -1296,9 +1353,11 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
-  | Partner
+  | ShopProduct
   | SanityImageCrop
   | SanityImageHotspot
+  | ShopPage
+  | Partner
   | Slug
   | PartnersPage
   | AboutPage
@@ -2947,6 +3006,68 @@ export type COUNTY_PRICING_STATS_QUERY_RESULT = Array<{
   }> | null;
 }>;
 
+// Source: ../web/src/sanity/queries.ts
+// Variable: SHOP_PAGE_QUERY
+// Query: *[_type == "shopPage" && _id == "shopPage"][0] {    heroEyebrow,    heroHeading,    heroSubtext,    heroStats[] {      value,      label    },    vouchersBlurb,    goodsBlurb,      "seo": {    "title": coalesce(seoTitle, name, title, areaName, ""),    "description": coalesce(seoDescription, shortDescription, excerpt, ""),    "image": seoImage,    "noIndex": noIndex == true  }  }
+export type SHOP_PAGE_QUERY_RESULT = {
+  heroEyebrow: string | null;
+  heroHeading: string;
+  heroSubtext: string | null;
+  heroStats: Array<{
+    value: string;
+    label: string;
+  }> | null;
+  vouchersBlurb: string | null;
+  goodsBlurb: string | null;
+  seo: {
+    title: string | "";
+    description: string | "";
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    noIndex: boolean | false;
+  };
+} | null;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: SHOP_PRODUCTS_QUERY
+// Query: *[_type == "shopProduct" && enabled != false] | order(kind asc, name asc) {    _id,    kind,    name,    tagline,    badge,    price,    unit,    maxQuantity,    image,    shortDescription,    description,    includes,    deliveryNote  }
+export type SHOP_PRODUCTS_QUERY_RESULT = Array<{
+  _id: string;
+  kind: "goods" | "voucher";
+  name: string;
+  tagline: string;
+  badge: string;
+  price: number;
+  unit: string;
+  maxQuantity: number;
+  image: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  shortDescription: string;
+  description: string;
+  includes: Array<string>;
+  deliveryNote: string;
+}>;
+
+// Source: ../web/src/sanity/queries.ts
+// Variable: SHOP_DELIVERY_PROPERTIES_QUERY
+// Query: *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {    _id,    name,    "slug": slug.current  }
+export type SHOP_DELIVERY_PROPERTIES_QUERY_RESULT = Array<{
+  _id: string;
+  name: string;
+  slug: string;
+}>;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -2982,5 +3103,8 @@ declare module "@sanity/client" {
     '\n  *[_type in ["aboutPage", "corporateStaysPage", "privacyPolicyPage", "termsPage"]] {\n    "href": select(\n      _type == "aboutPage" => "/about",\n      _type == "corporateStaysPage" => "/corporate-stays",\n      _type == "privacyPolicyPage" => "/privacy-policy",\n      _type == "termsPage" => "/terms-and-conditions"\n    ),\n    _updatedAt,\n    "noIndex": noIndex == true\n  }\n': SITEMAP_SINGLETONS_QUERY_RESULT;
     '\n{\n  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {\n    siteName,\n    defaultSeoDescription,\n    businessName,\n    contactEmail,\n    socialLinks\n  },\n  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {\n    _type,\n    "href": select(\n      _type == "blogPost" => "/blog/" + slug.current,\n      _type == "propertyPage" => "/stays/" + slug.current,\n      _type == "areaGuide" => "/areas/" + slug.current,\n      _type == "landlordPage" => "/landlords/" + slug.current,\n      "/" + slug.current\n    ),\n    "title": coalesce(name, title, areaName, ""),\n    "summary": coalesce(shortDescription, excerpt, heroStatement, pt::text(introduction), "")\n  }\n}\n': LLMS_TXT_QUERY_RESULT;
     '\n  *[_type == "countyPricingStats" && live == true] {\n    county,\n    adr,\n    occupancy,\n    annualRevenue,\n    statsSourceNote,\n    realExample,\n    drivers,\n    faqs\n  }\n': COUNTY_PRICING_STATS_QUERY_RESULT;
+    '\n  *[_type == "shopPage" && _id == "shopPage"][0] {\n    heroEyebrow,\n    heroHeading,\n    heroSubtext,\n    heroStats[] {\n      value,\n      label\n    },\n    vouchersBlurb,\n    goodsBlurb,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': SHOP_PAGE_QUERY_RESULT;
+    '\n  *[_type == "shopProduct" && enabled != false] | order(kind asc, name asc) {\n    _id,\n    kind,\n    name,\n    tagline,\n    badge,\n    price,\n    unit,\n    maxQuantity,\n    image,\n    shortDescription,\n    description,\n    includes,\n    deliveryNote\n  }\n': SHOP_PRODUCTS_QUERY_RESULT;
+    '\n  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {\n    _id,\n    name,\n    "slug": slug.current\n  }\n': SHOP_DELIVERY_PROPERTIES_QUERY_RESULT;
   }
 }
