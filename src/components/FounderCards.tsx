@@ -12,13 +12,14 @@ export type FounderCardData = {
   highlights: { icon: string; text: string }[];
 };
 
-// Interactive founder grid for the About page. Each card opens in place to
-// show a short list of icon + one-line facts (see the `highlights` field on
-// teamMember in studio/schemaTypes/documents/aboutPage.ts) rather than the
-// old single long-form bio paragraph. The photo is a transparent PNG
-// cutout — see that field's description for the recommended crop — so it's
-// rendered bottom-aligned (object-contain + object-bottom) with no frame
-// around it, sitting flush with the bottom of the image area.
+// Interactive founder grid for the About page. Opening a card widens it
+// into the next grid column (rather than growing taller) and slides in a
+// panel of icon + one-line facts beside the photo — see the `highlights`
+// field on teamMember in studio/schemaTypes/documents/aboutPage.ts. The
+// photo is a transparent PNG cutout — see that field's description for the
+// recommended crop — so it's rendered bottom-aligned (object-contain +
+// object-bottom) with no frame around it, sitting flush with the bottom of
+// its column.
 export function FounderCards({ members }: { members: FounderCardData[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -39,63 +40,67 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
                 setOpenIndex(isOpen ? null : i);
               }
             }}
-            className="group flex cursor-pointer flex-col overflow-hidden rounded-[22px] border border-sage-grey/25 bg-cream text-left outline-none transition-shadow duration-300 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-forest-green"
+            className={`group flex cursor-pointer flex-row overflow-hidden rounded-[22px] border border-sage-grey/25 bg-cream text-left outline-none transition-shadow duration-300 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-forest-green ${
+              isOpen ? "sm:col-span-2" : ""
+            }`}
           >
-            <div className="relative h-[300px] shrink-0 overflow-hidden bg-pale-sage">
-              <span className="absolute top-6 left-0 z-10 rounded-r-full bg-light-sage py-1.5 pr-4 pl-4 text-[11px] font-bold tracking-widest text-deep-forest uppercase">
-                Co-Founder
-              </span>
-              {member.photo ? (
-                <Image
-                  src={member.photo.src}
-                  alt={member.photo.alt || member.name}
-                  fill
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-contain object-bottom transition-transform duration-500 ease-out group-hover:-translate-y-1.5"
-                />
-              ) : (
-                <div className="absolute inset-x-0 bottom-0 flex h-[220px] items-end justify-center pb-8">
-                  <span className="flex h-24 w-24 items-center justify-center rounded-full bg-cream text-3xl font-semibold text-forest-green">
-                    {member.name.charAt(0)}
-                  </span>
-                </div>
-              )}
-            </div>
+            {/* Photo + name/title — fixed width, never changes size on expand */}
+            <div className="flex w-full shrink-0 flex-col sm:w-[260px]">
+              <div className="relative h-[300px] shrink-0 overflow-hidden bg-pale-sage">
+                <span className="absolute top-6 left-0 z-10 rounded-r-full bg-light-sage py-1.5 pr-4 pl-4 text-[11px] font-bold tracking-widest text-deep-forest uppercase">
+                  Co-Founder
+                </span>
+                {member.photo ? (
+                  <Image
+                    src={member.photo.src}
+                    alt={member.photo.alt || member.name}
+                    fill
+                    sizes="260px"
+                    className="object-contain object-bottom transition-transform duration-500 ease-out group-hover:-translate-y-1.5"
+                  />
+                ) : (
+                  <div className="absolute inset-x-0 bottom-0 flex h-[220px] items-end justify-center pb-8">
+                    <span className="flex h-24 w-24 items-center justify-center rounded-full bg-cream text-3xl font-semibold text-forest-green">
+                      {member.name.charAt(0)}
+                    </span>
+                  </div>
+                )}
+              </div>
 
-            <div className="flex flex-col gap-1 px-6 pt-5">
-              <span className="text-[11.5px] font-bold tracking-widest text-forest-green/70 uppercase">
-                {member.title}
-              </span>
-              <h3 className="font-serif text-xl font-bold text-deep-forest">{member.name}</h3>
-              <span className="text-[13.5px] text-near-black/65">{member.plainTitle}</span>
-            </div>
-
-            <div
-              className="grid"
-              style={{
-                gridTemplateRows: isOpen ? "1fr" : "0fr",
-                transition: "grid-template-rows 420ms cubic-bezier(0.16,1,0.3,1)",
-              }}
-            >
-              <div className="overflow-hidden">
-                <div className="flex flex-col gap-3.5 px-6 pt-4 pb-6">
-                  {member.highlights.map((h, hi) => (
-                    <div key={hi} className="flex items-start gap-3">
-                      <DynamicIcon
-                        name={h.icon}
-                        className="mt-0.5 h-4 w-4 flex-none text-forest-green"
-                        strokeWidth={1.75}
-                      />
-                      <span className="text-[14.5px] leading-relaxed text-near-black/80">{h.text}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="flex flex-1 flex-col gap-1 px-6 pt-5 pb-6">
+                <span className="text-[11.5px] font-bold tracking-widest text-forest-green/70 uppercase">
+                  {member.title}
+                </span>
+                <h3 className="font-serif text-xl font-bold text-deep-forest">{member.name}</h3>
+                <span className="text-[13.5px] text-near-black/65">{member.plainTitle}</span>
+                {!isOpen && (
+                  <span className="mt-auto pt-3 text-[13px] font-semibold text-forest-green">Read more →</span>
+                )}
               </div>
             </div>
 
-            {!isOpen && (
-              <span className="px-6 pt-1 pb-6 text-[13px] font-semibold text-forest-green">Read more →</span>
-            )}
+            {/* Highlights — slides in to the right of the photo/name column */}
+            <div
+              className="overflow-hidden"
+              style={{
+                maxWidth: isOpen ? "420px" : "0px",
+                opacity: isOpen ? 1 : 0,
+                transition: "max-width 440ms cubic-bezier(0.16,1,0.3,1), opacity 300ms ease 100ms",
+              }}
+            >
+              <div className="flex w-[min(420px,80vw)] flex-col justify-center gap-4 px-6 py-6">
+                {member.highlights.map((h, hi) => (
+                  <div key={hi} className="flex items-start gap-3">
+                    <DynamicIcon
+                      name={h.icon}
+                      className="mt-0.5 h-4 w-4 flex-none text-forest-green"
+                      strokeWidth={1.75}
+                    />
+                    <span className="text-[14.5px] leading-relaxed text-near-black/80">{h.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         );
       })}
