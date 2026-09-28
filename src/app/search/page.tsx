@@ -1,10 +1,13 @@
 import { client } from "@/sanity/client";
-import { PROPERTY_PAGES_QUERY } from "@/sanity/queries";
+import { PROPERTY_PAGES_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { PropertyCard } from "@/components/PropertyCard";
 import { SearchBar } from "@/components/SearchBar";
 import { SearchResultCard, type SearchResultRoom } from "@/components/SearchResultCard";
+import { WhatsAppContactLink } from "@/components/WhatsAppContactLink";
+import { MinStayNotice } from "@/components/MinStayNotice";
 import { searchUplistingAvailability } from "@/lib/uplisting/client";
 import { withApproxPrices } from "@/lib/uplisting/approxPrice";
+import { findMinStayShortfall } from "@/lib/uplisting/minStayShortfall";
 import { resolveSearchCity } from "@/lib/searchLocations";
 
 export const metadata = {
@@ -83,7 +86,7 @@ export default async function SearchPage({
   const guestCount = guests ? Number(guests) : undefined;
   const hasSearchCriteria = Boolean(check_in || check_out || location || guestCount);
 
-  const [properties, availability] = await Promise.all([
+  const [properties, availability, siteSettings] = await Promise.all([
     client.fetch<SosPropertyPage[]>(PROPERTY_PAGES_QUERY),
     // A search is only ever made for one specific date/guest combination —
     // never worth caching — and Uplisting being unreachable shouldn't take
@@ -102,7 +105,12 @@ export default async function SearchPage({
           MIN_SEARCH_DELAY_MS
         )
       : Promise.resolve(null),
+    client.fetch(SITE_SETTINGS_QUERY),
   ]);
+
+  const whatsappUrl = siteSettings?.socialLinks?.find(
+    (link: { platform: string; url: string }) => link.platform === "whatsapp",
+  )?.url;
 
   const checkInLabel = formatDateLabel(check_in);
   const checkOutLabel = formatDateLabel(check_out);
@@ -184,6 +192,23 @@ export default async function SearchPage({
             : null,
         }));
 
+  // Nothing matched — check whether that's specifically because every
+  // candidate room/whole-house needs more nights than were searched (see
+  // findMinStayShortfall), across every property rather than just the ones
+  // that "almost" matched, since /availability already excluded all of
+  // them from `availability` with no way to tell why.
+  const noMatchMinStay =
+    matchedProperties.length === 0 && availableSlugs && check_in && check_out
+      ? await findMinStayShortfall(
+          properties.flatMap((property) => [
+            ...(property.roomTypes ?? []).map((room) => room.roomId).filter((id): id is string => Boolean(id)),
+            ...(property.wholeHouseAvailabilityId ? [property.wholeHouseAvailabilityId] : []),
+          ]),
+          check_in,
+          check_out
+        )
+      : null;
+
   const showMatches = hasSearchCriteria && availableSlugs !== null;
 
   // Everything that didn't match the search — shown below the results as
@@ -244,11 +269,28 @@ export default async function SearchPage({
                 )
               )}
             </div>
-            {matchedProperties.length === 0 && (
-              <p className="mt-8 text-near-black/60">
-                Nothing available for those dates — try a different range, or check back soon.
-              </p>
-            )}
+            {matchedProperties.length === 0 &&
+              (noMatchMinStay ? (
+                <div className="mt-8">
+                  <MinStayNotice minNights={noMatchMinStay} whatsappUrl={whatsappUrl} />
+                </div>
+              ) : (
+                <p className="mt-8 text-near-black/60">
+                  Nothing available for those dates — try a different range
+                  {whatsappUrl ? (
+                    <>
+                      , or{" "}
+                      <WhatsAppContactLink
+                        whatsappUrl={whatsappUrl}
+                        className="font-semibold text-forest-green underline underline-offset-2"
+                      />{" "}
+                      and we&apos;ll help sort something.
+                    </>
+                  ) : (
+                    ", or check back soon."
+                  )}
+                </p>
+              ))}
 
             {otherProperties.length > 0 && (
               <div className="mt-16">
