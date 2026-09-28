@@ -9,6 +9,7 @@ import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Button } from "@/components/Button";
 import { AudienceTabs } from "@/components/AudienceTabs";
+import { FounderCards } from "@/components/FounderCards";
 import { FaqSection } from "@/components/FaqSection";
 import { SocialIcons } from "@/components/SocialIcons";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
@@ -106,19 +107,33 @@ const DEFAULT_TEAM = [
     name: "Andrine Mendez",
     title: "Chief Fáilte Officer",
     plainTitle: "Co-Founder, Marketing & Guest Experience",
-    bio: '[One line on background/profession — e.g. "Andrine spent X years in ___ before co-founding Sos Stays."] A [favourite place travelled/lived — fill in] convinced her that the best trips are the ones where someone local already sorted the hard part for you, which is more or less the whole Sos Stays pitch. At Sos Stays, Andrine runs the brand, the listings, the guest experience and most of what you see online — if it sounds like us, she probably wrote it.',
+    highlights: [
+      { icon: "megaphone", text: "15+ years in demand generation for tech companies before co-founding Sos Stays." },
+      { icon: "graduation-cap", text: "MBS in Marketing & Entrepreneurship from DKIT." },
+      { icon: "code", text: "Built the CRM the whole team runs on." },
+      { icon: "message-circle", text: "Owns the brand, the website, and partnerships like Funtasia." },
+    ],
   },
   {
     name: "Akhil Edathara Asokan",
     title: "Chief Airgead Officer",
     plainTitle: "Co-Founder, Sales, Operations & Finance",
-    bio: "[One line on background/profession — fill in.] Time spent in [place — fill in] left him with a healthy respect for a good spreadsheet and an even better host. At Sos Stays, Akhil handles the landlord side end to end — the pitch, the numbers, the paperwork, and making sure owners actually get paid on time.",
+    highlights: [
+      { icon: "circle-help", text: "[Background — fill in.]" },
+      { icon: "calculator", text: "Handles the landlord side end to end — the pitch, the numbers, the paperwork." },
+      { icon: "house", text: "Makes sure owners actually get paid on time. A healthy respect for a good spreadsheet, and an even better host." },
+    ],
   },
   {
     name: "Keena Duffy",
     title: "Chief Saoiste Officer",
-    plainTitle: "Co-Founder, Operations & Property Management",
-    bio: "[One line on background/profession — fill in.] [Travel note — fill in], and came away thinking the difference between a good stay and a forgettable one usually comes down to someone paying attention to the small stuff. At Sos Stays, Keena's the one on the ground — property condition, cleaning schedules, guest calls when something needs sorting, and generally keeping every property honest.",
+    plainTitle: "Co-Founder -Operations, Sales & Business Development",
+    highlights: [
+      { icon: "briefcase", text: "Four years managing stores and sales teams at Vodafone." },
+      { icon: "graduation-cap", text: "Degree in Irish & Human Development, postgrad in real estate." },
+      { icon: "map", text: "On the road onboarding properties and meeting landlords across the country." },
+      { icon: "clipboard-check", text: "Keeps guest comms, cleaning schedules and stock sorted, wherever she is." },
+    ],
   },
 ];
 
@@ -194,7 +209,24 @@ export default async function AboutUsPage() {
 
   const regions = data?.regions?.length ? data.regions : DEFAULT_REGIONS;
   const featuredStays = data?.featuredStays?.length ? data.featuredStays : DEFAULT_FEATURED_STAYS;
-  const teamMembers = data?.teamMembers?.length ? data.teamMembers : DEFAULT_TEAM;
+  const teamMembersRaw = data?.teamMembers?.length ? data.teamMembers : DEFAULT_TEAM;
+  const teamMembers = (
+    teamMembersRaw as {
+      name: string;
+      title: string;
+      plainTitle: string;
+      highlights?: { icon: string; text: string }[] | null;
+      photo?: { alt?: string | null } | null;
+    }[]
+  ).map((member) => ({
+    name: member.name,
+    title: member.title,
+    plainTitle: member.plainTitle,
+    highlights: member.highlights?.length ? member.highlights : [],
+    photo: member.photo
+      ? { src: urlFor(member.photo).width(700).url(), alt: member.photo.alt ?? member.name }
+      : null,
+  }));
   const workCategories = data?.workWithUsCategories?.length ? data.workWithUsCategories : DEFAULT_WORK_CATEGORIES;
   const faqs = data?.faqs?.length ? data.faqs : DEFAULT_FAQS;
 
@@ -453,36 +485,9 @@ export default async function AboutUsPage() {
                   "We kept the job titles a bit Irish — see the plain version in brackets on each card if the Irish doesn't land."}
               </p>
             </Reveal>
-            <div className="grid grid-cols-1 gap-7 md:grid-cols-3">
-              {teamMembers.map(
-                (
-                  member: { name: string; title: string; plainTitle: string; bio: string; photo?: { alt?: string } | null },
-                  i: number
-                ) => (
-                  <Reveal key={member.name} delay={i * 100} className="flex flex-col rounded-[18px] border border-sage-grey/25 bg-cream p-7">
-                    {member.photo ? (
-                      <div className="relative mb-5 h-20 w-20 overflow-hidden rounded-full">
-                        <Image
-                          src={urlFor(member.photo).width(160).height(160).url()}
-                          alt={member.photo.alt ?? member.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-pale-sage text-2xl font-semibold text-forest-green">
-                        {member.name.charAt(0)}
-                      </div>
-                    )}
-                    <h3 className="font-serif text-lg font-bold text-deep-forest">{member.name}</h3>
-                    <p className="mb-4 text-sm font-semibold text-maroon">
-                      {member.title} <span className="font-normal text-near-black/55">({member.plainTitle})</span>
-                    </p>
-                    <p className="text-[14px] leading-relaxed text-near-black/70">{member.bio}</p>
-                  </Reveal>
-                )
-              )}
-            </div>
+            <Reveal>
+              <FounderCards members={teamMembers} />
+            </Reveal>
           </div>
         </section>
 
