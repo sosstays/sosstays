@@ -78,7 +78,7 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
               }}
             >
               <div className="overflow-hidden">
-                <div className="flex flex-col gap-3.5 px-6 pt-4 pb-2">
+                <div className="flex flex-col gap-3.5 px-6 pt-4 pb-6">
                   {member.highlights.map((h, hi) => (
                     <div key={hi} className="flex items-start gap-3">
                       <DynamicIcon
@@ -93,9 +93,9 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
               </div>
             </div>
 
-            <span className="px-6 pt-1 pb-6 text-[13px] font-semibold text-forest-green">
-              {isOpen ? "Close ×" : "Read more →"}
-            </span>
+            {!isOpen && (
+              <span className="px-6 pt-1 pb-6 text-[13px] font-semibold text-forest-green">Read more →</span>
+            )}
           </div>
         );
       })}

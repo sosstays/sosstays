@@ -224,7 +224,6 @@ export type AboutPage = {
     name: string;
     title: string;
     plainTitle: string;
-    bio?: string;
     highlights?: Array<{
       icon: string;
       text: string;
