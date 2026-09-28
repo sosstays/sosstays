@@ -3060,6 +3060,32 @@ export type SHOP_PRODUCTS_QUERY_RESULT = Array<{
 }>;
 
 // Source: ../web/src/sanity/queries.ts
+// Variable: SHOP_PRODUCT_BY_ID_QUERY
+// Query: *[_type == "shopProduct" && _id == $id && enabled != false][0] {    _id,    kind,    name,    tagline,    badge,    price,    unit,    maxQuantity,    image,    shortDescription,    description,    includes,    deliveryNote  }
+export type SHOP_PRODUCT_BY_ID_QUERY_RESULT = {
+  _id: string;
+  kind: "goods" | "voucher";
+  name: string;
+  tagline: string;
+  badge: string;
+  price: number;
+  unit: string;
+  maxQuantity: number;
+  image: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  shortDescription: string;
+  description: string;
+  includes: Array<string>;
+  deliveryNote: string;
+} | null;
+
+// Source: ../web/src/sanity/queries.ts
 // Variable: SHOP_DELIVERY_PROPERTIES_QUERY
 // Query: *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {    _id,    name,    "slug": slug.current  }
 export type SHOP_DELIVERY_PROPERTIES_QUERY_RESULT = Array<{
@@ -3105,6 +3131,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "countyPricingStats" && live == true] {\n    county,\n    adr,\n    occupancy,\n    annualRevenue,\n    statsSourceNote,\n    realExample,\n    drivers,\n    faqs\n  }\n': COUNTY_PRICING_STATS_QUERY_RESULT;
     '\n  *[_type == "shopPage" && _id == "shopPage"][0] {\n    heroEyebrow,\n    heroHeading,\n    heroSubtext,\n    heroStats[] {\n      value,\n      label\n    },\n    vouchersBlurb,\n    goodsBlurb,\n    \n  "seo": {\n    "title": coalesce(seoTitle, name, title, areaName, ""),\n    "description": coalesce(seoDescription, shortDescription, excerpt, ""),\n    "image": seoImage,\n    "noIndex": noIndex == true\n  }\n\n  }\n': SHOP_PAGE_QUERY_RESULT;
     '\n  *[_type == "shopProduct" && enabled != false] | order(kind asc, name asc) {\n    _id,\n    kind,\n    name,\n    tagline,\n    badge,\n    price,\n    unit,\n    maxQuantity,\n    image,\n    shortDescription,\n    description,\n    includes,\n    deliveryNote\n  }\n': SHOP_PRODUCTS_QUERY_RESULT;
+    '\n  *[_type == "shopProduct" && _id == $id && enabled != false][0] {\n    _id,\n    kind,\n    name,\n    tagline,\n    badge,\n    price,\n    unit,\n    maxQuantity,\n    image,\n    shortDescription,\n    description,\n    includes,\n    deliveryNote\n  }\n': SHOP_PRODUCT_BY_ID_QUERY_RESULT;
     '\n  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {\n    _id,\n    name,\n    "slug": slug.current\n  }\n': SHOP_DELIVERY_PROPERTIES_QUERY_RESULT;
   }
 }

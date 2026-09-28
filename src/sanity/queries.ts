@@ -831,6 +831,26 @@ export const SHOP_PRODUCTS_QUERY = defineQuery(`
   }
 `);
 
+// Single item for /shop/checkout — same shape as SHOP_PRODUCTS_QUERY's
+// projection, just one document by id instead of the whole shelf.
+export const SHOP_PRODUCT_BY_ID_QUERY = defineQuery(`
+  *[_type == "shopProduct" && _id == $id && enabled != false][0] {
+    _id,
+    kind,
+    name,
+    tagline,
+    badge,
+    price,
+    unit,
+    maxQuantity,
+    image,
+    shortDescription,
+    description,
+    includes,
+    deliveryNote
+  }
+`);
+
 // Minimal property list for the "which stay is this for" picker on a
 // goods purchase — deliberately leaner than PROPERTY_PAGES_QUERY, which
 // pulls a lot more than a delivery picker needs.

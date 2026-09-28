@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { client } from "@/sanity/client";
-import { SHOP_PAGE_QUERY, SHOP_PRODUCTS_QUERY, SHOP_DELIVERY_PROPERTIES_QUERY } from "@/sanity/queries";
+import { SHOP_PAGE_QUERY, SHOP_PRODUCTS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
@@ -38,10 +38,9 @@ const DEFAULT_STATS = [
 ];
 
 export default async function ShopPage() {
-  const [page, products, properties, siteNavLinks] = await Promise.all([
+  const [page, products, siteNavLinks] = await Promise.all([
     client.fetch(SHOP_PAGE_QUERY),
     client.fetch(SHOP_PRODUCTS_QUERY),
-    client.fetch(SHOP_DELIVERY_PROPERTIES_QUERY),
     getGuestSiteNavLinks(),
   ]);
 
@@ -129,7 +128,6 @@ export default async function ShopPage() {
       {/* SHOP GRID */}
       <ShopClient
         products={resolvedProducts}
-        properties={properties}
         vouchersBlurb={
           page?.vouchersBlurb ||
           "Digital vouchers — a code and a PDF in the inbox within the minute. Good as a gift, good as a plan for the Wednesday nobody has thought about yet."

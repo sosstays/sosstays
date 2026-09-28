@@ -1,15 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { Search, X, Minus, Plus, CheckCircle2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Search, X, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/Button";
-
-const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
-  : null;
 
 export type ShopProduct = {
   _id: string;
@@ -29,17 +24,14 @@ export type ShopProduct = {
 
 export type ShopProperty = { _id: string; name: string; slug: string };
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const money = (n: number) => `€${n}`;
 
 export function ShopClient({
   products,
-  properties,
   vouchersBlurb,
   goodsBlurb,
 }: {
   products: ShopProduct[];
-  properties: ShopProperty[];
   vouchersBlurb: string;
   goodsBlurb: string;
 }) {
@@ -155,13 +147,7 @@ export function ShopClient({
         )}
       </div>
 
-      {openProduct && (
-        <ProductModal
-          product={openProduct}
-          properties={properties}
-          onClose={() => setOpenProduct(null)}
-        />
-      )}
+      {openProduct && <ProductModal product={openProduct} onClose={() => setOpenProduct(null)} />}
     </section>
   );
 }
@@ -253,51 +239,13 @@ function GoodsCard({ product, onOpen }: { product: ShopProduct; onOpen: () => vo
   );
 }
 
-function ProductModal({
-  product,
-  properties,
-  onClose,
-}: {
-  product: ShopProduct;
-  properties: ShopProperty[];
-  onClose: () => void;
-}) {
-  const [clientSecret, setClientSecret] = useState("");
-  const [paymentIntentId, setPaymentIntentId] = useState("");
-  const [loadError, setLoadError] = useState("");
-  const [paid, setPaid] = useState(false);
-  const [paidEmail, setPaidEmail] = useState("");
-
-  const isGoods = product.kind === "goods";
-
-  // Mounting the PaymentElement needs a clientSecret, so one is created as
-  // soon as the item is opened — on the same screen as the name/card
-  // fields, rather than after a separate "continue" step. It only knows
-  // the product + a starting quantity at this point; the buyer's details
-  // and the final quantity are validated and attached to this same
-  // PaymentIntent at submit time by finalize-payment-intent, right before
-  // confirmPayment (see that route for why).
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/shop/create-payment-intent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId: product._id, quantity: 1 }),
-    })
-      .then((res) => res.json().then((data) => ({ res, data })))
-      .then(({ res, data }) => {
-        if (cancelled) return;
-        if (!res.ok) throw new Error(data.error ?? "Failed to start checkout");
-        setClientSecret(data.clientSecret);
-        setPaymentIntentId(data.paymentIntentId);
-      })
-      .catch((err) => {
-        if (!cancelled) setLoadError(err instanceof Error ? err.message : "Failed to start checkout");
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [product._id]);
+// The popup is just a look, a description, and a quantity pick — it hands
+// off to a dedicated /shop/checkout page (see that route) for the buyer's
+// name/contact details and the card entry, rather than swapping in a
+// second step inside this same dialog.
+function ProductModal({ product, onClose }: { product: ShopProduct; onClose: () => void }) {
+  const router = useRouter();
+  const [qty, setQty] = useState(1);
 
   return (
     <div className="fixed inset-0 z-90 flex items-center justify-center p-6">
@@ -332,322 +280,60 @@ function ProductModal({
             </button>
           </div>
 
-          {paid ? (
-            <div className="mt-8 flex flex-col items-start gap-3">
-              <CheckCircle2 size={44} stroke="var(--forest-green)" strokeWidth={1.75} />
-              <h3 className="font-serif text-2xl font-bold text-forest-green">You&apos;re all set</h3>
-              <p className="text-[15px] leading-relaxed text-near-black/72">
-                Payment went through — a receipt is on its way to {paidEmail}.{" "}
-                {isGoods
-                  ? "We'll have it ready in the house before check-in."
-                  : "We'll be in touch with the voucher shortly."}
-              </p>
-              <Button variant="secondary" size="md" onClick={onClose} className="mt-2">
-                Close
-              </Button>
+          <p className="mt-5 text-[15.5px] leading-relaxed text-near-black/75">{product.description}</p>
+
+          <div className="mt-5.5 flex flex-col gap-2.5">
+            {product.includes.map((line) => (
+              <div key={line} className="flex items-start gap-3 text-[14.5px] leading-relaxed text-near-black/72">
+                <span className="mt-2 h-1.75 w-1.75 flex-none rounded-full bg-light-sage" />
+                <span>{line}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5.5 rounded-xl bg-light-sage/30 px-4.5 py-3.5 text-[14px] leading-relaxed text-deep-forest">
+            {product.deliveryNote}
+          </div>
+
+          <div className="mt-6 flex items-center gap-3.5">
+            <div className="flex items-center gap-1 rounded-full border border-forest-green/30 p-1">
+              <button
+                type="button"
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                aria-label="Decrease quantity"
+                className="flex h-8.5 w-8.5 items-center justify-center rounded-full text-deep-forest transition-colors hover:bg-light-sage/45"
+              >
+                <Minus size={16} />
+              </button>
+              <span className="font-condensed min-w-[28px] text-center text-[17px] font-bold text-deep-forest">
+                {qty}
+              </span>
+              <button
+                type="button"
+                onClick={() => setQty((q) => Math.min(product.maxQuantity, q + 1))}
+                aria-label="Increase quantity"
+                className="flex h-8.5 w-8.5 items-center justify-center rounded-full text-deep-forest transition-colors hover:bg-light-sage/45"
+              >
+                <Plus size={16} />
+              </button>
             </div>
-          ) : (
-            <>
-              <p className="mt-5 text-[15.5px] leading-relaxed text-near-black/75">{product.description}</p>
+            <span className="text-[13.5px] text-near-black/55">{product.unit}</span>
+            <span className="font-condensed ml-auto text-[24px] font-bold text-deep-forest">
+              {money(product.price * qty)}
+            </span>
+          </div>
 
-              <div className="mt-5.5 flex flex-col gap-2.5">
-                {product.includes.map((line) => (
-                  <div key={line} className="flex items-start gap-3 text-[14.5px] leading-relaxed text-near-black/72">
-                    <span className="mt-2 h-1.75 w-1.75 flex-none rounded-full bg-light-sage" />
-                    <span>{line}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5.5 rounded-xl bg-light-sage/30 px-4.5 py-3.5 text-[14px] leading-relaxed text-deep-forest">
-                {product.deliveryNote}
-              </div>
-
-              {loadError ? (
-                <p role="alert" className="mt-6 text-[13px] text-error-red">
-                  {loadError}
-                </p>
-              ) : !clientSecret || !stripePromise ? (
-                <p className="mt-6 text-[14px] text-near-black/55">
-                  {stripePromise ? "Preparing checkout…" : "Payments are not configured."}
-                </p>
-              ) : (
-                <Elements
-                  key={clientSecret}
-                  stripe={stripePromise}
-                  options={{ clientSecret, appearance: { variables: { colorPrimary: "#4a5d48" } } }}
-                >
-                  <CheckoutFields
-                    product={product}
-                    properties={properties}
-                    paymentIntentId={paymentIntentId}
-                    onPaid={(email) => {
-                      setPaidEmail(email);
-                      setPaid(true);
-                    }}
-                  />
-                </Elements>
-              )}
-            </>
-          )}
+          <Button
+            type="button"
+            onClick={() => router.push(`/shop/checkout?product=${product._id}&qty=${qty}`)}
+            variant="primary"
+            size="custom"
+            className="mt-6 self-start px-8 py-3 text-[15px] font-semibold"
+          >
+            {`Buy now — ${money(product.price * qty)}`}
+          </Button>
         </div>
       </div>
     </div>
-  );
-}
-
-// Buyer/recipient/delivery fields and the card element together, one
-// screen, one submit — see the create/finalize split in
-// web/src/app/api/shop/*-payment-intent for how the amount and
-// fulfillment metadata get attached before this confirms payment. Needs
-// useStripe/useElements, so it has to live inside <Elements>, as a
-// sibling of everything that doesn't (the product description above it
-// stays in ProductModal).
-function CheckoutFields({
-  product,
-  properties,
-  paymentIntentId,
-  onPaid,
-}: {
-  product: ShopProduct;
-  properties: ShopProperty[];
-  paymentIntentId: string;
-  onPaid: (email: string) => void;
-}) {
-  const stripe = useStripe();
-  const elements = useElements();
-
-  const [qty, setQty] = useState(1);
-  const [buyerName, setBuyerName] = useState("");
-  const [buyerEmail, setBuyerEmail] = useState("");
-  const [buyerPhone, setBuyerPhone] = useState("");
-  const [recipientName, setRecipientName] = useState("");
-  const [recipientEmail, setRecipientEmail] = useState("");
-  const [giftNote, setGiftNote] = useState("");
-  const [propertySlug, setPropertySlug] = useState("");
-  const [arrivalDate, setArrivalDate] = useState("");
-  const [formError, setFormError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-
-  const [tomorrow] = useState(() => new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10));
-  const isGoods = product.kind === "goods";
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setFormError("");
-
-    if (!stripe || !elements) return;
-    if (!buyerName.trim()) return setFormError("Let us know your name.");
-    if (!EMAIL_PATTERN.test(buyerEmail.trim())) return setFormError("Enter a valid email address.");
-    if (isGoods) {
-      if (!propertySlug) return setFormError("Pick which stay this is for.");
-      if (!arrivalDate) return setFormError("Pick an arrival date.");
-    }
-    if (recipientEmail.trim() && !EMAIL_PATTERN.test(recipientEmail.trim())) {
-      return setFormError("Enter a valid recipient email, or leave it blank.");
-    }
-
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/shop/finalize-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          paymentIntentId,
-          productId: product._id,
-          quantity: qty,
-          buyerName: buyerName.trim(),
-          buyerEmail: buyerEmail.trim(),
-          buyerPhone: buyerPhone.trim(),
-          ...(isGoods
-            ? { propertySlug, arrivalDate }
-            : {
-                recipientName: recipientName.trim(),
-                recipientEmail: recipientEmail.trim(),
-                giftNote: giftNote.trim(),
-              }),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Failed to finalize checkout");
-
-      const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        redirect: "if_required",
-        confirmParams: { return_url: window.location.href },
-      });
-
-      if (confirmError) {
-        setFormError(confirmError.message ?? "Payment failed — please try again.");
-        setSubmitting(false);
-        return;
-      }
-      if (paymentIntent?.status === "succeeded") {
-        onPaid(buyerEmail.trim());
-      } else {
-        // A redirect-based payment method sent the buyer away and back —
-        // Stripe's own redirect handling covers that case; nothing
-        // succeeded synchronously here.
-        setFormError("Payment did not complete — please try again.");
-        setSubmitting(false);
-      }
-    } catch (err) {
-      setFormError(err instanceof Error ? err.message : "Failed to finalize checkout");
-      setSubmitting(false);
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
-      <div className="flex items-center gap-3.5">
-        <div className="flex items-center gap-1 rounded-full border border-forest-green/30 p-1">
-          <button
-            type="button"
-            onClick={() => setQty((q) => Math.max(1, q - 1))}
-            aria-label="Decrease quantity"
-            className="flex h-8.5 w-8.5 items-center justify-center rounded-full text-deep-forest transition-colors hover:bg-light-sage/45"
-          >
-            <Minus size={16} />
-          </button>
-          <span className="font-condensed min-w-[28px] text-center text-[17px] font-bold text-deep-forest">
-            {qty}
-          </span>
-          <button
-            type="button"
-            onClick={() => setQty((q) => Math.min(product.maxQuantity, q + 1))}
-            aria-label="Increase quantity"
-            className="flex h-8.5 w-8.5 items-center justify-center rounded-full text-deep-forest transition-colors hover:bg-light-sage/45"
-          >
-            <Plus size={16} />
-          </button>
-        </div>
-        <span className="text-[13.5px] text-near-black/55">{product.unit}</span>
-        <span className="font-condensed ml-auto text-[24px] font-bold text-deep-forest">
-          {money(product.price * qty)}
-        </span>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm text-near-black">
-            Your name <span className="text-error-red">*</span>
-          </span>
-          <input
-            value={buyerName}
-            onChange={(e) => setBuyerName(e.target.value)}
-            placeholder="Jane Doe"
-            className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
-          />
-        </label>
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm text-near-black">
-            Your email <span className="text-error-red">*</span>
-          </span>
-          <input
-            type="email"
-            value={buyerEmail}
-            onChange={(e) => setBuyerEmail(e.target.value)}
-            placeholder="you@example.com"
-            className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
-          />
-        </label>
-      </div>
-
-      <label className="flex flex-col gap-1.5">
-        <span className="text-sm text-near-black">Phone</span>
-        <input
-          type="tel"
-          value={buyerPhone}
-          onChange={(e) => setBuyerPhone(e.target.value)}
-          placeholder="+353 89 000 0000"
-          className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
-        />
-      </label>
-
-      {isGoods ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm text-near-black">
-              Which stay is this for? <span className="text-error-red">*</span>
-            </span>
-            <select
-              value={propertySlug}
-              onChange={(e) => setPropertySlug(e.target.value)}
-              className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black focus:border-forest-green focus:outline-none"
-            >
-              <option value="">Select a property…</option>
-              {properties.map((p) => (
-                <option key={p._id} value={p.slug}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm text-near-black">
-              Arrival date <span className="text-error-red">*</span>
-            </span>
-            <input
-              type="date"
-              min={tomorrow}
-              value={arrivalDate}
-              onChange={(e) => setArrivalDate(e.target.value)}
-              className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black focus:border-forest-green focus:outline-none"
-            />
-          </label>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm text-near-black">Recipient name</span>
-              <input
-                value={recipientName}
-                onChange={(e) => setRecipientName(e.target.value)}
-                placeholder="If this is a gift"
-                className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
-              />
-            </label>
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm text-near-black">Recipient email</span>
-              <input
-                type="email"
-                value={recipientEmail}
-                onChange={(e) => setRecipientEmail(e.target.value)}
-                placeholder="Leave blank if it's for you"
-                className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
-              />
-            </label>
-          </div>
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm text-near-black">Gift note</span>
-            <input
-              value={giftNote}
-              onChange={(e) => setGiftNote(e.target.value)}
-              placeholder="Optional — a line to pass on"
-              className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
-            />
-          </label>
-        </>
-      )}
-
-      <PaymentElement />
-
-      {formError && (
-        <p role="alert" className="text-[13px] text-error-red">
-          {formError}
-        </p>
-      )}
-
-      <Button
-        type="submit"
-        disabled={!stripe || submitting}
-        variant="primary"
-        size="custom"
-        className="self-start px-8 py-3 text-[15px] font-semibold disabled:opacity-60"
-      >
-        {submitting ? "Processing…" : `Pay now — ${money(product.price * qty)}`}
-      </Button>
-    </form>
   );
 }
