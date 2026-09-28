@@ -21,9 +21,12 @@ import { FaqSection } from "@/components/FaqSection";
 import { AreaGuideCard } from "@/components/AreaGuideCard";
 import { RoomTypesTable } from "@/components/RoomTypesTable";
 import { SearchResultCard, type SearchResultRoom } from "@/components/SearchResultCard";
+import { WhatsAppContactLink } from "@/components/WhatsAppContactLink";
+import { MinStayNotice } from "@/components/MinStayNotice";
 import { SearchBar } from "@/components/SearchBar";
 import { searchUplistingAvailability } from "@/lib/uplisting/client";
 import { withApproxPrices } from "@/lib/uplisting/approxPrice";
+import { findMinStayShortfall } from "@/lib/uplisting/minStayShortfall";
 import { BookNowCta, PropertyOverview } from "@/components/PropertyOverview";
 import { Eyebrow } from "@/components/Eyebrow";
 import type { Metadata } from "next";
@@ -58,6 +61,10 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
   ]);
 
   if (!property) notFound();
+
+  const whatsappUrl = siteSettings?.socialLinks?.find(
+    (link: { platform: string; url: string }) => link.platform === "whatsapp",
+  )?.url;
 
   // uplistingPropertySlug is documented (and validated) in Studio as a
   // short Uplisting property_slug, to be combined with Site Settings'
@@ -162,6 +169,23 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
           }))
       )
     : [];
+
+  // When nothing matched, check whether it's specifically because a room
+  // needs more nights than were searched — Uplisting's /availability
+  // already excludes those, so without this a min-stay miss looks
+  // identical to a fully-booked one.
+  const roomSearchMinStay =
+    hasRoomSearch && availableRoomIds && matchedRooms.length === 0 && checkIn && checkOut
+      ? await findMinStayShortfall(
+          allRooms.map((room) => room.roomId).filter((id): id is string => Boolean(id)),
+          checkIn,
+          checkOut
+        )
+      : null;
+  const wholeHouseMinStay =
+    hasWholeHouseSearch && wholeHouseAvailable === false && checkIn && checkOut && property.wholeHouseAvailabilityId
+      ? await findMinStayShortfall([property.wholeHouseAvailabilityId], checkIn, checkOut)
+      : null;
   const roomSearchSummary = [
     checkIn && checkOut ? `${formatDateLabel(checkIn)} – ${formatDateLabel(checkOut)}` : null,
     guestCount ? `${guestCount} guest${guestCount === 1 ? "" : "s"}` : null,
@@ -284,9 +308,25 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
                         className="px-7 py-3.5 text-[15px] font-semibold"
                       />
                     </div>
+                  ) : wholeHouseMinStay ? (
+                    <div className="rounded-[10px] border border-sage-grey/40 p-6">
+                      <MinStayNotice minNights={wholeHouseMinStay} whatsappUrl={whatsappUrl} />
+                    </div>
                   ) : (
                     <p className="rounded-[10px] border border-sage-grey/40 px-6 py-8 text-near-black/70">
-                      {property.name} isn&apos;t available for those dates — try a different range.
+                      {property.name} isn&apos;t available for those dates — try a different range
+                      {whatsappUrl ? (
+                        <>
+                          , or{" "}
+                          <WhatsAppContactLink
+                            whatsappUrl={whatsappUrl}
+                            className="font-semibold text-forest-green underline underline-offset-2"
+                          />{" "}
+                          and we&apos;ll help sort something.
+                        </>
+                      ) : (
+                        "."
+                      )}
                     </p>
                   ))}
               </div>
@@ -333,9 +373,25 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
                       checkOut={checkOut}
                       guests={guestCount}
                     />
+                  ) : roomSearchMinStay ? (
+                    <div className="rounded-[10px] border border-sage-grey/40 p-6">
+                      <MinStayNotice minNights={roomSearchMinStay} whatsappUrl={whatsappUrl} />
+                    </div>
                   ) : (
                     <p className="rounded-[10px] border border-sage-grey/40 px-6 py-8 text-near-black/70">
-                      No rooms at {property.name} are available for those dates — try a different range.
+                      No rooms at {property.name} are available for those dates — try a different range
+                      {whatsappUrl ? (
+                        <>
+                          , or{" "}
+                          <WhatsAppContactLink
+                            whatsappUrl={whatsappUrl}
+                            className="font-semibold text-forest-green underline underline-offset-2"
+                          />{" "}
+                          and we&apos;ll help sort something.
+                        </>
+                      ) : (
+                        "."
+                      )}
                     </p>
                   ))}
               </div>

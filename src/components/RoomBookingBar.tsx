@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DateGuestsFields, toISODate, type DateGuestsValue } from "@/components/DateGuestsFields";
 import { MinStayNotice } from "@/components/MinStayNotice";
+import { WhatsAppContactLink } from "@/components/WhatsAppContactLink";
 import type { UplistingRoomFees } from "@/lib/uplisting/client";
 
 type CalendarDay = { date: string; available: boolean; dayRate: number; minimumLengthOfStay: number };
@@ -200,7 +201,7 @@ export function RoomBookingBar({
           return merged;
         });
         if (!stillAvailable) {
-          setError("Those dates just got booked elsewhere — pick different ones.");
+          setError("booked-elsewhere");
         } else {
           setMinStayError(requiredNights);
         }
@@ -273,6 +274,22 @@ export function RoomBookingBar({
         <div className="mx-auto mt-2 max-w-6xl">
           <MinStayNotice minNights={minNightsToShow} whatsappUrl={whatsappUrl} />
         </div>
+      ) : error === "booked-elsewhere" ? (
+        <p className="mx-auto mt-2 max-w-6xl text-sm text-light-sage">
+          Those dates just got booked elsewhere — pick different ones
+          {whatsappUrl ? (
+            <>
+              , or{" "}
+              <WhatsAppContactLink
+                whatsappUrl={whatsappUrl}
+                className="font-semibold text-cream underline underline-offset-2"
+              />{" "}
+              and we&apos;ll help sort something.
+            </>
+          ) : (
+            "."
+          )}
+        </p>
       ) : (
         error && <p className="mx-auto mt-2 max-w-6xl text-sm text-light-sage">{error}</p>
       )}
