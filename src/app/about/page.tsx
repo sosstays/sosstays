@@ -473,14 +473,14 @@ export default async function AboutUsPage() {
         </section>
 
         {/* MEET THE TEAM */}
-        <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
+        <section className="bg-deep-forest px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
             <Reveal className="mb-14 max-w-[720px]">
-              <Eyebrow className="mb-4">{data?.teamEyebrow || "Meet the team"}</Eyebrow>
-              <h2 className="font-serif mb-4 text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl">
+              <Eyebrow className="mb-4" tone="sage">{data?.teamEyebrow || "Meet the team"}</Eyebrow>
+              <h2 className="font-serif mb-4 text-[30px] leading-[1.1] font-bold tracking-tight text-cream sm:text-4xl">
                 {data?.teamHeading || "Meet the team"}
               </h2>
-              <p className="text-base leading-loose text-near-black/70">
+              <p className="text-base leading-loose text-cream/80">
                 {data?.teamIntro ||
                   "We kept the job titles a bit Irish — see the plain version in brackets on each card if the Irish doesn't land."}
               </p>

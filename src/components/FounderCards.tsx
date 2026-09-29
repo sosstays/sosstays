@@ -57,8 +57,8 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
             {member.photo && (
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 z-10 h-[260px] w-full sm:w-[220px]"
-                style={{ top: -PHOTO_OVERHANG }}
+                className="pointer-events-none absolute inset-x-0 z-10 w-full sm:w-[220px]"
+                style={{ top: -PHOTO_OVERHANG, height: 260 + PHOTO_OVERHANG }}
               >
                 <Image
                   src={member.photo.src}
@@ -88,14 +88,12 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
               {/* Shaded top region: photo backdrop (badge flush at the
                   corner). From `sm` up the highlights panel slides in
                   beside it; below that it drops down underneath instead.
-                  light-sage (not pale-sage — that's the page section's own
-                  background, see about/page.tsx's Meet the Team section,
-                  and would make this band invisible against it) so the
-                  card always has a visible edge against the page,
-                  collapsed or open. */}
-              <div className="flex flex-col bg-light-sage sm:flex-row">
+                  The section itself is bg-deep-forest (see about/page.tsx's
+                  Meet the Team section) so pale-sage here reads clearly
+                  against it, collapsed or open. */}
+              <div className="flex flex-col bg-pale-sage sm:flex-row">
                 <div className="relative h-[260px] w-full shrink-0 sm:w-[220px]">
-                  <span className="absolute top-0 left-0 z-20 rounded-br-2xl bg-cream py-1.5 pr-4 pl-3.5 text-[11px] font-bold tracking-widest text-deep-forest uppercase">
+                  <span className="absolute top-0 left-0 z-20 rounded-br-2xl bg-light-sage py-1.5 pr-4 pl-3.5 text-[11px] font-bold tracking-widest text-deep-forest uppercase">
                     Co-Founder
                   </span>
                   {!member.photo && (
