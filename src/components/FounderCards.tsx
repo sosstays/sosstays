@@ -49,15 +49,20 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
       {members.map((member, i) => {
         const isOpen = openIndex === i;
         return (
-          <div key={member.name} className="relative">
+          <div
+            key={member.name}
+            className={`relative ${isOpen && isWide ? "sm:col-span-2" : ""}`}
+          >
             {/* Photo overlay: sits outside the card's own clipped/rounded
                 box (below) so it can rise above the card's top edge instead
                 of being cut off there. Purely decorative — clicks pass
-                through to the card underneath. */}
+                through to the card underneath. z-20 (above the badge's
+                z-10) so the cutout renders in front of the badge pill
+                rather than being covered by it where they overlap. */}
             {member.photo && (
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 z-10 w-full sm:w-[220px]"
+                className="pointer-events-none absolute inset-x-0 z-20 w-full sm:w-[220px]"
                 style={{ top: -PHOTO_OVERHANG, height: 260 + PHOTO_OVERHANG }}
               >
                 <Image
@@ -81,9 +86,7 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
                   setOpenIndex(isOpen ? null : i);
                 }
               }}
-              className={`flex cursor-pointer flex-col overflow-hidden rounded-[22px] border border-sage-grey/25 bg-cream text-left outline-none transition-shadow duration-300 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-forest-green ${
-                isOpen && isWide ? "sm:col-span-2" : ""
-              }`}
+              className="flex cursor-pointer flex-col overflow-hidden rounded-[22px] border border-sage-grey/25 bg-cream text-left outline-none transition-shadow duration-300 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-forest-green"
             >
               {/* Shaded top region: photo backdrop (badge flush at the
                   corner). From `sm` up the highlights panel slides in
@@ -93,7 +96,7 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
                   against it, collapsed or open. */}
               <div className="flex flex-col bg-pale-sage sm:flex-row">
                 <div className="relative h-[260px] w-full shrink-0 sm:w-[220px]">
-                  <span className="absolute top-0 left-0 z-20 rounded-br-2xl bg-light-sage py-1.5 pr-4 pl-3.5 text-[11px] font-bold tracking-widest text-deep-forest uppercase">
+                  <span className="absolute top-0 left-0 z-10 rounded-br-2xl bg-light-sage py-1.5 pr-4 pl-3.5 text-[11px] font-bold tracking-widest text-deep-forest uppercase">
                     Co-Founder
                   </span>
                   {!member.photo && (
