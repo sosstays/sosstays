@@ -89,7 +89,10 @@ export default async function ShopPage() {
             <div className="mt-8 flex flex-wrap gap-6.5">
               {stats.map((stat: { value: string; label: string }, i: number) => (
                 <div key={stat.label} className="flex items-center gap-6.5">
-                  {i > 0 && <span className="h-9 w-px bg-forest-green/25" />}
+                  {/* Hidden below sm: stats can wrap to their own line on
+                      narrow screens, where a divider tied to the previous
+                      item would render orphaned at the start of the row. */}
+                  {i > 0 && <span className="hidden h-9 w-px bg-forest-green/25 sm:block" />}
                   <div>
                     <span className="font-condensed block text-[34px] font-bold text-deep-forest">
                       {stat.value}
