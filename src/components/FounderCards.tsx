@@ -62,7 +62,7 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
             {member.photo && (
               <div
                 aria-hidden
-                className="pointer-events-none absolute left-0 z-20 w-full sm:w-[220px]"
+                className="pointer-events-none absolute inset-x-0 z-20 w-full sm:w-[220px]"
                 style={{ top: -PHOTO_OVERHANG, height: 260 + PHOTO_OVERHANG }}
               >
                 <Image
@@ -113,11 +113,7 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
                   style={
                     isWide
                       ? {
-                          // 440px, not the content's own 420px cap below —
-                          // needs a little headroom so the panel isn't
-                          // still clipping a couple of px at its own max
-                          // width when "open".
-                          maxWidth: isOpen ? "440px" : "0px",
+                          maxWidth: isOpen ? "420px" : "0px",
                           maxHeight: "none",
                           opacity: isOpen ? 1 : 0,
                           transition: "max-width 440ms cubic-bezier(0.16,1,0.3,1), opacity 300ms ease 100ms",
@@ -130,18 +126,7 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
                         }
                   }
                 >
-                  {/* Sized off the viewport, not the card (the card's own
-                      rendered width isn't knowable in CSS) — 45vw keeps
-                      this comfortably inside the photo(220px)+text card
-                      even at the narrowest "isWide" sizes (~640px), where
-                      the old fixed/80vw target (up to 420px) could exceed
-                      the card's actual spanned width and get clipped by
-                      the card's own overflow-hidden. min-h not h: a fixed
-                      height clipped taller content (more or
-                      longer-wrapping highlights) at some widths — min-h
-                      keeps the short-content vertical centering without
-                      capping how tall it can grow. */}
-                  <div className="flex w-full flex-col justify-center gap-4 px-6 py-6 sm:min-h-[260px] sm:w-[min(420px,45vw)]">
+                  <div className="flex w-full flex-col justify-center gap-4 px-6 py-6 sm:h-[260px] sm:w-[min(420px,80vw)]">
                     {member.highlights.map((h, hi) => (
                       <div key={hi} className="flex items-start gap-3">
                         <DynamicIcon
