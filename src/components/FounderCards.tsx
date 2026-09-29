@@ -88,12 +88,14 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
               {/* Shaded top region: photo backdrop (badge flush at the
                   corner). From `sm` up the highlights panel slides in
                   beside it; below that it drops down underneath instead.
-                  The sage background lives on the photo box and the
-                  collapsible panel individually (not a shared wrapper) so
-                  it never shows past the photo's width while collapsed. */}
-              <div className="flex flex-col sm:flex-row">
-                <div className="relative h-[260px] w-full shrink-0 bg-pale-sage sm:w-[220px]">
-                  <span className="absolute top-0 left-0 z-20 rounded-br-2xl bg-light-sage py-1.5 pr-4 pl-3.5 text-[11px] font-bold tracking-widest text-deep-forest uppercase">
+                  light-sage (not pale-sage — that's the page section's own
+                  background, see about/page.tsx's Meet the Team section,
+                  and would make this band invisible against it) so the
+                  card always has a visible edge against the page,
+                  collapsed or open. */}
+              <div className="flex flex-col bg-light-sage sm:flex-row">
+                <div className="relative h-[260px] w-full shrink-0 sm:w-[220px]">
+                  <span className="absolute top-0 left-0 z-20 rounded-br-2xl bg-cream py-1.5 pr-4 pl-3.5 text-[11px] font-bold tracking-widest text-deep-forest uppercase">
                     Co-Founder
                   </span>
                   {!member.photo && (
@@ -123,7 +125,7 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
                         }
                   }
                 >
-                  <div className="flex w-full flex-col justify-center gap-4 bg-pale-sage px-6 py-6 sm:h-[260px] sm:w-[min(420px,80vw)]">
+                  <div className="flex w-full flex-col justify-center gap-4 px-6 py-6 sm:h-[260px] sm:w-[min(420px,80vw)]">
                     {member.highlights.map((h, hi) => (
                       <div key={hi} className="flex items-start gap-3">
                         <DynamicIcon
