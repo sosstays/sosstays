@@ -20,6 +20,8 @@ export type ShopProduct = {
   description: string;
   includes: string[];
   deliveryNote: string;
+  allowStayDelivery: boolean;
+  allowAddressDelivery: boolean;
 };
 
 export type ShopProperty = { _id: string; name: string; slug: string };
