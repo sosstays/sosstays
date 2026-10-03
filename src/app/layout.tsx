@@ -79,6 +79,7 @@ export default async function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${GA_MEASUREMENT_ID}');
+            gtag('config', 'AW-18365302458');
           `}
         </Script>
         <div className="flex flex-1 flex-col">{children}</div>

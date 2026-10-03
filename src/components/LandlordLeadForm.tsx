@@ -65,6 +65,11 @@ export function LandlordLeadForm({
         body: JSON.stringify({ name, email, mobile, situation, propertyDescription }),
       });
       if (!res.ok) throw new Error(`Form submission failed: ${res.status}`);
+      // Google Ads "Submit lead form" conversion — fires only once the
+      // lead has actually been accepted, not on a failed submit.
+      (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag?.("event", "conversion", {
+        send_to: "AW-18365302458/AYujCIWinI8dELqNobVE",
+      });
       onSubmitted?.({ name: name.trim(), email: email.trim() });
       setStage("submitted");
     } catch {
