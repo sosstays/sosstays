@@ -14,6 +14,9 @@ export async function POST(request: NextRequest) {
   if (typeof contactName !== "string" || !contactName.trim()) {
     return NextResponse.json({ error: "Contact name is required" }, { status: 400 });
   }
+  if (typeof phone !== "string" || !phone.trim()) {
+    return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
+  }
 
   return subscribeToMailerLite({
     email,

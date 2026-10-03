@@ -36,8 +36,8 @@ export function PartnerLeadForm() {
 
   function goNext() {
     if (step === 0) {
-      if (!businessName.trim() || !contactName.trim() || !email.trim()) {
-        setStep0Error("Business name, contact name and email are needed to apply.");
+      if (!businessName.trim() || !contactName.trim() || !email.trim() || !phone.trim()) {
+        setStep0Error("Business name, contact name, email and phone number are needed to apply.");
         return;
       }
       if (!EMAIL_PATTERN.test(email.trim())) {
@@ -159,7 +159,9 @@ export function PartnerLeadForm() {
               />
             </label>
             <label className="flex flex-col gap-1.5 text-sm text-near-black">
-              <span>Phone</span>
+              <span>
+                Phone <span className="text-error-red">*</span>
+              </span>
               <input
                 type="tel"
                 value={phone}

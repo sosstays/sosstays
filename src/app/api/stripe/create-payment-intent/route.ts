@@ -37,6 +37,9 @@ export async function POST(request: NextRequest) {
   if (typeof guestEmail !== "string" || !EMAIL_PATTERN.test(guestEmail.trim())) {
     return NextResponse.json({ error: "A valid guestEmail is required" }, { status: 400 });
   }
+  if (typeof guestPhone !== "string" || !guestPhone.trim()) {
+    return NextResponse.json({ error: "guestPhone is required" }, { status: 400 });
+  }
 
   // Re-fetch the quote server-side rather than trusting a client-supplied
   // amount — this is the number that actually gets charged.
@@ -65,7 +68,7 @@ export async function POST(request: NextRequest) {
         guests: String(guests),
         guestName: guestName.trim(),
         guestEmail: guestEmail.trim(),
-        guestPhone: typeof guestPhone === "string" ? guestPhone.trim() : "",
+        guestPhone: guestPhone.trim(),
       },
     });
 
