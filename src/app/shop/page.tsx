@@ -61,6 +61,8 @@ export default async function ShopPage() {
       description: string;
       includes: string[];
       deliveryNote: string;
+      allowStayDelivery: boolean;
+      allowAddressDelivery: boolean;
     }[]
   ).map((p) => ({
     ...p,
