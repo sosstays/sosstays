@@ -33,6 +33,10 @@ export type ShopOrderFields = {
   giftNote: unknown;
   propertySlug: unknown;
   arrivalDate: unknown;
+  stayDateType: unknown;
+  deliveryMethod: unknown;
+  deliveryAddress: unknown;
+  deliveryPostcode: unknown;
 };
 
 export type ShopOrderResult =
@@ -50,8 +54,20 @@ export async function buildShopOrderMetadata(
   qty: number,
   fields: ShopOrderFields
 ): Promise<ShopOrderResult> {
-  const { buyerName, buyerEmail, buyerPhone, recipientName, recipientEmail, giftNote, propertySlug, arrivalDate } =
-    fields;
+  const {
+    buyerName,
+    buyerEmail,
+    buyerPhone,
+    recipientName,
+    recipientEmail,
+    giftNote,
+    propertySlug,
+    arrivalDate,
+    stayDateType,
+    deliveryMethod,
+    deliveryAddress,
+    deliveryPostcode,
+  } = fields;
 
   if (typeof buyerName !== "string" || !buyerName.trim()) {
     return { ok: false, error: "Let us know your name" };
@@ -72,30 +88,48 @@ export async function buildShopOrderMetadata(
   };
 
   if (product.kind === "goods") {
-    if (typeof propertySlug !== "string" || !propertySlug) {
-      return { ok: false, error: "Pick which stay this is for" };
-    }
+    const toAddress = deliveryMethod === "address";
     if (typeof arrivalDate !== "string" || !DATE_PATTERN.test(arrivalDate)) {
-      return { ok: false, error: "Pick a valid arrival date" };
+      return { ok: false, error: toAddress ? "Pick a valid delivery date" : "Pick a valid arrival date" };
     }
     // Fulfillment needs at least until 2pm the day before (see
     // shopProduct.deliveryNote) — reject anything not strictly in the
-    // future so an order can't land for a stay that's already started.
+    // future so an order can't land for a date that has already started.
     const today = new Date().toISOString().slice(0, 10);
     if (arrivalDate <= today) {
-      return { ok: false, error: "Arrival date must be in the future" };
+      return {
+        ok: false,
+        error: toAddress ? "Delivery date must be in the future" : "Check-in or check-out date must be in the future",
+      };
     }
 
-    const property = await client.fetch(`*[_type == "propertyPage" && slug.current == $slug][0]{ name }`, {
-      slug: propertySlug,
-    });
-    if (!property) {
-      return { ok: false, error: "That property couldn't be found" };
+    if (toAddress) {
+      if (typeof deliveryAddress !== "string" || deliveryAddress.trim().length < 5) {
+        return { ok: false, error: "Enter the address to deliver to" };
+      }
+      // Stripe metadata values are capped at 500 characters.
+      metadata.deliveryMethod = "address";
+      metadata.deliveryAddress = deliveryAddress.trim().slice(0, 480);
+      if (typeof deliveryPostcode === "string" && deliveryPostcode.trim()) {
+        metadata.deliveryPostcode = deliveryPostcode.trim().slice(0, 20);
+      }
+      metadata.deliveryDate = arrivalDate;
+    } else {
+      if (typeof propertySlug !== "string" || !propertySlug) {
+        return { ok: false, error: "Pick which stay this is for" };
+      }
+      const property = await client.fetch(`*[_type == "propertyPage" && slug.current == $slug][0]{ name }`, {
+        slug: propertySlug,
+      });
+      if (!property) {
+        return { ok: false, error: "That property couldn't be found" };
+      }
+      metadata.deliveryMethod = "property";
+      metadata.propertySlug = propertySlug;
+      metadata.propertyName = property.name;
+      metadata.arrivalDate = arrivalDate;
+      metadata.stayDateType = stayDateType === "checkout" ? "checkout" : "checkin";
     }
-
-    metadata.propertySlug = propertySlug;
-    metadata.propertyName = property.name;
-    metadata.arrivalDate = arrivalDate;
   } else {
     if (typeof recipientName === "string" && recipientName.trim()) {
       metadata.recipientName = recipientName.trim();
