@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { CheckCircle2, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/Button";
+import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import { AddressAutocomplete, type AddressAutocompleteValue } from "@/components/AddressAutocomplete";
 import type { ShopProduct, ShopProperty } from "@/components/shop/ShopClient";
 
 const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -137,11 +139,20 @@ function CheckoutFields({
   const [giftNote, setGiftNote] = useState("");
   const [propertySlug, setPropertySlug] = useState("");
   const [arrivalDate, setArrivalDate] = useState("");
+  const [stayDateType, setStayDateType] = useState<"checkin" | "checkout">("checkin");
+  const [deliveryMethod, setDeliveryMethod] = useState<"property" | "address">("property");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [deliveryPostcode, setDeliveryPostcode] = useState("");
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const [tomorrow] = useState(() => new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10));
   const isGoods = product.kind === "goods";
+  const toAddress = deliveryMethod === "address";
+
+  const handleAddressSelect = useCallback((address: AddressAutocompleteValue) => {
+    setDeliveryPostcode(address.postalCode ?? "");
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -151,8 +162,13 @@ function CheckoutFields({
     if (!buyerName.trim()) return setFormError("Let us know your name.");
     if (!EMAIL_PATTERN.test(buyerEmail.trim())) return setFormError("Enter a valid email address.");
     if (isGoods) {
-      if (!propertySlug) return setFormError("Pick which stay this is for.");
-      if (!arrivalDate) return setFormError("Pick an arrival date.");
+      if (toAddress) {
+        if (deliveryAddress.trim().length < 5) return setFormError("Enter the address to deliver to.");
+        if (!arrivalDate) return setFormError("Pick a delivery date.");
+      } else {
+        if (!propertySlug) return setFormError("Pick which stay this is for.");
+        if (!arrivalDate) return setFormError("Pick a check-in or check-out date.");
+      }
     }
     if (recipientEmail.trim() && !EMAIL_PATTERN.test(recipientEmail.trim())) {
       return setFormError("Enter a valid recipient email, or leave it blank.");
@@ -171,7 +187,9 @@ function CheckoutFields({
           buyerEmail: buyerEmail.trim(),
           buyerPhone: buyerPhone.trim(),
           ...(isGoods
-            ? { propertySlug, arrivalDate }
+            ? toAddress
+              ? { deliveryMethod, deliveryAddress: deliveryAddress.trim(), deliveryPostcode, arrivalDate }
+              : { deliveryMethod, propertySlug, arrivalDate, stayDateType }
             : {
                 recipientName: recipientName.trim(),
                 recipientEmail: recipientEmail.trim(),
@@ -209,7 +227,7 @@ function CheckoutFields({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6 rounded-[18px] border border-sage-grey/25 bg-cream p-7 sm:p-9">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-8 rounded-[18px] border border-sage-grey/25 bg-cream p-7 sm:p-9">
       <div className="flex items-center gap-3.5">
         <div className="flex items-center gap-1 rounded-full border border-forest-green/30 p-1">
           <button
@@ -276,37 +294,138 @@ function CheckoutFields({
       </label>
 
       {isGoods ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm text-near-black">
-              Which stay is this for? <span className="text-error-red">*</span>
-            </span>
-            <select
-              value={propertySlug}
-              onChange={(e) => setPropertySlug(e.target.value)}
-              className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black focus:border-forest-green focus:outline-none"
-            >
-              <option value="">Select a property…</option>
-              {properties.map((p) => (
-                <option key={p._id} value={p.slug}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm text-near-black">
-              Arrival date <span className="text-error-red">*</span>
-            </span>
-            <input
-              type="date"
-              min={tomorrow}
-              value={arrivalDate}
-              onChange={(e) => setArrivalDate(e.target.value)}
-              className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black focus:border-forest-green focus:outline-none"
-            />
-          </label>
-        </div>
+        <fieldset className="flex flex-col gap-5 border-t border-sage-grey/25 pt-8">
+          <legend className="mb-2 text-xs font-bold tracking-widest text-forest-green/80 uppercase">
+            Delivery
+          </legend>
+
+          <div role="radiogroup" aria-label="Delivery method" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {(
+              [
+                { value: "property", label: "To a stay", hint: "Waiting in the house" },
+                { value: "address", label: "To my address", hint: "Home or collection point" },
+              ] as const
+            ).map((option) => {
+              const selected = deliveryMethod === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  onClick={() => setDeliveryMethod(option.value)}
+                  className={`flex items-center gap-3 rounded-[12px] border px-4 py-3 text-left transition-colors ${
+                    selected
+                      ? "border-forest-green bg-light-forest-green/30"
+                      : "border-sage-grey/40 hover:border-forest-green/60"
+                  }`}
+                >
+                  <span
+                    aria-hidden="true"
+                    className={`flex h-[18px] w-[18px] flex-none items-center justify-center rounded-full border-2 ${
+                      selected ? "border-forest-green" : "border-sage-grey/60"
+                    }`}
+                  >
+                    {selected && <span className="h-[8px] w-[8px] rounded-full bg-forest-green" />}
+                  </span>
+                  <span className="flex flex-col">
+                    <span className="text-[15px] leading-tight font-semibold text-near-black">{option.label}</span>
+                    <span className="text-[13px] leading-snug text-near-black/55">{option.hint}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-col gap-8 rounded-[14px] bg-bright-cream/70 p-6">
+            {toAddress ? (
+              <>
+                <AddressAutocomplete
+                  label="Delivery address"
+                  variant="underline"
+                  required
+                  placeholder="Start typing the address…"
+                  value={deliveryAddress}
+                  onChange={setDeliveryAddress}
+                  onSelect={handleAddressSelect}
+                />
+                <label className="flex flex-col gap-2 sm:max-w-[240px]">
+                  <span className="text-sm text-near-black">
+                    Delivery date <span className="text-error-red">*</span>
+                  </span>
+                  <input
+                    type="date"
+                    min={tomorrow}
+                    value={arrivalDate}
+                    onChange={(e) => setArrivalDate(e.target.value)}
+                    className={`border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] focus:border-forest-green focus:outline-none ${arrivalDate ? "text-near-black" : "text-near-black/35"}`}
+                  />
+                </label>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm text-near-black">
+                    Which stay is this for? <span className="text-error-red">*</span>
+                  </span>
+                  <Select value={propertySlug} onValueChange={setPropertySlug}>
+                    <SelectTrigger aria-label="Which stay is this for?">
+                      <SelectValue placeholder="Select a property" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {properties.map((p) => (
+                        <SelectItem key={p._id} value={p.slug}>
+                          {p.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <span className="text-sm text-near-black">
+                    Have it ready for <span className="text-error-red">*</span>
+                  </span>
+                  <div
+                    role="radiogroup"
+                    aria-label="Check-in or check-out"
+                    className="inline-flex self-start rounded-full border border-forest-green/30 p-1"
+                  >
+                    {(
+                      [
+                        { value: "checkin", label: "Check-in" },
+                        { value: "checkout", label: "Check-out" },
+                      ] as const
+                    ).map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        role="radio"
+                        aria-checked={stayDateType === option.value}
+                        onClick={() => setStayDateType(option.value)}
+                        className={`rounded-full px-4 py-1.5 text-[14px] font-medium transition-colors ${
+                          stayDateType === option.value
+                            ? "bg-forest-green text-cream"
+                            : "text-near-black/70 hover:bg-light-sage/45"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                  <input
+                    type="date"
+                    aria-label={stayDateType === "checkin" ? "Check-in date" : "Check-out date"}
+                    min={tomorrow}
+                    value={arrivalDate}
+                    onChange={(e) => setArrivalDate(e.target.value)}
+                    className={`border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] focus:border-forest-green focus:outline-none sm:max-w-[240px] ${arrivalDate ? "text-near-black" : "text-near-black/35"}`}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        </fieldset>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
