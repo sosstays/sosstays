@@ -9,11 +9,18 @@ export type ShopProductRecord = {
   price: number;
   unit: string;
   maxQuantity: number;
+  /** Goods only — which delivery options Studio has enabled for this item. */
+  allowStayDelivery: boolean;
+  allowAddressDelivery: boolean;
 };
 
 export async function fetchShopProduct(productId: string): Promise<ShopProductRecord | null> {
   return client.fetch(
-    `*[_type == "shopProduct" && _id == $id && enabled != false][0]{ kind, name, price, unit, maxQuantity }`,
+    `*[_type == "shopProduct" && _id == $id && enabled != false][0]{
+      kind, name, price, unit, maxQuantity,
+      "allowStayDelivery": coalesce(allowStayDelivery, true),
+      "allowAddressDelivery": coalesce(allowAddressDelivery, true)
+    }`,
     { id: productId }
   );
 }
@@ -75,6 +82,9 @@ export async function buildShopOrderMetadata(
   if (typeof buyerEmail !== "string" || !EMAIL_PATTERN.test(buyerEmail.trim())) {
     return { ok: false, error: "Enter a valid email address" };
   }
+  if (typeof buyerPhone !== "string" || !buyerPhone.trim()) {
+    return { ok: false, error: "Enter your phone number" };
+  }
 
   const metadata: Record<string, string> = {
     orderType: "shop",
@@ -84,26 +94,23 @@ export async function buildShopOrderMetadata(
     quantity: String(qty),
     buyerName: buyerName.trim(),
     buyerEmail: buyerEmail.trim(),
-    buyerPhone: typeof buyerPhone === "string" ? buyerPhone.trim() : "",
+    buyerPhone: buyerPhone.trim(),
   };
 
   if (product.kind === "goods") {
-    const toAddress = deliveryMethod === "address";
-    if (typeof arrivalDate !== "string" || !DATE_PATTERN.test(arrivalDate)) {
-      return { ok: false, error: toAddress ? "Pick a valid delivery date" : "Pick a valid arrival date" };
-    }
-    // Fulfillment needs at least until 2pm the day before (see
-    // shopProduct.deliveryNote) — reject anything not strictly in the
-    // future so an order can't land for a date that has already started.
-    const today = new Date().toISOString().slice(0, 10);
-    if (arrivalDate <= today) {
-      return {
-        ok: false,
-        error: toAddress ? "Delivery date must be in the future" : "Check-in or check-out date must be in the future",
-      };
+    // Missing method falls back to whichever option the product allows, so a
+    // product with just one enabled needs no explicit choice from the client.
+    const method =
+      deliveryMethod === "address" || deliveryMethod === "property"
+        ? deliveryMethod
+        : product.allowStayDelivery
+          ? "property"
+          : "address";
+    if (method === "property" ? !product.allowStayDelivery : !product.allowAddressDelivery) {
+      return { ok: false, error: "That delivery option isn't available for this item" };
     }
 
-    if (toAddress) {
+    if (method === "address") {
       if (typeof deliveryAddress !== "string" || deliveryAddress.trim().length < 5) {
         return { ok: false, error: "Enter the address to deliver to" };
       }
@@ -113,8 +120,17 @@ export async function buildShopOrderMetadata(
       if (typeof deliveryPostcode === "string" && deliveryPostcode.trim()) {
         metadata.deliveryPostcode = deliveryPostcode.trim().slice(0, 20);
       }
-      metadata.deliveryDate = arrivalDate;
     } else {
+      if (typeof arrivalDate !== "string" || !DATE_PATTERN.test(arrivalDate)) {
+        return { ok: false, error: "Pick a valid check-in or check-out date" };
+      }
+      // Fulfillment needs at least until 2pm the day before (see
+      // shopProduct.deliveryNote) — reject anything not strictly in the
+      // future so an order can't land for a date that has already started.
+      const today = new Date().toISOString().slice(0, 10);
+      if (arrivalDate <= today) {
+        return { ok: false, error: "Check-in or check-out date must be in the future" };
+      }
       if (typeof propertySlug !== "string" || !propertySlug) {
         return { ok: false, error: "Pick which stay this is for" };
       }

@@ -174,10 +174,13 @@ export const PROPERTY_BOOKING_QUERY = defineQuery(`
     sleeps,
     "coverImage": gallery[0],
     uplistingPropertyId,
-    "addOns": *[_type == "addOn" && enabled != false && references(^._id)] {
+    "addOns": *[
+      _type == "shopProduct" && enabled != false && offerAsAddOn == true &&
+      (count(addOnProperties) == 0 || !defined(addOnProperties) || ^._id in addOnProperties[]._ref)
+    ] | order(name asc) {
       _id,
       name,
-      description,
+      "description": shortDescription,
       price,
       image
     }
@@ -827,7 +830,9 @@ export const SHOP_PRODUCTS_QUERY = defineQuery(`
     shortDescription,
     description,
     includes,
-    deliveryNote
+    deliveryNote,
+    "allowStayDelivery": coalesce(allowStayDelivery, true),
+    "allowAddressDelivery": coalesce(allowAddressDelivery, true)
   }
 `);
 
@@ -847,7 +852,9 @@ export const SHOP_PRODUCT_BY_ID_QUERY = defineQuery(`
     shortDescription,
     description,
     includes,
-    deliveryNote
+    deliveryNote,
+    "allowStayDelivery": coalesce(allowStayDelivery, true),
+    "allowAddressDelivery": coalesce(allowAddressDelivery, true)
   }
 `);
 

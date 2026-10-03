@@ -140,7 +140,7 @@ function CheckoutFields({
   const [propertySlug, setPropertySlug] = useState("");
   const [arrivalDate, setArrivalDate] = useState("");
   const [stayDateType, setStayDateType] = useState<"checkin" | "checkout">("checkin");
-  const [deliveryMethod, setDeliveryMethod] = useState<"property" | "address">("property");
+  const [deliveryMethod, setDeliveryMethod] = useState<"property" | "address">(product.allowStayDelivery ? "property" : "address");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [deliveryPostcode, setDeliveryPostcode] = useState("");
   const [formError, setFormError] = useState("");
@@ -149,6 +149,12 @@ function CheckoutFields({
   const [tomorrow] = useState(() => new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10));
   const isGoods = product.kind === "goods";
   const toAddress = deliveryMethod === "address";
+  const deliveryOptions = (
+    [
+      { value: "property", label: "To a stay", hint: "Waiting in the house", enabled: product.allowStayDelivery },
+      { value: "address", label: "To my address", hint: "Home or collection point", enabled: product.allowAddressDelivery },
+    ] as const
+  ).filter((option) => option.enabled);
 
   const handleAddressSelect = useCallback((address: AddressAutocompleteValue) => {
     setDeliveryPostcode(address.postalCode ?? "");
@@ -161,10 +167,10 @@ function CheckoutFields({
     if (!stripe || !elements) return;
     if (!buyerName.trim()) return setFormError("Let us know your name.");
     if (!EMAIL_PATTERN.test(buyerEmail.trim())) return setFormError("Enter a valid email address.");
+    if (!buyerPhone.trim()) return setFormError("Enter your phone number.");
     if (isGoods) {
       if (toAddress) {
         if (deliveryAddress.trim().length < 5) return setFormError("Enter the address to deliver to.");
-        if (!arrivalDate) return setFormError("Pick a delivery date.");
       } else {
         if (!propertySlug) return setFormError("Pick which stay this is for.");
         if (!arrivalDate) return setFormError("Pick a check-in or check-out date.");
@@ -188,7 +194,7 @@ function CheckoutFields({
           buyerPhone: buyerPhone.trim(),
           ...(isGoods
             ? toAddress
-              ? { deliveryMethod, deliveryAddress: deliveryAddress.trim(), deliveryPostcode, arrivalDate }
+              ? { deliveryMethod, deliveryAddress: deliveryAddress.trim(), deliveryPostcode }
               : { deliveryMethod, propertySlug, arrivalDate, stayDateType }
             : {
                 recipientName: recipientName.trim(),
@@ -283,7 +289,9 @@ function CheckoutFields({
       </div>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-sm text-near-black">Phone</span>
+        <span className="text-sm text-near-black">
+          Phone <span className="text-error-red">*</span>
+        </span>
         <input
           type="tel"
           value={buyerPhone}
@@ -299,13 +307,12 @@ function CheckoutFields({
             Delivery
           </legend>
 
-          <div role="radiogroup" aria-label="Delivery method" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {(
-              [
-                { value: "property", label: "To a stay", hint: "Waiting in the house" },
-                { value: "address", label: "To my address", hint: "Home or collection point" },
-              ] as const
-            ).map((option) => {
+          <div
+            role="radiogroup"
+            aria-label="Delivery method"
+            className={`grid grid-cols-1 gap-3 sm:grid-cols-2 ${deliveryOptions.length < 2 ? "hidden" : ""}`}
+          >
+            {deliveryOptions.map((option) => {
               const selected = deliveryMethod === option.value;
               return (
                 <button
@@ -349,18 +356,6 @@ function CheckoutFields({
                   onChange={setDeliveryAddress}
                   onSelect={handleAddressSelect}
                 />
-                <label className="flex flex-col gap-2 sm:max-w-[240px]">
-                  <span className="text-sm text-near-black">
-                    Delivery date <span className="text-error-red">*</span>
-                  </span>
-                  <input
-                    type="date"
-                    min={tomorrow}
-                    value={arrivalDate}
-                    onChange={(e) => setArrivalDate(e.target.value)}
-                    className={`border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] focus:border-forest-green focus:outline-none ${arrivalDate ? "text-near-black" : "text-near-black/35"}`}
-                  />
-                </label>
               </>
             ) : (
               <>
