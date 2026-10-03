@@ -175,7 +175,7 @@ function Hero({ county, hasExample, shown }: { county: County; hasExample: boole
           style={rise(shown, 220)}
           className="rounded-full border border-sage-grey/60 bg-cream px-5 py-2.5 text-[13px] font-medium text-forest-green transition-colors hover:border-light-sage hover:bg-light-forest-green/40"
         >
-          ← Change area
+          Change area
         </Link>
       </div>
     </div>
@@ -342,7 +342,7 @@ function PricingBandLive({ countyName, shown }: { countyName: string; shown: boo
           </p>
         </div>
         <Link href="/landlords" className="text-[13px] text-cream/80 underline underline-offset-[3px]">
-          See everything included in full management →
+          See everything included in full management
         </Link>
       </div>
     </div>
@@ -491,7 +491,7 @@ function RulesTimeline({ shown }: { shown: boolean }) {
           </h3>
         </div>
         <Link href={STR_RULES_URL} className="text-[13.5px] font-medium text-maroon underline underline-offset-[3px]">
-          Read the full guide to the new rules →
+          Read the full guide to the new rules
         </Link>
       </div>
       <div className="relative px-1">

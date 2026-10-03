@@ -49,7 +49,7 @@ export function StickyBookingBar({
           rel={ctaIsExternal ? "noopener noreferrer" : undefined}
           className="inline-flex items-center rounded-full bg-cream px-6.5 py-3 text-sm font-semibold text-deep-forest transition-transform duration-200 hover:-translate-y-0.5"
         >
-          {ctaLabel} →
+          {ctaLabel}
         </a>
       </div>
     </div>

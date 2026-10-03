@@ -150,7 +150,7 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
                 <h3 className="font-serif text-xl font-bold text-deep-forest">{member.name}</h3>
                 <span className="text-[13.5px] text-near-black/65">{member.plainTitle}</span>
                 {!isOpen && (
-                  <span className="pt-2 text-[13px] font-semibold text-forest-green">Read more →</span>
+                  <span className="pt-2 text-[13px] font-semibold text-forest-green">Read more</span>
                 )}
               </div>
             </div>

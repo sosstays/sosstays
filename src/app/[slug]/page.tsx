@@ -162,7 +162,7 @@ export default async function LandingPage({ params }: Props) {
                 rel={bookingUrlIsExternal ? "noopener noreferrer" : undefined}
                 className="inline-flex items-center gap-2.5 rounded-full bg-cream px-8.5 py-4.5 text-base font-semibold text-deep-forest transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(0,0,0,0.28)]"
               >
-                {page.primaryCtaLabel || "Book direct"} →
+                {page.primaryCtaLabel || "Book direct"}
               </a>
             )}
             {page.secondaryCtaUrl && (
@@ -306,7 +306,7 @@ export default async function LandingPage({ params }: Props) {
                   rel="noopener noreferrer"
                   className="text-sm font-semibold text-forest-green"
                 >
-                  Get driving directions to {page.destinationName} →
+                  Get driving directions to {page.destinationName}
                 </a>
               )}
             </Reveal>
@@ -496,7 +496,7 @@ export default async function LandingPage({ params }: Props) {
                     rel={bookingUrlIsExternal ? "noopener noreferrer" : undefined}
                     className="mt-7.5 inline-flex items-center rounded-full bg-cream px-8 py-4 text-[15px] font-semibold text-maroon transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(0,0,0,0.3)]"
                   >
-                    {page.primaryCtaLabel || "Book direct"} →
+                    {page.primaryCtaLabel || "Book direct"}
                   </a>
                 )}
               </div>
@@ -612,7 +612,7 @@ export default async function LandingPage({ params }: Props) {
                         rel="noopener noreferrer"
                         className="mt-2.5 inline-block text-sm font-semibold text-forest-green"
                       >
-                        {page.pricingLinkLabel || "Check current rates →"}
+                        {page.pricingLinkLabel || "Check current rates"}
                       </a>
                     )}
                   </div>
@@ -653,7 +653,7 @@ export default async function LandingPage({ params }: Props) {
                       rel="noopener noreferrer"
                       className="mt-2 inline-block text-[13px] font-semibold text-forest-green"
                     >
-                      Learn more →
+                      Learn more
                     </a>
                   )}
                 </div>
@@ -711,7 +711,7 @@ export default async function LandingPage({ params }: Props) {
               href={`/areas/${page.relatedAreaGuide.slug}`}
               className="text-[15px] font-semibold text-forest-green"
             >
-              See the full area guide →
+              See the full area guide
             </Reveal>
           </div>
 
@@ -759,7 +759,7 @@ export default async function LandingPage({ params }: Props) {
                     rel={bookingUrlIsExternal ? "noopener noreferrer" : undefined}
                     className="inline-flex items-center rounded-full bg-cream px-8.5 py-4.5 text-base font-semibold text-deep-forest transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(0,0,0,0.3)]"
                   >
-                    {page.primaryCtaLabel || "Book direct"} →
+                    {page.primaryCtaLabel || "Book direct"}
                   </a>
                 )}
                 {page.finalCtaSecondaryUrl && (

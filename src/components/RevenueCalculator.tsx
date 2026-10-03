@@ -371,7 +371,7 @@ export function RevenueCalculator({
                   animateColor="maroon"
                   size="sm"
                 >
-                  Current Performance →
+                  Current Performance
                 </Button>
               </div>
             </div>
@@ -491,7 +491,7 @@ export function RevenueCalculator({
                   onClick={() => goStep(1)}
                   className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black"
                 >
-                  ← Back
+                  Back
                 </button>
                 <Button
                   onClick={() => goStep(3)}
@@ -501,7 +501,7 @@ export function RevenueCalculator({
                   animateColor="maroon"
                   size="sm"
                 >
-                  Calculate My Potential →
+                  Calculate My Potential
                 </Button>
               </div>
             </div>
@@ -571,7 +571,7 @@ export function RevenueCalculator({
                   onClick={() => goStep(2)}
                   className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black"
                 >
-                  ← Back
+                  Back
                 </button>
                 <Button
                   onClick={handleSubmit}
@@ -583,7 +583,7 @@ export function RevenueCalculator({
                   size="custom"
                   className="px-7 py-3.5 text-sm font-semibold disabled:opacity-60"
                 >
-                  {submitting ? "Calculating…" : "Show My Revenue Potential →"}
+                  {submitting ? "Calculating…" : "Show My Revenue Potential"}
                 </Button>
               </div>
             </div>
@@ -920,7 +920,7 @@ function EstimateGate({
           size="sm"
           className="disabled:opacity-60"
         >
-          {submitting ? "Unlocking…" : "Show My Numbers →"}
+          {submitting ? "Unlocking…" : "Show My Numbers"}
         </Button>
 
         <p className="text-center text-[11px] text-near-black/55">

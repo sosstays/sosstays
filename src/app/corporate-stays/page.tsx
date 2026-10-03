@@ -240,7 +240,7 @@ export default async function CorporateStaysPage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Button link="#brief" variant="primary" bgColor="cream" color="maroon" animateColor="maroon">
-                {data?.heroPrimaryCtaLabel || "Send your SOS"} →
+                {data?.heroPrimaryCtaLabel || "Send your SOS"}
               </Button>
               <Button link="#coverage" variant="secondary" color="cream" animateColor="maroon">
                 {data?.heroSecondaryCtaLabel || "See where we operate"}
@@ -464,7 +464,7 @@ export default async function CorporateStaysPage() {
               color="cream"
               animateColor="maroon"
             >
-              {data?.partnerCtaLabel || "Partner with us"} →
+              {data?.partnerCtaLabel || "Partner with us"}
             </Button>
           </Reveal>
 
@@ -532,7 +532,7 @@ export default async function CorporateStaysPage() {
           </p>
           <div className="mt-8">
             <Button link="#brief" variant="secondary" color="cream" animateColor="maroon">
-              Send your SOS →
+              Send your SOS
             </Button>
           </div>
         </Reveal>

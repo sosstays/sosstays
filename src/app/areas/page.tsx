@@ -65,7 +65,7 @@ export default async function AreasIndexPage() {
               </p>
             </div>
             <Button link="/hotels-near-funtasia" variant="primary" bgColor="forest-green" color="cream">
-              Hotels near Funtasia →
+              Hotels near Funtasia
             </Button>
           </Reveal>
         </div>

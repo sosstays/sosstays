@@ -122,7 +122,7 @@ export function PartnerDirectory({
                       animateColor="cream"
                       size="sm"
                     >
-                      Read more →
+                      Read more
                     </Button>
                   )}
                   <Button
@@ -134,7 +134,7 @@ export function PartnerDirectory({
                     animateColor="cream"
                     size="sm"
                   >
-                    Visit {partner.name} →
+                    Visit {partner.name}
                   </Button>
                 </div>
               </div>

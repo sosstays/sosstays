@@ -160,7 +160,7 @@ export function LandlordLeadForm({
               animateColor="maroon"
               size="sm"
             >
-              Continue →
+              Continue
             </Button>
           </div>
         </div>
@@ -187,7 +187,7 @@ export function LandlordLeadForm({
               onClick={goBack}
               className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black"
             >
-              ← Back
+              Back
             </button>
             <Button
               onClick={goNext}
@@ -197,7 +197,7 @@ export function LandlordLeadForm({
               animateColor="maroon"
               size="sm"
             >
-              Continue →
+              Continue
             </Button>
           </div>
         </div>
@@ -254,7 +254,7 @@ export function LandlordLeadForm({
               onClick={goBack}
               className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black"
             >
-              ← Back
+              Back
             </button>
             <Button
               disabled={submitting}

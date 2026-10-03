@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+/* Tailwind v4's preflight resets buttons to the default arrow cursor —
+   restore the pointer on anything clickable. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  label:has(input[type="checkbox"], input[type="radio"]),
+  select {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
 :root {
   --background: #FAFAF8;
   --foreground: #1C1C1C;

@@ -133,7 +133,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                   color="maroon"
                   animateColor="maroon"
                 >
-                  Get started →
+                  Get started
                 </Button>
               </Reveal>
             </div>
@@ -194,7 +194,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 href="#how-it-works"
                 className="mt-7 inline-flex items-center gap-2.5 border-b border-maroon/30 pb-1 text-base font-semibold text-maroon"
               >
-                See exactly what we take on <span>&rarr;</span>
+                See exactly what we take on
               </a>
             </Reveal>
           </div>

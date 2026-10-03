@@ -178,7 +178,7 @@ export function PartnerLeadForm() {
           )}
           <div className="mt-1 flex justify-end">
             <Button onClick={goNext} variant="primary" bgColor="maroon" color="cream" animateColor="maroon" size="sm">
-              Continue →
+              Continue
             </Button>
           </div>
         </div>
@@ -228,10 +228,10 @@ export function PartnerLeadForm() {
               onClick={goBack}
               className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black"
             >
-              ← Back
+              Back
             </button>
             <Button onClick={goNext} variant="primary" bgColor="maroon" color="cream" animateColor="maroon" size="sm">
-              Continue →
+              Continue
             </Button>
           </div>
         </div>
@@ -270,7 +270,7 @@ export function PartnerLeadForm() {
               onClick={goBack}
               className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black"
             >
-              ← Back
+              Back
             </button>
             <Button
               disabled={submitting}

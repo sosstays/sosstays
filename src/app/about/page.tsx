@@ -350,7 +350,7 @@ export default async function AboutUsPage() {
                     color="forest-green"
                     animateColor="forest-green"
                   >
-                    See what we do →
+                    See what we do
                   </Button>
                 </Reveal>
               </div>
@@ -463,7 +463,7 @@ export default async function AboutUsPage() {
                         {stay.name}
                       </h3>
                       <p className="flex-1 text-[15px] leading-loose text-near-black/70">{stay.description}</p>
-                      <span className="mt-4 text-sm font-semibold text-forest-green">See the stay →</span>
+                      <span className="mt-4 text-sm font-semibold text-forest-green">See the stay</span>
                     </div>
                   </Link>
                 </Reveal>

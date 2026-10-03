@@ -198,7 +198,7 @@ export default async function BlogPostPage({ params }: Props) {
                       </p>
                     )}
                     <span className="text-[13px] font-semibold text-forest-green underline underline-offset-2">
-                      View stay →
+                      View stay
                     </span>
                   </div>
                 </Link>

@@ -161,7 +161,7 @@ export default async function PartnersPage() {
                     color="maroon"
                     animateColor="maroon"
                   >
-                    Become a partner →
+                    Become a partner
                   </Button>
                 </Reveal>
               </div>

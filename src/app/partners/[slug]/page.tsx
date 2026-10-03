@@ -99,7 +99,7 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
               rel="noopener noreferrer"
               className="text-base font-semibold text-maroon underline underline-offset-2"
             >
-              Visit {partner.name} →
+              Visit {partner.name}
             </a>
           </Reveal>
         </section>

@@ -265,7 +265,7 @@ export function RoomBookingBar({
             disabled={!canBook}
             className="inline-flex items-center rounded-full bg-cream px-6.5 py-3 text-sm font-semibold whitespace-nowrap text-deep-forest transition-transform duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
           >
-            {checking ? "Checking…" : "Book now →"}
+            {checking ? "Checking…" : "Book now"}
           </button>
         </div>
       </div>

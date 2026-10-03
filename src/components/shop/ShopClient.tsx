@@ -182,7 +182,7 @@ function VoucherCard({ product, onOpen }: { product: ShopProduct; onOpen: () => 
           <p className="mt-1.5 text-[14px] font-medium text-near-black/55">{product.tagline}</p>
           <p className="mt-3 flex-1 text-[14.5px] leading-relaxed text-near-black/72">{product.shortDescription}</p>
           <span className="mt-4 inline-flex items-center gap-2 text-[14px] font-semibold text-forest-green">
-            Details and quantity <span aria-hidden>→</span>
+            Details and quantity
           </span>
         </div>
       </div>
@@ -234,7 +234,7 @@ function GoodsCard({ product, onOpen }: { product: ShopProduct; onOpen: () => vo
         <p className="mt-1.5 text-[14px] font-medium text-near-black/55">{product.tagline}</p>
         <p className="mt-3 flex-1 text-[14.5px] leading-relaxed text-near-black/72">{product.shortDescription}</p>
         <span className="mt-4 inline-flex items-center gap-2 text-[14px] font-semibold text-forest-green">
-          Details and quantity <span aria-hidden>→</span>
+          Details and quantity
         </span>
       </div>
     </article>
