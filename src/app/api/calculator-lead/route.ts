@@ -24,6 +24,9 @@ export async function POST(request: NextRequest) {
   if (!isValidEmail(email)) {
     return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
   }
+  if (typeof phone !== "string" || !phone.trim()) {
+    return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
+  }
 
   return subscribeToMailerLite({
     email,

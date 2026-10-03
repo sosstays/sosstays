@@ -75,7 +75,7 @@ export function validateStayParams(body: unknown): StayParamsResult {
   };
 }
 
-export type GuestDetails = { guestName: string; guestEmail: string; guestPhone?: string };
+export type GuestDetails = { guestName: string; guestEmail: string; guestPhone: string };
 export type GuestDetailsResult = { ok: true; data: GuestDetails } | { ok: false; error: string };
 
 export function validateGuestDetails(body: unknown): GuestDetailsResult {
@@ -87,13 +87,16 @@ export function validateGuestDetails(body: unknown): GuestDetailsResult {
   if (typeof guestEmail !== "string" || !EMAIL_PATTERN.test(guestEmail.trim())) {
     return { ok: false, error: "A valid guestEmail is required" };
   }
+  if (typeof guestPhone !== "string" || !guestPhone.trim()) {
+    return { ok: false, error: "guestPhone is required" };
+  }
 
   return {
     ok: true,
     data: {
       guestName: guestName.trim(),
       guestEmail: guestEmail.trim(),
-      guestPhone: typeof guestPhone === "string" && guestPhone.trim() ? guestPhone.trim() : undefined,
+      guestPhone: guestPhone.trim(),
     },
   };
 }

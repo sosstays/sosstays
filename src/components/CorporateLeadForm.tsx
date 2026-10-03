@@ -36,8 +36,8 @@ export function CorporateLeadForm() {
 
   function goNext() {
     if (step === 0) {
-      if (!name.trim() || !email.trim()) {
-        setStep0Error("Name and email are needed to send your SOS.");
+      if (!name.trim() || !email.trim() || !phone.trim()) {
+        setStep0Error("Name, email and phone number are needed to send your SOS.");
         return;
       }
       if (!EMAIL_PATTERN.test(email.trim())) {
@@ -156,7 +156,9 @@ export function CorporateLeadForm() {
               />
             </label>
             <label className="flex flex-col gap-1.5 text-sm text-near-black">
-              <span>Phone</span>
+              <span>
+                Phone <span className="text-error-red">*</span>
+              </span>
               <input
                 type="tel"
                 value={phone}
