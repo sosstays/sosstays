@@ -117,6 +117,10 @@ export function BookingFlow({
       setDetailsError("Enter a valid email address.");
       return;
     }
+    if (!guestPhone.trim()) {
+      setDetailsError("Enter your phone number.");
+      return;
+    }
 
     setPaymentLoading(true);
     try {
@@ -245,7 +249,9 @@ export function BookingFlow({
               />
             </label>
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm text-near-black">Phone</span>
+              <span className="text-sm text-near-black">
+                Phone <span className="text-error-red">*</span>
+              </span>
               <input
                 type="tel"
                 value={guestPhone}

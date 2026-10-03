@@ -141,6 +141,10 @@ export function BookingCheckout({
       setError("Enter a valid email address.");
       return;
     }
+    if (!guestPhone.trim()) {
+      setError("Enter your phone number.");
+      return;
+    }
 
     setError("");
     setSubmitting(true);
@@ -158,7 +162,7 @@ export function BookingCheckout({
           promotionCodeId: appliedPromo?.promotionCodeId,
           guestName: guestName.trim(),
           guestEmail: guestEmail.trim(),
-          guestPhone: guestPhone.trim() || undefined,
+          guestPhone: guestPhone.trim(),
         }),
       });
       const data = await res.json();
@@ -223,7 +227,9 @@ export function BookingCheckout({
         </label>
 
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm text-near-black">Phone</span>
+          <span className="text-sm text-near-black">
+            Phone <span className="text-error-red">*</span>
+          </span>
           <input
             type="tel"
             value={guestPhone}

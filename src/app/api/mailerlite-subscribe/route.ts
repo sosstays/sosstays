@@ -8,6 +8,9 @@ export async function POST(request: NextRequest) {
   if (!isValidEmail(email)) {
     return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
   }
+  if (typeof mobile !== "string" || !mobile.trim()) {
+    return NextResponse.json({ error: "Mobile number is required" }, { status: 400 });
+  }
 
   return subscribeToMailerLite({
     email,
