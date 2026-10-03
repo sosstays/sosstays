@@ -35,6 +35,7 @@ export function AddressAutocomplete({
   onChange,
   onSelect,
   error,
+  variant = "box",
 }: {
   label?: string;
   required?: boolean;
@@ -43,6 +44,8 @@ export function AddressAutocomplete({
   onChange: (value: string) => void;
   onSelect: (address: AddressAutocompleteValue) => void;
   error?: string;
+  /** "underline" matches the bottom-border inputs used in checkout forms. */
+  variant?: "box" | "underline";
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -101,7 +104,7 @@ export function AddressAutocomplete({
   }, [apiKey, onChange, onSelect]);
 
   return (
-    <label htmlFor={inputId} className="flex flex-col gap-1.5 text-sm text-near-black">
+    <label htmlFor={inputId} className={`flex flex-col text-sm text-near-black ${variant === "underline" ? "gap-2" : "gap-1.5"}`}>
       {label && (
         <span>
           {label} {required && <span className="text-error-red">*</span>}
@@ -115,7 +118,11 @@ export function AddressAutocomplete({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         autoComplete="off"
-        className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+        className={
+          variant === "underline"
+            ? "border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
+            : "rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+        }
       />
       {error && <p className="text-[13px] text-error-red">{error}</p>}
       {loadError && (
