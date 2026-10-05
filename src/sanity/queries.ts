@@ -16,7 +16,7 @@ const seoProjection = `
 // ---- Blog posts ----
 
 export const BLOG_POSTS_QUERY = defineQuery(`
-  *[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {
+  *[_type == "blogPost" && market == $market && defined(slug.current)] | order(publishedAt desc) {
     _id,
     title,
     "slug": slug.current,
@@ -32,7 +32,7 @@ export const BLOG_POSTS_QUERY = defineQuery(`
 // 3 most recent posts tagged "landlord" — used by the landlord-facing
 // "worth a read while you wait" section, not the general blog index.
 export const LANDLORD_BLOG_POSTS_QUERY = defineQuery(`
-  *[_type == "blogPost" && defined(slug.current) && "landlord" in tags] | order(publishedAt desc) [0...3] {
+  *[_type == "blogPost" && market == $market && defined(slug.current) && "landlord" in tags] | order(publishedAt desc) [0...3] {
     _id,
     title,
     "slug": slug.current,
@@ -45,7 +45,7 @@ export const LANDLORD_BLOG_POSTS_QUERY = defineQuery(`
 `);
 
 export const BLOG_POST_QUERY = defineQuery(`
-  *[_type == "blogPost" && slug.current == $slug][0] {
+  *[_type == "blogPost" && market == $market && slug.current == $slug][0] {
     _id,
     title,
     "slug": slug.current,
@@ -71,7 +71,7 @@ export const BLOG_POST_QUERY = defineQuery(`
       priceLabel,
       "coverImage": gallery[0]
     },
-    "relatedPosts": *[_type == "blogPost" && defined(slug.current) && _id != ^._id] | order(publishedAt desc) [0...3] {
+    "relatedPosts": *[_type == "blogPost" && market == $market && defined(slug.current) && _id != ^._id] | order(publishedAt desc) [0...3] {
       _id,
       title,
       "slug": slug.current,
@@ -85,7 +85,7 @@ export const BLOG_POST_QUERY = defineQuery(`
 // ---- Property pages ----
 
 export const PROPERTY_PAGES_QUERY = defineQuery(`
-  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {
+  *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) {
     _id,
     name,
     "slug": slug.current,
@@ -107,7 +107,7 @@ export const PROPERTY_PAGES_QUERY = defineQuery(`
 `);
 
 export const PROPERTY_PAGE_QUERY = defineQuery(`
-  *[_type == "propertyPage" && slug.current == $slug][0] {
+  *[_type == "propertyPage" && market == $market && slug.current == $slug][0] {
     _id,
     name,
     "slug": slug.current,
@@ -166,7 +166,7 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
 // Lean projection for the /stays/[slug]/book checkout flow — just enough to
 // resolve a slug to its Uplisting property id and display a summary.
 export const PROPERTY_BOOKING_QUERY = defineQuery(`
-  *[_type == "propertyPage" && slug.current == $slug][0] {
+  *[_type == "propertyPage" && market == $market && slug.current == $slug][0] {
     _id,
     name,
     "slug": slug.current,
@@ -190,7 +190,7 @@ export const PROPERTY_BOOKING_QUERY = defineQuery(`
 // ---- Area guides ----
 
 export const AREA_GUIDES_QUERY = defineQuery(`
-  *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) {
+  *[_type == "areaGuide" && market == $market && defined(slug.current)] | order(areaName asc) {
     _id,
     areaName,
     "slug": slug.current,
@@ -200,7 +200,7 @@ export const AREA_GUIDES_QUERY = defineQuery(`
 `);
 
 export const AREA_GUIDE_QUERY = defineQuery(`
-  *[_type == "areaGuide" && slug.current == $slug][0] {
+  *[_type == "areaGuide" && market == $market && slug.current == $slug][0] {
     _id,
     areaName,
     "slug": slug.current,
@@ -220,7 +220,7 @@ export const AREA_GUIDE_QUERY = defineQuery(`
       "gallery": gallery[0...3],
       uplistingPropertySlug
     },
-    "relatedBlogPosts": *[_type == "blogPost" && references(^._id)] {
+    "relatedBlogPosts": *[_type == "blogPost" && market == $market && references(^._id)] {
       _id,
       title,
       "slug": slug.current,
@@ -234,7 +234,7 @@ export const AREA_GUIDE_QUERY = defineQuery(`
 // ---- Landlord pages ----
 
 export const LANDLORD_PAGE_QUERY = defineQuery(`
-  *[_type == "landlordPage" && slug.current == $slug][0] {
+  *[_type == "landlordPage" && market == $market && slug.current == $slug][0] {
     _id,
     title,
     "slug": slug.current,
@@ -249,7 +249,7 @@ export const LANDLORD_PAGE_QUERY = defineQuery(`
 `);
 
 export const LANDLORD_PAGES_QUERY = defineQuery(`
-  *[_type == "landlordPage" && defined(slug.current)] | order(_createdAt asc) {
+  *[_type == "landlordPage" && market == $market && defined(slug.current)] | order(_createdAt asc) {
     _id,
     title,
     "slug": slug.current,
@@ -266,7 +266,7 @@ export const LANDLORD_PAGES_QUERY = defineQuery(`
 // ---- Landlord audience tabs (singleton) ----
 
 export const AUDIENCE_TABS_QUERY = defineQuery(`
-  *[_type == "audienceTabs" && _id == "audienceTabs"][0] {
+  *[_type == "audienceTabs" && _id == "audienceTabs-" + $market][0] {
     eyebrow,
     tabs[] {
       label,
@@ -281,7 +281,7 @@ export const AUDIENCE_TABS_QUERY = defineQuery(`
 // ---- Site settings (singleton) ----
 
 export const SITE_SETTINGS_QUERY = defineQuery(`
-  *[_type == "siteSettings" && _id == "siteSettings"][0] {
+  *[_type == "siteSettings" && _id == "siteSettings-" + $market][0] {
     siteName,
     defaultSeoTitle,
     defaultSeoDescription,
@@ -299,7 +299,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
 // ---- Footer (singleton) ----
 
 export const FOOTER_QUERY = defineQuery(`
-  *[_type == "footer" && _id == "footer"][0] {
+  *[_type == "footer" && _id == "footer-" + $market][0] {
     tagline,
     columns[] {
       title,
@@ -315,7 +315,7 @@ export const FOOTER_QUERY = defineQuery(`
 // ---- Navigation (singleton) ----
 
 export const NAVIGATION_QUERY = defineQuery(`
-  *[_type == "navigation" && _id == "navigation"][0] {
+  *[_type == "navigation" && _id == "navigation-" + $market][0] {
     guestNavLinks[] {
       label,
       href
@@ -330,7 +330,7 @@ export const NAVIGATION_QUERY = defineQuery(`
 // ---- Privacy policy (singleton) ----
 
 export const PRIVACY_POLICY_QUERY = defineQuery(`
-  *[_type == "privacyPolicyPage" && _id == "privacyPolicyPage"][0] {
+  *[_type == "privacyPolicyPage" && _id == "privacyPolicyPage-" + $market][0] {
     title,
     lastUpdated,
     body,
@@ -341,7 +341,7 @@ export const PRIVACY_POLICY_QUERY = defineQuery(`
 // ---- Terms & conditions (singleton) ----
 
 export const TERMS_PAGE_QUERY = defineQuery(`
-  *[_type == "termsPage" && _id == "termsPage"][0] {
+  *[_type == "termsPage" && _id == "termsPage-" + $market][0] {
     title,
     lastUpdated,
     body,
@@ -352,7 +352,7 @@ export const TERMS_PAGE_QUERY = defineQuery(`
 // ---- Homepage hero (singleton) ----
 
 export const HERO_SECTION_QUERY = defineQuery(`
-  *[_type == "heroSection" && _id == "heroSection"][0] {
+  *[_type == "heroSection" && _id == "heroSection-" + $market][0] {
     eyebrow,
     heading,
     body,
@@ -368,7 +368,7 @@ export const HERO_SECTION_QUERY = defineQuery(`
 // ---- Homepage hosts module (singleton) ----
 
 export const HOSTS_MODULE_QUERY = defineQuery(`
-  *[_type == "hostsModule" && _id == "hostsModule"][0] {
+  *[_type == "hostsModule" && _id == "hostsModule-" + $market][0] {
     eyebrow,
     heading,
     body,
@@ -393,7 +393,7 @@ export const HOSTS_MODULE_QUERY = defineQuery(`
 // ---- Corporate Stays page (singleton) ----
 
 export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
-  *[_type == "corporateStaysPage" && _id == "corporateStaysPage"][0] {
+  *[_type == "corporateStaysPage" && _id == "corporateStaysPage-" + $market][0] {
     heroBadge,
     heroHeading,
     heroBody,
@@ -451,7 +451,7 @@ export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
 // ---- About page (singleton) ----
 
 export const ABOUT_PAGE_QUERY = defineQuery(`
-  *[_type == "aboutPage" && _id == "aboutPage"][0] {
+  *[_type == "aboutPage" && _id == "aboutPage-" + $market][0] {
     heroBadge,
     heroHeading,
     heroSubtext,
@@ -526,7 +526,7 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
 // grid — a live query against propertyPage, not stored on the singleton
 // above, so the grid never goes stale as properties are added or removed.
 export const CORPORATE_ONBOARDED_PROPERTIES_QUERY = defineQuery(`
-  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...8] {
+  *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) [0...8] {
     _id,
     name,
     "slug": slug.current,
@@ -538,7 +538,7 @@ export const CORPORATE_ONBOARDED_PROPERTIES_QUERY = defineQuery(`
 // ---- Partners ----
 
 export const PARTNERS_PAGE_QUERY = defineQuery(`
-  *[_type == "partnersPage" && _id == "partnersPage"][0] {
+  *[_type == "partnersPage" && _id == "partnersPage-" + $market][0] {
     heroBadge,
     heroHeading,
     heroSubtext,
@@ -618,11 +618,11 @@ export const FEATURED_PARTNER_SLUGS_QUERY = defineQuery(`
 // ---- Homepage feed ----
 
 export const HOMEPAGE_QUERY = defineQuery(`{
-  "properties": *[_type == "propertyPage" && defined(slug.current)] | order(name asc) [0...3] {
+  "properties": *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) [0...3] {
     _id, name, "slug": slug.current, location, shortDescription, sleeps,
     "coverImage": gallery[0], "gallery": gallery[0...3]
   },
-  "areas": *[_type == "areaGuide" && defined(slug.current)] | order(areaName asc) [0...4] {
+  "areas": *[_type == "areaGuide" && market == $market && defined(slug.current)] | order(areaName asc) [0...4] {
     _id, areaName, "slug": slug.current, heroImage, introduction
   }
 }`);
@@ -725,7 +725,7 @@ export const LANDING_PAGE_QUERY = defineQuery(`
 // ---- Sitemap ----
 
 export const SITEMAP_QUERY = defineQuery(`
-  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {
+  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true && (market == $market || (_type == "landingPage" && $market == "ie"))] {
     "href": select(
       _type == "blogPost" => "/blog/" + slug.current,
       _type == "propertyPage" => "/stays/" + slug.current,
@@ -741,7 +741,7 @@ export const SITEMAP_QUERY = defineQuery(`
 // terms) — the sitemap wants their real _updatedAt and noIndex flag rather
 // than treating them as unchanging routes.
 export const SITEMAP_SINGLETONS_QUERY = defineQuery(`
-  *[_type in ["aboutPage", "corporateStaysPage", "privacyPolicyPage", "termsPage"]] {
+  *[_type in ["aboutPage", "corporateStaysPage", "privacyPolicyPage", "termsPage"] && _id == _type + "-" + $market] {
     "href": select(
       _type == "aboutPage" => "/about",
       _type == "corporateStaysPage" => "/corporate-stays",
@@ -759,14 +759,14 @@ export const SITEMAP_SINGLETONS_QUERY = defineQuery(`
 // instead of bare URLs.
 export const LLMS_TXT_QUERY = defineQuery(`
 {
-  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {
+  "settings": *[_type == "siteSettings" && _id == "siteSettings-" + $market][0] {
     siteName,
     defaultSeoDescription,
     businessName,
     contactEmail,
     socialLinks
   },
-  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true] {
+  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true && (market == $market || (_type == "landingPage" && $market == "ie"))] {
     _type,
     "href": select(
       _type == "blogPost" => "/blog/" + slug.current,
@@ -802,7 +802,7 @@ export const COUNTY_PRICING_STATS_QUERY = defineQuery(`
 // ---- Shop ----
 
 export const SHOP_PAGE_QUERY = defineQuery(`
-  *[_type == "shopPage" && _id == "shopPage"][0] {
+  *[_type == "shopPage" && _id == "shopPage-" + $market][0] {
     heroEyebrow,
     heroHeading,
     heroSubtext,
@@ -862,7 +862,7 @@ export const SHOP_PRODUCT_BY_ID_QUERY = defineQuery(`
 // goods purchase — deliberately leaner than PROPERTY_PAGES_QUERY, which
 // pulls a lot more than a delivery picker needs.
 export const SHOP_DELIVERY_PROPERTIES_QUERY = defineQuery(`
-  *[_type == "propertyPage" && defined(slug.current)] | order(name asc) {
+  *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) {
     _id,
     name,
     "slug": slug.current

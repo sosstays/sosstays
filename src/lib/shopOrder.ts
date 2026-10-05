@@ -134,7 +134,7 @@ export async function buildShopOrderMetadata(
       if (typeof propertySlug !== "string" || !propertySlug) {
         return { ok: false, error: "Pick which stay this is for" };
       }
-      const property = await client.fetch(`*[_type == "propertyPage" && slug.current == $slug][0]{ name }`, {
+      const property = await client.fetch(`*[_type == "propertyPage" && market == $market && slug.current == $slug][0]{ name }`, {
         slug: propertySlug,
       });
       if (!property) {
