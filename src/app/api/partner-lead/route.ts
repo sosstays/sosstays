@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isValidEmail, subscribeToMailerLite } from "@/lib/mailerlite";
+import { isValidEmail } from "@/lib/mailerlite";
+import { saveLead } from "@/lib/leads";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -18,18 +19,32 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
   }
 
-  return subscribeToMailerLite({
+  return saveLead({
+    table: "partner_leads",
     email,
-    fields: {
+    mode: "upsert",
+    row: {
       business_name: businessName,
-      name: contactName,
+      contact_name: contactName,
       phone,
       website,
       category,
-      about_business: about,
       location,
+      about_business: about,
       referral,
     },
-    groupId: process.env.MAILERLITE_PARTNER_GROUP_ID,
+    mailerlite: {
+      fields: {
+        business_name: businessName,
+        name: contactName,
+        phone,
+        website,
+        category,
+        about_business: about,
+        location,
+        referral,
+      },
+      groupId: process.env.MAILERLITE_PARTNER_GROUP_ID,
+    },
   });
 }

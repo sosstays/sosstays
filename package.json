@@ -17,6 +17,7 @@
     "@sanity/image-url": "^2.1.1",
     "@stripe/react-stripe-js": "^6.8.2",
     "@stripe/stripe-js": "^9.15.0",
+    "@supabase/supabase-js": "^2.117.2",
     "clsx": "^2.1.1",
     "lucide-react": "^1.48.0",
     "motion": "^12.43.0",

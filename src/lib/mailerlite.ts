@@ -1,5 +1,3 @@
-import { NextResponse } from "next/server";
-
 const MAILERLITE_API_URL = "https://connect.mailerlite.com/api/subscribers";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_FIELD_LENGTH = 2000;
@@ -15,8 +13,13 @@ function cleanFieldValue(value: unknown): string | undefined {
   return trimmed ? trimmed.slice(0, MAX_FIELD_LENGTH) : undefined;
 }
 
-// Shared by the four /api/*-subscribe and /api/calculator-lead routes —
-// each just forwards a form's fields to a MailerLite group.
+export type MailerLiteResult =
+  | { ok: true; subscriberId: string | null }
+  | { ok: false; status: number; error: string; detail?: string };
+
+// Forwards a form's fields to a MailerLite group. Doesn't build an HTTP
+// response itself — saveLead (lib/leads.ts) decides what the visitor sees
+// once it knows whether the Supabase save worked too.
 export async function subscribeToMailerLite({
   email,
   fields,
@@ -25,10 +28,10 @@ export async function subscribeToMailerLite({
   email: string;
   fields?: Record<string, unknown>;
   groupId?: string;
-}): Promise<NextResponse> {
+}): Promise<MailerLiteResult> {
   const apiKey = process.env.MAILERLITE_API_KEY;
   if (!apiKey) {
-    return NextResponse.json({ error: "MailerLite is not configured" }, { status: 500 });
+    return { ok: false, status: 500, error: "MailerLite is not configured" };
   }
 
   const cleanedFields: Record<string, string> = {};
@@ -55,11 +58,13 @@ export async function subscribeToMailerLite({
 
     if (!res.ok) {
       const detail = await res.text();
-      return NextResponse.json({ error: "MailerLite request failed", detail }, { status: res.status });
+      return { ok: false, status: res.status, error: "MailerLite request failed", detail };
     }
 
-    return NextResponse.json({ ok: true });
+    const body = (await res.json().catch(() => null)) as { data?: { id?: string | number } } | null;
+    const id = body?.data?.id;
+    return { ok: true, subscriberId: id != null ? String(id) : null };
   } catch {
-    return NextResponse.json({ error: "MailerLite request failed" }, { status: 502 });
+    return { ok: false, status: 502, error: "MailerLite request failed" };
   }
 }

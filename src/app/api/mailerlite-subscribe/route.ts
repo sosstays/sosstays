@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isValidEmail, subscribeToMailerLite } from "@/lib/mailerlite";
+import { isValidEmail } from "@/lib/mailerlite";
+import { saveLead } from "@/lib/leads";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -12,14 +13,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Mobile number is required" }, { status: 400 });
   }
 
-  return subscribeToMailerLite({
+  return saveLead({
+    table: "landlord_leads",
     email,
-    fields: {
+    mode: "upsert",
+    row: {
       name,
       phone: mobile,
       landlord_situation: situation,
       property_description: propertyDescription,
     },
-    groupId: process.env.MAILERLITE_LANDLORD_GROUP_ID,
+    onCreate: { source: "sos_form" },
+    mailerlite: {
+      fields: {
+        name,
+        phone: mobile,
+        landlord_situation: situation,
+        property_description: propertyDescription,
+      },
+      groupId: process.env.MAILERLITE_LANDLORD_GROUP_ID,
+    },
   });
 }
