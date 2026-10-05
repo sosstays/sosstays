@@ -155,6 +155,17 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             </div>
 
+            <div className="mt-14">
+              <FaqSection
+                id="faq"
+                eyebrow="FAQ"
+                heading="Questions worth answering"
+                items={post.faqs}
+                maxWidth="none"
+                padded={false}
+              />
+            </div>
+
             <DisqusComments
               url={`${SITE_URL}/blog/${slug}`}
               identifier={post._id}
@@ -164,6 +175,10 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* RIGHT: sidebar */}
           <Reveal as="aside" delay={150} className="h-fit rounded-lg bg-light-forest-green p-7 lg:sticky lg:top-24">
+            <div className="mb-9 border-b border-sage-grey/30 pb-9">
+              <NewsletterSignup />
+            </div>
+
             {post.promotedProperty && (
               <div className="mb-9 border-b border-sage-grey/30 pb-9">
                 <p className="mb-4 text-[13px] font-semibold text-forest-green">Featured stay</p>
@@ -215,10 +230,6 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             )}
 
-            <div className="mb-9 border-t border-sage-grey/30 pt-7 first:border-0 first:pt-0">
-              <NewsletterSignup />
-            </div>
-
             {post.tags && post.tags.length > 0 && (
               <div className="mb-9">
                 <p className="mb-4 text-[13px] font-semibold text-forest-green">All tags</p>
@@ -265,14 +276,6 @@ export default async function BlogPostPage({ params }: Props) {
             )}
           </Reveal>
         </div>
-
-        <FaqSection
-          id="faq"
-          eyebrow="FAQ"
-          heading="Questions worth answering"
-          items={post.faqs}
-          maxWidth="72rem"
-        />
 
         {/* LANDLORD CTA — maroon per the owner-context accent color */}
         <section className="mt-24 bg-maroon px-8 py-28 text-center sm:px-14">
