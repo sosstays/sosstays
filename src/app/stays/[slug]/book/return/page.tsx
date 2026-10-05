@@ -2,12 +2,34 @@ import Link from "next/link";
 import Image from "next/image";
 import { CheckCircle2 } from "lucide-react";
 import type { Metadata } from "next";
+import type Stripe from "stripe";
 import { client } from "@/sanity/client";
 import { PROPERTY_BOOKING_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// The webhook that actually creates the Uplisting booking runs asynchronously
+// and can land slightly after Stripe redirects the guest here — so a
+// successful payment isn't yet a successful booking. Poll briefly for the
+// uplistingBookingId the webhook stamps onto the session's metadata (see
+// api/stripe/webhook) before treating this as confirmed.
+async function waitForBookingConfirmation(
+  sessionId: string,
+  session: Stripe.Checkout.Session
+): Promise<Stripe.Checkout.Session> {
+  let current = session;
+  for (let attempt = 0; attempt < 5 && !current.metadata?.uplistingBookingId; attempt++) {
+    await sleep(1500);
+    current = await stripe.checkout.sessions.retrieve(sessionId);
+  }
+  return current;
+}
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -52,12 +74,12 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
     );
   }
 
-  const session = await stripe.checkout.sessions.retrieve(sessionId);
-  const meta = session.metadata ?? {};
+  let session: Stripe.Checkout.Session = await stripe.checkout.sessions.retrieve(sessionId);
+  const initialMeta = session.metadata ?? {};
   const retryParams = new URLSearchParams({
-    checkIn: meta.checkIn ?? "",
-    checkOut: meta.checkOut ?? "",
-    guests: meta.guests ?? "",
+    checkIn: initialMeta.checkIn ?? "",
+    checkOut: initialMeta.checkOut ?? "",
+    guests: initialMeta.guests ?? "",
   });
 
   if (session.status !== "complete") {
@@ -70,6 +92,24 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
         <Link href={`/stays/${slug}/book?${retryParams.toString()}`} className="text-forest-green underline">
           Try again
         </Link>
+      </div>
+    );
+  }
+
+  session = await waitForBookingConfirmation(sessionId, session);
+  const meta = session.metadata ?? {};
+
+  if (!meta.uplistingBookingId) {
+    return shell(
+      <div className="text-center">
+        <h1 className="mb-4 font-serif text-3xl font-extrabold tracking-tight text-near-black">
+          Payment received — finalizing your booking
+        </h1>
+        <p className="mx-auto max-w-[420px] text-near-black/70">
+          Your card was charged and we&apos;re confirming the reservation now. This can take a minute — you&apos;ll
+          get a confirmation email at {session.customer_details?.email ?? "the address you provided"} as soon as
+          it&apos;s done. No need to pay again or refresh.
+        </p>
       </div>
     );
   }

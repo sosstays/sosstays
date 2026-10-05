@@ -5,9 +5,6 @@ import { createUplistingBooking } from "@/lib/uplistingApi";
 
 // Fulfillment step of the embedded-checkout lifecycle: Stripe calls this once
 // payment succeeds, and we turn that into a confirmed Uplisting booking.
-// Note: no idempotency store yet — Stripe can redeliver this event, which
-// would call createUplistingBooking twice for the same session. Fine for a
-// first pass at low volume; revisit before this goes to real bookings.
 export async function POST(request: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!isStripeConfigured || !webhookSecret) {
@@ -59,6 +56,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing booking metadata" }, { status: 400 });
     }
 
+    // Idempotency guard: Stripe can redeliver this event (retries, duplicate
+    // webhook endpoints, etc). Re-fetch the session rather than trusting the
+    // event payload, since metadata written by a previous delivery of this
+    // same event is only visible on the current object, not on the payload
+    // Stripe already sent. uplistingBookingId is written back onto the
+    // session immediately after a successful booking, below.
+    const currentSession = await stripe.checkout.sessions.retrieve(session.id);
+    if (currentSession.metadata?.uplistingBookingId) {
+      console.log(
+        `Checkout Session ${session.id} already has Uplisting booking ${currentSession.metadata.uplistingBookingId}, skipping`
+      );
+      return NextResponse.json({ received: true });
+    }
+
     try {
       const { bookingId } = await createUplistingBooking({
         propertyId: Number(meta.uplistingPropertyId),
@@ -70,6 +81,9 @@ export async function POST(request: NextRequest) {
         guestPhone: meta.guestPhone || undefined,
       });
       console.log(`Created Uplisting booking ${bookingId} for Checkout Session ${session.id}`);
+      await stripe.checkout.sessions.update(session.id, {
+        metadata: { ...meta, uplistingBookingId: bookingId },
+      });
     } catch (error) {
       console.error("Failed to create Uplisting booking after payment", session.id, error);
       // Return 500 so Stripe retries — a paid session must not silently fail to book.
