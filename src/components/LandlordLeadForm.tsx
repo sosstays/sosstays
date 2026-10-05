@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/Button";
+import { trackEvent } from "@/lib/analytics";
 import type { LandlordContact } from "@/lib/landlordHandoff";
 
 const SITUATION_OPTIONS = [
@@ -65,11 +66,9 @@ export function LandlordLeadForm({
         body: JSON.stringify({ name, email, mobile, situation, propertyDescription }),
       });
       if (!res.ok) throw new Error(`Form submission failed: ${res.status}`);
-      // Google Ads "Submit lead form" conversion — fires only once the
-      // lead has actually been accepted, not on a failed submit.
-      (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag?.("event", "conversion", {
-        send_to: "AW-18365302458/AYujCIWinI8dELqNobVE",
-      });
+      // Fires only once the lead has been accepted. GTM listens for this
+      // event and forwards it to GA4 (see trackEvent). No PII in params.
+      trackEvent("landlord_lead_submission", { form_name: "landlord_sos" });
       onSubmitted?.({ name: name.trim(), email: email.trim() });
       setStage("submitted");
     } catch {
