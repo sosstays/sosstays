@@ -86,15 +86,19 @@ export default async function RoomPage({ params, searchParams }: Props) {
       {/* GALLERY */}
       <section className="mx-auto max-w-6xl px-8 pt-6 sm:px-14">
         <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-2 text-sm text-near-black/55">
-          <Link href="/" className="hover:text-near-black">
+          <Link href="/" className="flex-none hover:text-near-black">
             Home
           </Link>
-          <span aria-hidden="true">›</span>
-          <Link href={`/stays/${slug}`} className="hover:text-near-black">
+          <span aria-hidden="true" className="flex-none">
+            ›
+          </span>
+          <Link href={`/stays/${slug}`} className="min-w-0 flex-1 truncate hover:text-near-black">
             {property.name}
           </Link>
-          <span aria-hidden="true">›</span>
-          <span className="font-medium text-near-black">{room.name}</span>
+          <span aria-hidden="true" className="flex-none">
+            ›
+          </span>
+          <span className="min-w-0 flex-1 truncate font-medium text-near-black">{room.name}</span>
         </nav>
         <PropertyGallery images={room.photos} alt={room.name} />
       </section>

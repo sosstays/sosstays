@@ -81,7 +81,7 @@ export default async function RootLayout({
             gtag('config', '${GA_MEASUREMENT_ID}');
           `}
         </Script>
-        <div className="flex flex-1 flex-col">{children}</div>
+        <div className="flex min-w-0 flex-1 flex-col">{children}</div>
         <Footer socialLinks={settings?.socialLinks} content={footer} />
       </body>
     </html>

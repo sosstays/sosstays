@@ -66,12 +66,14 @@ export default async function BookPage({ params, searchParams }: Props) {
       </div>
 
       <section className="mx-auto max-w-6xl px-8 pt-10 pb-20 sm:px-14">
-        <nav aria-label="Breadcrumb" className="mb-8 flex items-center gap-2 text-sm text-near-black/55">
-          <Link href={`/stays/${slug}`} className="hover:text-near-black">
+        <nav aria-label="Breadcrumb" className="mb-8 flex min-w-0 items-center gap-2 text-sm text-near-black/55">
+          <Link href={`/stays/${slug}`} className="min-w-0 truncate hover:text-near-black">
             {property.name}
           </Link>
-          <span aria-hidden="true">›</span>
-          <span className="font-medium text-near-black">Book</span>
+          <span aria-hidden="true" className="flex-none">
+            ›
+          </span>
+          <span className="flex-none font-medium text-near-black">Book</span>
         </nav>
         {children}
       </section>

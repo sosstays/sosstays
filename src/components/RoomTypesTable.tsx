@@ -87,8 +87,8 @@ export async function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTy
 
   return (
     <div className="overflow-hidden rounded-[10px] border border-sage-grey/40">
-      <table className="w-full border-collapse text-left">
-        <thead>
+      <table className="w-full border-collapse text-left md:table">
+        <thead className="hidden md:table-header-group">
           <tr className="bg-forest-green">
             <th className="px-6 py-4 text-sm font-semibold text-cream">Room type</th>
             <th className="w-40 border-l border-cream/15 px-6 py-4 text-sm font-semibold text-cream">
@@ -98,7 +98,7 @@ export async function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTy
             <th className="w-10 border-l border-cream/15 px-3 py-4" aria-hidden="true" />
           </tr>
         </thead>
-        <tbody>
+        <tbody className="block md:table-row-group">
           {roomTypes.map((room, i) => {
             // Sanity's roomTypes[].roomId isn't always filled in (it's an
             // optional PMS-linking field) — only rows with one can lead
@@ -159,11 +159,12 @@ export async function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTy
               <tr
                 key={i}
                 className={[
+                  "block md:table-row",
                   i !== 0 ? "border-t border-sage-grey/40" : "",
                   href ? "cursor-pointer transition-colors hover:bg-light-forest-green/30" : "",
                 ].join(" ")}
               >
-                <td className="px-6 py-5">
+                <td className="block px-6 py-5 md:table-cell">
                   {href ? (
                     <Link href={href} className="contents">
                       {nameCell}
@@ -172,7 +173,8 @@ export async function RoomTypesTable({ slug, roomTypes }: { slug: string; roomTy
                     nameCell
                   )}
                 </td>
-                <td className="border-l border-sage-grey/40 px-6 py-5 text-near-black">
+                <td className="flex items-center gap-2 border-t border-sage-grey/40 px-6 py-4 text-near-black md:table-cell md:border-t-0 md:border-l md:py-5">
+                  <span className="text-sm text-near-black/60 md:hidden">Guests:</span>
                   {href ? (
                     <Link href={href} className="contents">
                       {guestsCell}
