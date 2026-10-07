@@ -60,16 +60,19 @@ export const blogBodyComponents: PortableTextComponents = {
     ),
   },
   types: {
-    image: ({ value }) => (
-      <div className="relative my-11 aspect-[16/9] overflow-hidden rounded-lg">
-        <Image
-          src={urlFor(value).width(1200).height(675).url()}
-          alt={value.alt || ""}
-          fill
-          className="object-cover"
-        />
-      </div>
-    ),
+    image: ({ value }) =>
+      // An image block with no uploaded asset (empty placeholder in Studio)
+      // would make urlFor throw and 500 the whole page.
+      value?.asset ? (
+        <div className="relative my-11 aspect-[16/9] overflow-hidden rounded-lg">
+          <Image
+            src={urlFor(value).width(1200).height(675).url()}
+            alt={value.alt || ""}
+            fill
+            className="object-cover"
+          />
+        </div>
+      ) : null,
   },
   marks: {
     link: ({ children, value }) => (

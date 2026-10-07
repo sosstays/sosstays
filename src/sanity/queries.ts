@@ -538,7 +538,7 @@ export const CORPORATE_ONBOARDED_PROPERTIES_QUERY = defineQuery(`
 // ---- Partners ----
 
 export const PARTNERS_PAGE_QUERY = defineQuery(`
-  *[_type == "partnersPage" && _id == "partnersPage-" + $market][0] {
+  *[_type == "partnersPage" && _id == "partnersPage"][0] {
     heroBadge,
     heroHeading,
     heroSubtext,
