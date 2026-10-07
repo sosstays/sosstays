@@ -6,7 +6,6 @@ import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY, FOOTER_QUERY } from "@/sanity/queries";
 import "./globals.css";
 
-const GA_MEASUREMENT_ID = "G-ZG60S049VC";
 const GTM_ID = "GTM-TLKN98WH";
 
 // Brand fonts per the Sos Stays brand knowledge base:
@@ -69,19 +68,12 @@ export default async function RootLayout({
           />
         </noscript>
         {/* End Google Tag Manager (noscript) */}
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="ga-gtag" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}');
-            gtag('config', 'AW-18365302458');
-          `}
-        </Script>
+        {/* GA4 and Google Ads are configured as Google tags inside the GTM
+            container (GTM-TLKN98WH), not loaded directly here — a second,
+            hardcoded gtag.js install used to run alongside GTM for the same
+            IDs (G-ZG60S049VC / AW-18365302458), which is why GTM reported
+            "No Google tag found in this container" for the GA4 and Ads
+            conversion tags. Keep this as the single source for both. */}
         <div className="flex flex-1 flex-col">{children}</div>
         <Footer socialLinks={settings?.socialLinks} content={footer} />
       </body>
