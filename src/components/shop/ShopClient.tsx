@@ -37,61 +37,59 @@ export function ShopClient({
   vouchersBlurb: string;
   goodsBlurb: string;
 }) {
-  const [world, setWorld] = useState<"voucher" | "goods">("voucher");
+  // Everything is shown on arrival; eVouchers / Real things just narrow it.
+  const [world, setWorld] = useState<"all" | "voucher" | "goods">("all");
   const [query, setQuery] = useState("");
   const [openProduct, setOpenProduct] = useState<ShopProduct | null>(null);
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return products
-      .filter((p) => p.kind === world)
+    const matches = products
+      .filter((p) => world === "all" || p.kind === world)
       .filter((p) => !q || `${p.name} ${p.tagline} ${p.shortDescription}`.toLowerCase().includes(q));
+    // In "All", keep each kind together (vouchers first) rather than
+    // interleaving two differently shaped card styles. Array sort is stable,
+    // so the order within each kind is unchanged.
+    return world === "all"
+      ? [...matches].sort((a, b) => Number(b.kind === "voucher") - Number(a.kind === "voucher"))
+      : matches;
   }, [products, world, query]);
 
-  const isVoucherWorld = world === "voucher";
-
   return (
-    <section
-      className="relative transition-colors duration-500"
-      style={{ background: isVoucherWorld ? "#22301f" : "#e4ebd9" }}
-    >
+    <section className="relative" style={{ background: "#e4ebd9" }}>
       <div
-        className="sticky top-0 z-40 border-b px-8 py-5 backdrop-blur-md transition-colors duration-500 sm:px-14"
-        style={{
-          background: isVoucherWorld ? "rgba(34,48,31,0.93)" : "rgba(228,235,217,0.94)",
-          borderColor: isVoucherWorld ? "rgba(254,254,227,0.22)" : "rgba(74,93,72,0.2)",
-        }}
+        className="sticky top-0 z-40 border-b px-8 py-5 backdrop-blur-md sm:px-14"
+        style={{ background: "rgba(228,235,217,0.94)", borderColor: "rgba(74,93,72,0.2)" }}
       >
         <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-5">
           <div
             className="flex gap-1.5 rounded-full border p-1.5"
-            style={{
-              borderColor: isVoucherWorld ? "rgba(254,254,227,0.22)" : "rgba(74,93,72,0.2)",
-              background: isVoucherWorld ? "rgba(254,254,227,0.08)" : "rgba(254,254,227,0.75)",
-            }}
+            style={{ borderColor: "rgba(74,93,72,0.2)", background: "rgba(254,254,227,0.75)" }}
           >
-            <button
-              type="button"
-              onClick={() => setWorld("voucher")}
-              className="rounded-full px-6 py-3 text-[14.5px] font-semibold transition-colors duration-300"
-              style={{
-                background: isVoucherWorld ? "#acc196" : "transparent",
-                color: isVoucherWorld ? "#22301f" : "rgba(34,48,31,0.72)",
-              }}
-            >
-              eVouchers
-            </button>
-            <button
-              type="button"
-              onClick={() => setWorld("goods")}
-              className="rounded-full px-6 py-3 text-[14.5px] font-semibold transition-colors duration-300"
-              style={{
-                background: isVoucherWorld ? "transparent" : "#4a5d48",
-                color: isVoucherWorld ? "rgba(254,254,227,0.72)" : "#fefee3",
-              }}
-            >
-              Real things
-            </button>
+            {(
+              [
+                { key: "all", label: "All" },
+                { key: "voucher", label: "eVouchers" },
+                { key: "goods", label: "Real things" },
+              ] as const
+            ).map(({ key, label }) => {
+              const active = world === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setWorld(key)}
+                  aria-pressed={active}
+                  className="rounded-full px-6 py-3 text-[14.5px] font-semibold transition-colors duration-300"
+                  style={{
+                    background: active ? "#4a5d48" : "transparent",
+                    color: active ? "#fefee3" : "rgba(34,48,31,0.72)",
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
 
           <div className="relative max-w-[420px] flex-1" style={{ minWidth: "260px" }}>
@@ -112,7 +110,7 @@ export function ShopClient({
 
           <span
             className="text-[13px] font-semibold tracking-widest uppercase"
-            style={{ color: isVoucherWorld ? "rgba(254,254,227,0.68)" : "rgba(34,48,31,0.68)" }}
+            style={{ color: "rgba(34,48,31,0.68)" }}
           >
             {list.length} {list.length === 1 ? "item" : "items"}
           </span>
@@ -122,29 +120,29 @@ export function ShopClient({
       <div className="mx-auto max-w-[1200px] px-8 pt-10 pb-28 sm:px-14">
         <p
           className="mb-8 max-w-[56ch] text-[16.5px] leading-relaxed"
-          style={{ color: isVoucherWorld ? "rgba(254,254,227,0.68)" : "rgba(34,48,31,0.68)" }}
+          style={{ color: "rgba(34,48,31,0.68)" }}
         >
-          {isVoucherWorld ? vouchersBlurb : goodsBlurb}
+          {world === "voucher" ? vouchersBlurb : world === "goods" ? goodsBlurb : `${vouchersBlurb} ${goodsBlurb}`}
         </p>
 
         {list.length === 0 ? (
           <p
             className="my-10 text-[17px]"
-            style={{ color: isVoucherWorld ? "rgba(254,254,227,0.68)" : "rgba(34,48,31,0.68)" }}
+            style={{ color: "rgba(34,48,31,0.68)" }}
           >
             Nothing matches that search — try a different word, or switch shelf.
           </p>
-        ) : isVoucherWorld ? (
-          <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {list.map((p) => (
-              <VoucherCard key={p._id} product={p} onOpen={() => setOpenProduct(p)} />
-            ))}
-          </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {list.map((p) => (
-              <GoodsCard key={p._id} product={p} onOpen={() => setOpenProduct(p)} />
-            ))}
+          <div
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {list.map((p) =>
+              p.kind === "voucher" ? (
+                <VoucherCard key={p._id} product={p} onOpen={() => setOpenProduct(p)} />
+              ) : (
+                <GoodsCard key={p._id} product={p} onOpen={() => setOpenProduct(p)} />
+              )
+            )}
           </div>
         )}
       </div>
@@ -166,8 +164,23 @@ function VoucherCard({ product, onOpen }: { product: ShopProduct; onOpen: () => 
           onOpen();
         }
       }}
-      className="group flex cursor-pointer overflow-hidden rounded-2xl bg-cream text-left shadow-[0_6px_20px_rgba(0,0,0,0.14)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_48px_rgba(0,0,0,0.24)]"
+      className="group relative flex cursor-pointer overflow-hidden rounded-2xl bg-cream text-left shadow-[0_6px_20px_rgba(0,0,0,0.14)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_48px_rgba(0,0,0,0.24)]"
     >
+      {/* Ticket-stub notches: circles centred on the card's top and bottom
+          edge, right where the stub's dashed divider sits (stub is 84px
+          wide). The card clips them to half-circles, and they're filled
+          with the shop's page background so they read as bites cut out of
+          the ticket. Keep the colour in sync with the section background. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute top-0 right-[84px] z-10 h-5.5 w-5.5 translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{ background: "#e4ebd9" }}
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute right-[84px] bottom-0 z-10 h-5.5 w-5.5 translate-x-1/2 translate-y-1/2 rounded-full"
+        style={{ background: "#e4ebd9" }}
+      />
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="relative h-[170px] overflow-hidden bg-pale-sage">
           {product.image && (
@@ -181,9 +194,6 @@ function VoucherCard({ product, onOpen }: { product: ShopProduct; onOpen: () => 
           <h3 className="font-serif text-[22px] leading-tight font-bold text-deep-forest">{product.name}</h3>
           <p className="mt-1.5 text-[14px] font-medium text-near-black/55">{product.tagline}</p>
           <p className="mt-3 flex-1 text-[14.5px] leading-relaxed text-near-black/72">{product.shortDescription}</p>
-          <span className="mt-4 inline-flex items-center gap-2 text-[14px] font-semibold text-forest-green">
-            Details and quantity
-          </span>
         </div>
       </div>
       <div className="flex w-[84px] flex-none flex-col items-center justify-center gap-2.5 border-l-2 border-dashed border-forest-green/30 bg-forest-green">
@@ -211,7 +221,7 @@ function GoodsCard({ product, onOpen }: { product: ShopProduct; onOpen: () => vo
           onOpen();
         }
       }}
-      className="group flex cursor-pointer flex-col overflow-hidden rounded-[18px] border border-forest-green/18 bg-cream text-left shadow-[0_2px_10px_rgba(34,48,31,0.05)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_48px_rgba(34,48,31,0.18)]"
+      className="group flex cursor-pointer flex-col overflow-hidden rounded-[18px] bg-cream text-left shadow-[0_2px_10px_rgba(34,48,31,0.05)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_48px_rgba(34,48,31,0.18)]"
     >
       <div className="relative h-[210px] overflow-hidden bg-pale-sage">
         {product.image && (
@@ -233,9 +243,6 @@ function GoodsCard({ product, onOpen }: { product: ShopProduct; onOpen: () => vo
         </div>
         <p className="mt-1.5 text-[14px] font-medium text-near-black/55">{product.tagline}</p>
         <p className="mt-3 flex-1 text-[14.5px] leading-relaxed text-near-black/72">{product.shortDescription}</p>
-        <span className="mt-4 inline-flex items-center gap-2 text-[14px] font-semibold text-forest-green">
-          Details and quantity
-        </span>
       </div>
     </article>
   );
@@ -332,7 +339,7 @@ function ProductModal({ product, onClose }: { product: ShopProduct; onClose: () 
             size="custom"
             className="mt-6 self-start px-8 py-3 text-[15px] font-semibold"
           >
-            {`Buy now — ${money(product.price * qty)}`}
+            Buy now
           </Button>
         </div>
       </div>
