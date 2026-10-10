@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Script from "next/script";
 import { client } from "@/sanity/client";
-import { HERO_SECTION_QUERY, HOMEPAGE_QUERY, HOSTS_MODULE_QUERY, PROMO_GRID_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { HERO_SECTION_QUERY, HOMEPAGE_BLOG_QUERY, HOMEPAGE_QUERY, HOSTS_MODULE_QUERY, PROMO_GRID_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
@@ -11,6 +11,7 @@ import { PropertyCard, type PropertyCardProps } from "@/components/PropertyCard"
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 import { PromoGrid } from "@/components/PromoGrid";
+import { HomeBlogGrid } from "@/components/HomeBlogGrid";
 import { HostsModule } from "@/components/HostsModule";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -24,12 +25,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [hero, { properties, areas }, siteSettings, hostsModule, promoGrid, homeNavLinks] = await Promise.all([
+  const [hero, { properties, areas }, siteSettings, hostsModule, promoGrid, homeBlog, homeNavLinks] = await Promise.all([
     client.fetch(HERO_SECTION_QUERY),
     client.fetch(HOMEPAGE_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(HOSTS_MODULE_QUERY),
     client.fetch(PROMO_GRID_QUERY),
+    client.fetch(HOMEPAGE_BLOG_QUERY),
     getGuestNavLinks(),
   ]);
   const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
@@ -186,6 +188,9 @@ export default async function HomePage() {
         </Reveal>
       </section>
       <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
+
+      {/* BLOG — featured post + two most recent */}
+      <HomeBlogGrid data={homeBlog} />
 
       {/* LANDLORD CTA — maroon per the owner-context accent color */}
       <section id="landlords" className="bg-maroon px-8 py-28 text-center sm:px-14">

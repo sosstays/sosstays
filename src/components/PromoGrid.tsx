@@ -11,6 +11,10 @@ export type Promo = {
   subtitle?: string | null;
   link?: string | null;
   image?: PromoImage | null;
+  /** Small pill above the title (e.g. "Featured"). */
+  badge?: string | null;
+  /** Hover-reveal call to action at the bottom of the tile (e.g. "Read the post"). */
+  cta?: string | null;
 };
 
 export type PromoGridData = {
@@ -32,11 +36,22 @@ const SLOT_CLASS = [
   "lg:col-start-2 lg:row-start-3",
 ];
 
-type Shape = "large" | "tall" | "standard";
+export type PromoShape = "large" | "tall" | "standard";
 
-function PromoTile({ promo, shape }: { promo: Promo; shape: Shape }) {
+// `dense` is for tiles fed by long, user-written copy (blog titles and
+// excerpts): a heavier scrim and tighter type keep the text readable over
+// busy photos and inside the fixed-height grid rows.
+export function PromoTile({
+  promo,
+  shape,
+  dense = false,
+}: {
+  promo: Promo;
+  shape: PromoShape;
+  dense?: boolean;
+}) {
   const large = shape === "large";
-  const { title, subtitle, link, image } = promo;
+  const { title, subtitle, link, image, badge, cta } = promo;
   const isLink = Boolean(link);
 
   const content = (
@@ -51,21 +66,46 @@ function PromoTile({ promo, shape }: { promo: Promo; shape: Shape }) {
         />
       )}
       {/* scrim keeps the text legible on any photo */}
-      <div className="absolute inset-0 bg-gradient-to-b from-near-black/70 via-near-black/20 to-transparent" />
-      <div className="relative z-10 flex flex-col gap-1.5 p-5 sm:p-6">
+      <div
+        className={`absolute inset-0 bg-gradient-to-b ${
+          dense ? "from-near-black/85 via-near-black/50 to-near-black/10" : "from-near-black/70 via-near-black/20 to-transparent"
+        }`}
+      />
+      <div className="relative z-10 flex flex-col items-start gap-1.5 p-5 sm:p-6">
+        {badge && (
+          <span className="mb-1 rounded-full bg-cream/20 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-cream uppercase backdrop-blur-sm">
+            {badge}
+          </span>
+        )}
         {title && (
           <h3
             className={`font-serif leading-tight font-semibold text-cream ${
-              large ? "text-3xl sm:text-5xl" : "text-xl sm:text-2xl"
+              large ? (dense ? "text-3xl sm:text-4xl" : "text-3xl sm:text-5xl") : dense ? "line-clamp-3 text-lg sm:text-xl" : "text-xl sm:text-2xl"
             }`}
           >
             {title}
           </h3>
         )}
         {subtitle && (
-          <p className={`text-cream/90 ${large ? "text-base sm:text-lg" : "text-sm"}`}>{subtitle}</p>
+          <p className={`text-cream/90 ${large ? (dense ? "line-clamp-2 text-base" : "line-clamp-3 text-base sm:text-lg") : dense ? "hidden sm:line-clamp-1 text-sm" : "line-clamp-2 text-sm"}`}>
+            {subtitle}
+          </p>
         )}
       </div>
+      {cta && isLink && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-near-black/70 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+        />
+      )}
+      {cta && isLink && (
+        <span className="absolute bottom-5 left-5 z-10 flex translate-y-2 items-center gap-1.5 text-sm font-semibold text-cream opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 sm:left-6">
+          {cta}
+          <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
+            →
+          </span>
+        </span>
+      )}
     </>
   );
 

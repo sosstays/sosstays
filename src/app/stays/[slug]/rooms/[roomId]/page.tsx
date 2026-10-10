@@ -15,6 +15,8 @@ import { AreaGuideCard } from "@/components/AreaGuideCard";
 import { PropertyOverview } from "@/components/PropertyOverview";
 import { RoomBookingBar } from "@/components/RoomBookingBar";
 import { Eyebrow } from "@/components/Eyebrow";
+import { AddOnsSection } from "@/components/AddOnsSection";
+import type { CheckoutAddOn } from "@/components/checkout/AddOnSelector";
 import type { Metadata } from "next";
 
 // Live Uplisting data (photos, description, room counts) — not worth
@@ -79,6 +81,7 @@ export default async function RoomPage({ params, searchParams }: Props) {
     { name: property.name, url: `${SITE_URL}/stays/${slug}` },
     { name: room.name, url: `${SITE_URL}/stays/${slug}/rooms/${roomId}` },
   ]);
+  const addOns: CheckoutAddOn[] = property.addOns ?? [];
   const faqSchema = buildFaqSchema(property.faqs);
   const mapEmbedSrc = await toGoogleMapsEmbedSrc(property.locationLink, `${property.location}, Ireland`);
 
@@ -160,6 +163,9 @@ export default async function RoomPage({ params, searchParams }: Props) {
           )}
         </div>
       </section>
+
+      {/* ADD-ONS — details only; they're chosen and paid for at checkout */}
+      <AddOnsSection addOns={addOns} propertyName={property.name} />
 
       {/* AREAS */}
       <section id="areas" className="mx-auto max-w-6xl px-8 py-14 sm:px-14">
