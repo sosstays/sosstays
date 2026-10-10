@@ -152,6 +152,16 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     uplistingPropertyId,
     wholeHouseAvailabilityId,
     faqs,
+    "addOns": *[
+      _type == "shopProduct" && enabled != false && offerAsAddOn == true &&
+      (count(addOnProperties) == 0 || !defined(addOnProperties) || ^._id in addOnProperties[]._ref)
+    ] | order(name asc) {
+      _id,
+      name,
+      "description": shortDescription,
+      price,
+      image
+    },
     relatedAreaGuides[]-> {
       _id,
       areaName,

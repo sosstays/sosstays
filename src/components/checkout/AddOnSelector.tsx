@@ -13,38 +13,46 @@ export type CheckoutAddOn = {
 // Toggleable extras shown between the guest-details fields and the pay
 // button on /stays/[slug]/book — e.g. a Funtasia day-pass package. Purely
 // controlled: BookingCheckout owns the selection so it can total the price
-// into what actually gets charged.
+// into what actually gets charged. With `readOnly` (property pages) it just
+// lists the extras — no checkboxes, nothing to select or buy.
 export function AddOnSelector({
   addOns,
-  selectedIds,
+  selectedIds = [],
   onToggle,
   currency,
+  readOnly = false,
+  label = "Add to your stay",
 }: {
   addOns: CheckoutAddOn[];
-  selectedIds: string[];
-  onToggle: (id: string) => void;
+  selectedIds?: string[];
+  onToggle?: (id: string) => void;
   currency: string;
+  readOnly?: boolean;
+  label?: string | null;
 }) {
   if (addOns.length === 0) return null;
 
   return (
     <div className="flex flex-col gap-3">
-      <span className="text-sm text-near-black">Add to your stay</span>
+      {label && <span className="text-sm text-near-black">{label}</span>}
       {addOns.map((addOn) => {
-        const checked = selectedIds.includes(addOn._id);
+        const checked = !readOnly && selectedIds.includes(addOn._id);
+        const Row = readOnly ? "div" : "label";
         return (
-          <label
+          <Row
             key={addOn._id}
-            className={`flex cursor-pointer items-start gap-3 rounded-[10px] border p-3.5 transition-colors ${
-              checked ? "border-forest-green bg-light-forest-green/30" : "border-sage-grey/50"
-            }`}
+            className={`flex items-start gap-3 rounded-[10px] border p-3.5 transition-colors ${
+              readOnly ? "" : "cursor-pointer"
+            } ${checked ? "border-forest-green bg-light-forest-green/30" : "border-sage-grey/50"}`}
           >
-            <input
-              type="checkbox"
-              checked={checked}
-              onChange={() => onToggle(addOn._id)}
-              className="mt-1 h-4 w-4 accent-forest-green"
-            />
+            {!readOnly && (
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={() => onToggle?.(addOn._id)}
+                className="mt-1 h-4 w-4 accent-forest-green"
+              />
+            )}
             {addOn.image && (
               <div className="relative h-14 w-14 flex-none overflow-hidden rounded-[6px]">
                 <Image
@@ -66,7 +74,7 @@ export function AddOnSelector({
                 <p className="mt-0.5 text-[13px] text-near-black/60">{addOn.description}</p>
               )}
             </div>
-          </label>
+          </Row>
         );
       })}
     </div>
