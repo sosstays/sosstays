@@ -153,7 +153,7 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     wholeHouseAvailabilityId,
     faqs,
     "addOns": *[
-      _type == "shopProduct" && enabled != false && offerAsAddOn == true &&
+      _type == "shopProduct" && offerAsAddOn == true &&
       (count(addOnProperties) == 0 || !defined(addOnProperties) || ^._id in addOnProperties[]._ref)
     ] | order(name asc) {
       _id,
@@ -185,7 +185,7 @@ export const PROPERTY_BOOKING_QUERY = defineQuery(`
     "coverImage": gallery[0],
     uplistingPropertyId,
     "addOns": *[
-      _type == "shopProduct" && enabled != false && offerAsAddOn == true &&
+      _type == "shopProduct" && offerAsAddOn == true &&
       (count(addOnProperties) == 0 || !defined(addOnProperties) || ^._id in addOnProperties[]._ref)
     ] | order(name asc) {
       _id,
