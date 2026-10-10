@@ -878,3 +878,17 @@ export const SHOP_DELIVERY_PROPERTIES_QUERY = defineQuery(`
     "slug": slug.current
   }
 `);
+
+export const PROMO_GRID_QUERY = defineQuery(`
+  *[_type == "promoGrid" && _id == "promoGrid-" + $market][0] {
+    heading,
+    note,
+    promos[] {
+      _key,
+      title,
+      subtitle,
+      link,
+      image
+    }
+  }
+`);
