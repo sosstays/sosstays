@@ -29,9 +29,8 @@ import { withApproxPrices } from "@/lib/uplisting/approxPrice";
 import { findMinStayShortfall } from "@/lib/uplisting/minStayShortfall";
 import { BookNowCta, PropertyOverview } from "@/components/PropertyOverview";
 import { Eyebrow } from "@/components/Eyebrow";
-import { MARKET } from "@/lib/market";
 import type { CheckoutAddOn } from "@/components/checkout/AddOnSelector";
-import { AddOnsPreview } from "@/components/AddOnsPreview";
+import { AddOnsSection } from "@/components/AddOnsSection";
 import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: re-fetch at most once a minute
@@ -505,17 +504,7 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
       )}
 
       {/* ADD-ONS — details only; they're chosen and paid for at checkout */}
-      {addOns.length > 0 && (
-        <section id="add-ons" className="mx-auto max-w-6xl scroll-mt-24 px-8 pb-14 sm:px-14">
-          <h2 className="mb-2 font-serif text-2xl font-bold tracking-tight text-forest-green">
-            Add to your stay
-          </h2>
-          <p className="mb-5 text-[15px] text-near-black/60">
-            Optional extras you can add when you book {property.name}.
-          </p>
-          <AddOnsPreview addOns={addOns} currency={MARKET === "in" ? "INR" : "EUR"} />
-        </section>
-      )}
+      <AddOnsSection addOns={addOns} propertyName={property.name} />
 
       {/* AREAS */}
       <section id="areas" className="mx-auto max-w-6xl px-8 py-14 sm:px-14">

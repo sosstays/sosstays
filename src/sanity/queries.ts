@@ -29,6 +29,17 @@ export const BLOG_POSTS_QUERY = defineQuery(`
   }
 `);
 
+// Homepage blog grid: the newest featured post for the big tile, plus the
+// newest few posts overall (the page drops the featured one and keeps two).
+export const HOMEPAGE_BLOG_QUERY = defineQuery(`{
+  "featured": *[_type == "blogPost" && market == $market && defined(slug.current) && featured == true && defined(coverImage)] | order(publishedAt desc) [0] {
+    _id, title, "slug": slug.current, excerpt, coverImage
+  },
+  "recent": *[_type == "blogPost" && market == $market && defined(slug.current) && defined(coverImage)] | order(publishedAt desc) [0...3] {
+    _id, title, "slug": slug.current, excerpt, coverImage
+  }
+}`);
+
 // 3 most recent posts tagged "landlord" — used by the landlord-facing
 // "worth a read while you wait" section, not the general blog index.
 export const LANDLORD_BLOG_POSTS_QUERY = defineQuery(`
