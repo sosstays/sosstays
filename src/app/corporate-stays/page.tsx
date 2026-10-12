@@ -366,7 +366,10 @@ export default async function CorporateStaysPage() {
       <section id="coverage" className="bg-maroon px-8 py-24 text-cream sm:px-14 sm:py-28">
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal className="overflow-hidden rounded-[18px] border border-cream/15">
-            <CoverageMap className="block h-auto w-full" />
+            <CoverageMap
+              className="block h-auto w-full"
+              liveCounties={coverageAreas.filter((area) => area.live).map((area) => area.county)}
+            />
           </Reveal>
 
           <div>

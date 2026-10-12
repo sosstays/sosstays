@@ -439,7 +439,7 @@ export default async function LandingPage({ params }: Props) {
           {property.roomTypes && property.roomTypes.length > 0 && (
             <div className="mt-16">
               <Reveal as="h3" className="mb-5.5 font-serif text-2xl font-bold text-deep-forest">
-                The rooms — and which one the kids want
+                {page.roomsHeading || "The rooms"}
               </Reveal>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                 {property.roomTypes.map((room, i) => (
@@ -448,7 +448,7 @@ export default async function LandingPage({ params }: Props) {
                       name={room.name}
                       shortDescription={`${room.bedConfiguration}${room.guests ? ` — sleeps ${room.guests}.` : "."}`}
                       coverImage={room.image}
-                      tag={i === 0 ? "The kids' pick" : undefined}
+                      tag={room.badge || undefined}
                       surface="framed"
                       hideSleeps
                     />

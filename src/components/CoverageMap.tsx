@@ -50,6 +50,7 @@ export function CoverageMap({
   path = IRELAND_PATH,
   viewBox = IRELAND_VIEWBOX,
   showContext = true,
+  liveCounties,
 }: {
   className?: string;
   /** Custom outline path data, in the coordinate space of `viewBox`. Defaults to a real Ireland coastline. */
@@ -58,13 +59,23 @@ export function CoverageMap({
   viewBox?: string;
   /** Show the faint Great Britain silhouette behind/beside the main outline. Defaults to true; set false when passing a custom `path`. */
   showContext?: boolean;
+  /** Names of the counties that are live (matched case-insensitively against the markers). When omitted, the defaults in COUNTIES apply. */
+  liveCounties?: string[];
 }) {
+  const liveSet = liveCounties ? new Set(liveCounties.map((name) => name.trim().toLowerCase())) : null;
+  const counties = COUNTIES.map((c) => (liveSet ? { ...c, live: liveSet.has(c.name.toLowerCase()) } : c));
+  const liveNames = counties.filter((c) => c.live).map((c) => c.name);
+  const expandingNames = counties.filter((c) => !c.live).map((c) => c.name);
+  const label = `Sos Stays coverage across Ireland: ${
+    liveNames.length ? `live in ${liveNames.join(", ")}` : "no counties live yet"
+  }${expandingNames.length ? `, expanding into ${expandingNames.join(", ")}` : ""}`;
+
   return (
     <svg
       viewBox={viewBox}
       className={className}
       role="img"
-      aria-label="Sos Stays coverage across Ireland: live in Louth, expanding into Clare, Wexford and Wicklow"
+      aria-label={label}
     >
       {showContext && (
         <path d={GB_CONTEXT_PATH} fill="rgba(172,193,150,.08)" stroke="rgba(172,193,150,.25)" strokeWidth="1" strokeLinejoin="round" />
@@ -86,7 +97,7 @@ export function CoverageMap({
         </text>
       </g>
 
-      {COUNTIES.map((c) => (
+      {counties.map((c) => (
         <g key={c.name}>
           {c.live ? (
             <>
