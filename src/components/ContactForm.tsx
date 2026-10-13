@@ -12,9 +12,16 @@ const TOPIC_OPTIONS = ["Media query", "About a booking", "Hiring", "Partnership"
 // "forgot the domain" typos without rejecting real addresses.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Lenient on formatting (spaces, dashes, brackets, +353 prefix) but needs at
+// least 7 digits so "abc" or "12" don't get through as a phone number.
+function isValidPhone(value: string) {
+  return /^[+\d][\d\s()./-]*$/.test(value) && value.replace(/\D/g, "").length >= 7;
+}
+
 export function ContactForm({ contactEmail }: { contactEmail?: string | null }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [topic, setTopic] = useState("");
   const [property, setProperty] = useState("");
   const [message, setMessage] = useState("");
@@ -28,7 +35,7 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
   function openMailtoFallback() {
     const subject = `${topic} — message from ${name.trim()}`;
     const propertyLine = property.trim() ? `Property: ${property.trim()}\n` : "";
-    const body = `${propertyLine}${message.trim()}\n\n— ${name.trim()} (${email.trim()})`;
+    const body = `${propertyLine}${message.trim()}\n\n— ${name.trim()} (${email.trim()}, ${phone.trim()})`;
     const mailtoHref = `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoHref;
   }
@@ -41,6 +48,10 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
     }
     if (!email.trim() || !EMAIL_PATTERN.test(email.trim())) {
       setError("Enter a valid email address.");
+      return;
+    }
+    if (!phone.trim() || !isValidPhone(phone.trim())) {
+      setError("Enter a valid phone number.");
       return;
     }
     if (!topic) {
@@ -60,6 +71,7 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
+          phone: phone.trim(),
           topic,
           property: property.trim(),
           message: message.trim(),
@@ -103,6 +115,20 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
+          className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1.5">
+        <span className="text-sm text-near-black">
+          Phone number <span className="text-error-red">*</span>
+        </span>
+        <input
+          type="tel"
+          autoComplete="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="e.g. 087 123 4567"
           className="border-b border-sage-grey/60 bg-transparent pb-1.5 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
         />
       </label>
