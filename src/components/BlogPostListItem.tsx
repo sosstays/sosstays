@@ -21,7 +21,7 @@ export type BlogPostListItemPost = {
 export function BlogPostListItem({ post }: { post: BlogPostListItemPost }) {
   return (
     <Link href={`/blog/${post.slug}`} className="group flex gap-3">
-      {post.coverImage ? (
+      {post.coverImage?.asset ? (
         <div className="relative h-16 w-16 flex-none overflow-hidden rounded-lg">
           <Image
             src={urlFor(post.coverImage).width(128).height(128).url()}

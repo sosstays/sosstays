@@ -32,7 +32,7 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
       href={`/blog/${post.slug}`}
       className="flex h-full flex-col overflow-hidden rounded-[10px] border border-sage-grey/40 bg-cream"
     >
-      {post.coverImage ? (
+      {post.coverImage?.asset ? (
         <div className="relative h-40">
           <Image
             src={urlFor(post.coverImage).width(500).height(320).url()}
@@ -61,7 +61,7 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
         )}
 
         <div className="mt-auto flex items-center gap-2.5">
-          {post.author?.avatar ? (
+          {post.author?.avatar?.asset ? (
             <div className="relative h-7 w-7 flex-none overflow-hidden rounded-full">
               <Image
                 src={urlFor(post.author.avatar).width(56).height(56).url()}
