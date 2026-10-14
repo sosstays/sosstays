@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Playfair_Display, Poppins } from "next/font/google";
 import Script from "next/script";
 import { Footer } from "@/components/Footer";
+import { CountryProvider, type Country } from "@/components/CountrySwitcher";
+import { MARKET } from "@/lib/market";
 import { client } from "@/sanity/client";
-import { SITE_SETTINGS_QUERY, FOOTER_QUERY } from "@/sanity/queries";
+import { SITE_SETTINGS_QUERY, FOOTER_QUERY, COUNTRY_SWITCHER_QUERY } from "@/sanity/queries";
 import "./globals.css";
 
 const GTM_ID = "GTM-TLKN98WH";
@@ -36,10 +38,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [settings, footer] = await Promise.all([
+  const [settings, footer, countrySwitcher] = await Promise.all([
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(FOOTER_QUERY),
+    client.fetch(COUNTRY_SWITCHER_QUERY),
   ]);
+  const countries = ((countrySwitcher?.countries ?? []) as Partial<Country>[]).filter(
+    (c): c is Country => Boolean(c.label && c.code && c.market && c.url)
+  );
 
   return (
     <html
@@ -74,7 +80,9 @@ export default async function RootLayout({
             IDs (G-ZG60S049VC / AW-18365302458), which is why GTM reported
             "No Google tag found in this container" for the GA4 and Ads
             conversion tags. Keep this as the single source for both. */}
-        <div className="flex flex-1 flex-col">{children}</div>
+        <CountryProvider countries={countries} currentMarket={MARKET}>
+          <div className="flex flex-1 flex-col">{children}</div>
+        </CountryProvider>
         <Footer socialLinks={settings?.socialLinks} content={footer} />
       </body>
     </html>
