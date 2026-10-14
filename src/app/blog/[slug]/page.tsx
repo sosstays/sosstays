@@ -85,7 +85,7 @@ export default async function BlogPostPage({ params }: Props) {
           </Reveal>
           <div className="mt-6 flex flex-wrap items-center gap-4 text-[13px] text-near-black/60">
             <div className="flex items-center gap-2.5">
-              {post.author?.avatar ? (
+              {post.author?.avatar?.asset ? (
                 <div className="relative h-8 w-8 flex-none overflow-hidden rounded-full">
                   <Image
                     src={urlFor(post.author.avatar).width(64).height(64).url()}
@@ -133,7 +133,7 @@ export default async function BlogPostPage({ params }: Props) {
 
             {/* AUTHOR BYLINE */}
             <div className="mt-14 flex items-center gap-3.5 border-t border-sage-grey/30 pt-7">
-              {post.author?.avatar ? (
+              {post.author?.avatar?.asset ? (
                 <div className="relative h-12 w-12 flex-none overflow-hidden rounded-full">
                   <Image
                     src={urlFor(post.author.avatar).width(96).height(96).url()}
