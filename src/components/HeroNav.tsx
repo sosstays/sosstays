@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
+import { CountrySwitcher } from "@/components/CountrySwitcher";
 import type { NavLink } from "@/lib/navLinks";
 
 // Next.js's <Link> only scrolls on navigation when the resulting URL
@@ -88,6 +89,7 @@ export function HeroNav({
               </Link>
             ))}
           </div>
+          <CountrySwitcher colorClass={linkColorClass} />
           {ctaHref && ctaLabel && (
             <Button
               link={ctaHref}
@@ -133,6 +135,7 @@ export function HeroNav({
               {link.label}
             </Link>
           ))}
+          <CountrySwitcher colorClass={linkColorClass} panel />
         </div>
       )}
     </nav>

@@ -348,6 +348,19 @@ export const NAVIGATION_QUERY = defineQuery(`
   }
 `);
 
+// ---- Country switcher (shared singleton) ----
+
+export const COUNTRY_SWITCHER_QUERY = defineQuery(`
+  *[_type == "countrySwitcher" && _id == "countrySwitcher"][0] {
+    countries[] {
+      label,
+      code,
+      market,
+      url
+    }
+  }
+`);
+
 // ---- Privacy policy (singleton) ----
 
 export const PRIVACY_POLICY_QUERY = defineQuery(`
