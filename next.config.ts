@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
+// Kill switch for keeping a whole deployment out of search (see
+// SITE_NOINDEX in src/lib/market.ts) — belt and braces with the meta tag.
+const noIndexHeaders =
+  process.env.SITE_NOINDEX?.trim().toLowerCase() === "true"
+    ? [{ source: "/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] }]
+    : [];
+
 const nextConfig: NextConfig = {
+  async headers() {
+    return noIndexHeaders;
+  },
   async redirects() {
     return [
       // Funtasia's real page is the SEO landing page at /hotels-near-funtasia

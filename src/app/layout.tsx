@@ -3,7 +3,8 @@ import { Playfair_Display, Poppins } from "next/font/google";
 import Script from "next/script";
 import { Footer } from "@/components/Footer";
 import { CountryProvider, type Country } from "@/components/CountrySwitcher";
-import { MARKET } from "@/lib/market";
+import { MARKET, LOCALE, DEFAULT_SEO } from "@/lib/market";
+import { filterLinksForMarket } from "@/lib/marketLinks";
 import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY, FOOTER_QUERY, COUNTRY_SWITCHER_QUERY } from "@/sanity/queries";
 import "./globals.css";
@@ -28,9 +29,8 @@ const poppins = Poppins({
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Sos Stays | Holiday Homes to Book & Properties to Manage in Louth, Meath & the Mournes",
-  description:
-    "Book direct holiday homes across the Boyne Valley, Louth, and the Mournes — no Airbnb fees. Own a property? We manage it for you and grow your income. Send your SOS.",
+  title: DEFAULT_SEO.title,
+  description: DEFAULT_SEO.description,
 };
 
 export default async function RootLayout({
@@ -47,9 +47,22 @@ export default async function RootLayout({
     (c): c is Country => Boolean(c.label && c.code && c.market && c.url)
   );
 
+  // Market-filter the footer's links (and drop columns left empty by that).
+  const footerColumns = footer?.columns
+    ? (
+        await Promise.all(
+          footer.columns.map(async (column) => ({
+            ...column,
+            links: column.links ? await filterLinksForMarket(column.links) : [],
+          }))
+        )
+      ).filter((column) => column.links.length > 0)
+    : null;
+  const footerContent = footer ? { ...footer, columns: footerColumns } : footer;
+
   return (
     <html
-      lang="en-IE"
+      lang={LOCALE.html}
       className={`${playfair.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#FAFAF8] font-sans text-[#1C1C1C]">
@@ -83,7 +96,7 @@ export default async function RootLayout({
         <CountryProvider countries={countries} currentMarket={MARKET}>
           <div className="flex flex-1 flex-col">{children}</div>
         </CountryProvider>
-        <Footer socialLinks={settings?.socialLinks} content={footer} />
+        <Footer socialLinks={settings?.socialLinks} content={footerContent} />
       </body>
     </html>
   );

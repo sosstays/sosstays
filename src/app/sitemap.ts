@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 import { client } from "@/sanity/client";
 import { SITEMAP_QUERY, SITEMAP_SINGLETONS_QUERY } from "@/sanity/queries";
-
-const SITE_URL = "https://sosstays.com";
+import { MARKET, SITE_URL, SITE_NOINDEX, isIndexable } from "@/lib/market";
 
 // Priority/frequency for routes that aren't in the CMS-backed singleton
 // query below (no per-page _updatedAt to key off of).
@@ -26,13 +25,15 @@ const SINGLETON_META: Record<string, { changeFrequency: MetadataRoute.Sitemap[nu
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  if (SITE_NOINDEX) return [];
+
   const [entries, singletons] = await Promise.all([
     client.fetch(SITEMAP_QUERY),
     client.fetch(SITEMAP_SINGLETONS_QUERY),
   ]);
 
   const singletonRoutes: MetadataRoute.Sitemap = singletons
-    .filter((entry: any) => entry.href && !entry.noIndex)
+    .filter((entry: any) => entry.href && isIndexable(entry.noIndex))
     .map((entry: any) => ({
       url: `${SITE_URL}${entry.href}`,
       lastModified: entry._updatedAt,
@@ -46,5 +47,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...STATIC_ROUTES, ...singletonRoutes, ...dynamicRoutes];
+  // The static route list is Ireland's; India only lists real, indexable docs.
+  return [...(MARKET === "ie" ? STATIC_ROUTES : []), ...singletonRoutes, ...dynamicRoutes];
 }

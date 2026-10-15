@@ -1,5 +1,6 @@
 import { client } from "@/sanity/client";
 import { NAVIGATION_QUERY } from "@/sanity/queries";
+import { filterLinksForMarket } from "@/lib/marketLinks";
 
 export type NavLink = { href: string; label: string };
 
@@ -40,7 +41,9 @@ function prefixBareHashLinks(links: NavLink[], homePath: string): NavLink[] {
 // For the homepage itself, where bare hashes resolve on-page.
 export async function getGuestNavLinks(): Promise<NavLink[]> {
   const navigation = await client.fetch(NAVIGATION_QUERY);
-  return navigation?.guestNavLinks?.length ? navigation.guestNavLinks : DEFAULT_GUEST_NAV_LINKS;
+  return filterLinksForMarket(
+    navigation?.guestNavLinks?.length ? navigation.guestNavLinks : DEFAULT_GUEST_NAV_LINKS
+  );
 }
 
 // For every other guest-facing page, where bare hashes need "/" prefixed.
@@ -51,9 +54,9 @@ export async function getGuestSiteNavLinks(): Promise<NavLink[]> {
 // For /landlords itself, where bare hashes resolve on-page.
 export async function getLandlordNavLinks(): Promise<NavLink[]> {
   const navigation = await client.fetch(NAVIGATION_QUERY);
-  return navigation?.landlordNavLinks?.length
-    ? navigation.landlordNavLinks
-    : DEFAULT_LANDLORD_NAV_LINKS;
+  return filterLinksForMarket(
+    navigation?.landlordNavLinks?.length ? navigation.landlordNavLinks : DEFAULT_LANDLORD_NAV_LINKS
+  );
 }
 
 // For other landlord-facing pages (e.g. /pricing), where bare hashes need

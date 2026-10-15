@@ -9,7 +9,7 @@ const seoProjection = `
     "title": coalesce(seoTitle, name, title, areaName, ""),
     "description": coalesce(seoDescription, shortDescription, excerpt, ""),
     "image": seoImage,
-    "noIndex": noIndex == true
+    "noIndex": noIndex
   }
 `;
 
@@ -348,6 +348,18 @@ export const NAVIGATION_QUERY = defineQuery(`
   }
 `);
 
+// ---- Market content index (drives nav/footer link filtering) ----
+
+export const MARKET_CONTENT_QUERY = defineQuery(`
+  {
+    "docs": *[_type in ["propertyPage", "areaGuide", "blogPost", "landlordPage"] && market == $market && defined(slug.current)] {
+      _type,
+      "slug": slug.current
+    },
+    "singletons": *[_type in ["aboutPage", "corporateStaysPage", "privacyPolicyPage", "termsPage", "shopPage"] && _id == _type + "-" + $market]._type
+  }
+`);
+
 // ---- Country switcher (shared singleton) ----
 
 export const COUNTRY_SWITCHER_QUERY = defineQuery(`
@@ -664,7 +676,7 @@ export const HOMEPAGE_QUERY = defineQuery(`{
 // ---- Landing pages (standalone marketing/campaign pages, site root) ----
 
 export const LANDING_PAGE_QUERY = defineQuery(`
-  *[_type == "landingPage" && slug.current == $slug][0] {
+  *[_type == "landingPage" && slug.current == $slug && (market == $market || (!defined(market) && $market == "ie"))][0] {
     _id,
     title,
     "slug": slug.current,
@@ -760,7 +772,7 @@ export const LANDING_PAGE_QUERY = defineQuery(`
 // ---- Sitemap ----
 
 export const SITEMAP_QUERY = defineQuery(`
-  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true && (market == $market || (_type == "landingPage" && $market == "ie"))] {
+  *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && (noIndex == false || (noIndex != true && $market == "ie")) && (market == $market || (_type == "landingPage" && $market == "ie"))] {
     "href": select(
       _type == "blogPost" => "/blog/" + slug.current,
       _type == "propertyPage" => "/stays/" + slug.current,
@@ -784,7 +796,7 @@ export const SITEMAP_SINGLETONS_QUERY = defineQuery(`
       _type == "termsPage" => "/terms-and-conditions"
     ),
     _updatedAt,
-    "noIndex": noIndex == true
+    noIndex
   }
 `);
 
@@ -801,7 +813,7 @@ export const LLMS_TXT_QUERY = defineQuery(`
     contactEmail,
     socialLinks
   },
-  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && noIndex != true && (market == $market || (_type == "landingPage" && $market == "ie"))] {
+  "entries": *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && (noIndex == false || (noIndex != true && $market == "ie")) && (market == $market || (_type == "landingPage" && $market == "ie"))] {
     _type,
     "href": select(
       _type == "blogPost" => "/blog/" + slug.current,

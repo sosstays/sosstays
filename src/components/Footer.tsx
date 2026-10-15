@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SocialIcons } from "@/components/SocialIcons";
+import { MARKET } from "@/lib/market";
 
 type SocialLink = {
   platform:
@@ -80,8 +81,11 @@ export function Footer({
   socialLinks?: SocialLink[] | null;
   content?: FooterContent | null;
 }) {
-  const tagline = content?.tagline || DEFAULT_TAGLINE;
-  const columns = content?.columns && content.columns.length > 0 ? content.columns : DEFAULT_COLUMNS;
+  // The hardcoded defaults are Ireland's; other markets show only what their
+  // own footer document provides.
+  const tagline = content?.tagline || (MARKET === "ie" ? DEFAULT_TAGLINE : "");
+  const columns =
+    content?.columns && content.columns.length > 0 ? content.columns : MARKET === "ie" ? DEFAULT_COLUMNS : [];
   const copyrightText = (content?.copyrightText || "© {year} Sos Stays. All rights reserved.").replace(
     "{year}",
     String(new Date().getFullYear())
@@ -95,7 +99,7 @@ export function Footer({
             <Link href="/" className="flex items-center">
               <Image src="/logo.svg" alt="Sos Stays" width={126} height={80} className="h-10 w-auto" />
             </Link>
-            <p className="mt-3 text-sm text-near-black/70">{tagline}</p>
+            {tagline && <p className="mt-3 text-sm text-near-black/70">{tagline}</p>}
             <SocialIcons
               links={socialLinks}
               className="text-near-black/70 hover:bg-forest-green hover:text-cream"
