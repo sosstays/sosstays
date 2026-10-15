@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { client } from "@/sanity/client";
 import { PROPERTY_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
-import { SITE_URL } from "@/sanity/metadata";
+import { SITE_URL, LOCALE, isIndexable } from "@/lib/market";
 import { JsonLd, buildBreadcrumbSchema, buildFaqSchema } from "@/sanity/jsonld";
 import { toGoogleMapsEmbedSrc } from "@/lib/googleMapsEmbed";
 import { getUplistingRoom } from "@/lib/uplisting/client";
@@ -46,13 +46,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `${SITE_URL}${path}` },
+    robots: isIndexable(property.seo?.noIndex) ? { index: true, follow: true } : { index: false, follow: false },
     openGraph: {
       title,
       description,
       url: `${SITE_URL}${path}`,
       siteName: "Sos Stays",
       images: room.photos[0] ? [{ url: room.photos[0], width: 1200, height: 900 }] : undefined,
-      locale: "en_IE",
+      locale: LOCALE.og,
       type: "website",
     },
   };

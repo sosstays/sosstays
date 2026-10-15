@@ -2,7 +2,7 @@ import { client } from "@/sanity/client";
 import { LLMS_TXT_QUERY } from "@/sanity/queries";
 import { COMMISSION_RANGE_FULL, MAINTENANCE_AUTHORITY_EUR } from "@/lib/businessFacts";
 
-const SITE_URL = "https://sosstays.com";
+import { MARKET, SITE_URL } from "@/lib/market";
 
 // Legal/commercial facts that live in the real world, not the CMS —
 // update here if they change, no Sanity field for these.
@@ -29,7 +29,11 @@ function linkLine(title: string, href: string, summary?: string) {
   return summary ? `${line} — ${summary}` : line;
 }
 
+// The copy below is Ireland-specific (CRO number, island of Ireland), so
+// India has no llms.txt until it gets its own.
 export async function GET() {
+  if (MARKET !== "ie") return new Response("Not found", { status: 404 });
+
   const { settings, entries } = await client.fetch(LLMS_TXT_QUERY);
 
   const siteName = settings?.siteName || "Sos Stays";
