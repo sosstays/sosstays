@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { DynamicIcon } from "@/components/DynamicIcon";
 
@@ -12,64 +12,62 @@ export type FounderCardData = {
   highlights: { icon: string; text: string }[];
 };
 
-// Matches Tailwind's `sm` breakpoint — below it there's no room for the
-// highlights panel to open sideways next to the photo, so it opens
-// downward (full width) instead. See isWide below.
-const WIDE_QUERY = "(min-width: 640px)";
-
 // How far the photo pokes above the card's own top edge — see the photo
 // overlay below for why it has to live outside the card's clipped box.
 const PHOTO_OVERHANG = 40;
 
-// Interactive founder grid for the About page. From `sm` up, opening a card
-// widens it into the next grid column and slides the highlights panel in
-// beside the photo, within the shaded top region — see the `highlights`
-// field on teamMember in studio/schemaTypes/documents/aboutPage.ts. Below
-// that, the card stays full width and the panel drops down under the photo
-// instead, since there's no room to grow sideways on a phone screen. Name/
-// title sit in their own full-width footer strip below, same two-tier shape
-// as the reference card. The photo is a transparent PNG cutout — see that
-// field's description for the recommended crop — so it's rendered
-// bottom-aligned (object-contain + object-bottom), sitting flush with the
-// bottom of the shaded region and rising above the card's own top edge.
+// Height of the shaded photo backdrop. The photo overlay is this plus the
+// overhang so it ends flush with the bottom of the backdrop.
+const PHOTO_REGION = 260;
+
+// Interactive founder grid for the About page. From `xl` up the cards are a
+// no-wrap flex row of compact fixed-width cards: opening one animates its
+// flex-basis so it widens to the right while its neighbours shrink to make
+// room (and the row stays left-aligned with the heading when there's slack), the photo slides left and
+// the highlights open beside it. (Widening via a grid column span instead
+// made neighbours jump columns or wrap onto a new row.) Below `xl` there's
+// no room to grow sideways, so the panel drops down inside the card between
+// the photo and the name strip, animating grid-template-rows (0fr -> 1fr)
+// so it opens to its natural height with no max-height guess. See the `highlights` field on teamMember in
+// studio/schemaTypes/documents/aboutPage.ts.
+//
+// The photo is a transparent PNG cutout — see that field's description for
+// the recommended crop — so it's rendered bottom-aligned and centred
+// (object-contain + object-bottom), sitting flush with the bottom of the
+// shaded region and rising above the card's own top edge.
 export function FounderCards({ members }: { members: FounderCardData[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [isWide, setIsWide] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia(WIDE_QUERY);
-    const update = () => setIsWide(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
 
   return (
-    <div className="grid grid-cols-1 gap-x-7 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 items-start gap-x-7 gap-y-14 sm:grid-cols-2 xl:flex xl:gap-y-0">
       {members.map((member, i) => {
         const isOpen = openIndex === i;
+        const toggle = () => setOpenIndex(isOpen ? null : i);
         return (
           <div
             key={member.name}
-            className={`relative ${isOpen && isWide ? "sm:col-span-2" : ""}`}
+            className={`relative xl:min-w-0 xl:shrink xl:grow-0 xl:transition-[flex-basis] xl:duration-[480ms] xl:ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:xl:transition-none ${
+              isOpen ? "xl:basis-[620px]" : "xl:basis-[340px]"
+            }`}
           >
             {/* Photo overlay: sits outside the card's own clipped/rounded
                 box (below) so it can rise above the card's top edge instead
                 of being cut off there. Purely decorative — clicks pass
-                through to the card underneath. z-20 (above the badge's
-                z-10) so the cutout renders in front of the badge pill
-                rather than being covered by it where they overlap. */}
+                through to the card underneath. z-20 so the cutout renders
+                in front of the shaded backdrop. */}
             {member.photo && (
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 z-20 w-full sm:w-[220px]"
-                style={{ top: -PHOTO_OVERHANG, height: 260 + PHOTO_OVERHANG }}
+                className={`pointer-events-none absolute left-0 z-20 w-full transition-[width] duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+                  isOpen ? "xl:w-[220px]" : ""
+                }`}
+                style={{ top: -PHOTO_OVERHANG, height: PHOTO_REGION + PHOTO_OVERHANG }}
               >
                 <Image
                   src={member.photo.src}
                   alt=""
                   fill
-                  sizes="(min-width: 640px) 220px, 100vw"
+                  sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 100vw"
                   className="object-contain object-bottom"
                 />
               </div>
@@ -79,79 +77,73 @@ export function FounderCards({ members }: { members: FounderCardData[] }) {
               role="button"
               tabIndex={0}
               aria-expanded={isOpen}
-              onClick={() => setOpenIndex(isOpen ? null : i)}
+              onClick={toggle}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  setOpenIndex(isOpen ? null : i);
+                  toggle();
                 }
               }}
               className="flex cursor-pointer flex-col overflow-hidden rounded-[22px] border border-sage-grey/25 bg-cream text-left outline-none transition-shadow duration-300 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-forest-green"
             >
-              {/* Shaded top region: photo backdrop (badge flush at the
-                  corner). From `sm` up the highlights panel slides in
-                  beside it; below that it drops down underneath instead.
-                  The section itself is bg-deep-forest (see about/page.tsx's
-                  Meet the Team section) so pale-sage here reads clearly
-                  against it, collapsed or open. */}
-              <div className="flex flex-col bg-pale-sage sm:flex-row">
-                <div className="relative h-[260px] w-full shrink-0 sm:w-[220px]">
+              {/* Shaded region: photo backdrop with the badge flush at the
+                  corner, then the highlights panel underneath. The section
+                  itself is bg-deep-forest (see about/page.tsx's Meet the
+                  Team section) so pale-sage here reads clearly against it,
+                  collapsed or open. */}
+              <div className="bg-pale-sage xl:flex">
+                <div
+                  className={`relative w-full shrink-0 transition-[width] duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+                    isOpen ? "xl:w-[220px]" : ""
+                  }`}
+                  style={{ height: PHOTO_REGION }}
+                >
                   <span className="absolute top-0 left-0 z-10 rounded-br-2xl bg-light-sage py-1.5 pr-4 pl-3.5 text-[11px] font-bold tracking-widest text-deep-forest uppercase">
                     Co-Founder
                   </span>
-                  {!member.photo && (
-                    <div className="absolute inset-x-0 bottom-0 flex h-[190px] items-end justify-center pb-6">
-                      <span className="flex h-20 w-20 items-center justify-center rounded-full bg-cream text-2xl font-semibold text-forest-green">
-                        {member.name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
                 </div>
 
                 <div
-                  className="overflow-hidden"
-                  style={
-                    isWide
-                      ? {
-                          maxWidth: isOpen ? "420px" : "0px",
-                          maxHeight: "none",
-                          opacity: isOpen ? 1 : 0,
-                          transition: "max-width 440ms cubic-bezier(0.16,1,0.3,1), opacity 300ms ease 100ms",
-                        }
-                      : {
-                          maxWidth: "none",
-                          maxHeight: isOpen ? "600px" : "0px",
-                          opacity: isOpen ? 1 : 0,
-                          transition: "max-height 440ms cubic-bezier(0.16,1,0.3,1), opacity 300ms ease 100ms",
-                        }
-                  }
+                  inert={!isOpen}
+                  className={`grid transition-[grid-template-rows,opacity] duration-[440ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none xl:min-w-0 xl:flex-1 xl:grid-rows-[1fr] xl:overflow-hidden ${
+                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  }`}
                 >
-                  <div className="flex w-full flex-col justify-center gap-4 px-6 py-6 sm:h-[260px] sm:w-[min(420px,80vw)]">
+                  <ul className="flex min-h-0 list-none flex-col gap-4 overflow-hidden px-6 xl:h-[260px] xl:w-[380px] xl:justify-center xl:gap-3">
+                    {/* Padding lives on the first/last rows, not the list,
+                        so the closed (0fr) state collapses to exactly 0. */}
                     {member.highlights.map((h, hi) => (
-                      <div key={hi} className="flex items-start gap-3">
+                      <li
+                        key={hi}
+                        className={`flex items-start gap-3 ${hi === 0 ? "pt-6 xl:pt-0" : ""} ${
+                          hi === member.highlights.length - 1 ? "pb-6 xl:pb-0" : ""
+                        }`}
+                      >
                         <DynamicIcon
                           name={h.icon}
                           className="mt-0.5 h-4 w-4 flex-none text-forest-green"
                           strokeWidth={1.75}
                         />
                         <span className="text-[14.5px] leading-relaxed text-near-black/80">{h.text}</span>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
               </div>
 
-              {/* Footer strip: name/title, full width, always visible — the
-                  "Classic T-shirt / price" row in the reference layout. */}
+              {/* Footer strip: name/title, full width, always visible. The
+                  plain title reserves two lines and the toggle label stays
+                  put (it only swaps text), so closed cards in a row share
+                  one height and opening doesn't shift the footer. */}
               <div className="flex flex-col gap-1 px-6 py-5">
                 <span className="text-[11.5px] font-bold tracking-widest text-forest-green/70 uppercase">
                   {member.title}
                 </span>
                 <h3 className="font-serif text-xl font-bold text-deep-forest">{member.name}</h3>
-                <span className="text-[13.5px] text-near-black/65">{member.plainTitle}</span>
-                {!isOpen && (
-                  <span className="pt-2 text-[13px] font-semibold text-forest-green">Read more</span>
-                )}
+                <span className="min-h-10 text-[13.5px] leading-5 text-near-black/65">{member.plainTitle}</span>
+                <span className="pt-1 text-[13px] font-semibold text-forest-green">
+                  {isOpen ? "Show less" : "Read more"}
+                </span>
               </div>
             </div>
           </div>
