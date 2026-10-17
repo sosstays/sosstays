@@ -14,7 +14,7 @@ export const revalidate = 60;
 
 export async function generateStaticParams() {
   const slugs = await client.fetch(FEATURED_PARTNER_SLUGS_QUERY);
-  if (slugs?.length) return slugs.map((slug: string) => ({ slug }));
+  if (slugs?.length) return slugs.filter((slug): slug is string => Boolean(slug)).map((slug) => ({ slug }));
   return DEFAULT_PARTNERS.filter((p) => p.featured && !p.profileHref).map((p) => ({ slug: p.slug }));
 }
 

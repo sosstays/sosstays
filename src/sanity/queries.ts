@@ -584,7 +584,7 @@ export const CORPORATE_ONBOARDED_PROPERTIES_QUERY = defineQuery(`
 // ---- Partners ----
 
 export const PARTNERS_PAGE_QUERY = defineQuery(`
-  *[_type == "partnersPage" && _id == "partnersPage"][0] {
+  *[_type == "partnersPage" && _id == "partnersPage-" + $market][0] {
     heroBadge,
     heroHeading,
     heroSubtext,
@@ -623,7 +623,7 @@ export const PARTNERS_PAGE_QUERY = defineQuery(`
 // above, so the directory never goes stale as partners are added or
 // removed (same pattern as CORPORATE_ONBOARDED_PROPERTIES_QUERY).
 export const PARTNERS_QUERY = defineQuery(`
-  *[_type == "partner"] | order(featured desc, name asc) {
+  *[_type == "partner" && market == $market] | order(featured desc, name asc) {
     _id,
     name,
     "slug": slug.current,
@@ -638,7 +638,7 @@ export const PARTNERS_QUERY = defineQuery(`
 `);
 
 export const PARTNER_BY_SLUG_QUERY = defineQuery(`
-  *[_type == "partner" && featured == true && slug.current == $slug][0] {
+  *[_type == "partner" && market == $market && featured == true && slug.current == $slug][0] {
     _id,
     name,
     "slug": slug.current,
@@ -658,7 +658,7 @@ export const PARTNER_BY_SLUG_QUERY = defineQuery(`
 // pages redirect elsewhere (see PartnerProfilePage), so there's nothing
 // to statically generate at /partners/[slug] for them.
 export const FEATURED_PARTNER_SLUGS_QUERY = defineQuery(`
-  *[_type == "partner" && featured == true && defined(slug.current) && !defined(profileHref)][].slug.current
+  *[_type == "partner" && market == $market && featured == true && defined(slug.current) && !defined(profileHref)][].slug.current
 `);
 
 // ---- Homepage feed ----
