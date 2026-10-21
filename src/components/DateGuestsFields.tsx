@@ -89,6 +89,11 @@ function GuestsIcon({ className = "" }: { className?: string }) {
   return <Users strokeWidth={1.75} className={`h-5 w-5 shrink-0 ${className}`} />;
 }
 
+// Set to true to bring back the "Kids" (free) row in the guests dropdown.
+// While false, the row is hidden and the kids count is always 0, so every
+// guest is counted (and priced) as an adult.
+const SHOW_KIDS_SELECTOR = false;
+
 export type DateGuestsValue = { checkIn: Date | null; checkOut: Date | null; guests: number; kids: number };
 
 function nightsBetween(checkIn: Date, checkOut: Date) {
@@ -144,7 +149,7 @@ export function DateGuestsFields({
   const minNightsForCheckIn = checkIn ? minNightsByCheckIn?.get(toISODate(checkIn)) ?? 1 : 1;
 
   const [adults, setAdults] = useState(initialGuests);
-  const [kids, setKids] = useState(initialKids);
+  const [kids, setKids] = useState(SHOW_KIDS_SELECTOR ? initialKids : 0);
   const [showGuests, setShowGuests] = useState(false);
   const guests = adults + kids;
 
@@ -341,35 +346,37 @@ export function DateGuestsFields({
               </div>
             </div>
 
-            <div className="mt-3 flex items-center justify-between border-t border-sage-grey/30 pt-3">
-              <div>
-                <span className="text-sm font-semibold text-near-black">Kids</span>
-                <span className="ml-1.5 rounded-full bg-light-forest-green px-2 py-0.5 text-[10px] font-semibold tracking-wide text-forest-green uppercase">
-                  Free
-                </span>
+            {SHOW_KIDS_SELECTOR && (
+              <div className="mt-3 flex items-center justify-between border-t border-sage-grey/30 pt-3">
+                <div>
+                  <span className="text-sm font-semibold text-near-black">Kids</span>
+                  <span className="ml-1.5 rounded-full bg-light-forest-green px-2 py-0.5 text-[10px] font-semibold tracking-wide text-forest-green uppercase">
+                    Free
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setKids((k) => Math.max(0, k - 1))}
+                    disabled={kids <= 0}
+                    aria-label="Decrease kids"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-sage-grey/60 text-near-black transition-colors hover:border-forest-green hover:text-forest-green disabled:opacity-30"
+                  >
+                    −
+                  </button>
+                  <span className="w-4 text-center text-near-black">{kids}</span>
+                  <button
+                    type="button"
+                    onClick={() => setKids((k) => Math.min(maxGuests - adults, k + 1))}
+                    disabled={guests >= maxGuests}
+                    aria-label="Increase kids"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-sage-grey/60 text-near-black transition-colors hover:border-forest-green hover:text-forest-green disabled:opacity-30"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setKids((k) => Math.max(0, k - 1))}
-                  disabled={kids <= 0}
-                  aria-label="Decrease kids"
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-sage-grey/60 text-near-black transition-colors hover:border-forest-green hover:text-forest-green disabled:opacity-30"
-                >
-                  −
-                </button>
-                <span className="w-4 text-center text-near-black">{kids}</span>
-                <button
-                  type="button"
-                  onClick={() => setKids((k) => Math.min(maxGuests - adults, k + 1))}
-                  disabled={guests >= maxGuests}
-                  aria-label="Increase kids"
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-sage-grey/60 text-near-black transition-colors hover:border-forest-green hover:text-forest-green disabled:opacity-30"
-                >
-                  +
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         )}
       </div>
