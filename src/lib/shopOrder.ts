@@ -3,6 +3,15 @@ import { client } from "@/sanity/client";
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
+// The pattern alone lets through values like 2026-02-31, which Postgres then
+// rejects when the webhook stores the order as a date. Round-trip through Date
+// to make sure it is a real calendar day.
+function isRealDate(value: string): boolean {
+  if (!DATE_PATTERN.test(value)) return false;
+  const parsed = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
 export type ShopProductRecord = {
   kind: "voucher" | "goods";
   name: string;
@@ -121,7 +130,7 @@ export async function buildShopOrderMetadata(
         metadata.deliveryPostcode = deliveryPostcode.trim().slice(0, 20);
       }
     } else {
-      if (typeof arrivalDate !== "string" || !DATE_PATTERN.test(arrivalDate)) {
+      if (typeof arrivalDate !== "string" || !isRealDate(arrivalDate)) {
         return { ok: false, error: "Pick a valid check-in or check-out date" };
       }
       // Fulfillment needs at least until 2pm the day before (see

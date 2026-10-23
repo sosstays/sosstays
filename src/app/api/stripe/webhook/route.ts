@@ -2,6 +2,58 @@ import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
 import { createUplistingBooking } from "@/lib/uplistingApi";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
+
+// Inserts the shop_orders row (unique on PaymentIntent id, so redeliveries
+// can't duplicate it). Returns false only when the order could not be stored,
+// which is the one case worth a Stripe retry.
+async function recordShopOrder(intent: Stripe.PaymentIntent): Promise<boolean> {
+  const supabase = getSupabaseAdmin();
+  if (!supabase) return true; // not configured: keep the old log-only behaviour
+
+  const m = intent.metadata ?? {};
+  // Metadata is attached by /api/shop/finalize-payment-intent before the card
+  // is confirmed; a PaymentIntent confirmed without that call has no buyer
+  // details. buyer_email is NOT NULL, so fall back to the receipt email and
+  // otherwise give up loudly — a 500 here would make Stripe retry forever
+  // for an order that can never be stored.
+  const buyerEmail = m.buyerEmail || intent.receipt_email;
+  if (!buyerEmail) {
+    console.error(
+      "Shop order paid but has no buyer email, cannot store it — fulfil manually from the Stripe dashboard",
+      { paymentIntentId: intent.id, amount: intent.amount_received || intent.amount, metadata: m }
+    );
+    return true;
+  }
+  const { error } = await supabase.from("shop_orders").insert({
+    stripe_payment_intent_id: intent.id,
+    product_id: m.productId || null,
+    product_name: m.productName || "Shop order",
+    product_kind: m.productKind === "goods" ? "goods" : "voucher",
+    quantity: Number(m.quantity) || 1,
+    amount_total: intent.amount_received || intent.amount,
+    currency: intent.currency,
+    buyer_name: m.buyerName || null,
+    buyer_email: buyerEmail,
+    buyer_phone: m.buyerPhone || null,
+    recipient_name: m.recipientName || null,
+    recipient_email: m.recipientEmail || null,
+    gift_note: m.giftNote || null,
+    delivery_method: m.deliveryMethod || null,
+    delivery_address: m.deliveryAddress || null,
+    delivery_postcode: m.deliveryPostcode || null,
+    property_slug: m.propertySlug || null,
+    property_name: m.propertyName || null,
+    arrival_date: m.arrivalDate || null,
+    stay_date_type: m.stayDateType || null,
+  });
+  // 23505 = unique violation: Stripe redelivered an event we already stored.
+  if (error && error.code !== "23505") {
+    console.error("Failed to insert shop order", intent.id, error);
+    return false;
+  }
+  return true;
+}
 
 // Fulfillment step of the embedded-checkout lifecycle: Stripe calls this once
 // payment succeeds, and we turn that into a confirmed Uplisting booking.
@@ -46,6 +98,11 @@ export async function POST(request: NextRequest) {
         paymentIntentId: intent.id,
         ...intent.metadata,
       });
+      const saved = await recordShopOrder(intent);
+      if (!saved) {
+        // 500 so Stripe redelivers; the unique PaymentIntent id makes the retry safe.
+        return NextResponse.json({ error: "Failed to record shop order" }, { status: 500 });
+      }
     }
     return NextResponse.json({ received: true });
   }
