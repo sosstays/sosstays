@@ -127,8 +127,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ received: true });
     }
 
+    let bookingId: string;
     try {
-      const { bookingId } = await createUplistingBooking({
+      ({ bookingId } = await createUplistingBooking({
         propertyId: Number(meta.uplistingPropertyId),
         checkIn: meta.checkIn,
         checkOut: meta.checkOut,
@@ -136,15 +137,36 @@ export async function POST(request: NextRequest) {
         guestName: meta.guestName,
         guestEmail: meta.guestEmail || session.customer_details?.email || undefined,
         guestPhone: meta.guestPhone || undefined,
-      });
+      }));
       console.log(`Created Uplisting booking ${bookingId} for Checkout Session ${session.id}`);
-      await stripe.checkout.sessions.update(session.id, {
-        metadata: { ...meta, uplistingBookingId: bookingId },
-      });
     } catch (error) {
       console.error("Failed to create Uplisting booking after payment", session.id, error);
       // Return 500 so Stripe retries — a paid session must not silently fail to book.
       return NextResponse.json({ error: "Booking creation failed" }, { status: 500 });
+    }
+
+    // The booking now exists, so nothing below may return 500: a retry would
+    // find no uplistingBookingId on the session and book a second time.
+    // Retry the stamp a few times, then give up loudly and still return 200.
+    let stamped = false;
+    for (let attempt = 1; attempt <= 3 && !stamped; attempt++) {
+      try {
+        await stripe.checkout.sessions.update(session.id, {
+          metadata: { ...meta, uplistingBookingId: bookingId },
+        });
+        stamped = true;
+      } catch (error) {
+        console.error(
+          `Failed to stamp Uplisting booking ${bookingId} onto Checkout Session ${session.id} (attempt ${attempt})`,
+          error
+        );
+      }
+    }
+    if (!stamped) {
+      console.error(
+        "Uplisting booking created but not recorded on the Stripe session: a redelivery could double-book and the return page will keep showing 'finalizing'. Set uplistingBookingId on the session manually.",
+        { sessionId: session.id, bookingId }
+      );
     }
   }
 
