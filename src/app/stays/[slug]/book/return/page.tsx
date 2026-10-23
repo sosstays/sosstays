@@ -7,6 +7,7 @@ import { PROPERTY_BOOKING_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
+import { BookingConfirmedTracker } from "@/components/checkout/BookingConfirmedTracker";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -52,7 +53,9 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
     );
   }
 
-  const session = await stripe.checkout.sessions.retrieve(sessionId);
+  // Expand line_items so the GA4 purchase event below can report the
+  // accommodation and each add-on as separate items, not just one lump sum.
+  const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["line_items"] });
   const meta = session.metadata ?? {};
   const retryParams = new URLSearchParams({
     checkIn: meta.checkIn ?? "",
@@ -78,8 +81,27 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
   const confirmationCode = `SOS-${session.id.slice(-6).toUpperCase()}`;
   const guestCount = Number(meta.guests) || undefined;
 
+  const currency = (session.currency ?? "eur").toUpperCase();
+  const purchaseItems =
+    session.line_items?.data.map((lineItem, i) => ({
+      item_id: meta.propertySlug ? `${meta.propertySlug}-${i}` : `item-${i}`,
+      item_name: lineItem.description ?? property?.name ?? "Stay",
+      price: (lineItem.amount_total ?? 0) / 100,
+      quantity: lineItem.quantity ?? 1,
+    })) ?? [];
+
   return shell(
     <>
+      {/* No UI — just fires the GA4 "purchase" event once, now that payment
+          is confirmed complete. See BookingConfirmedTracker for the dedupe
+          story (this page is a plain shareable URL, refreshable/bookmarkable). */}
+      <BookingConfirmedTracker
+        transactionId={session.id}
+        value={(session.amount_total ?? 0) / 100}
+        currency={currency}
+        items={purchaseItems}
+      />
+
       <div className="pb-8 text-center">
         <CheckCircle2
           size={72}
