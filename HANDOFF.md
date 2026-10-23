@@ -30,11 +30,12 @@ Fires a GA4 `purchase` event from `/stays/[slug]/book/return` via the GTM
 
 ## Stripe webhook (`src/app/api/stripe/webhook/route.ts`)
 
-- **Booking path partial failure.** `stripe.checkout.sessions.update` (stamping
-  `uplistingBookingId`) shares a `try` with `createUplistingBooking`. If the
-  Uplisting booking succeeds but the Stripe update throws, the handler returns
-  500, Stripe retries, and the retry books a second time. Fix: put the update in
-  its own `try`/`catch`, log the failure, and still return 200.
+- **Booking path partial failure (fixed).** Stamping `uplistingBookingId` onto
+  the session is now outside the booking `try`, retried 3 times, and never
+  returns 500 once the Uplisting booking exists. If all 3 attempts fail it logs
+  "Uplisting booking created but not recorded on the Stripe session" with the
+  session and booking ids; set `uplistingBookingId` on the session by hand (the
+  return page shows "finalizing" until it's there).
 - **Concurrent deliveries can still race.** The idempotency guard is
   check-then-act with no lock. A unique-keyed Supabase row would close it.
 - **Shop orders** (`payment_intent.succeeded`): the order is stored in
