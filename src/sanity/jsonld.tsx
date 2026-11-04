@@ -64,10 +64,186 @@ type PropertyForSchema = {
   bedrooms?: number | null;
 };
 
+// Full, hand-verified LodgingBusiness payloads for properties whose address,
+// geo, check-in/out, pricing and review data aren't yet modeled in the Sanity
+// schema. Keyed by slug; takes precedence over the dynamic builder below.
+const PROPERTY_SCHEMA_OVERRIDES: Record<string, Record<string, unknown>> = {
+  "rathescar-grove-guest-house": {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    name: "Rathescar Grove Guest House",
+    description:
+      "Rathescar Grove Guest House is a 3-room guest house in Ardee near Drogheda, Co. Louth, 50 minutes from Dublin Airport and a base for the Boyne Valley, Newgrange and Cooley Peninsula.",
+    url: "https://sosstays.com/stays/rathescar-grove-guest-house",
+    image: [
+      "https://cdn.sanity.io/images/owyw3r12/production/df528c198ec5c52e746b7bf96ab99ce6e4957c81-2048x1536.jpg?w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/10e9dd47b80e4b469a603b4a1d3117967bc418e7-1024x683.jpg?rect=57,0,911,683&w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/97656d66568f68553557fb3e0695b07d4ceb68ba-1024x683.jpg?rect=57,0,911,683&w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/cddff76eaaf23d3efd75e19c47ae7317669dda8b-5712x4284.jpg?w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/027891713da15408f103a79a203d10eb7427cb85-5712x4284.jpg?w=1600&h=1200",
+    ],
+    email: "info@sosstays.com",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Rathescar Grove, Dunleer",
+      addressLocality: "Ardee",
+      addressRegion: "County Louth",
+      postalCode: "A92 Y7R2",
+      addressCountry: "IE",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 53.8177633,
+      longitude: -6.4443283,
+    },
+    hasMap: "https://maps.app.goo.gl/8pMEapDq7E2iJdQh8",
+    occupancy: { "@type": "QuantitativeValue", maxValue: 10 },
+    numberOfRooms: 3,
+    checkinTime: "15:00",
+    checkoutTime: "11:30",
+    petsAllowed: false,
+    priceRange: "€80–€200",
+    acceptsReservations: true,
+    amenityFeature: [
+      { "@type": "LocationFeatureSpecification", name: "WiFi", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Free parking", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Garden", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Mountain view", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Self check-in", value: true },
+    ],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: 9.2,
+      reviewCount: 96,
+      bestRating: 10,
+    },
+    parentOrganization: {
+      "@type": "Organization",
+      name: "Power Rangers Ltd",
+      url: "https://sosstays.com",
+      logo: "https://sosstays.com/logo.svg",
+    },
+  },
+  "howards-way-liscannor": {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    name: "Howard's Way",
+    description:
+      "Luxury 4-bedroom self-catering home above Liscannor Bay on the Wild Atlantic Way, 5 minutes from the Cliffs of Moher and Lahinch Golf Club — triple-height living room, sea views, sleeps 8.",
+    url: "https://sosstays.com/stays/howards-way-liscannor",
+    image: [
+      "https://cdn.sanity.io/images/owyw3r12/production/8fc9ee68034dce36cb214469adc68ad9d6f1650b-1200x800.avif?rect=67,0,1067,800&w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/c1941a76ff83e732e15406817f576f9cb07dd3d7-6089x4059.jpg?rect=339,0,5412,4059&w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/ac14d045d830f4ea83a158ffdb00619b2dc7c6ee-6240x4160.jpg?rect=347,0,5547,4160&w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/5d8eebb42d3426b807bf57d33872952ddf5c1eb5-6240x4160.jpg?rect=347,0,5547,4160&w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/94081b2774465f1fca8ce6aace31b028f4c21d13-6154x4103.jpg?rect=342,0,5471,4103&w=1600&h=1200",
+    ],
+    email: "info@sosstays.com",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Clahane",
+      addressLocality: "Liscannor",
+      addressRegion: "County Clare",
+      addressCountry: "IE",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 52.9416853,
+      longitude: -9.426696,
+    },
+    hasMap: "https://maps.app.goo.gl/U6roRHEV8LMNM6wB7",
+    occupancy: { "@type": "QuantitativeValue", maxValue: 8 },
+    numberOfRooms: 4,
+    petsAllowed: true,
+    priceRange: "€550–€1400",
+    acceptsReservations: true,
+    amenityFeature: [
+      { "@type": "LocationFeatureSpecification", name: "Sea views", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Private on-site parking", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Utility room", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Washing machine", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Barbecue grill", value: true },
+      { "@type": "LocationFeatureSpecification", name: "WiFi", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Pet-friendly", value: true },
+    ],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: 10,
+      reviewCount: 54,
+      bestRating: 10,
+    },
+    parentOrganization: {
+      "@type": "Organization",
+      name: "Power Rangers Ltd",
+      url: "https://sosstays.com",
+      logo: "https://sosstays.com/logo.svg",
+    },
+  },
+  "tinnashrule-farm-lodge": {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    name: "Tinnashrule Farm Lodge",
+    description:
+      "Pet-friendly working farm stay in Ferns, Co. Wexford — self-contained studio sleeping up to 5, with cows, hens, sheep and Tom the dog on-site. On-site art studio, strong WiFi, no TV, built for a genuine digital detox.",
+    url: "https://sosstays.com/stays/tinnashrule-farm-lodge",
+    image: [
+      "https://cdn.sanity.io/images/owyw3r12/production/b2e28cdfa7a1bd9cf6174ba633260099fe509300-2752x1536.png?rect=352,0,2048,1536&w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/94967d43370cb4ec9b9e55173e62be4d8f4cb984-7259x4842.jpg?rect=402,0,6456,4842&w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/3b2d9780d39c39a4d5dfb5b8ea9b2cc3a928e2dd-7952x5304.jpg?rect=440,0,7072,5304&w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/65174d6330325a0fb3be0401245786a267ff78a9-4032x3024.jpg?w=1600&h=1200",
+      "https://cdn.sanity.io/images/owyw3r12/production/fc6edf40aa7fa10f24758a93710b91172a33b302-5304x7952.jpg?rect=0,1987,5304,3978&w=1600&h=1200",
+    ],
+    email: "info@sosstays.com",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Tinnashrule",
+      addressLocality: "Ferns",
+      addressRegion: "County Wexford",
+      addressCountry: "IE",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 52.6172224,
+      longitude: -6.5155024,
+    },
+    hasMap: "https://maps.app.goo.gl/WKLBtYhF1LLGmrvi7",
+    occupancy: { "@type": "QuantitativeValue", maxValue: 5 },
+    numberOfRooms: 1,
+    checkinTime: "15:00",
+    checkoutTime: "11:00",
+    petsAllowed: true,
+    priceRange: "€80–€200",
+    acceptsReservations: true,
+    amenityFeature: [
+      { "@type": "LocationFeatureSpecification", name: "WiFi", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Free parking", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Pet-friendly", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Farm setting", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Kitchen", value: true },
+      { "@type": "LocationFeatureSpecification", name: "EV charging", value: true },
+    ],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: 10,
+      reviewCount: 1,
+      bestRating: 10,
+    },
+    parentOrganization: {
+      "@type": "Organization",
+      name: "Power Rangers Ltd",
+      url: "https://sosstays.com",
+      logo: "https://sosstays.com/logo.svg",
+    },
+  },
+};
+
 export function buildLodgingBusinessSchema(
   property: PropertyForSchema,
   settings?: SiteSettings
 ) {
+  const override = PROPERTY_SCHEMA_OVERRIDES[property.slug];
+  if (override) return override;
+
   const images = (property.gallery ?? [])
     .slice(0, 5)
     .map((img) => urlFor(img).width(1600).height(1200).url());
