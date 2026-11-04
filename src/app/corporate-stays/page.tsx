@@ -4,6 +4,7 @@ import { client } from "@/sanity/client";
 import { CORPORATE_STAYS_PAGE_QUERY, CORPORATE_ONBOARDED_PROPERTIES_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
+import { JsonLd } from "@/sanity/jsonld";
 import { Button } from "@/components/Button";
 import { DynamicIcon } from "@/components/DynamicIcon";
 import { Reveal } from "@/components/Reveal";
@@ -160,7 +161,184 @@ const DEFAULT_FAQS = [
     answer:
       "For anything longer than a week, generally yes — a furnished house or apartment gives a crew more space and one invoice instead of a room-by-room hotel bill. For a night or two, a hotel is still the simpler option.",
   },
+  {
+    question: "What is the minimum length of stay for a corporate booking?",
+    answer:
+      "Corporate bookings have a one-month minimum. If you need something shorter, tell us your dates anyway and we'll point you straight on whether we can help.",
+  },
+  {
+    question: "Can you accommodate larger crews of 20 or more workers?",
+    answer:
+      "Yes. For larger headcounts we check our managed properties and our landlord network, and put together either one larger property or several units close together so the crew stays as one. Tell us the number of people and the county, and we'll confirm what's realistic for your dates.",
+  },
+  {
+    question: "Can the booking be invoiced to our company, and is VAT included?",
+    answer:
+      "Yes — corporate bookings are invoiced to the company with a single invoice covering the stay. VAT and taxes are applied as applicable, and we'll confirm the exact breakdown with your options so everything is clear before you commit.",
+  },
+  {
+    question: "What happens if our project dates change or overrun?",
+    answer:
+      "Tell your dedicated contact as soon as you know. Extensions are subject to availability — we'll extend you in the same property where we can, and if not we'll look to move the crew to another property. There's no lease to break, so we can move fast.",
+  },
+  {
+    question: "Is parking available for vans and work vehicles?",
+    answer:
+      "Parking varies by property. If your crew is travelling with vans, plant or multiple vehicles, tell us at the brief stage and we'll only put forward options where parking works — and confirm it in writing before you commit.",
+  },
+  {
+    question: "Can you source accommodation near our specific site, outside the counties you list?",
+    answer:
+      "Louth, Clare, Wexford and Wicklow are where we're live today, but we're expanding along the east coast and into the mid-west. Send the brief with your exact work location and dates — if we can cover it through our network we'll say so, and if it's on our expansion list we'll add you and let you know when it goes live.",
+  },
 ];
+
+// Single @graph JSON-LD payload for this page: Organization, the Service
+// itself, its FAQPage (kept in sync with DEFAULT_FAQS/the Sanity faqs list
+// above), and a BreadcrumbList, cross-linked by @id rather than built from
+// the generic per-type helpers in src/sanity/jsonld.tsx. NOTE: `sameAs` is
+// intentionally omitted — the brief's draft had placeholder social handles
+// ("YOUR_HANDLE"); add it back once the real Instagram/LinkedIn/Facebook/
+// TikTok URLs are confirmed.
+const CORPORATE_STAYS_JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://sosstays.com/#organization",
+      name: "SOS Stays",
+      url: "https://sosstays.com",
+      logo: "https://sosstays.com/logo.svg",
+      slogan: "Sos is the Irish word for a break.",
+      legalName: "Power Rangers Ltd",
+    },
+    {
+      "@type": "Service",
+      "@id": "https://sosstays.com/corporate-stays#service",
+      name: "Corporate Stays & Workforce Accommodation",
+      serviceType: "Corporate and workforce accommodation",
+      description:
+        "Fully furnished contractor and workforce accommodation across Louth, Clare, Wexford and Wicklow, booked monthly — on one invoice, with one point of contact.",
+      url: "https://sosstays.com/corporate-stays",
+      provider: { "@id": "https://sosstays.com/#organization" },
+      areaServed: [
+        { "@type": "Place", name: "County Louth, Ireland" },
+        { "@type": "Place", name: "County Clare, Ireland" },
+        { "@type": "Place", name: "County Wexford, Ireland" },
+        { "@type": "Place", name: "County Wicklow, Ireland" },
+        { "@type": "Country", name: "Ireland" },
+      ],
+      offers: {
+        "@type": "Offer",
+        category: "Monthly furnished accommodation",
+        availability: "https://schema.org/InStock",
+        priceSpecification: {
+          "@type": "PriceSpecification",
+          valueAddedTaxIncluded: true,
+        },
+      },
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://sosstays.com/corporate-stays#faq",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How do companies book accommodation for workers?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Send the brief through the form on this page — company name, number of people, target dates and which county you need to be in — and we'll come back with what's available and pricing. No account or lease to set up.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can you book housing for multiple workers at once?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. Tell us the headcount and we'll check what we can put together across our properties and landlord network — whether that's one larger property or a few units close together.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What's included in a Sos Stays workforce booking?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Every stay is fully furnished with free WiFi, plus one point of contact for anything that comes up — questions, issues, or extending the dates. Exact amenities vary by property, so we'll confirm specifics before you commit.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Is serviced accommodation better than hotels for workers?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "For anything longer than a week, generally yes — a furnished house or apartment gives a crew more space and one invoice instead of a room-by-room hotel bill. For a night or two, a hotel is still the simpler option.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What is the minimum length of stay for a corporate booking?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Corporate bookings have a one-month minimum. If you need something shorter, tell us your dates anyway and we'll point you straight on whether we can help.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can you accommodate larger crews of 20 or more workers?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. For larger headcounts we check our managed properties and our landlord network, and put together either one larger property or several units close together so the crew stays as one. Tell us the number of people and the county, and we'll confirm what's realistic for your dates.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can the booking be invoiced to our company, and is VAT included?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes — corporate bookings are invoiced to the company with a single invoice covering the stay. VAT and taxes are applied as applicable, and we'll confirm the exact breakdown with your options so everything is clear before you commit.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What happens if our project dates change or overrun?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Tell your dedicated contact as soon as you know. Extensions are subject to availability — we'll extend you in the same property where we can, and if not we'll look to move the crew to another property. There's no lease to break, so we can move fast.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Is parking available for vans and work vehicles?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Parking varies by property. If your crew is travelling with vans, plant or multiple vehicles, tell us at the brief stage and we'll only put forward options where parking works — and confirm it in writing before you commit.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can you source accommodation near our specific site, outside the counties you list?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Louth, Clare, Wexford and Wicklow are where we're live today, but we're expanding along the east coast and into the mid-west. Send the brief with your exact work location and dates — if we can cover it through our network we'll say so, and if it's on our expansion list we'll add you and let you know when it goes live.",
+          },
+        },
+      ],
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://sosstays.com/corporate-stays#breadcrumb",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://sosstays.com/" },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Corporate Stays",
+          item: "https://sosstays.com/corporate-stays",
+        },
+      ],
+    },
+  ],
+};
 
 type OnboardedProperty = {
   _id: string;
@@ -217,6 +395,7 @@ export default async function CorporateStaysPage() {
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
+      <JsonLd data={CORPORATE_STAYS_JSON_LD} />
       {/* HERO — maroon, matching the site's landlord/B2B audience treatment.
           SplitHero (components/SplitHero.tsx) owns the nav + right-column
           image split; this page only supplies the left-column copy and its
@@ -302,20 +481,12 @@ export default async function CorporateStaysPage() {
         </div>
       </section>
 
-      {/* HOW IT WORKS + FAQ — merged into one cream band (moved up from its
-          old spot near the bottom of the page) so visitors get the process
-          and the common questions in the same breath, before the heavier
-          coverage/included/partner sections. Only maroon/cream are used for
-          section backgrounds site-wide on this page. Top padding matches
-          "who" above's reduced bottom padding (see its comment); bottom
-          spacing is deferred entirely to FaqSection's own pb-24, which is
-          the real cross-color gap into the maroon coverage band below.
-          Horizontal padding lives on the SECTION (px-8/sm:px-14), same as
-          every other section on this page — not on the inner content div —
-          so this section's content column lines up exactly with
-          who/coverage/included/partner instead of sitting inset an extra
-          32/56px from double-applied padding. */}
-      <section id="how" className="bg-cream px-8 pt-16 sm:px-14 sm:pt-20">
+      {/* HOW IT WORKS — cream band. Only maroon/cream are used for section
+          backgrounds site-wide on this page. Top padding matches "who"
+          above's reduced bottom padding (see its comment); the FAQ that
+          used to live in this same cream band has moved to the end of the
+          page, so this section now owns its own bottom padding again. */}
+      <section id="how" className="bg-cream px-8 pt-16 pb-24 sm:px-14 sm:pt-20 sm:pb-28">
         <div className="mx-auto max-w-6xl">
           <Reveal className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-[560px]">
@@ -339,26 +510,6 @@ export default async function CorporateStaysPage() {
               </Reveal>
             ))}
           </div>
-        </div>
-
-        {/* mt-14/16 matches the same "same-color internal gap" used between
-            "who" and this section above — not the mt-20/24 this used to be,
-            which read as a bigger break than the header-to-grid gaps right
-            above it. No horizontal padding here — the #how section above
-            already supplies px-8/sm:px-14 for all its children, so
-            FaqSection is called with padded=false to avoid stacking a
-            second layer on top of it (which is what caused the FAQ column
-            to sit narrower and inset from every sibling section). */}
-        <div className="mt-14 sm:mt-16">
-          <FaqSection
-            id="faq"
-            eyebrow={data?.faqEyebrow || "Questions"}
-            heading={data?.faqHeading || "Frequently asked questions"}
-            items={faqs}
-            accent="maroon"
-            maxWidth="1152px"
-            padded={false}
-          />
         </div>
       </section>
 
@@ -540,6 +691,21 @@ export default async function CorporateStaysPage() {
           </div>
         </Reveal>
       </section>
+
+      {/* FAQ — last section on the page, on its own cream band. FaqSection
+          renders its own <section> with pb-24 baked in; this wrapper only
+          supplies the top padding to match the pt-24/sm:pt-28 used by every
+          other cream band that follows a maroon one on this page. */}
+      <div className="bg-cream pt-24 sm:pt-28">
+        <FaqSection
+          id="faq"
+          eyebrow={data?.faqEyebrow || "Questions"}
+          heading={data?.faqHeading || "Frequently asked questions"}
+          items={faqs}
+          accent="maroon"
+          maxWidth="1152px"
+        />
+      </div>
     </main>
   );
 }
