@@ -196,10 +196,10 @@ const DEFAULT_FAQS = [
 // Single @graph JSON-LD payload for this page: Organization, the Service
 // itself, its FAQPage (kept in sync with DEFAULT_FAQS/the Sanity faqs list
 // above), and a BreadcrumbList, cross-linked by @id rather than built from
-// the generic per-type helpers in src/sanity/jsonld.tsx. NOTE: `sameAs` is
-// intentionally omitted — the brief's draft had placeholder social handles
-// ("YOUR_HANDLE"); add it back once the real Instagram/LinkedIn/Facebook/
-// TikTok URLs are confirmed.
+// the generic per-type helpers in src/sanity/jsonld.tsx. `sameAs` pulls the
+// account's real, live profiles (same ones shown in the footer, from the
+// "siteSettings" Sanity singleton) — no LinkedIn account exists yet, and
+// WhatsApp/TripAdvisor are left out since they aren't brand profile pages.
 const CORPORATE_STAYS_JSON_LD = {
   "@context": "https://schema.org",
   "@graph": [
@@ -210,6 +210,11 @@ const CORPORATE_STAYS_JSON_LD = {
       url: "https://sosstays.com",
       logo: "https://sosstays.com/logo.svg",
       slogan: "Sos is the Irish word for a break.",
+      sameAs: [
+        "https://www.instagram.com/sos_stays/",
+        "https://www.facebook.com/SOSstays/",
+        "https://www.tiktok.com/@sosstays",
+      ],
       legalName: "Power Rangers Ltd",
     },
     {
