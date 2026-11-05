@@ -1,14 +1,15 @@
 # Contributing to SOS Stays
 
 This repo (`web/`) is the Next.js frontend. Content is managed in a separate
-Sanity Studio (`../studio`, sibling directory, not in this git repo).
+Sanity Studio, which is a separate repo (`github.com/sosstays/sanity`). Clone it
+as `../studio`, next to this repo.
 
 ## Project layout
 
 ```
 SOS-Website/
 ├── web/       # Next.js 16 app (this repo, App Router, Tailwind v4) — deployed via Netlify
-└── studio/    # Sanity Studio (schema + CMS UI) — not under version control yet
+└── studio/    # Sanity Studio (schema + CMS UI) — separate repo: github.com/sosstays/sanity
 ```
 
 - `web/src/app/` — routes (App Router). Dynamic routes: `areas/[slug]`,
@@ -31,6 +32,7 @@ CMS content.
 
 ```bash
 cd web && npm install
+git clone https://github.com/sosstays/sanity.git ../studio   # if not already cloned
 cd ../studio && npm install
 ```
 
@@ -42,7 +44,7 @@ Required env vars in `web/.env.local`:
 - `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`
 - `NEXT_PUBLIC_DISQUS_SHORTNAME` (blog comments)
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (address autocomplete on landlord/calculator forms)
-- `MAILERLITE_API_KEY` + one `MAILERLITE_*_GROUP_ID` per form (landlord, newsletter, calculator, contact, pricing)
+- `MAILERLITE_API_KEY` + one `MAILERLITE_*_GROUP_ID` per form (landlord, newsletter, calculator, contact, partner, corporate)
 - `UPLISTING_API_KEY` (property/booking data — see `Uplisting API [Public].postman_collection.json` at repo root for endpoint reference)
 
 ## Running locally
@@ -62,7 +64,13 @@ tooling.)
 2. Update the GROQ query in `web/src/sanity/queries.ts` to fetch the new field.
 3. Regenerate types from the studio: `npm run typegen` (runs
    `sanity schema extract` + `sanity typegen generate`).
-4. Consume the field in the page/component — `web/src/sanity/portableText.tsx`
+4. Open a PR in the studio repo (`sosstays/sanity`) and merge it to `main`.
+   Deploy the schema from `main` only (`npx sanity schema deploy`, plus
+   `npx sanity deploy` if the hosted Studio UI changed) so the repo always
+   matches what is live. Deploy the schema **before** merging the website
+   change that reads the new field, otherwise the site queries a field that
+   does not exist yet.
+5. Consume the field in the page/component — `web/src/sanity/portableText.tsx`
    handles rich text, `web/src/sanity/image.ts` handles image URLs.
 
 Never fabricate content or stats for a document that has no real data yet
