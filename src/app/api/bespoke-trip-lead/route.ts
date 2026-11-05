@@ -27,7 +27,10 @@ export async function POST(request: NextRequest) {
   if (typeof idealMonth !== "string" || !idealMonth.trim()) {
     return NextResponse.json({ error: "Ideal month is required" }, { status: 400 });
   }
-  if (typeof eventType !== "string" || !eventType.trim()) {
+  const cleanEventTypes: string[] = Array.isArray(eventType)
+    ? eventType.filter((v): v is string => typeof v === "string")
+    : [];
+  if (cleanEventTypes.length === 0) {
     return NextResponse.json({ error: "Let us know if you're coming for an event" }, { status: 400 });
   }
   if (typeof groupSize !== "string" || !groupSize.trim()) {
@@ -52,7 +55,7 @@ export async function POST(request: NextRequest) {
       name,
       phone,
       ideal_month: idealMonth,
-      event_type: eventType,
+      event_type: cleanEventTypes.join(", "),
       group_size: groupSize,
       accommodation_preference: accommodationPreference,
       interests: cleanInterests.join(", "),
@@ -67,7 +70,7 @@ export async function POST(request: NextRequest) {
         name,
         phone,
         ideal_month: idealMonth,
-        event_type: eventType,
+        event_type: cleanEventTypes.join(", "),
         group_size: groupSize,
         accommodation_preference: accommodationPreference,
         interests: cleanInterests.join(", "),
