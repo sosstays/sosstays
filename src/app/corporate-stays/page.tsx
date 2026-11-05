@@ -11,6 +11,7 @@ import { DynamicIcon } from "@/components/DynamicIcon";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
 import { FaqSection } from "@/components/FaqSection";
+import { BespokeTripCta } from "@/components/BespokeTripCta";
 import { CoverageMap } from "@/components/CoverageMap";
 import { CorporateLeadForm } from "@/components/CorporateLeadForm";
 import { SplitHero } from "@/components/SplitHero";
@@ -715,6 +716,11 @@ export default async function CorporateStaysPage() {
           accent="maroon"
           maxWidth="1152px"
         />
+      </div>
+
+      {/* BESPOKE TRIP CTA */}
+      <div className="bg-cream py-24 sm:py-28">
+        <BespokeTripCta />
       </div>
     </main>
   );

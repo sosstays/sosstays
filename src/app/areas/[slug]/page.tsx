@@ -17,6 +17,7 @@ import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { ThingsToDoTabs } from "@/components/ThingsToDoTabs";
 import { PropertyCard } from "@/components/PropertyCard";
 import { FaqSection } from "@/components/FaqSection";
+import { BespokeTripCta } from "@/components/BespokeTripCta";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
 import type { Metadata } from "next";
@@ -174,6 +175,11 @@ export default async function AreaGuidePage({ params }: Props) {
           </ul>
         </Reveal>
       )}
+
+      {/* BESPOKE TRIP CTA */}
+      <div className="py-24 sm:py-28">
+        <BespokeTripCta />
+      </div>
     </main>
   );
 }

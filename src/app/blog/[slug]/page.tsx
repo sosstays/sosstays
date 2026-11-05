@@ -15,6 +15,7 @@ import { SocialIcons } from "@/components/SocialIcons";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { DisqusComments } from "@/components/DisqusComments";
 import { BlogPostListItem } from "@/components/BlogPostListItem";
+import { BespokeTripCta } from "@/components/BespokeTripCta";
 import { FaqSection } from "@/components/FaqSection";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
@@ -256,6 +257,10 @@ export default async function BlogPostPage({ params }: Props) {
                 </div>
               </div>
             )}
+
+            <div className="mb-9 last:mb-0">
+              <BespokeTripCta variant="compact" />
+            </div>
 
             {post.relatedAreaGuides && post.relatedAreaGuides.length > 0 && (
               <div>
