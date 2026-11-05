@@ -5,7 +5,7 @@ import { client } from "@/sanity/client";
 import { LANDING_PAGE_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata, SITE_URL } from "@/sanity/metadata";
-import { JsonLd, buildBreadcrumbSchema } from "@/sanity/jsonld";
+import { JsonLd, buildBreadcrumbSchema, buildFaqSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
@@ -17,9 +17,86 @@ import { PropertyCard } from "@/components/PropertyCard";
 import { StickyBookingBar } from "@/components/StickyBookingBar";
 import { ComparisonBars } from "@/components/ComparisonBars";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
+import { FaqSection } from "@/components/FaqSection";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
+
+// Page-specific SEO additions for the /hotels-near-funtasia landing page only
+// (visible FAQ section + FAQPage/LodgingBusiness JSON-LD) — this template is
+// shared by every landingPage doc, so everything below is gated on this one
+// slug rather than touching any other landing page.
+const FUNTASIA_SLUG = "hotels-near-funtasia";
+
+const FUNTASIA_FAQS = [
+  {
+    question: "Is there accommodation near Funtasia Drogheda?",
+    answer:
+      "Yes. Rathescar Grove Guest House is family-friendly accommodation about 15 minutes' drive from Funtasia Theme Park in Drogheda, with free on-site parking and family rooms with bunk beds for the kids.",
+  },
+  {
+    question: "How far is Rathescar Grove from Funtasia?",
+    answer:
+      "About 15 minutes by car. Funtasia is at Donore Road Industrial Estate, Drogheda, Co. Louth (A92 EVH6), and Rathescar Grove is just outside Dunleer — an easy drive, with free parking waiting at the house when you get back.",
+  },
+  {
+    question: "Do you have family rooms near Funtasia?",
+    answer:
+      "Yes. The Family Room has bunk beds for the kids plus a large double, sleeping 4, and there's also a Deluxe Family Room and a whole-house option sleeping up to 10 across 3 bedrooms and 3 bathrooms. Every stay includes free WiFi, a garden, and mountain or farmland views.",
+  },
+  {
+    question: "Is there free parking at your accommodation near Funtasia?",
+    answer:
+      "Yes — free on-site parking is included with every stay. Leave the car at the house and make the short drive to Funtasia, or park right outside when you get back.",
+  },
+  {
+    question: "Can I visit Funtasia and Newgrange in one trip?",
+    answer:
+      "Yes. Rathescar Grove sits between Funtasia in Drogheda and Newgrange / Brú na Bóinne in the Boyne Valley, so it works as a single base for both — Funtasia one day, Newgrange and the Hill of Slane the next.",
+  },
+  {
+    question: "What time is check-in and check-out?",
+    answer:
+      "Self check-in runs from 3pm to 9pm — room details arrive by message the day before. Check-out is 11:30am, leaving you time for a lazy breakfast before Funtasia opens.",
+  },
+  {
+    question: "How much are Funtasia tickets?",
+    answer:
+      "General admission is €24.95pp, off-peak (Mon–Fri 5–7pm) is €19.95pp, and children 2 and under go free. The Big Splash ticket bundles waterpark access with activities and rides — check funtasia.ie for current pricing, as the waterpark now runs a timeslot system and it's best to book online in advance.",
+  },
+];
+
+function buildFuntasiaLodgingBusinessSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    name: "Rathescar Grove Guest House",
+    url: "https://sosstays.com/stays/rathescar-grove-guest-house",
+    description:
+      "Three-bedroom family guest house in Ardee near Drogheda, Co. Louth — about 15 minutes from Funtasia Theme Park and a base for the Boyne Valley and Newgrange.",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Ardee",
+      addressRegion: "Co. Louth",
+      addressCountry: "IE",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "9.2",
+      reviewCount: "96",
+      bestRating: "10",
+    },
+    amenityFeature: [
+      { "@type": "LocationFeatureSpecification", name: "Free parking", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Free WiFi", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Family rooms", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Garden", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Self check-in", value: true },
+    ],
+    checkinTime: "15:00",
+    checkoutTime: "11:30",
+  };
+}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -95,6 +172,9 @@ export default async function LandingPage({ params }: Props) {
     { name: page.heroHeadline || page.title, url: `${SITE_URL}/${slug}` },
   ]);
 
+  const isFuntasiaPage = slug === FUNTASIA_SLUG;
+  const funtasiaFaqSchema = isFuntasiaPage ? buildFaqSchema(FUNTASIA_FAQS) : null;
+
   const property = page.featuredProperty;
   const gallery = property?.gallery ?? [];
   const marqueeItems = page.marqueeItems?.length ? page.marqueeItems : page.heroTags ?? [];
@@ -105,6 +185,8 @@ export default async function LandingPage({ params }: Props) {
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <JsonLd data={breadcrumbSchema} />
+      {funtasiaFaqSchema && <JsonLd data={funtasiaFaqSchema} />}
+      {isFuntasiaPage && <JsonLd data={buildFuntasiaLodgingBusinessSchema()} />}
 
       {/* HERO */}
       <section className="relative flex min-h-[92vh] flex-col justify-end overflow-hidden bg-deep-forest px-8 pt-[180px] pb-16 sm:px-14 sm:pt-[200px]">
@@ -687,6 +769,19 @@ export default async function LandingPage({ params }: Props) {
           )}
           <ItineraryTimeline days={page.itineraryDays} />
         </section>
+      )}
+
+      {/* FAQ — hotels-near-funtasia only (see FUNTASIA_FAQS above) */}
+      {isFuntasiaPage && (
+        <div className="pt-28">
+          <FaqSection
+            id="faq"
+            heading="Frequently asked questions about accommodation near Funtasia"
+            items={FUNTASIA_FAQS}
+            accent="forest-green"
+            maxWidth="820px"
+          />
+        </div>
       )}
 
       {/* WHILE YOU'RE IN THE AREA */}
