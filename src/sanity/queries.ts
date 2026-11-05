@@ -329,6 +329,46 @@ export const PROPERTY_ORDER_QUERY = defineQuery(`
   }
 `);
 
+// ---- Bespoke Ireland trip page (singleton, CMS-driven) ----
+
+export const BESPOKE_TRIP_PAGE_QUERY = defineQuery(`
+  *[_type == "bespokeTripPage" && _id == "bespokeTripPage-" + $market][0] {
+    heroEyebrow,
+    heading,
+    subhead,
+    heroParagraph,
+    heroImage,
+    detailsEyebrow,
+    detailsHeading,
+    detailsHeadingAccent,
+    detailItems[] { label, icon, image },
+    howItWorksHeading,
+    howItWorksSteps[] { title, text },
+    whatWeArrangeHeading,
+    whatWeArrangeItems,
+    housesHeading,
+    houses[]-> {
+      _id, name, "slug": slug.current, location, shortDescription,
+      "coverImage": gallery[0]
+    },
+    housesFooterNote,
+    areasEyebrow,
+    areasHeading,
+    areaGuides[]-> {
+      _id, areaName, "slug": slug.current, heroImage
+    },
+    moreAreasLabel,
+    moreAreasDescription,
+    itinerariesHeading,
+    itineraries[] { title, text },
+    faqHeading,
+    faqs[] { question, answer },
+    enquireHeading,
+    enquireText,
+    ${seoProjection}
+  }
+`);
+
 // ---- Footer (singleton) ----
 
 export const FOOTER_QUERY = defineQuery(`
