@@ -130,37 +130,39 @@ export default async function HomePage() {
 
       {/* FEATURED STAYS */}
       {properties.length > 0 && (
-        <section id="stays" className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
-          <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
-            <Reveal as="h2" className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
-              A few places to start
-            </Reveal>
-            <Reveal as="p" delay={150} className="max-w-[380px] text-near-black/60">
-              Have a proper look around each one.
-            </Reveal>
-          </div>
-
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((property: PropertyCardProps & { _id: string }, i: number) => (
-              <Reveal key={property._id} delay={Math.min(i, 5) * 90}>
-                <PropertyCard
-                  slug={property.slug}
-                  name={property.name}
-                  location={property.location}
-                  shortDescription={property.shortDescription}
-                  sleeps={property.sleeps}
-                  coverImage={property.coverImage}
-                  surface="framed"
-                  hideSleeps
-                />
+        <section id="stays" className="px-8 py-24 sm:px-14 sm:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
+              <Reveal as="h2" className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
+                A few places to start
               </Reveal>
-            ))}
-          </div>
+              <Reveal as="p" delay={150} className="max-w-[380px] text-near-black/60">
+                Have a proper look around each one.
+              </Reveal>
+            </div>
 
-          <div className="mt-12 text-center">
-            <Button link="/stays" variant="primary" bgColor="forest-green" color="cream">
-              View all stays
-            </Button>
+            <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+              {properties.map((property: PropertyCardProps & { _id: string }, i: number) => (
+                <Reveal key={property._id} delay={Math.min(i, 5) * 90}>
+                  <PropertyCard
+                    slug={property.slug}
+                    name={property.name}
+                    location={property.location}
+                    shortDescription={property.shortDescription}
+                    sleeps={property.sleeps}
+                    coverImage={property.coverImage}
+                    surface="framed"
+                    hideSleeps
+                  />
+                </Reveal>
+              ))}
+            </div>
+
+            <div className="mt-12 text-center">
+              <Button link="/stays" variant="primary" bgColor="forest-green" color="cream">
+                View all stays
+              </Button>
+            </div>
           </div>
         </section>
       )}
@@ -173,25 +175,27 @@ export default async function HomePage() {
       <AreaSpotlightCarousel areas={areas} />
 
       {/* INSTAGRAM FEED */}
-      <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
-          <div>
-            <Eyebrow className="mb-2" delay={0}>Follow along</Eyebrow>
-            <Reveal as="h2" delay={100} className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
-              On Instagram
-            </Reveal>
+      <section className="px-8 py-24 sm:px-14 sm:py-28">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
+            <div>
+              <Eyebrow className="mb-2" delay={0}>Follow along</Eyebrow>
+              <Reveal as="h2" delay={100} className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
+                On Instagram
+              </Reveal>
+            </div>
+            {instagramUrl && (
+              <Reveal delay={200}>
+                <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
+                  Follow us on Instagram
+                </Button>
+              </Reveal>
+            )}
           </div>
-          {instagramUrl && (
-            <Reveal delay={200}>
-              <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
-                Follow us on Instagram
-              </Button>
-            </Reveal>
-          )}
+          <Reveal delay={150}>
+            <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
+          </Reveal>
         </div>
-        <Reveal delay={150}>
-          <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
-        </Reveal>
       </section>
       <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
 
