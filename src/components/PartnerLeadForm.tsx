@@ -1,18 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
+import { ConsentCheckbox } from "@/components/ConsentCheckbox";
 import { PARTNER_CATEGORIES } from "@/lib/partnersData";
 
 const CONTACT_EMAIL = "hello@sosstays.com";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type Stage = "form" | "submitted" | "error";
+type Stage = "form" | "error";
 
 // The partners page's "Become a partner" form — a three-step wizard
 // using the same progress-segment / step-card pattern as
 // CorporateLeadForm/LandlordLeadForm, just with this page's field set.
 export function PartnerLeadForm() {
+  const router = useRouter();
   const [stage, setStage] = useState<Stage>("form");
   const [step, setStep] = useState(0);
 
@@ -25,6 +28,7 @@ export function PartnerLeadForm() {
   const [location, setLocation] = useState("");
   const [about, setAbout] = useState("");
   const [referral, setReferral] = useState("");
+  const [consent, setConsent] = useState(false);
 
   const [step0Error, setStep0Error] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -42,6 +46,10 @@ export function PartnerLeadForm() {
       }
       if (!EMAIL_PATTERN.test(email.trim())) {
         setStep0Error("Enter a valid email address.");
+        return;
+      }
+      if (!consent) {
+        setStep0Error("Please agree to the Privacy Policy to continue.");
         return;
       }
       setStep0Error(null);
@@ -66,10 +74,12 @@ export function PartnerLeadForm() {
           location: location.trim(),
           about: about.trim(),
           referral: referral.trim(),
+          consent: true,
         }),
       });
       if (!res.ok) throw new Error(`Partner lead submission failed: ${res.status}`);
-      setStage("submitted");
+      router.push("/thank-you");
+      return;
     } catch {
       setStage("error");
     } finally {
@@ -171,6 +181,7 @@ export function PartnerLeadForm() {
               />
             </label>
           </div>
+          <ConsentCheckbox checked={consent} onChange={setConsent} accent="maroon" />
           {step0Error && (
             <p role="alert" className="text-[13px] text-error-red">
               {step0Error}
@@ -285,17 +296,6 @@ export function PartnerLeadForm() {
               {submitting ? "Sending…" : "Apply to partner with us"}
             </Button>
           </div>
-        </div>
-      )}
-
-      {stage === "submitted" && (
-        <div>
-          <p className="mb-2 text-base font-semibold text-near-black">
-            Got it — thanks, {contactName.trim() || "there"}.
-          </p>
-          <p className="text-sm leading-relaxed text-near-black/70">
-            We&apos;ll take a look and come back to you either way.
-          </p>
         </div>
       )}
 

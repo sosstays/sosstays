@@ -460,3 +460,9 @@ body {
   box-shadow: none !important;
   border: 1px solid var(--sage-grey);
 }
+
+/* Thank-you page shop carousel: hide the scrollbar on the horizontal track
+   (Firefox handled via the inline scrollbarWidth style in the component). */
+.shop-carousel-track::-webkit-scrollbar {
+  display: none;
+}

@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
     otherRequirements,
     message,
     howHeard,
+    consent,
   } = body ?? {};
 
   if (!isValidEmail(email)) {
@@ -75,6 +76,9 @@ export async function POST(request: NextRequest) {
   }
   if (typeof company !== "string" || !company.trim()) {
     return NextResponse.json({ error: "Company name is required" }, { status: 400 });
+  }
+  if (consent !== true) {
+    return NextResponse.json({ error: "You must agree to the Privacy Policy to continue" }, { status: 400 });
   }
 
   const cleanOtherRequirements: string[] = Array.isArray(otherRequirements)
@@ -109,6 +113,8 @@ export async function POST(request: NextRequest) {
       other_requirements: cleanOtherRequirements.join(", "),
       how_heard: howHeard,
       message,
+      consent: true,
+      consent_at: new Date().toISOString(),
     },
     mailerlite: {
       fields: {

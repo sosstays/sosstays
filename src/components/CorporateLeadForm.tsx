@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
+import { ConsentCheckbox } from "@/components/ConsentCheckbox";
 
 const CONTACT_EMAIL = "info@sosstays.com";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type Stage = "form" | "submitted" | "error";
+type Stage = "form" | "error";
 
 const LOCATION_PREFERENCE_OPTIONS = [
   "Within 10 min walking distance",
@@ -131,6 +133,7 @@ function CheckboxOption({
 }
 
 export function CorporateLeadForm() {
+  const router = useRouter();
   const [stage, setStage] = useState<Stage>("form");
   const [step, setStep] = useState(0);
 
@@ -148,6 +151,7 @@ export function CorporateLeadForm() {
   const [otherRequirements, setOtherRequirements] = useState<string[]>([]);
   const [message, setMessage] = useState("");
   const [howHeard, setHowHeard] = useState("");
+  const [consent, setConsent] = useState(false);
 
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -173,6 +177,10 @@ export function CorporateLeadForm() {
       }
       if (!EMAIL_PATTERN.test(email.trim())) {
         setFieldError("Enter a valid email address.");
+        return;
+      }
+      if (!consent) {
+        setFieldError("Please agree to the Privacy Policy to continue.");
         return;
       }
     }
@@ -245,10 +253,12 @@ export function CorporateLeadForm() {
           otherRequirements,
           message: message.trim(),
           howHeard: howHeardValue ?? howHeard,
+          consent: true,
         }),
       });
       if (!res.ok) throw new Error(`Corporate lead submission failed: ${res.status}`);
-      setStage("submitted");
+      router.push("/thank-you");
+      return;
     } catch {
       setStage("error");
     } finally {
@@ -276,19 +286,6 @@ export function CorporateLeadForm() {
       message,
     ].join("\n")
   )}`;
-
-  if (stage === "submitted") {
-    return (
-      <div className="rounded-[18px] border border-sage-grey/40 bg-warm-cream p-8 text-left sm:p-11">
-        <p className="mb-2 text-base font-semibold text-near-black">
-          Got it — thanks, {name.trim() || "there"}.
-        </p>
-        <p className="text-sm leading-relaxed text-near-black/70">
-          We&apos;ll come back with real options — or tell you straight if we can&apos;t cover it yet.
-        </p>
-      </div>
-    );
-  }
 
   if (stage === "error") {
     return (
@@ -523,6 +520,7 @@ export function CorporateLeadForm() {
               />
             </label>
           </div>
+          <ConsentCheckbox checked={consent} onChange={setConsent} accent="maroon" />
           {fieldError && <p role="alert" className="text-[13px] text-error-red">{fieldError}</p>}
           <div className="mt-1 flex justify-between">
             <button type="button" onClick={goBack} className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black">

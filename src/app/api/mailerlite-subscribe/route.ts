@@ -4,13 +4,16 @@ import { saveLead } from "@/lib/leads";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { name, email, mobile, situation, propertyDescription } = body ?? {};
+  const { name, email, mobile, situation, propertyDescription, consent } = body ?? {};
 
   if (!isValidEmail(email)) {
     return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
   }
   if (typeof mobile !== "string" || !mobile.trim()) {
     return NextResponse.json({ error: "Mobile number is required" }, { status: 400 });
+  }
+  if (consent !== true) {
+    return NextResponse.json({ error: "You must agree to the Privacy Policy to continue" }, { status: 400 });
   }
 
   return saveLead({
@@ -22,6 +25,8 @@ export async function POST(request: NextRequest) {
       phone: mobile,
       landlord_situation: situation,
       property_description: propertyDescription,
+      consent: true,
+      consent_at: new Date().toISOString(),
     },
     onCreate: { source: "sos_form" },
     mailerlite: {
