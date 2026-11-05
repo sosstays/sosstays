@@ -11,12 +11,6 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type Stage = "form" | "error";
 
-const MONTH_OPTIONS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-  "Flexible",
-];
-
 const EVENT_OPTIONS = [
   "Ryder Cup",
   "Wedding",
@@ -38,10 +32,10 @@ const BASE_OR_ROUTE_OPTIONS = ["One base", "Touring route", "Not sure"];
 // CorporateLeadForm.tsx (the site's existing precedent for this kind of
 // form; there's no shared/generic stepper component to reuse, each lead
 // form hand-rolls this same step-array + flat-JSX-blocks structure).
+// Email/phone/consent are bundled into one final "contact" step, same as
+// CorporateLeadForm's own "contact" step.
 const STEP_IDS = [
   "name",
-  "email",
-  "phone",
   "idealMonth",
   "eventType",
   "groupSize",
@@ -49,6 +43,7 @@ const STEP_IDS = [
   "interests",
   "baseOrRoute",
   "notes",
+  "contact",
 ] as const;
 type StepId = (typeof STEP_IDS)[number];
 const LAST_STEP = STEP_IDS.length - 1;
@@ -125,21 +120,24 @@ export function BespokeTripForm() {
   const [step, setStep] = useState(0);
 
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [consent, setConsent] = useState(false);
-  const [phone, setPhone] = useState("");
   const [idealMonth, setIdealMonth] = useState("");
-  const [eventType, setEventType] = useState("");
+  const [eventTypes, setEventTypes] = useState<string[]>([]);
   const [groupSize, setGroupSize] = useState("");
   const [accommodationPreference, setAccommodationPreference] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
   const [baseOrRoute, setBaseOrRoute] = useState("");
   const [notes, setNotes] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [consent, setConsent] = useState(false);
 
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  function toggleEventType(value: string) {
+    setEventTypes((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]));
+  }
   function toggleInterest(value: string) {
     setInterests((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]));
   }
@@ -155,7 +153,15 @@ export function BespokeTripForm() {
       setFieldError("Let us know your name.");
       return;
     }
-    if (stepId === "email") {
+    if (stepId === "idealMonth" && !idealMonth.trim()) {
+      setFieldError("Tell us your ideal month (or \"Flexible\").");
+      return;
+    }
+    if (stepId === "eventType" && eventTypes.length === 0) {
+      setFieldError("Pick at least one option.");
+      return;
+    }
+    if (stepId === "contact") {
       if (!email.trim()) {
         setFieldError("An email address is needed so we can come back to you.");
         return;
@@ -203,8 +209,8 @@ export function BespokeTripForm() {
           name: name.trim(),
           email: email.trim(),
           phone: phone.trim(),
-          idealMonth,
-          eventType,
+          idealMonth: idealMonth.trim(),
+          eventType: eventTypes,
           groupSize,
           accommodationPreference,
           interests,
@@ -233,7 +239,7 @@ export function BespokeTripForm() {
       `Email: ${email}`,
       `Phone: ${phone}`,
       `Ideal month: ${idealMonth}`,
-      `Coming for an event: ${eventType}`,
+      `Coming for an event: ${eventTypes.join(", ")}`,
       `Group size: ${groupSize}`,
       `Accommodation preference: ${accommodationPreference}`,
       `Interests: ${interests.join(", ")}`,
@@ -297,74 +303,28 @@ export function BespokeTripForm() {
         </div>
       )}
 
-      {stepId === "email" && (
-        <div className="flex flex-col gap-4.5">
-          <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">
-            What&apos;s your email? <span className="text-error-red">*</span>
-          </h3>
-          <input
-            autoFocus
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && advanceFrom("email")}
-            placeholder="you@example.com"
-            className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
-          />
-          <ConsentCheckbox checked={consent} onChange={setConsent} accent="maroon" />
-          {fieldError && <p role="alert" className="text-[13px] text-error-red">{fieldError}</p>}
-          <div className="mt-1 flex justify-between">
-            <button type="button" onClick={goBack} className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black">
-              Back
-            </button>
-            <Button onClick={() => advanceFrom("email")} variant="primary" bgColor="maroon" color="cream" animateColor="maroon" size="sm">
-              Continue
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {stepId === "phone" && (
-        <div className="flex flex-col gap-4.5">
-          <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">What&apos;s your phone number?</h3>
-          <input
-            autoFocus
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && advanceFrom("phone")}
-            placeholder="e.g. 087 123 4567 (optional)"
-            className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
-          />
-          <div className="mt-1 flex justify-between">
-            <button type="button" onClick={goBack} className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black">
-              Back
-            </button>
-            <Button onClick={() => advanceFrom("phone")} variant="primary" bgColor="maroon" color="cream" animateColor="maroon" size="sm">
-              Continue
-            </Button>
-          </div>
-        </div>
-      )}
-
       {stepId === "idealMonth" && (
         <div className="flex flex-col gap-4.5">
           <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">
             Your ideal month? <span className="text-error-red">*</span>
           </h3>
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            {MONTH_OPTIONS.map((option) => (
-              <RadioOption
-                key={option}
-                label={option}
-                selected={idealMonth === option}
-                onSelect={() => selectAndAdvance(option, setIdealMonth)}
-              />
-            ))}
+          <input
+            autoFocus
+            value={idealMonth}
+            onChange={(e) => setIdealMonth(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && advanceFrom("idealMonth")}
+            placeholder="e.g. June 2026, or &quot;Flexible&quot;"
+            className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+          />
+          {fieldError && <p role="alert" className="text-[13px] text-error-red">{fieldError}</p>}
+          <div className="mt-1 flex justify-between">
+            <button type="button" onClick={goBack} className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black">
+              Back
+            </button>
+            <Button onClick={() => advanceFrom("idealMonth")} variant="primary" bgColor="maroon" color="cream" animateColor="maroon" size="sm">
+              Continue
+            </Button>
           </div>
-          <button type="button" onClick={goBack} className="mt-1 self-start text-sm font-semibold text-near-black/60 hover:text-near-black">
-            Back
-          </button>
         </div>
       )}
 
@@ -373,19 +333,26 @@ export function BespokeTripForm() {
           <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">
             Are you coming to attend an event? <span className="text-error-red">*</span>
           </h3>
-          <div className="flex flex-col gap-2.5">
+          <p className="text-[13px] leading-relaxed text-near-black/60">Tick all that apply.</p>
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             {EVENT_OPTIONS.map((option) => (
-              <RadioOption
+              <CheckboxOption
                 key={option}
                 label={option}
-                selected={eventType === option}
-                onSelect={() => selectAndAdvance(option, setEventType)}
+                checked={eventTypes.includes(option)}
+                onToggle={() => toggleEventType(option)}
               />
             ))}
           </div>
-          <button type="button" onClick={goBack} className="mt-1 self-start text-sm font-semibold text-near-black/60 hover:text-near-black">
-            Back
-          </button>
+          {fieldError && <p role="alert" className="text-[13px] text-error-red">{fieldError}</p>}
+          <div className="mt-1 flex justify-between">
+            <button type="button" onClick={goBack} className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black">
+              Back
+            </button>
+            <Button onClick={() => advanceFrom("eventType")} variant="primary" bgColor="maroon" color="cream" animateColor="maroon" size="sm">
+              Continue
+            </Button>
+          </div>
         </div>
       )}
 
@@ -492,14 +459,55 @@ export function BespokeTripForm() {
               className="min-h-[120px] resize-y rounded-[10px] border border-sage-grey/50 bg-cream p-4 font-sans text-[15px] text-near-black"
             />
           </label>
+          <div className="mt-1 flex justify-between">
+            <button type="button" onClick={goBack} className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black">
+              Back
+            </button>
+            <Button onClick={() => advanceFrom("notes")} variant="primary" bgColor="maroon" color="cream" animateColor="maroon" size="sm">
+              Continue
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {stepId === "contact" && (
+        <div className="flex flex-col gap-4.5">
+          <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">Let&apos;s get your details</h3>
+          <div className="grid grid-cols-1 gap-4.5 sm:grid-cols-2">
+            <label className="flex flex-col gap-1.5 text-sm text-near-black">
+              <span>
+                Email <span className="text-error-red">*</span>
+              </span>
+              <input
+                autoFocus
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+              />
+            </label>
+            <label className="flex flex-col gap-1.5 text-sm text-near-black">
+              <span>Mobile number</span>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="e.g. 087 123 4567 (optional)"
+                className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+              />
+            </label>
+          </div>
+          <ConsentCheckbox checked={consent} onChange={setConsent} accent="maroon" />
+          {fieldError && <p role="alert" className="text-[13px] text-error-red">{fieldError}</p>}
           {submitError && <p role="alert" className="text-[13px] text-error-red">{submitError}</p>}
-          <div className="mt-1 flex items-center justify-between">
+          <div className="mt-1 flex justify-between">
             <button type="button" onClick={goBack} className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold whitespace-nowrap text-near-black">
               Back
             </button>
             <Button
               disabled={submitting}
-              onClick={() => advanceFrom("notes")}
+              onClick={() => advanceFrom("contact")}
               variant="primary"
               bgColor="maroon"
               color="cream"
