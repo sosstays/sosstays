@@ -22,81 +22,131 @@ import type { Metadata } from "next";
 
 export const revalidate = 60;
 
-// Page-specific SEO additions for the /hotels-near-funtasia landing page only
-// (visible FAQ section + FAQPage/LodgingBusiness JSON-LD) — this template is
-// shared by every landingPage doc, so everything below is gated on this one
-// slug rather than touching any other landing page.
-const FUNTASIA_SLUG = "hotels-near-funtasia";
-
-const FUNTASIA_FAQS = [
-  {
-    question: "Is there accommodation near Funtasia Drogheda?",
-    answer:
-      "Yes. Rathescar Grove Guest House is family-friendly accommodation about 15 minutes' drive from Funtasia Theme Park in Drogheda, with free on-site parking and family rooms with bunk beds for the kids.",
-  },
-  {
-    question: "How far is Rathescar Grove from Funtasia?",
-    answer:
-      "About 15 minutes by car. Funtasia is at Donore Road Industrial Estate, Drogheda, Co. Louth (A92 EVH6), and Rathescar Grove is just outside Dunleer — an easy drive, with free parking waiting at the house when you get back.",
-  },
-  {
-    question: "Do you have family rooms near Funtasia?",
-    answer:
-      "Yes. The Family Room has bunk beds for the kids plus a large double, sleeping 4, and there's also a Deluxe Family Room and a whole-house option sleeping up to 10 across 3 bedrooms and 3 bathrooms. Every stay includes free WiFi, a garden, and mountain or farmland views.",
-  },
-  {
-    question: "Is there free parking at your accommodation near Funtasia?",
-    answer:
-      "Yes — free on-site parking is included with every stay. Leave the car at the house and make the short drive to Funtasia, or park right outside when you get back.",
-  },
-  {
-    question: "Can I visit Funtasia and Newgrange in one trip?",
-    answer:
-      "Yes. Rathescar Grove sits between Funtasia in Drogheda and Newgrange / Brú na Bóinne in the Boyne Valley, so it works as a single base for both — Funtasia one day, Newgrange and the Hill of Slane the next.",
-  },
-  {
-    question: "What time is check-in and check-out?",
-    answer:
-      "Self check-in runs from 3pm to 9pm — room details arrive by message the day before. Check-out is 11:30am, leaving you time for a lazy breakfast before Funtasia opens.",
-  },
-  {
-    question: "How much are Funtasia tickets?",
-    answer:
-      "General admission is €24.95pp, off-peak (Mon–Fri 5–7pm) is €19.95pp, and children 2 and under go free. The Big Splash ticket bundles waterpark access with activities and rides — check funtasia.ie for current pricing, as the waterpark now runs a timeslot system and it's best to book online in advance.",
-  },
-];
-
-function buildFuntasiaLodgingBusinessSchema() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "LodgingBusiness",
-    name: "Rathescar Grove Guest House",
-    url: "https://sosstays.com/stays/rathescar-grove-guest-house",
-    description:
-      "Three-bedroom family guest house in Ardee near Drogheda, Co. Louth — about 15 minutes from Funtasia Theme Park and a base for the Boyne Valley and Newgrange.",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Ardee",
-      addressRegion: "Co. Louth",
-      addressCountry: "IE",
+// Page-specific SEO additions (visible FAQ section + FAQPage JSON-LD) for a
+// handful of landing pages — this template is shared by every landingPage
+// doc, so everything below is keyed by slug rather than touching any other
+// landing page. A page's property's own LodgingBusiness/VacationRental
+// schema lives once on its /stays/[slug] page (see sanity/jsonld.tsx's
+// PROPERTY_SCHEMA_OVERRIDES) and is never duplicated here.
+const LANDING_PAGE_FAQS: Record<string, { question: string; answer: string }[]> = {
+  "hotels-near-funtasia": [
+    {
+      question: "Is there accommodation near Funtasia Drogheda?",
+      answer:
+        "Yes. Rathescar Grove Guest House is family-friendly accommodation about 15 minutes' drive from Funtasia Theme Park in Drogheda, with free on-site parking and family rooms with bunk beds for the kids.",
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "9.2",
-      reviewCount: "96",
-      bestRating: "10",
+    {
+      question: "How far is Rathescar Grove from Funtasia?",
+      answer:
+        "About 15 minutes by car. Funtasia is at Donore Road Industrial Estate, Drogheda, Co. Louth (A92 EVH6), and Rathescar Grove is just outside Dunleer — an easy drive, with free parking waiting at the house when you get back.",
     },
-    amenityFeature: [
-      { "@type": "LocationFeatureSpecification", name: "Free parking", value: true },
-      { "@type": "LocationFeatureSpecification", name: "Free WiFi", value: true },
-      { "@type": "LocationFeatureSpecification", name: "Family rooms", value: true },
-      { "@type": "LocationFeatureSpecification", name: "Garden", value: true },
-      { "@type": "LocationFeatureSpecification", name: "Self check-in", value: true },
-    ],
-    checkinTime: "15:00",
-    checkoutTime: "11:30",
-  };
-}
+    {
+      question: "Do you have family rooms near Funtasia?",
+      answer:
+        "Yes. The Family Room has bunk beds for the kids plus a large double, sleeping 4, and there's also a Deluxe Family Room and a whole-house option sleeping up to 10 across 3 bedrooms and 3 bathrooms. Every stay includes free WiFi, a garden, and mountain or farmland views.",
+    },
+    {
+      question: "Is there free parking at your accommodation near Funtasia?",
+      answer:
+        "Yes — free on-site parking is included with every stay. Leave the car at the house and make the short drive to Funtasia, or park right outside when you get back.",
+    },
+    {
+      question: "Can I visit Funtasia and Newgrange in one trip?",
+      answer:
+        "Yes. Rathescar Grove sits between Funtasia in Drogheda and Newgrange / Brú na Bóinne in the Boyne Valley, so it works as a single base for both — Funtasia one day, Newgrange and the Hill of Slane the next.",
+    },
+    {
+      question: "What time is check-in and check-out?",
+      answer:
+        "Self check-in runs from 3pm to 9pm — room details arrive by message the day before. Check-out is 11:30am, leaving you time for a lazy breakfast before Funtasia opens.",
+    },
+    {
+      question: "How much are Funtasia tickets?",
+      answer:
+        "General admission is €24.95pp, off-peak (Mon–Fri 5–7pm) is €19.95pp, and children 2 and under go free. The Big Splash ticket bundles waterpark access with activities and rides — check funtasia.ie for current pricing, as the waterpark now runs a timeslot system and it's best to book online in advance.",
+    },
+  ],
+  "hotels-near-cliffs-of-moher": [
+    {
+      question: "Is there accommodation near the Cliffs of Moher?",
+      answer:
+        "Yes. Howard's Way is a private self-catering house in Liscannor, just five minutes' drive from the Cliffs of Moher — four bedrooms, sea views and private parking, sleeping up to 8 guests.",
+    },
+    {
+      question: "How far is Howard's Way from the Cliffs of Moher?",
+      answer:
+        "About five minutes by car. Howard's Way is in Liscannor, Co. Clare, which puts you closer to the cliffs than most hotels in Ennis or Lahinch.",
+    },
+    {
+      question: "How many people does Howard's Way sleep?",
+      answer:
+        "Eight guests across four bedrooms, with four acres of grounds — room for a golf group, a two-family trip, or a week without sharing a corridor with strangers.",
+    },
+    {
+      question: "Is there parking at Howard's Way?",
+      answer:
+        "Yes. Private on-site parking with EV charging is included, along with four acres of grounds and no shared lobby or check-in queue.",
+    },
+    {
+      question: "What's near Howard's Way besides the Cliffs of Moher?",
+      answer:
+        "Lahinch is ten minutes away with its shops, restaurants and 36-hole links golf course, and St Brigid's Well sits right on the Wild Atlantic Way on the edge of Liscannor village.",
+    },
+    {
+      question: "When is the best time to visit the Cliffs of Moher?",
+      answer:
+        "Go early morning or late evening to avoid the coach traffic, which is heaviest between 10am and 4pm. Staying five minutes away makes an early or late visit easy.",
+    },
+    {
+      question: "How tall are the Cliffs of Moher?",
+      answer:
+        "The cliffs rise to 214 metres over about 8km of coastline, making them Ireland's most-visited natural attraction.",
+    },
+  ],
+  "hotels-near-newgrange": [
+    {
+      question: "Is there accommodation near Newgrange?",
+      answer:
+        "Yes. Rathescar Grove Guest House is countryside accommodation in Ardee near Drogheda, about a 25-minute drive from Newgrange, with mountain and farmland views, free parking and a private balcony option.",
+    },
+    {
+      question: "How far is Rathescar Grove from Newgrange?",
+      answer:
+        "Roughly 22.5km, or about 25 minutes by car. All Newgrange visits start at the Brú na Bóinne Visitor Centre in Donore, Co. Meath (A92 EH5C) — there's no driving directly to the monument.",
+    },
+    {
+      question: "Do I need to book Newgrange in advance?",
+      answer:
+        "Yes. There's no walk-up entry — every visit starts at the Brú na Bóinne Visitor Centre, and tickets release 30 days ahead from April to October and 7 days ahead the rest of the year. Summer slots can sell out within hours, so book as early as the window allows.",
+    },
+    {
+      question: "How much do Newgrange tickets cost?",
+      answer:
+        "The main-season tour (1 March–1 November) covers the exhibition, the Newgrange chamber and Knowth, is €18 per adult for 2026 and runs about 3 hours. The winter tour covers the exhibition and Newgrange chamber only and runs about 2 hours. Always confirm on heritageireland.ie before booking.",
+    },
+    {
+      question: "Do you have rooms near Newgrange?",
+      answer:
+        "Yes. Rathescar Grove is a three-room guest house with a Family Room with Mountain View, a Deluxe Double Room and a Deluxe Family Room, sleeping up to 10 across 3 bedrooms and 3 bathrooms, with free WiFi, a garden and free parking.",
+    },
+    {
+      question: "Can I visit Newgrange and Funtasia in one trip?",
+      answer:
+        "Yes. Rathescar Grove sits between Newgrange in the Boyne Valley and Funtasia Theme Park in Drogheda, so it works as a single base for a history day and a family day out.",
+    },
+    {
+      question: "Is Newgrange suitable for young children?",
+      answer:
+        "The passage and chamber are narrow, dimly lit and involve uneven steps, so it's not accessible for everyone. It's worth preparing younger kids for a short, enclosed space in advance.",
+    },
+  ],
+};
+
+const LANDING_PAGE_FAQ_HEADINGS: Record<string, string> = {
+  "hotels-near-funtasia": "Frequently asked questions about accommodation near Funtasia",
+  "hotels-near-cliffs-of-moher": "Frequently asked questions about accommodation near the Cliffs of Moher",
+  "hotels-near-newgrange": "Frequently asked questions about accommodation near Newgrange",
+};
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -172,8 +222,9 @@ export default async function LandingPage({ params }: Props) {
     { name: page.heroHeadline || page.title, url: `${SITE_URL}/${slug}` },
   ]);
 
-  const isFuntasiaPage = slug === FUNTASIA_SLUG;
-  const funtasiaFaqSchema = isFuntasiaPage ? buildFaqSchema(FUNTASIA_FAQS) : null;
+  const pageFaqs = LANDING_PAGE_FAQS[slug];
+  const pageFaqHeading = LANDING_PAGE_FAQ_HEADINGS[slug];
+  const pageFaqSchema = pageFaqs ? buildFaqSchema(pageFaqs) : null;
 
   const property = page.featuredProperty;
   const gallery = property?.gallery ?? [];
@@ -185,8 +236,7 @@ export default async function LandingPage({ params }: Props) {
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <JsonLd data={breadcrumbSchema} />
-      {funtasiaFaqSchema && <JsonLd data={funtasiaFaqSchema} />}
-      {isFuntasiaPage && <JsonLd data={buildFuntasiaLodgingBusinessSchema()} />}
+      {pageFaqSchema && <JsonLd data={pageFaqSchema} />}
 
       {/* HERO */}
       <section className="relative flex min-h-[92vh] flex-col justify-end overflow-hidden bg-deep-forest px-8 pt-[180px] pb-16 sm:px-14 sm:pt-[200px]">
@@ -771,13 +821,13 @@ export default async function LandingPage({ params }: Props) {
         </section>
       )}
 
-      {/* FAQ — hotels-near-funtasia only (see FUNTASIA_FAQS above) */}
-      {isFuntasiaPage && (
+      {/* FAQ — only on the landing pages listed in LANDING_PAGE_FAQS above */}
+      {pageFaqs && (
         <div className="pt-28">
           <FaqSection
             id="faq"
-            heading="Frequently asked questions about accommodation near Funtasia"
-            items={FUNTASIA_FAQS}
+            heading={pageFaqHeading}
+            items={pageFaqs}
             accent="forest-green"
             maxWidth="820px"
           />
