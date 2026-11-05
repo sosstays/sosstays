@@ -140,13 +140,80 @@ const LANDING_PAGE_FAQS: Record<string, { question: string; answer: string }[]> 
         "The passage and chamber are narrow, dimly lit and involve uneven steps, so it's not accessible for everyone. It's worth preparing younger kids for a short, enclosed space in advance.",
     },
   ],
+  "ryder-cup-2027-accommodation": [
+    {
+      question: "Where should I stay for the Ryder Cup 2027?",
+      answer:
+        "Howard's Way is a whole self-catering house in Liscannor, Co. Clare, about an hour and 15 minutes' drive from Adare Manor — four bedrooms, sleeps eight, sea views, and Lahinch ten minutes away. If you're a bigger group or want to tour Ireland, we can also plan a route across several of our houses.",
+    },
+    {
+      question: "How far is Howard's Way from Adare Manor?",
+      answer:
+        "About 85 km by road, roughly an hour and 15 minutes via Ennis and Limerick on a normal day. Match days are busier, so leave early and plan to use the official park-and-ride or train services.",
+    },
+    {
+      question: "Do I need to buy Ryder Cup tickets separately?",
+      answer:
+        "Yes. Tickets are sold only through the official Ryder Cup channels — SOS Stays is not an official provider and doesn't sell tickets or hospitality. It's worth having tickets confirmed before you book a stay.",
+    },
+    {
+      question: "Can you plan our whole Ireland trip around the Ryder Cup?",
+      answer:
+        "Yes. Beyond the house, we act as your local concierge: accommodation across our Irish properties, match-day transport planning, tee times at the west-of-Ireland links, and family days out — all arranged for you.",
+    },
+    {
+      question: "What is there for the family during Ryder Cup week?",
+      answer:
+        "Howard's Way is five minutes from the Cliffs of Moher and ten from Lahinch beach and golf. The Aran Islands ferries leave from Doolin about 20 minutes away, and the Burren, Doolin Cave and Galway city are all easy day trips.",
+    },
+    {
+      question: "Is Adare Manor taking bookings during the Ryder Cup?",
+      answer:
+        "No — Adare Manor isn't taking normal bookings in September 2027. The official accommodation options are a campsite at Mountwilliam, the Official Property Rental Programme, and a cruise ship, so many groups stay an hour or more away.",
+    },
+    {
+      question: "How do I book Howard's Way for Ryder Cup week?",
+      answer:
+        "Email hello@sosstays.com with your dates and group size, and we'll come back with availability and a price. For a full bespoke itinerary, send us your group details and we'll plan the whole trip.",
+    },
+  ],
 };
 
 const LANDING_PAGE_FAQ_HEADINGS: Record<string, string> = {
   "hotels-near-funtasia": "Frequently asked questions about accommodation near Funtasia",
   "hotels-near-cliffs-of-moher": "Frequently asked questions about accommodation near the Cliffs of Moher",
   "hotels-near-newgrange": "Frequently asked questions about accommodation near Newgrange",
+  "ryder-cup-2027-accommodation": "Frequently asked questions about Ryder Cup 2027 accommodation",
 };
+
+// Page-specific additions for /ryder-cup-2027-accommodation only: a subhead
+// under the H1, and a bespoke-trip "concierge" section. No equivalent CMS
+// fields exist for this yet, so it's hardcoded here rather than threaded
+// through the shared landingPage schema for one page.
+const RYDER_CUP_2027_SLUG = "ryder-cup-2027-accommodation";
+const RYDER_CUP_SUBHEAD =
+  "A whole house near Adare — plus a local Irish concierge to plan the rest of your trip.";
+// No bespoke-enquiry page exists yet — falls back to a mailto per the brief.
+const RYDER_CUP_BESPOKE_ENQUIRY_HREF =
+  "mailto:hello@sosstays.com?subject=" + encodeURIComponent("Bespoke Ryder Cup trip");
+
+function buildRyderCupConciergeServiceSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Ryder Cup 2027 Ireland Concierge & Bespoke Trip Planning",
+    serviceType: "Bespoke Ireland golf and family trip planning",
+    description:
+      "Bespoke concierge for golfing families travelling to Ireland for the Ryder Cup 2027 — accommodation across our Irish houses, match-day transport planning, tee times and family itineraries.",
+    provider: {
+      "@type": "Organization",
+      name: "SOS Stays",
+      url: "https://sosstays.com",
+      email: "hello@sosstays.com",
+    },
+    areaServed: { "@type": "Country", name: "Ireland" },
+  };
+}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -225,6 +292,7 @@ export default async function LandingPage({ params }: Props) {
   const pageFaqs = LANDING_PAGE_FAQS[slug];
   const pageFaqHeading = LANDING_PAGE_FAQ_HEADINGS[slug];
   const pageFaqSchema = pageFaqs ? buildFaqSchema(pageFaqs) : null;
+  const isRyderCup2027 = slug === RYDER_CUP_2027_SLUG;
 
   const property = page.featuredProperty;
   const gallery = property?.gallery ?? [];
@@ -237,6 +305,7 @@ export default async function LandingPage({ params }: Props) {
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <JsonLd data={breadcrumbSchema} />
       {pageFaqSchema && <JsonLd data={pageFaqSchema} />}
+      {isRyderCup2027 && <JsonLd data={buildRyderCupConciergeServiceSchema()} />}
 
       {/* HERO */}
       <section className="relative flex min-h-[92vh] flex-col justify-end overflow-hidden bg-deep-forest px-8 pt-[180px] pb-16 sm:px-14 sm:pt-[200px]">
@@ -265,6 +334,11 @@ export default async function LandingPage({ params }: Props) {
           <h1 className="max-w-[15ch] font-serif text-[clamp(2.75rem,6.6vw,6.5rem)] leading-[0.98] font-extrabold tracking-tight text-cream">
             {page.heroHeadline}
           </h1>
+          {isRyderCup2027 && (
+            <Reveal as="p" delay={160} className="mt-5 max-w-2xl text-xl font-semibold leading-snug text-light-sage">
+              {RYDER_CUP_SUBHEAD}
+            </Reveal>
+          )}
           {page.heroSubtext && (
             <Reveal as="p" delay={200} className="mt-6 max-w-2xl text-lg leading-relaxed text-cream/88">
               {page.heroSubtext}
@@ -350,6 +424,54 @@ export default async function LandingPage({ params }: Props) {
         itemClassName="gap-11 pr-11 text-[15px] font-medium tracking-[0.14em] text-cream/78 uppercase"
         separator={<span className="text-light-sage">✳</span>}
       />
+
+      {/* CONCIERGE — ryder-cup-2027-accommodation only */}
+      {isRyderCup2027 && (
+        <section className="mx-auto max-w-6xl px-8 pt-26 sm:px-14">
+          <Reveal
+            as="h2"
+            className="max-w-[26ch] font-serif text-[clamp(2.1rem,4vw,3.5rem)] leading-[1.04] font-bold tracking-tight text-deep-forest"
+          >
+            More than a house: a bespoke Irish golf trip, planned for you
+          </Reveal>
+          <Reveal as="p" delay={100} className="mt-5.5 max-w-2xl text-[17px] leading-relaxed text-near-black/72">
+            You&apos;re flying your family across the Atlantic for the Ryder Cup&apos;s 100th
+            anniversary. The golf is sorted. The rest — where you stay, how you get to Adare each
+            day, what the kids do while you&apos;re on the course, which links you play before and
+            after — shouldn&apos;t be left to a spreadsheet. That&apos;s where we come in.
+          </Reveal>
+          <Reveal as="p" delay={160} className="mt-5.5 max-w-2xl text-[17px] leading-relaxed text-near-black/72">
+            SOS Stays is an Irish team on the ground, not a booking portal. We look after our own
+            houses across Ireland — Howard&apos;s Way on the Clare coast, Rathescar Grove in the
+            Boyne Valley, and more — and we&apos;ll connect them into one bespoke itinerary for
+            your family: a week by Adare, then a week on the west coast, with the drives, the tee
+            times and the family days already mapped out.
+          </Reveal>
+          <Reveal delay={220} className="mt-7 max-w-2xl">
+            <ul className="flex flex-col gap-2.5">
+              {[
+                "A base — or a route across several of our houses — matched to your group size",
+                "Match-day logistics: park-and-ride or train planning from wherever you're staying",
+                "Tee times at Lahinch, Trump Doonbeg and the west-of-Ireland links",
+                "Family days out: Cliffs of Moher, Aran Islands, the Burren, castles, Galway",
+                "One point of contact for the whole trip",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-[15px] leading-relaxed text-near-black/80">
+                  <span className="mt-[9px] h-1.5 w-1.5 flex-none rounded-full bg-maroon" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+          <Reveal as="p" delay={280} className="mt-7 max-w-2xl text-[17px] leading-relaxed text-near-black/72">
+            Tell us your dates, group size and what the family wants to do — we&apos;ll come back
+            with a plan.{" "}
+            <a href={RYDER_CUP_BESPOKE_ENQUIRY_HREF} className="font-semibold text-forest-green underline underline-offset-[3px]">
+              Enquire about a bespoke trip.
+            </a>
+          </Reveal>
+        </section>
+      )}
 
       {/* GEOGRAPHY */}
       {page.distanceStat && (
