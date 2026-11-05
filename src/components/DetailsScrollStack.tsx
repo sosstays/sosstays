@@ -2,18 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Plane, Home, Camera, Flag, Compass, Car, type LucideIcon } from "lucide-react";
+import { DynamicIcon } from "@/components/DynamicIcon";
+import { urlFor } from "@/sanity/image";
 
-// Icon components can't cross the server→client boundary as props (they're
-// functions), so callers pass a name and this client component resolves it
-// itself.
-const ICONS: Record<string, LucideIcon> = { Plane, Home, Camera, Flag, Compass, Car };
+type SanityImageWithAlt = { alt?: string } & Record<string, unknown>;
 
 export type DetailItem = {
   label: string;
-  icon: keyof typeof ICONS;
-  imageUrl: string;
-  imageAlt: string;
+  /** Kebab-case lucide icon name (e.g. "plane") — resolved by DynamicIcon. */
+  icon: string;
+  image: SanityImageWithAlt;
 };
 
 // Each card's scattered resting position, in viewport units (vw/vh) rather
@@ -130,7 +128,6 @@ export function DetailsScrollStack({
             const y = lerp(scatter.y, CONVERGE.y, eased);
             const rotate = lerp(scatter.rotate, 0, eased);
             const scale = lerp(1, CONVERGE.scale, eased);
-            const Icon = ICONS[item.icon];
             return (
               <div
                 key={item.label}
@@ -145,14 +142,14 @@ export function DetailsScrollStack({
               >
                 <div className="flex items-center gap-2 rounded-full border border-sage-grey/40 bg-bright-cream px-3 py-1.5 shadow-sm">
                   <span className="flex h-5.5 w-5.5 flex-none items-center justify-center rounded-full bg-forest-green/12 text-forest-green">
-                    <Icon size={13} strokeWidth={2.2} />
+                    <DynamicIcon name={item.icon} size={13} strokeWidth={2.2} />
                   </span>
                   <span className="truncate text-[12px] font-semibold text-near-black">{item.label}</span>
                 </div>
                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[14px] border border-sage-grey/40 shadow-[0_10px_26px_rgba(0,0,0,0.14)]">
                   <Image
-                    src={item.imageUrl}
-                    alt={item.imageAlt}
+                    src={urlFor(item.image).width(400).height(300).url()}
+                    alt={item.image.alt ?? item.label}
                     fill
                     sizes="190px"
                     className="object-cover"
