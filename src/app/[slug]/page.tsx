@@ -468,7 +468,12 @@ export default async function LandingPage({ params }: Props) {
             with a plan.{" "}
             <a href={RYDER_CUP_BESPOKE_ENQUIRY_HREF} className="font-semibold text-forest-green underline underline-offset-[3px]">
               Enquire about a bespoke trip.
-            </a>
+            </a>{" "}
+            Or{" "}
+            <a href="/bespoke-ireland-trip" className="font-semibold text-forest-green underline underline-offset-[3px]">
+              plan a bespoke Ireland trip
+            </a>{" "}
+            with sample itineraries and everything we arrange.
           </Reveal>
         </section>
       )}
