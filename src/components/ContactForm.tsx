@@ -1,14 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/Button";
 import { ConsentCheckbox } from "@/components/ConsentCheckbox";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 
 const CONTACT_EMAIL_FALLBACK = "info@sosstays.com";
 
-const TOPIC_OPTIONS = ["Media query", "About a booking", "Hiring", "Partnership", "Other"];
+// Must match the CHECK constraint on contact_queries.topic (see
+// /api/contact-subscribe).
+const TOPIC_OPTIONS = [
+  "About a booking",
+  "I have a property to manage",
+  "Partner outreach",
+  "Add to shop",
+  "Media query",
+  "Events",
+  "Speaking request",
+  "Other",
+];
+
+const HOW_HEARD_OPTIONS = [
+  "Google search",
+  "ChatGPT / Claude",
+  "Social media",
+  "Referred by a friend",
+  "Email",
+  "Other",
+];
 
 // Not a full RFC 5322 parser — just enough to catch "forgot the @" /
 // "forgot the domain" typos without rejecting real addresses.
@@ -22,12 +42,23 @@ function isValidPhone(value: string) {
 
 export function ContactForm({ contactEmail }: { contactEmail?: string | null }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [topic, setTopic] = useState("");
+  // Lets the Partners/Shop sections elsewhere on the page deep-link here
+  // with the right topic pre-selected (e.g.
+  // /contact?topic=Partner+outreach#contact-form) instead of leaving the
+  // visitor to pick it again themselves. Read once at mount via lazy
+  // useState init rather than an effect, since searchParams is already
+  // available synchronously on the client.
+  const [topic, setTopic] = useState(() => {
+    const presetTopic = searchParams.get("topic");
+    return presetTopic && TOPIC_OPTIONS.includes(presetTopic) ? presetTopic : "";
+  });
   const [property, setProperty] = useState("");
   const [message, setMessage] = useState("");
+  const [howHeard, setHowHeard] = useState("");
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState("");
   const [usedMailtoFallback, setUsedMailtoFallback] = useState(false);
@@ -82,6 +113,7 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
           topic,
           property: property.trim(),
           message: message.trim(),
+          howHeard,
           consent: true,
         }),
       });
@@ -101,7 +133,11 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="sos-form-stagger flex flex-col gap-7" noValidate>
+    <form
+      onSubmit={handleSubmit}
+      className="sos-form-stagger flex flex-col gap-7 rounded-[18px] border border-sage-grey/25 bg-cream p-7 sm:p-9"
+      noValidate
+    >
       <label className="flex flex-col gap-1.5">
         <span className="text-sm text-near-black">
           Full Name <span className="text-error-red">*</span>
@@ -184,6 +220,22 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
           rows={2}
           className="min-h-[64px] resize-y rounded-[10px] border border-sage-grey/50 bg-transparent p-3 text-[15px] text-near-black placeholder:text-near-black/35 focus:border-forest-green focus:outline-none"
         />
+      </label>
+
+      <label className="relative z-10 flex flex-col gap-1.5">
+        <span className="text-sm text-near-black">How did you hear about us?</span>
+        <Select value={howHeard} onValueChange={setHowHeard}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select one (optional)" />
+          </SelectTrigger>
+          <SelectContent>
+            {HOW_HEARD_OPTIONS.map((option) => (
+              <SelectItem key={option} value={option}>
+                {option}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </label>
 
       <ConsentCheckbox checked={consent} onChange={setConsent} />

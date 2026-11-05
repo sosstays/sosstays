@@ -8,7 +8,8 @@ import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { getGuestNavLinks } from "@/lib/navLinks";
 import { orderProperties } from "@/lib/propertyOrder";
-import { PropertyCard, type PropertyCardProps } from "@/components/PropertyCard";
+import type { PropertyCardProps } from "@/components/PropertyCard";
+import { PropertyCarousel } from "@/components/PropertyCarousel";
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 import { PromoGrid } from "@/components/PromoGrid";
@@ -36,10 +37,13 @@ export default async function HomePage() {
     client.fetch(HOMEPAGE_BLOG_QUERY),
     getGuestNavLinks(),
   ]);
+  // No cap here — the carousel is what keeps this section manageable as
+  // more stays get added; Property Order in Site Settings controls which
+  // ones lead.
   const properties = orderProperties<PropertyCardProps & { _id: string }>(
     allProperties,
     propertyOrder?.orderedSlugs
-  ).slice(0, 3);
+  );
   const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
   const instagramUrl = siteSettings?.socialLinks?.find(
     (link: { platform: string; url: string }) => link.platform === "instagram",
@@ -141,22 +145,7 @@ export default async function HomePage() {
               </Reveal>
             </div>
 
-            <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-              {properties.map((property: PropertyCardProps & { _id: string }, i: number) => (
-                <Reveal key={property._id} delay={Math.min(i, 5) * 90}>
-                  <PropertyCard
-                    slug={property.slug}
-                    name={property.name}
-                    location={property.location}
-                    shortDescription={property.shortDescription}
-                    sleeps={property.sleeps}
-                    coverImage={property.coverImage}
-                    surface="framed"
-                    hideSleeps
-                  />
-                </Reveal>
-              ))}
-            </div>
+            <PropertyCarousel properties={properties} />
 
             <div className="mt-12 text-center">
               <Button link="/stays" variant="primary" bgColor="forest-green" color="cream">
