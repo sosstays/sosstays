@@ -31,6 +31,7 @@ import { BookNowCta, PropertyOverview } from "@/components/PropertyOverview";
 import { Eyebrow } from "@/components/Eyebrow";
 import type { CheckoutAddOn } from "@/components/checkout/AddOnSelector";
 import { AddOnsSection } from "@/components/AddOnsSection";
+import { BespokeTripCta } from "@/components/BespokeTripCta";
 import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: re-fetch at most once a minute
@@ -549,6 +550,11 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
           />
         </div>
       </section>
+
+      {/* BESPOKE TRIP CTA */}
+      <div className="pb-24 sm:pb-28">
+        <BespokeTripCta />
+      </div>
     </main>
   );
 }

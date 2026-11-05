@@ -10,6 +10,7 @@ import { getGuestNavLinks } from "@/lib/navLinks";
 import { orderProperties } from "@/lib/propertyOrder";
 import type { PropertyCardProps } from "@/components/PropertyCard";
 import { PropertyCarousel } from "@/components/PropertyCarousel";
+import { BespokeTripCta } from "@/components/BespokeTripCta";
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 import { PromoGrid } from "@/components/PromoGrid";
@@ -209,6 +210,11 @@ export default async function HomePage() {
           </Reveal>
         </div>
       </section>
+
+      {/* BESPOKE TRIP CTA */}
+      <div className="py-24 sm:py-28">
+        <BespokeTripCta />
+      </div>
     </main>
   );
 }
