@@ -54,11 +54,11 @@ export function isIndexable(noIndex: boolean | null | undefined): boolean {
 export const DEFAULT_SEO =
   MARKET === "in"
     ? {
-        title: "Sos Stays",
-        description: "Sos Stays — short-term rental property management.",
+        title: "SOS Stays",
+        description: "SOS Stays — short-term rental property management.",
       }
     : {
-        title: "Sos Stays | Holiday Homes to Book & Properties to Manage in Louth, Meath & the Mournes",
+        title: "SOS Stays | Holiday Homes to Book & Properties to Manage in Louth, Meath & the Mournes",
         description:
           "Book direct holiday homes across the Boyne Valley, Louth, and the Mournes — no Airbnb fees. Own a property? We manage it for you and grow your income. Send your SOS.",
       };

@@ -1,20 +1,31 @@
 import { Eyebrow } from "@/components/Eyebrow";
 
 type Row = { label: string; str: string; longTerm: string };
+type Region = "roi" | "ni";
 
 // Speaks to both audiences reading this page — hosts already running an
 // Airbnb (comparing against what they're leaving on the table) and
 // landlords currently in long-term lets (comparing against switching).
-const ROWS: Row[] = [
-  { label: "Typical monthly income", str: "Higher — priced nightly, adjusted to demand", longTerm: "Fixed rent, set once a year" },
-  { label: "Who does the work", str: "Sos Stays — listings, pricing, cleaning, guests", longTerm: "You, or a letting agent on a flat fee" },
-  { label: "Flexibility to use the property yourself", str: "Block off any dates you want", longTerm: "None until the tenancy ends" },
-  { label: "Vacancy risk", str: "Managed actively — dynamic pricing keeps nights filled", longTerm: "One vacant month can wipe out a month's rent" },
-  { label: "Compliance", str: "Fáilte Ireland registration, RPZ rules — we guide you through it", longTerm: "RTB registration, standard landlord obligations" },
-  { label: "Getting started", str: "Live in about a week", longTerm: "Weeks of viewings and referencing" },
-];
+// The "Compliance" row is the one region-specific line — everything else
+// holds for both the Republic and Northern Ireland.
+function buildRows(region: Region): Row[] {
+  const complianceRow: Row =
+    region === "ni"
+      ? { label: "Compliance", str: "Tourism NI certification — we guide you through it", longTerm: "Standard landlord obligations" }
+      : { label: "Compliance", str: "Fáilte Ireland registration, RPZ rules — we guide you through it", longTerm: "RTB registration, standard landlord obligations" };
 
-export function StrVsLongTermTable() {
+  return [
+    { label: "Typical monthly income", str: "Higher — priced nightly, adjusted to demand", longTerm: "Fixed rent, set once a year" },
+    { label: "Who does the work", str: "SOS Stays — listings, pricing, cleaning, guests", longTerm: "You, or a letting agent on a flat fee" },
+    { label: "Flexibility to use the property yourself", str: "Block off any dates you want", longTerm: "None until the tenancy ends" },
+    { label: "Vacancy risk", str: "Managed actively — dynamic pricing keeps nights filled", longTerm: "One vacant month can wipe out a month's rent" },
+    complianceRow,
+    { label: "Getting started", str: "Live in about a week", longTerm: "Weeks of viewings and referencing" },
+  ];
+}
+
+export function StrVsLongTermTable({ region = "roi" }: { region?: Region }) {
+  const rows = buildRows(region);
   return (
     <section className="mx-auto max-w-5xl px-8 py-16 sm:px-14">
       <div className="mb-8 text-center">
@@ -33,12 +44,12 @@ export function StrVsLongTermTable() {
           <thead>
             <tr className="bg-light-forest-green/50">
               <th className="px-5 py-3.5 font-semibold text-near-black/70">&nbsp;</th>
-              <th className="px-5 py-3.5 font-semibold text-forest-green">Short-term with Sos Stays</th>
+              <th className="px-5 py-3.5 font-semibold text-forest-green">Short-term with SOS Stays</th>
               <th className="px-5 py-3.5 font-semibold text-near-black/70">Long-term letting</th>
             </tr>
           </thead>
           <tbody>
-            {ROWS.map((row, i) => (
+            {rows.map((row, i) => (
               <tr key={row.label} className={i % 2 === 1 ? "bg-cream" : "bg-light-forest-green/15"}>
                 <td className="border-t border-sage-grey/30 px-5 py-4 font-medium text-near-black/80">
                   {row.label}

@@ -7,6 +7,7 @@ import { FaqSection } from "@/components/FaqSection";
 import { CountyRevenueEstimator } from "@/components/pricing/CountyRevenueEstimator";
 import { formatEuro } from "@/lib/revenueCalculator";
 import { buildGenericCountyFaqs, mergeCountyFaqs } from "@/lib/countyFaqs";
+import { COUNTY_INTROS } from "@/lib/countyIntros";
 import type { County } from "@/lib/pricingCounties";
 
 const STR_RULES_URL = "/blog/str-rules-ireland-what-hosts-need-to-know";
@@ -133,21 +134,21 @@ function Hero({ county, hasExample, shown }: { county: County; hasExample: boole
         }}
       />
       <div className="relative flex flex-wrap items-end justify-between gap-6">
-        <div className="flex max-w-[44ch] flex-col gap-4">
+        <div className="flex max-w-[60ch] flex-col gap-4">
           <div className="flex items-center gap-2.5" style={rise(shown, 0)}>
             <span className="block h-px w-[26px] bg-maroon" />
             <span className="text-xs font-semibold tracking-[0.14em] text-maroon uppercase">
               Step 2 · Your area
             </span>
           </div>
-          <h2
+          <h1
             className="m-0 font-serif text-[36px] leading-[1.05] font-bold tracking-[-0.02em] text-forest-green sm:text-[44px] lg:text-[54px] lg:leading-none"
             style={rise(shown, 80)}
           >
-            Short-term rental pricing &amp; earnings
+            Airbnb &amp; Short-Term Let Management
             <br />
-            <span className="text-maroon">Co. {county.name}</span>
-          </h2>
+            <span className="text-maroon">in {county.name}</span>
+          </h1>
           <div className="flex items-center gap-2.5" style={rise(shown, 160)}>
             <span className="relative block h-[9px] w-[9px] flex-none">
               <span
@@ -164,11 +165,19 @@ function Hero({ county, hasExample, shown }: { county: County; hasExample: boole
             >
               {isLive
                 ? hasExample
-                  ? "Live Sos Stays performance data for this county"
+                  ? "Live SOS Stays performance data for this county"
                   : "Live local market data for this county (AirDNA)"
                 : `We're expanding into Co. ${county.name} — no managed properties here yet`}
             </span>
           </div>
+          {COUNTY_INTROS[county.name] && (
+            <p
+              className="m-0 max-w-[58ch] text-[14.5px] leading-relaxed text-near-black/75"
+              style={rise(shown, 200)}
+            >
+              {COUNTY_INTROS[county.name]}
+            </p>
+          )}
         </div>
         <Link
           href="/pricing"
@@ -197,7 +206,7 @@ function StatStrip({
         value: `${(Math.round(((realExample.afterOccupancy - realExample.beforeOccupancy) / realExample.beforeOccupancy) * 100) * p).toFixed(1)}%`,
         label: (
           <>
-            Occupancy uplift, real Sos Stays property{" "}
+            Occupancy uplift, real SOS Stays property{" "}
             <span className="font-normal text-near-black/55">
               ({realExample.beforeLabel} → {realExample.afterLabel})
             </span>
@@ -523,9 +532,8 @@ function NiRulesNote() {
   return (
     <div className="rounded-[14px] border border-sage-grey/40 bg-cream p-6 text-center sm:p-7">
       <p className="text-sm leading-relaxed text-near-black/70">
-        Northern Ireland runs a separate regulatory system to the Fáilte Ireland STL Register used
-        in the Republic — it doesn&apos;t apply here. We&apos;ll walk you through what does apply
-        for your property.
+        In Northern Ireland, tourist accommodation must be certified by Tourism NI. We&apos;ll guide
+        you through certification as part of onboarding.
       </p>
     </div>
   );
