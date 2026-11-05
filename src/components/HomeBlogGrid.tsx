@@ -52,29 +52,37 @@ export function HomeBlogGrid({ data }: { data: HomeBlogData }) {
   ];
 
   return (
-    <section aria-label="From the blog" className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
-        <div>
-          <Eyebrow className="mb-2" delay={0}>
-            From the blog
-          </Eyebrow>
-          <Reveal as="h2" delay={100} className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
-            Stories, guides and good ideas
+    <section aria-label="From the blog" className="px-8 py-24 sm:px-14 sm:py-28">
+      {/* Inner max-w-6xl div (not combined onto the section itself) so this
+          section's content lines up edge-to-edge with full-bleed colored
+          bands elsewhere on the page (e.g. the thank-you page's maroon
+          shop band) — those bands need the padding on the outer section
+          and the width cap on an inner div, and a combined single-level
+          section ends up ~56px more inset than that at the sm+ breakpoint. */}
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <Eyebrow className="mb-2" delay={0}>
+              From the blog
+            </Eyebrow>
+            <Reveal as="h2" delay={100} className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
+              Stories, guides and good ideas
+            </Reveal>
+          </div>
+          <Reveal delay={200}>
+            <Button link="/blog" variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
+              Read the blog
+            </Button>
           </Reveal>
         </div>
-        <Reveal delay={200}>
-          <Button link="/blog" variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
-            Read the blog
-          </Button>
-        </Reveal>
-      </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[200px]">
-        {tiles.map(({ promo, shape }, i) => (
-          <Reveal key={promo._key} delay={150 + i * 120} className={SLOT_CLASS[i]}>
-            <PromoTile promo={promo} shape={shape} dense />
-          </Reveal>
-        ))}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[200px]">
+          {tiles.map(({ promo, shape }, i) => (
+            <Reveal key={promo._key} delay={150 + i * 120} className={SLOT_CLASS[i]}>
+              <PromoTile promo={promo} shape={shape} dense />
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Script from "next/script";
-import { CheckCircle2, ArrowLeft } from "lucide-react";
+import { CheckCircle2, ArrowLeft, MessageCircle } from "lucide-react";
 import type { Metadata } from "next";
 import { client } from "@/sanity/client";
 import {
@@ -75,22 +75,48 @@ export default async function ThankYouPage() {
           <p className="mx-auto max-w-[420px] text-lg leading-[1.55] text-near-black/70">
             One of our team members will be in touch with you shortly.
           </p>
-          <div className="mt-8">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-near-black/60 hover:text-near-black"
+          <p className="mx-auto mt-2.5 max-w-[420px] text-sm leading-[1.55] text-near-black/60">
+            Need us sooner? Message us on WhatsApp.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5">
+            <Button
+              link="/"
+              variant="primary"
+              bgColor="forest-green"
+              color="cream"
+              animateColor="forest-green"
+              size="custom"
+              className="px-6 py-3 text-sm font-semibold"
             >
-              <ArrowLeft size={15} />
-              Back to homepage
-            </Link>
+              <span className="inline-flex items-center gap-2">
+                <ArrowLeft size={15} />
+                Back to homepage
+              </span>
+            </Button>
+            <Button
+              link="https://wa.me/353894801345"
+              external
+              variant="secondary"
+              color="forest-green"
+              animateBgColor="forest-green"
+              animateColor="cream"
+              size="custom"
+              className="border-forest-green/50 px-6 py-3 text-sm font-semibold"
+            >
+              <span className="inline-flex items-center gap-2">
+                <MessageCircle size={15} />
+                Message us on WhatsApp
+              </span>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* INSTAGRAM — same embed/follow-button pattern as the homepage, on a
-          light-sage tint band so it reads as its own section between the
-          confirmation card and the maroon shop band below. */}
-      <section className="bg-light-forest-green/50 px-8 py-16 sm:px-14 sm:py-20">
+      {/* INSTAGRAM — same embed/follow-button pattern as the homepage. Plain
+          cream (not a full-bleed colored band) so it reads as a normal
+          content section between the confirmation card and the maroon
+          shop band below, rather than another full-width strip. */}
+      <section className="px-8 py-16 sm:px-14 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
             <div>
@@ -146,34 +172,38 @@ export default async function ThankYouPage() {
       {/* BLOG — featured post + two most recent, same component as homepage */}
       <HomeBlogGrid data={homeBlog} />
 
-      {/* STAYS — same grid/cards as the homepage's featured stays section */}
+      {/* STAYS — light-forest-green tint band so the page closes on a third
+          distinct brand-color zone (cream → maroon → forest-green),
+          matching the homepage's own alternating rhythm. */}
       {properties.length > 0 && (
-        <section className="mx-auto max-w-6xl px-8 py-16 sm:px-14 sm:py-20">
-          <div className="mb-10 flex flex-wrap items-baseline justify-between gap-4">
-            <h2 className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
-              Our stays
-            </h2>
-            <p className="max-w-[380px] text-near-black/60">Have a proper look around each one.</p>
-          </div>
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((property: PropertyCardProps & { _id: string }) => (
-              <PropertyCard
-                key={property._id}
-                slug={property.slug}
-                name={property.name}
-                location={property.location}
-                shortDescription={property.shortDescription}
-                sleeps={property.sleeps}
-                coverImage={property.coverImage}
-                surface="framed"
-                hideSleeps
-              />
-            ))}
-          </div>
-          <div className="mt-12 text-center">
-            <Button link="/stays" variant="primary" bgColor="forest-green" color="cream">
-              View all stays
-            </Button>
+        <section className="bg-light-forest-green/30 px-8 py-16 sm:px-14 sm:py-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-10 flex flex-wrap items-baseline justify-between gap-4">
+              <h2 className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
+                Our stays
+              </h2>
+              <p className="max-w-[380px] text-near-black/60">Have a proper look around each one.</p>
+            </div>
+            <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+              {properties.map((property: PropertyCardProps & { _id: string }) => (
+                <PropertyCard
+                  key={property._id}
+                  slug={property.slug}
+                  name={property.name}
+                  location={property.location}
+                  shortDescription={property.shortDescription}
+                  sleeps={property.sleeps}
+                  coverImage={property.coverImage}
+                  surface="framed"
+                  hideSleeps
+                />
+              ))}
+            </div>
+            <div className="mt-12 text-center">
+              <Button link="/stays" variant="primary" bgColor="forest-green" color="cream">
+                View all stays
+              </Button>
+            </div>
           </div>
         </section>
       )}
