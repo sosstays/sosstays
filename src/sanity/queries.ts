@@ -317,6 +317,18 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
   }
 `);
 
+// The editor-controlled display order for property listings (homepage
+// featured stays, /stays, the corporate-stays grid) — a drag-reorderable
+// array of propertyPage references on the siteSettings singleton. See
+// lib/propertyOrder.ts, which applies this order to a fetched property
+// list; a property left off this list falls back to appearing after the
+// ordered ones, alphabetically.
+export const PROPERTY_ORDER_QUERY = defineQuery(`
+  *[_type == "siteSettings" && _id == "siteSettings-" + $market][0] {
+    "orderedSlugs": propertyOrder[]->slug.current
+  }
+`);
+
 // ---- Footer (singleton) ----
 
 export const FOOTER_QUERY = defineQuery(`
@@ -571,8 +583,11 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
 // Onboarded properties for the corporate-stays "Partner with us" image
 // grid — a live query against propertyPage, not stored on the singleton
 // above, so the grid never goes stale as properties are added or removed.
+// Fetches every property so the page can apply the editor-set
+// propertyOrder (see lib/propertyOrder.ts) before slicing down to 8 — see
+// the equivalent note on HOMEPAGE_QUERY.
 export const CORPORATE_ONBOARDED_PROPERTIES_QUERY = defineQuery(`
-  *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) [0...8] {
+  *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) {
     _id,
     name,
     "slug": slug.current,
@@ -663,8 +678,13 @@ export const FEATURED_PARTNER_SLUGS_QUERY = defineQuery(`
 
 // ---- Homepage feed ----
 
+// Fetches every property (not just the featured 3) so the page can apply
+// the editor-set propertyOrder (see lib/propertyOrder.ts) before slicing
+// down to the first 3 for the "A few places to start" section — slicing
+// in GROQ first would lock that section to alphabetical order regardless
+// of propertyOrder.
 export const HOMEPAGE_QUERY = defineQuery(`{
-  "properties": *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) [0...3] {
+  "properties": *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) {
     _id, name, "slug": slug.current, location, shortDescription, sleeps,
     "coverImage": gallery[0], "gallery": gallery[0...3]
   },

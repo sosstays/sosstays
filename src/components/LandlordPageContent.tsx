@@ -228,7 +228,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                   style={{ animationDelay: "360ms" }}
                 />
                 <span className="ml-2 text-xs font-semibold tracking-widest text-cream/60 uppercase">
-                  Sos Stays
+                  SOS Stays
                 </span>
               </div>
             </Reveal>
@@ -258,7 +258,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 <div>
                   <span className="inline-flex items-center gap-2.5 text-sm font-semibold text-near-black">
                     <span className="h-[3px] w-5.5 rounded-full bg-maroon" />
-                    Managed by Sos Stays
+                    Managed by SOS Stays
                   </span>
                   <p className="mt-1.5 max-w-[28ch] pl-8 text-xs leading-relaxed text-near-black/55">
                     Repriced daily against live demand — the same market data
@@ -477,6 +477,14 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
             >
               Send your SOS ↑
             </Button>
+          </Reveal>
+          <Reveal delay={400}>
+            <a
+              href="/pricing"
+              className="mt-5 inline-block text-sm font-medium text-light-sage underline underline-offset-[3px]"
+            >
+              See pricing &amp; rules for your county
+            </a>
           </Reveal>
         </div>
       </section>

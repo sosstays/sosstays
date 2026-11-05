@@ -5,7 +5,7 @@ import { client } from "@/sanity/client";
 import { LANDING_PAGE_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata, SITE_URL } from "@/sanity/metadata";
-import { JsonLd, buildBreadcrumbSchema } from "@/sanity/jsonld";
+import { JsonLd, buildBreadcrumbSchema, buildFaqSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
@@ -17,9 +17,203 @@ import { PropertyCard } from "@/components/PropertyCard";
 import { StickyBookingBar } from "@/components/StickyBookingBar";
 import { ComparisonBars } from "@/components/ComparisonBars";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
+import { FaqSection } from "@/components/FaqSection";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
+
+// Page-specific SEO additions (visible FAQ section + FAQPage JSON-LD) for a
+// handful of landing pages — this template is shared by every landingPage
+// doc, so everything below is keyed by slug rather than touching any other
+// landing page. A page's property's own LodgingBusiness/VacationRental
+// schema lives once on its /stays/[slug] page (see sanity/jsonld.tsx's
+// PROPERTY_SCHEMA_OVERRIDES) and is never duplicated here.
+const LANDING_PAGE_FAQS: Record<string, { question: string; answer: string }[]> = {
+  "hotels-near-funtasia": [
+    {
+      question: "Is there accommodation near Funtasia Drogheda?",
+      answer:
+        "Yes. Rathescar Grove Guest House is family-friendly accommodation about 15 minutes' drive from Funtasia Theme Park in Drogheda, with free on-site parking and family rooms with bunk beds for the kids.",
+    },
+    {
+      question: "How far is Rathescar Grove from Funtasia?",
+      answer:
+        "About 15 minutes by car. Funtasia is at Donore Road Industrial Estate, Drogheda, Co. Louth (A92 EVH6), and Rathescar Grove is just outside Dunleer — an easy drive, with free parking waiting at the house when you get back.",
+    },
+    {
+      question: "Do you have family rooms near Funtasia?",
+      answer:
+        "Yes. The Family Room has bunk beds for the kids plus a large double, sleeping 4, and there's also a Deluxe Family Room and a whole-house option sleeping up to 10 across 3 bedrooms and 3 bathrooms. Every stay includes free WiFi, a garden, and mountain or farmland views.",
+    },
+    {
+      question: "Is there free parking at your accommodation near Funtasia?",
+      answer:
+        "Yes — free on-site parking is included with every stay. Leave the car at the house and make the short drive to Funtasia, or park right outside when you get back.",
+    },
+    {
+      question: "Can I visit Funtasia and Newgrange in one trip?",
+      answer:
+        "Yes. Rathescar Grove sits between Funtasia in Drogheda and Newgrange / Brú na Bóinne in the Boyne Valley, so it works as a single base for both — Funtasia one day, Newgrange and the Hill of Slane the next.",
+    },
+    {
+      question: "What time is check-in and check-out?",
+      answer:
+        "Self check-in runs from 3pm to 9pm — room details arrive by message the day before. Check-out is 11:30am, leaving you time for a lazy breakfast before Funtasia opens.",
+    },
+    {
+      question: "How much are Funtasia tickets?",
+      answer:
+        "General admission is €24.95pp, off-peak (Mon–Fri 5–7pm) is €19.95pp, and children 2 and under go free. The Big Splash ticket bundles waterpark access with activities and rides — check funtasia.ie for current pricing, as the waterpark now runs a timeslot system and it's best to book online in advance.",
+    },
+  ],
+  "hotels-near-cliffs-of-moher": [
+    {
+      question: "Is there accommodation near the Cliffs of Moher?",
+      answer:
+        "Yes. Howard's Way is a private self-catering house in Liscannor, just five minutes' drive from the Cliffs of Moher — four bedrooms, sea views and private parking, sleeping up to 8 guests.",
+    },
+    {
+      question: "How far is Howard's Way from the Cliffs of Moher?",
+      answer:
+        "About five minutes by car. Howard's Way is in Liscannor, Co. Clare, which puts you closer to the cliffs than most hotels in Ennis or Lahinch.",
+    },
+    {
+      question: "How many people does Howard's Way sleep?",
+      answer:
+        "Eight guests across four bedrooms, with four acres of grounds — room for a golf group, a two-family trip, or a week without sharing a corridor with strangers.",
+    },
+    {
+      question: "Is there parking at Howard's Way?",
+      answer:
+        "Yes. Private on-site parking with EV charging is included, along with four acres of grounds and no shared lobby or check-in queue.",
+    },
+    {
+      question: "What's near Howard's Way besides the Cliffs of Moher?",
+      answer:
+        "Lahinch is ten minutes away with its shops, restaurants and 36-hole links golf course, and St Brigid's Well sits right on the Wild Atlantic Way on the edge of Liscannor village.",
+    },
+    {
+      question: "When is the best time to visit the Cliffs of Moher?",
+      answer:
+        "Go early morning or late evening to avoid the coach traffic, which is heaviest between 10am and 4pm. Staying five minutes away makes an early or late visit easy.",
+    },
+    {
+      question: "How tall are the Cliffs of Moher?",
+      answer:
+        "The cliffs rise to 214 metres over about 8km of coastline, making them Ireland's most-visited natural attraction.",
+    },
+  ],
+  "hotels-near-newgrange": [
+    {
+      question: "Is there accommodation near Newgrange?",
+      answer:
+        "Yes. Rathescar Grove Guest House is countryside accommodation in Ardee near Drogheda, about a 25-minute drive from Newgrange, with mountain and farmland views, free parking and a private balcony option.",
+    },
+    {
+      question: "How far is Rathescar Grove from Newgrange?",
+      answer:
+        "Roughly 22.5km, or about 25 minutes by car. All Newgrange visits start at the Brú na Bóinne Visitor Centre in Donore, Co. Meath (A92 EH5C) — there's no driving directly to the monument.",
+    },
+    {
+      question: "Do I need to book Newgrange in advance?",
+      answer:
+        "Yes. There's no walk-up entry — every visit starts at the Brú na Bóinne Visitor Centre, and tickets release 30 days ahead from April to October and 7 days ahead the rest of the year. Summer slots can sell out within hours, so book as early as the window allows.",
+    },
+    {
+      question: "How much do Newgrange tickets cost?",
+      answer:
+        "The main-season tour (1 March–1 November) covers the exhibition, the Newgrange chamber and Knowth, is €18 per adult for 2026 and runs about 3 hours. The winter tour covers the exhibition and Newgrange chamber only and runs about 2 hours. Always confirm on heritageireland.ie before booking.",
+    },
+    {
+      question: "Do you have rooms near Newgrange?",
+      answer:
+        "Yes. Rathescar Grove is a three-room guest house with a Family Room with Mountain View, a Deluxe Double Room and a Deluxe Family Room, sleeping up to 10 across 3 bedrooms and 3 bathrooms, with free WiFi, a garden and free parking.",
+    },
+    {
+      question: "Can I visit Newgrange and Funtasia in one trip?",
+      answer:
+        "Yes. Rathescar Grove sits between Newgrange in the Boyne Valley and Funtasia Theme Park in Drogheda, so it works as a single base for a history day and a family day out.",
+    },
+    {
+      question: "Is Newgrange suitable for young children?",
+      answer:
+        "The passage and chamber are narrow, dimly lit and involve uneven steps, so it's not accessible for everyone. It's worth preparing younger kids for a short, enclosed space in advance.",
+    },
+  ],
+  "ryder-cup-2027-accommodation": [
+    {
+      question: "Where should I stay for the Ryder Cup 2027?",
+      answer:
+        "Howard's Way is a whole self-catering house in Liscannor, Co. Clare, about an hour and 15 minutes' drive from Adare Manor — four bedrooms, sleeps eight, sea views, and Lahinch ten minutes away. If you're a bigger group or want to tour Ireland, we can also plan a route across several of our houses.",
+    },
+    {
+      question: "How far is Howard's Way from Adare Manor?",
+      answer:
+        "About 85 km by road, roughly an hour and 15 minutes via Ennis and Limerick on a normal day. Match days are busier, so leave early and plan to use the official park-and-ride or train services.",
+    },
+    {
+      question: "Do I need to buy Ryder Cup tickets separately?",
+      answer:
+        "Yes. Tickets are sold only through the official Ryder Cup channels — SOS Stays is not an official provider and doesn't sell tickets or hospitality. It's worth having tickets confirmed before you book a stay.",
+    },
+    {
+      question: "Can you plan our whole Ireland trip around the Ryder Cup?",
+      answer:
+        "Yes. Beyond the house, we act as your local concierge: accommodation across our Irish properties, match-day transport planning, tee times at the west-of-Ireland links, and family days out — all arranged for you.",
+    },
+    {
+      question: "What is there for the family during Ryder Cup week?",
+      answer:
+        "Howard's Way is five minutes from the Cliffs of Moher and ten from Lahinch beach and golf. The Aran Islands ferries leave from Doolin about 20 minutes away, and the Burren, Doolin Cave and Galway city are all easy day trips.",
+    },
+    {
+      question: "Is Adare Manor taking bookings during the Ryder Cup?",
+      answer:
+        "No — Adare Manor isn't taking normal bookings in September 2027. The official accommodation options are a campsite at Mountwilliam, the Official Property Rental Programme, and a cruise ship, so many groups stay an hour or more away.",
+    },
+    {
+      question: "How do I book Howard's Way for Ryder Cup week?",
+      answer:
+        "Email hello@sosstays.com with your dates and group size, and we'll come back with availability and a price. For a full bespoke itinerary, send us your group details and we'll plan the whole trip.",
+    },
+  ],
+};
+
+const LANDING_PAGE_FAQ_HEADINGS: Record<string, string> = {
+  "hotels-near-funtasia": "Frequently asked questions about accommodation near Funtasia",
+  "hotels-near-cliffs-of-moher": "Frequently asked questions about accommodation near the Cliffs of Moher",
+  "hotels-near-newgrange": "Frequently asked questions about accommodation near Newgrange",
+  "ryder-cup-2027-accommodation": "Frequently asked questions about Ryder Cup 2027 accommodation",
+};
+
+// Page-specific additions for /ryder-cup-2027-accommodation only: a subhead
+// under the H1, and a bespoke-trip "concierge" section. No equivalent CMS
+// fields exist for this yet, so it's hardcoded here rather than threaded
+// through the shared landingPage schema for one page.
+const RYDER_CUP_2027_SLUG = "ryder-cup-2027-accommodation";
+const RYDER_CUP_SUBHEAD =
+  "A whole house near Adare — plus a local Irish concierge to plan the rest of your trip.";
+// No bespoke-enquiry page exists yet — falls back to a mailto per the brief.
+const RYDER_CUP_BESPOKE_ENQUIRY_HREF =
+  "mailto:hello@sosstays.com?subject=" + encodeURIComponent("Bespoke Ryder Cup trip");
+
+function buildRyderCupConciergeServiceSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Ryder Cup 2027 Ireland Concierge & Bespoke Trip Planning",
+    serviceType: "Bespoke Ireland golf and family trip planning",
+    description:
+      "Bespoke concierge for golfing families travelling to Ireland for the Ryder Cup 2027 — accommodation across our Irish houses, match-day transport planning, tee times and family itineraries.",
+    provider: {
+      "@type": "Organization",
+      name: "SOS Stays",
+      url: "https://sosstays.com",
+      email: "hello@sosstays.com",
+    },
+    areaServed: { "@type": "Country", name: "Ireland" },
+  };
+}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -95,6 +289,11 @@ export default async function LandingPage({ params }: Props) {
     { name: page.heroHeadline || page.title, url: `${SITE_URL}/${slug}` },
   ]);
 
+  const pageFaqs = LANDING_PAGE_FAQS[slug];
+  const pageFaqHeading = LANDING_PAGE_FAQ_HEADINGS[slug];
+  const pageFaqSchema = pageFaqs ? buildFaqSchema(pageFaqs) : null;
+  const isRyderCup2027 = slug === RYDER_CUP_2027_SLUG;
+
   const property = page.featuredProperty;
   const gallery = property?.gallery ?? [];
   const marqueeItems = page.marqueeItems?.length ? page.marqueeItems : page.heroTags ?? [];
@@ -105,6 +304,8 @@ export default async function LandingPage({ params }: Props) {
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <JsonLd data={breadcrumbSchema} />
+      {pageFaqSchema && <JsonLd data={pageFaqSchema} />}
+      {isRyderCup2027 && <JsonLd data={buildRyderCupConciergeServiceSchema()} />}
 
       {/* HERO */}
       <section className="relative flex min-h-[92vh] flex-col justify-end overflow-hidden bg-deep-forest px-8 pt-[180px] pb-16 sm:px-14 sm:pt-[200px]">
@@ -133,6 +334,11 @@ export default async function LandingPage({ params }: Props) {
           <h1 className="max-w-[15ch] font-serif text-[clamp(2.75rem,6.6vw,6.5rem)] leading-[0.98] font-extrabold tracking-tight text-cream">
             {page.heroHeadline}
           </h1>
+          {isRyderCup2027 && (
+            <Reveal as="p" delay={160} className="mt-5 max-w-2xl text-xl font-semibold leading-snug text-light-sage">
+              {RYDER_CUP_SUBHEAD}
+            </Reveal>
+          )}
           {page.heroSubtext && (
             <Reveal as="p" delay={200} className="mt-6 max-w-2xl text-lg leading-relaxed text-cream/88">
               {page.heroSubtext}
@@ -218,6 +424,54 @@ export default async function LandingPage({ params }: Props) {
         itemClassName="gap-11 pr-11 text-[15px] font-medium tracking-[0.14em] text-cream/78 uppercase"
         separator={<span className="text-light-sage">✳</span>}
       />
+
+      {/* CONCIERGE — ryder-cup-2027-accommodation only */}
+      {isRyderCup2027 && (
+        <section className="mx-auto max-w-6xl px-8 pt-26 sm:px-14">
+          <Reveal
+            as="h2"
+            className="max-w-[26ch] font-serif text-[clamp(2.1rem,4vw,3.5rem)] leading-[1.04] font-bold tracking-tight text-deep-forest"
+          >
+            More than a house: a bespoke Irish golf trip, planned for you
+          </Reveal>
+          <Reveal as="p" delay={100} className="mt-5.5 max-w-2xl text-[17px] leading-relaxed text-near-black/72">
+            You&apos;re flying your family across the Atlantic for the Ryder Cup&apos;s 100th
+            anniversary. The golf is sorted. The rest — where you stay, how you get to Adare each
+            day, what the kids do while you&apos;re on the course, which links you play before and
+            after — shouldn&apos;t be left to a spreadsheet. That&apos;s where we come in.
+          </Reveal>
+          <Reveal as="p" delay={160} className="mt-5.5 max-w-2xl text-[17px] leading-relaxed text-near-black/72">
+            SOS Stays is an Irish team on the ground, not a booking portal. We look after our own
+            houses across Ireland — Howard&apos;s Way on the Clare coast, Rathescar Grove in the
+            Boyne Valley, and more — and we&apos;ll connect them into one bespoke itinerary for
+            your family: a week by Adare, then a week on the west coast, with the drives, the tee
+            times and the family days already mapped out.
+          </Reveal>
+          <Reveal delay={220} className="mt-7 max-w-2xl">
+            <ul className="flex flex-col gap-2.5">
+              {[
+                "A base — or a route across several of our houses — matched to your group size",
+                "Match-day logistics: park-and-ride or train planning from wherever you're staying",
+                "Tee times at Lahinch, Trump Doonbeg and the west-of-Ireland links",
+                "Family days out: Cliffs of Moher, Aran Islands, the Burren, castles, Galway",
+                "One point of contact for the whole trip",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-[15px] leading-relaxed text-near-black/80">
+                  <span className="mt-[9px] h-1.5 w-1.5 flex-none rounded-full bg-maroon" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+          <Reveal as="p" delay={280} className="mt-7 max-w-2xl text-[17px] leading-relaxed text-near-black/72">
+            Tell us your dates, group size and what the family wants to do — we&apos;ll come back
+            with a plan.{" "}
+            <a href={RYDER_CUP_BESPOKE_ENQUIRY_HREF} className="font-semibold text-forest-green underline underline-offset-[3px]">
+              Enquire about a bespoke trip.
+            </a>
+          </Reveal>
+        </section>
+      )}
 
       {/* GEOGRAPHY */}
       {page.distanceStat && (
@@ -687,6 +941,19 @@ export default async function LandingPage({ params }: Props) {
           )}
           <ItineraryTimeline days={page.itineraryDays} />
         </section>
+      )}
+
+      {/* FAQ — only on the landing pages listed in LANDING_PAGE_FAQS above */}
+      {pageFaqs && (
+        <div className="pt-28">
+          <FaqSection
+            id="faq"
+            heading={pageFaqHeading}
+            items={pageFaqs}
+            accent="forest-green"
+            maxWidth="820px"
+          />
+        </div>
       )}
 
       {/* WHILE YOU'RE IN THE AREA */}

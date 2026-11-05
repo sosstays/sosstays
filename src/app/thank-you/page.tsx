@@ -8,8 +8,10 @@ import {
   HOMEPAGE_BLOG_QUERY,
   SITE_SETTINGS_QUERY,
   SHOP_PRODUCTS_QUERY,
+  PROPERTY_ORDER_QUERY,
 } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
+import { orderProperties } from "@/lib/propertyOrder";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -27,12 +29,17 @@ export const revalidate = 60;
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function ThankYouPage() {
-  const [{ properties }, homeBlog, siteSettings, shopProducts] = await Promise.all([
+  const [{ properties: allProperties }, homeBlog, siteSettings, shopProducts, propertyOrder] = await Promise.all([
     client.fetch(HOMEPAGE_QUERY),
     client.fetch(HOMEPAGE_BLOG_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(SHOP_PRODUCTS_QUERY),
+    client.fetch(PROPERTY_ORDER_QUERY),
   ]);
+  const properties = orderProperties<PropertyCardProps & { _id: string }>(
+    allProperties,
+    propertyOrder?.orderedSlugs
+  ).slice(0, 3);
 
   const instagramUrl = siteSettings?.socialLinks?.find(
     (link: { platform: string; url: string }) => link.platform === "instagram"
@@ -56,63 +63,83 @@ export default async function ThankYouPage() {
       </header>
 
       {/* CONFIRMATION */}
-      <section className="mx-auto max-w-[640px] px-6 pt-8 pb-16 text-center">
-        <CheckCircle2 size={72} stroke="var(--forest-green)" strokeWidth={1.75} className="mx-auto mb-4" />
-        <h1 className="mb-2.5 font-serif text-[clamp(2.25rem,4vw,3.25rem)] leading-[1.05] font-extrabold tracking-tight text-forest-green">
-          Thank you!
-        </h1>
-        <p className="mx-auto max-w-[420px] text-lg leading-[1.55] text-near-black/70">
-          One of our team members will be in touch with you shortly.
-        </p>
-        <div className="mt-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-near-black/60 hover:text-near-black"
-          >
-            <ArrowLeft size={15} />
-            Back to homepage
-          </Link>
+      <section className="mx-auto max-w-[640px] px-6 pt-10 pb-16 text-center sm:pt-14">
+        <div className="rounded-[18px] border border-sage-grey/40 bg-bright-cream px-8 py-12 sm:px-12 sm:py-14">
+          <Eyebrow tone="maroon" className="mb-5">
+            Message sent
+          </Eyebrow>
+          <CheckCircle2 size={64} stroke="var(--forest-green)" strokeWidth={1.75} className="mx-auto mb-5" />
+          <h1 className="mb-2.5 font-serif text-[clamp(2.25rem,4vw,3.25rem)] leading-[1.05] font-extrabold tracking-tight text-forest-green">
+            Thank you!
+          </h1>
+          <p className="mx-auto max-w-[420px] text-lg leading-[1.55] text-near-black/70">
+            One of our team members will be in touch with you shortly.
+          </p>
+          <div className="mt-8">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-near-black/60 hover:text-near-black"
+            >
+              <ArrowLeft size={15} />
+              Back to homepage
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* INSTAGRAM — same embed/follow-button pattern as the homepage */}
-      <section className="mx-auto max-w-6xl px-8 py-16 sm:px-14 sm:py-20">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
-          <div>
-            <Eyebrow className="mb-2" delay={0}>
-              While you wait
-            </Eyebrow>
-            <h2 className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
-              On Instagram
-            </h2>
+      {/* INSTAGRAM — same embed/follow-button pattern as the homepage, on a
+          light-sage tint band so it reads as its own section between the
+          confirmation card and the maroon shop band below. */}
+      <section className="bg-light-forest-green/50 px-8 py-16 sm:px-14 sm:py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
+            <div>
+              <Eyebrow className="mb-2" delay={0}>
+                While you wait
+              </Eyebrow>
+              <h2 className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
+                On Instagram
+              </h2>
+            </div>
+            {instagramUrl && (
+              <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
+                Follow us on Instagram
+              </Button>
+            )}
           </div>
-          {instagramUrl && (
-            <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
-              Follow us on Instagram
-            </Button>
-          )}
+          <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
         </div>
-        <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
       </section>
       <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
 
-      {/* SHOP CAROUSEL — right after Instagram */}
+      {/* SHOP STRIP — maroon band matching the owner-context accent used
+          elsewhere on the site, with a contained (not full-bleed), always-
+          moving product marquee instead of a manually-advanced carousel. */}
       {carouselProducts.length > 0 && (
-        <section className="py-16 sm:py-20">
-          <div className="mx-auto mb-8 max-w-6xl px-8 sm:px-14">
-            <Eyebrow className="mb-2" delay={0}>
-              From the shop
-            </Eyebrow>
-            <div className="flex flex-wrap items-end justify-between gap-5">
-              <h2 className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
-                Gift a getaway
-              </h2>
-              <Button link="/shop" variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
+        <section className="bg-maroon px-8 py-16 sm:px-14 sm:py-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
+              <div>
+                <Eyebrow tone="sage" className="mb-2" delay={0}>
+                  From the shop
+                </Eyebrow>
+                <h2 className="font-serif text-2xl font-bold tracking-tight text-cream sm:text-3xl">
+                  Gift a getaway
+                </h2>
+              </div>
+              <Button
+                link="/shop"
+                variant="secondary"
+                color="cream"
+                animateColor="maroon"
+                size="custom"
+                className="px-7 py-3.5 text-[15px] font-semibold"
+              >
                 Visit the shop
               </Button>
             </div>
+            <ShopCarousel products={carouselProducts} />
           </div>
-          <ShopCarousel products={carouselProducts} />
         </section>
       )}
 

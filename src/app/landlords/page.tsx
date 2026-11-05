@@ -10,9 +10,33 @@ import type { Metadata } from "next";
 
 export const revalidate = 60;
 
+// Fallback SEO for the single-page case. The LANDLORD_PAGES_QUERY's `seo`
+// projection coalesces seoTitle → the page's own `title` field when no
+// seoTitle is set in Sanity, and seoDescription → "" when unset — so an
+// unset seoTitle is never literally falsy, it just equals `title`. Detect
+// that (rather than relying on `pages[0].seo` being falsy, which it never
+// is) so an editor-set seoTitle/seoDescription still takes precedence over
+// this hardcoded SEO copy.
+const LANDLORDS_FALLBACK_SEO = {
+  title: "Airbnb Management Ireland | Commission-Only | SOS Stays",
+  description:
+    "Commission-only Airbnb and short-term let management for landlords across Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — from 15% commission, no setup fee.",
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const pages = await client.fetch(LANDLORD_PAGES_QUERY);
-  if (pages.length === 1) return buildMetadata(pages[0].seo, "/landlords");
+  if (pages.length === 1) {
+    const page = pages[0];
+    const hasCustomTitle = Boolean(page.seo?.title) && page.seo.title !== page.title;
+    const hasCustomDescription = Boolean(page.seo?.description);
+    const seo = {
+      title: hasCustomTitle ? page.seo.title : LANDLORDS_FALLBACK_SEO.title,
+      description: hasCustomDescription ? page.seo.description : LANDLORDS_FALLBACK_SEO.description,
+      image: page.seo?.image,
+      noIndex: page.seo?.noIndex,
+    };
+    return buildMetadata(seo, "/landlords");
+  }
   return buildMetadata(null, "/landlords");
 }
 

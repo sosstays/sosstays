@@ -20,7 +20,8 @@ type SiteSettings = {
   socialLinks?: SocialLink[] | null;
 } | null | undefined;
 
-const DEFAULT_SITE_NAME = "Sos Stays";
+const DEFAULT_SITE_NAME = "SOS Stays";
+const LEGAL_NAME = "Power Rangers Ltd";
 const DEFAULT_CONTACT_EMAIL = "info@sosstays.com";
 const DEFAULT_LOGO_URL = `${SITE_URL}/logo.svg`;
 
@@ -28,6 +29,7 @@ function organizationRef(settings?: SiteSettings) {
   return {
     "@type": "Organization",
     name: settings?.businessName || settings?.siteName || DEFAULT_SITE_NAME,
+    legalName: LEGAL_NAME,
     url: SITE_URL,
     logo: DEFAULT_LOGO_URL,
   };
@@ -364,6 +366,53 @@ export function buildArticleSchema(post: BlogPostForSchema, settings?: SiteSetti
   };
 }
 
+// ---- Service (national /pricing page) ----
+
+export function buildNationalPricingServiceSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Airbnb & Short-Term Let Management Ireland",
+    serviceType: "Short-term rental property management",
+    description:
+      "Commission-only Airbnb and holiday let management for landlords across Ireland and Northern Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — from 15% commission, no setup fee.",
+    url: `${SITE_URL}/pricing`,
+    brand: { "@type": "Brand", name: DEFAULT_SITE_NAME },
+    provider: organizationRef(),
+    areaServed: [
+      { "@type": "Country", name: "Ireland" },
+      { "@type": "AdministrativeArea", name: "Northern Ireland" },
+    ],
+    offers: {
+      "@type": "Offer",
+      description:
+        "Commission-only pricing — from 15% of gross booking revenue, cleaning fees excluded. No setup fee, no monthly retainer.",
+    },
+  };
+}
+
+// ---- Service (per-county /pricing/[slug] page) ----
+
+export function buildCountyServiceSchema(county: { name: string; slug: string; region: "roi" | "ni" }) {
+  const areaName = county.region === "ni" ? `County ${county.name}, Northern Ireland` : `County ${county.name}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: `Airbnb & Short-Term Let Management in ${county.name}`,
+    serviceType: "Short-term rental property management",
+    description: `Commission-only Airbnb and short-term let management for landlords in County ${county.name}. Dynamic pricing, cleaning, maintenance and guest comms handled — from 15% commission, no setup fee.`,
+    url: `${SITE_URL}/pricing/${county.slug}`,
+    brand: { "@type": "Brand", name: DEFAULT_SITE_NAME },
+    provider: organizationRef(),
+    areaServed: { "@type": "AdministrativeArea", name: areaName },
+    offers: {
+      "@type": "Offer",
+      description:
+        "Commission-only pricing — from 15% of gross booking revenue, cleaning fees excluded. No setup fee, no monthly retainer.",
+    },
+  };
+}
+
 // ---- Service (landlord page) ----
 
 type LandlordPageForSchema = {
@@ -373,14 +422,37 @@ type LandlordPageForSchema = {
   slug?: string | null;
 };
 
+// The landlordPage doc's slug field has at times been entered as "/landlords"
+// (a full path) rather than a bare segment — building the URL as
+// `/landlords/${slug}` then produced the broken
+// "https://sosstays.com/landlords//landlords". Normalize whatever shape the
+// slug is in (bare, leading slash, or redundantly repeating "landlords")
+// down to just the extra segment, if any, so the one actual landlords page
+// always resolves to a clean "/landlords".
+function normalizeLandlordSlug(slug?: string | null): string {
+  if (!slug) return "";
+  return slug
+    .trim()
+    .replace(/^\/+|\/+$/g, "")
+    .replace(/^landlords\/?/, "");
+}
+
 export function buildServiceSchema(page: LandlordPageForSchema, settings?: SiteSettings) {
+  const slug = normalizeLandlordSlug(page.slug);
+  const url = slug ? `${SITE_URL}/landlords/${slug}` : `${SITE_URL}/landlords`;
+  const isHub = !slug;
+
   return {
     "@context": "https://schema.org",
     "@type": "Service",
     serviceType: "Short-term rental property management",
-    name: page.title || page.heroStatement || "Property Management",
-    description: page.heroStatement || page.proofPoints?.[0],
-    url: page.slug ? `${SITE_URL}/landlords/${page.slug}` : `${SITE_URL}/landlords`,
+    name: isHub
+      ? "Airbnb & Holiday Home Management Ireland"
+      : page.title || page.heroStatement || "Property Management",
+    description: isHub
+      ? "Commission-only Airbnb and short-term let management for landlords across Ireland and Northern Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — from 15% commission, no setup fee."
+      : page.heroStatement || page.proofPoints?.[0],
+    url,
     provider: organizationRef(settings),
     areaServed: {
       "@type": "AdministrativeArea",

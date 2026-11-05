@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Script from "next/script";
 import { client } from "@/sanity/client";
-import { HERO_SECTION_QUERY, HOMEPAGE_BLOG_QUERY, HOMEPAGE_QUERY, HOSTS_MODULE_QUERY, PROMO_GRID_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { HERO_SECTION_QUERY, HOMEPAGE_BLOG_QUERY, HOMEPAGE_QUERY, HOSTS_MODULE_QUERY, PROMO_GRID_QUERY, PROPERTY_ORDER_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { getGuestNavLinks } from "@/lib/navLinks";
+import { orderProperties } from "@/lib/propertyOrder";
 import { PropertyCard, type PropertyCardProps } from "@/components/PropertyCard";
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
@@ -25,15 +26,20 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [hero, { properties, areas }, siteSettings, hostsModule, promoGrid, homeBlog, homeNavLinks] = await Promise.all([
+  const [hero, { properties: allProperties, areas }, siteSettings, propertyOrder, hostsModule, promoGrid, homeBlog, homeNavLinks] = await Promise.all([
     client.fetch(HERO_SECTION_QUERY),
     client.fetch(HOMEPAGE_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
+    client.fetch(PROPERTY_ORDER_QUERY),
     client.fetch(HOSTS_MODULE_QUERY),
     client.fetch(PROMO_GRID_QUERY),
     client.fetch(HOMEPAGE_BLOG_QUERY),
     getGuestNavLinks(),
   ]);
+  const properties = orderProperties<PropertyCardProps & { _id: string }>(
+    allProperties,
+    propertyOrder?.orderedSlugs
+  ).slice(0, 3);
   const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
   const instagramUrl = siteSettings?.socialLinks?.find(
     (link: { platform: string; url: string }) => link.platform === "instagram",

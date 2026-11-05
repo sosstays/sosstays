@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { client } from "@/sanity/client";
-import { CORPORATE_STAYS_PAGE_QUERY, CORPORATE_ONBOARDED_PROPERTIES_QUERY } from "@/sanity/queries";
+import { CORPORATE_STAYS_PAGE_QUERY, CORPORATE_ONBOARDED_PROPERTIES_QUERY, PROPERTY_ORDER_QUERY } from "@/sanity/queries";
+import { orderProperties } from "@/lib/propertyOrder";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd } from "@/sanity/jsonld";
@@ -354,11 +355,15 @@ type OnboardedProperty = {
 };
 
 export default async function CorporateStaysPage() {
-  const [data, onboardedPropertiesRaw] = await Promise.all([
+  const [data, onboardedPropertiesRaw, propertyOrder] = await Promise.all([
     client.fetch(CORPORATE_STAYS_PAGE_QUERY),
     client.fetch(CORPORATE_ONBOARDED_PROPERTIES_QUERY),
+    client.fetch(PROPERTY_ORDER_QUERY),
   ]);
-  const onboardedProperties: OnboardedProperty[] = onboardedPropertiesRaw;
+  const onboardedProperties: OnboardedProperty[] = orderProperties<OnboardedProperty>(
+    onboardedPropertiesRaw,
+    propertyOrder?.orderedSlugs
+  ).slice(0, 8);
 
   const heroImages: [{ src: string; alt: string }, { src: string; alt: string }] | [{ src: string; alt: string }] =
     data?.heroImages && data.heroImages.length > 0
