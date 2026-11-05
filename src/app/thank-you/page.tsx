@@ -8,8 +8,10 @@ import {
   HOMEPAGE_BLOG_QUERY,
   SITE_SETTINGS_QUERY,
   SHOP_PRODUCTS_QUERY,
+  PROPERTY_ORDER_QUERY,
 } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
+import { orderProperties } from "@/lib/propertyOrder";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
 import { Eyebrow } from "@/components/Eyebrow";
@@ -27,12 +29,17 @@ export const revalidate = 60;
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function ThankYouPage() {
-  const [{ properties }, homeBlog, siteSettings, shopProducts] = await Promise.all([
+  const [{ properties: allProperties }, homeBlog, siteSettings, shopProducts, propertyOrder] = await Promise.all([
     client.fetch(HOMEPAGE_QUERY),
     client.fetch(HOMEPAGE_BLOG_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(SHOP_PRODUCTS_QUERY),
+    client.fetch(PROPERTY_ORDER_QUERY),
   ]);
+  const properties = orderProperties<PropertyCardProps & { _id: string }>(
+    allProperties,
+    propertyOrder?.orderedSlugs
+  ).slice(0, 3);
 
   const instagramUrl = siteSettings?.socialLinks?.find(
     (link: { platform: string; url: string }) => link.platform === "instagram"

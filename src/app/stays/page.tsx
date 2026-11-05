@@ -1,10 +1,11 @@
 import { client } from "@/sanity/client";
-import { PROPERTY_PAGES_QUERY } from "@/sanity/queries";
+import { PROPERTY_PAGES_QUERY, PROPERTY_ORDER_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
 import { HeroNav } from "@/components/HeroNav";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Reveal } from "@/components/Reveal";
+import { orderProperties } from "@/lib/propertyOrder";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -31,10 +32,12 @@ type SosPropertyPage = {
 };
 
 export default async function StaysIndexPage() {
-  const [properties, siteNavLinks] = await Promise.all([
+  const [allProperties, siteNavLinks, propertyOrder] = await Promise.all([
     client.fetch<SosPropertyPage[]>(PROPERTY_PAGES_QUERY),
     getGuestSiteNavLinks(),
+    client.fetch(PROPERTY_ORDER_QUERY),
   ]);
+  const properties = orderProperties(allProperties, propertyOrder?.orderedSlugs);
 
   return (
     <>
