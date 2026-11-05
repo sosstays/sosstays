@@ -7,7 +7,7 @@ const TOPICS = ["Media query", "About a booking", "Hiring", "Partnership", "Othe
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { name, email, phone, topic, property, message } = body ?? {};
+  const { name, email, phone, topic, property, message, consent } = body ?? {};
 
   if (!isValidEmail(email)) {
     return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
@@ -15,6 +15,10 @@ export async function POST(request: NextRequest) {
 
   if (typeof phone !== "string" || phone.replace(/\D/g, "").length < 7) {
     return NextResponse.json({ error: "A valid phone number is required" }, { status: 400 });
+  }
+
+  if (consent !== true) {
+    return NextResponse.json({ error: "You must agree to the Privacy Policy to continue" }, { status: 400 });
   }
 
   return saveLead({
@@ -28,6 +32,8 @@ export async function POST(request: NextRequest) {
       topic: typeof topic === "string" && TOPICS.includes(topic) ? topic : undefined,
       property_name: property,
       message,
+      consent: true,
+      consent_at: new Date().toISOString(),
     },
     mailerlite: {
       fields: {

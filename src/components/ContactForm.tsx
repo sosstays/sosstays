@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
+import { ConsentCheckbox } from "@/components/ConsentCheckbox";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 
 const CONTACT_EMAIL_FALLBACK = "info@sosstays.com";
@@ -19,14 +21,15 @@ function isValidPhone(value: string) {
 }
 
 export function ContactForm({ contactEmail }: { contactEmail?: string | null }) {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [topic, setTopic] = useState("");
   const [property, setProperty] = useState("");
   const [message, setMessage] = useState("");
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState("");
-  const [sent, setSent] = useState(false);
   const [usedMailtoFallback, setUsedMailtoFallback] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -62,6 +65,10 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
       setError("Add a message so we know how to help.");
       return;
     }
+    if (!consent) {
+      setError("Please agree to the Privacy Policy to continue.");
+      return;
+    }
     setError("");
     setSubmitting(true);
     try {
@@ -75,10 +82,12 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
           topic,
           property: property.trim(),
           message: message.trim(),
+          consent: true,
         }),
       });
       if (!res.ok) throw new Error(`Contact form submission failed: ${res.status}`);
-      setSent(true);
+      router.push("/thank-you");
+      return;
     } catch {
       // MailerLite is down, misconfigured, or the network request failed —
       // fall back to opening the visitor's own mail client rather than
@@ -86,7 +95,6 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
       // reached us when it actually didn't.
       openMailtoFallback();
       setUsedMailtoFallback(true);
-      setSent(true);
     } finally {
       setSubmitting(false);
     }
@@ -178,6 +186,8 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
         />
       </label>
 
+      <ConsentCheckbox checked={consent} onChange={setConsent} />
+
       {error && (
         <p
           role="alert"
@@ -186,12 +196,7 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
           {error}
         </p>
       )}
-      {sent && !error && !usedMailtoFallback && (
-        <p className="-mt-2 animate-[sos-highlight-fade-in_0.6s_ease-in-out_both] text-[13px] text-forest-green">
-          Thanks — we&apos;ll get back to you shortly.
-        </p>
-      )}
-      {sent && !error && usedMailtoFallback && (
+      {usedMailtoFallback && !error && (
         <p
           role="alert"
           className="-mt-2 animate-[sos-highlight-fade-in_0.6s_ease-in-out_both] text-[13px] text-error-red"
