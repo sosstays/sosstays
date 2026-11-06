@@ -126,7 +126,14 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
   const currency = (session.currency ?? "eur").toUpperCase();
   const purchaseItems =
     session.line_items?.data.map((lineItem, i) => ({
-      item_id: meta.propertySlug ? `${meta.propertySlug}-${i}` : `item-${i}`,
+      // Stable per product, not per line position: line 0 is always the
+      // accommodation (see api/checkout/session), and add-ons are keyed by
+      // name — Stripe makes a fresh ad-hoc product per session for inline
+      // price_data, so price.product would differ on every booking.
+      item_id:
+        i === 0
+          ? (meta.propertySlug ?? "stay")
+          : `addon-${(lineItem.description ?? `${i}`).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
       item_name: lineItem.description ?? property?.name ?? "Stay",
       price: (lineItem.amount_total ?? 0) / 100,
       quantity: lineItem.quantity ?? 1,
@@ -137,12 +144,17 @@ export default async function BookReturnPage({ params, searchParams }: Props) {
       {/* No UI — just fires the GA4 "purchase" event once, now that payment
           is confirmed complete. See BookingConfirmedTracker for the dedupe
           story (this page is a plain shareable URL, refreshable/bookmarkable). */}
-      <BookingConfirmedTracker
-        transactionId={session.id}
-        value={(session.amount_total ?? 0) / 100}
-        currency={currency}
-        items={purchaseItems}
-      />
+      {/* Only report revenue that has actually been collected: a completed
+          session can still be unpaid with delayed methods (SEPA, bank
+          transfer), which would over-report revenue in GA4/Ads. */}
+      {session.payment_status === "paid" && (
+        <BookingConfirmedTracker
+          transactionId={session.id}
+          value={(session.amount_total ?? 0) / 100}
+          currency={currency}
+          items={purchaseItems}
+        />
+      )}
 
       <div className="pb-8 text-center">
         <CheckCircle2

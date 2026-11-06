@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/Button";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackLead } from "@/lib/analytics";
 import type { LandlordContact } from "@/lib/landlordHandoff";
 
 const SITUATION_OPTIONS = [
@@ -69,6 +69,7 @@ export function LandlordLeadForm({
       // Fires only once the lead has been accepted. GTM listens for this
       // event and forwards it to GA4 (see trackEvent). No PII in params.
       trackEvent("landlord_lead_submission", { form_name: "landlord_sos" });
+      trackLead("landlord_sos");
       onSubmitted?.({ name: name.trim(), email: email.trim() });
       setStage("submitted");
     } catch {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Poppins } from "next/font/google";
 import Script from "next/script";
 import { Footer } from "@/components/Footer";
+import { AttributionCapture } from "@/components/AttributionCapture";
 import { CountryProvider, type Country } from "@/components/CountrySwitcher";
 import { MARKET, LOCALE, DEFAULT_SEO } from "@/lib/market";
 import { filterLinksForMarket } from "@/lib/marketLinks";
@@ -9,7 +10,11 @@ import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY, FOOTER_QUERY, COUNTRY_SWITCHER_QUERY } from "@/sanity/queries";
 import "./globals.css";
 
-const GTM_ID = "GTM-TLKN98WH";
+// One GTM container serves both sites by default; set NEXT_PUBLIC_GTM_ID on the
+// .in deployment to give it its own container (and its own GA4 stream). Either
+// way every page pushes site_market/site_hostname below so a shared container
+// can route or filter by hostname.
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-TLKN98WH";
 
 // Brand fonts per the Sos Stays brand knowledge base:
 // Playfair Display for headlines/pull quotes, Poppins for body/UI.
@@ -69,6 +74,8 @@ export default async function RootLayout({
         {/* Google Tag Manager */}
         <Script id="gtm" strategy="beforeInteractive">
           {`
+            window.dataLayer=window.dataLayer||[];
+            window.dataLayer.push({site_market:'${MARKET}',site_hostname:window.location.hostname});
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -93,6 +100,7 @@ export default async function RootLayout({
             IDs (G-ZG60S049VC / AW-18365302458), which is why GTM reported
             "No Google tag found in this container" for the GA4 and Ads
             conversion tags. Keep this as the single source for both. */}
+        <AttributionCapture />
         <CountryProvider countries={countries} currentMarket={MARKET}>
           <div className="flex flex-1 flex-col">{children}</div>
         </CountryProvider>

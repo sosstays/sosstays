@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/Button";
 import { PARTNER_CATEGORIES } from "@/lib/partnersData";
+import { trackLead } from "@/lib/analytics";
 
 const CONTACT_EMAIL = "hello@sosstays.com";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -69,6 +70,7 @@ export function PartnerLeadForm() {
         }),
       });
       if (!res.ok) throw new Error(`Partner lead submission failed: ${res.status}`);
+      trackLead("partner");
       setStage("submitted");
     } catch {
       setStage("error");

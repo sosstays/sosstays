@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/Button";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import { trackLead } from "@/lib/analytics";
 
 const CONTACT_EMAIL_FALLBACK = "info@sosstays.com";
 
@@ -78,6 +79,7 @@ export function ContactForm({ contactEmail }: { contactEmail?: string | null }) 
         }),
       });
       if (!res.ok) throw new Error(`Contact form submission failed: ${res.status}`);
+      trackLead("contact");
       setSent(true);
     } catch {
       // MailerLite is down, misconfigured, or the network request failed —

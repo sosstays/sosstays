@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/Button";
+import { trackLead } from "@/lib/analytics";
 
 type Stage = "form" | "done" | "error";
 
@@ -29,6 +30,7 @@ export function NewsletterSignup() {
         body: JSON.stringify({ email }),
       });
       if (!res.ok) throw new Error(`Subscribe failed: ${res.status}`);
+      trackLead("newsletter");
       setStage("done");
     } catch {
       setStage("error");

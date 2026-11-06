@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { trackEvent } from "@/lib/analytics";
+import { trackEcommerce, firstTouchParams } from "@/lib/analytics";
+import { MARKET } from "@/lib/market";
 
 type PurchaseItem = {
   item_id: string;
@@ -46,12 +47,11 @@ export function BookingConfirmedTracker({
       // Private browsing / storage blocked — fall through and track anyway
       // rather than silently losing the conversion.
     }
-    trackEvent("purchase", {
-      transaction_id: transactionId,
-      value,
-      currency,
-      items,
-    });
+    trackEcommerce(
+      "purchase",
+      { transaction_id: transactionId, value, currency, items },
+      { site_market: MARKET, ...firstTouchParams() },
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionId]);
 

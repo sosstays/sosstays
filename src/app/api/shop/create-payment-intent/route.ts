@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
 import { fetchShopProduct, validateQuantity } from "@/lib/shopOrder";
+import { readAttribution } from "@/lib/attribution-server";
+import { attributionToStripeMetadata } from "@/lib/attribution";
 
 // Step 1 of the shop checkout: mount the PaymentElement as soon as the
 // buyer opens an item, on the same screen as their name/email — not a
@@ -38,7 +40,13 @@ export async function POST(request: NextRequest) {
       amount: Math.round(product.price * 100) * qty,
       currency: "eur",
       description: `${product.name} × ${qty}`,
-      metadata: { orderType: "shop", productId, productName: product.name, productKind: product.kind },
+      metadata: {
+        orderType: "shop",
+        productId,
+        productName: product.name,
+        productKind: product.kind,
+        ...attributionToStripeMetadata(await readAttribution()),
+      },
     });
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret, paymentIntentId: paymentIntent.id });

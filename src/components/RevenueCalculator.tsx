@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { trackLead } from "@/lib/analytics";
 import { Button } from "@/components/Button";
 import { AddressAutocomplete, type AddressAutocompleteValue } from "@/components/AddressAutocomplete";
 import { calculateRevenue, formatEuro, type CalculatorResult } from "@/lib/revenueCalculator";
@@ -248,7 +249,7 @@ export function RevenueCalculator({
 
     const current = revenueMode === "estimate" ? estimatedRevenue : parseFloat(currentRevenue) || 0;
     try {
-      await submitLead({
+      const res = await submitLead({
         name: trimmedName,
         email: trimmedEmail,
         phone: trimmedPhone,
@@ -256,6 +257,7 @@ export function RevenueCalculator({
         current,
         calc: result!,
       });
+      if (res.ok) trackLead("revenue_estimate");
     } finally {
       // Reveal regardless of whether the save succeeded — the estimate
       // itself doesn't depend on MailerLite being reachable.

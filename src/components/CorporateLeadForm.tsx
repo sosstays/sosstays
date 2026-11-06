@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/Button";
+import { trackLead } from "@/lib/analytics";
 
 const CONTACT_EMAIL = "info@sosstays.com";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -68,6 +69,7 @@ export function CorporateLeadForm() {
         }),
       });
       if (!res.ok) throw new Error(`Corporate lead submission failed: ${res.status}`);
+      trackLead("corporate_stays");
       setStage("submitted");
     } catch {
       setStage("error");

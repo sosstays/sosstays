@@ -8,6 +8,7 @@ import { formatCurrency } from "@/lib/utils";
 import { AddOnSelector, type CheckoutAddOn } from "@/components/checkout/AddOnSelector";
 import { PaymentBadge } from "@/components/checkout/PaymentBadge";
 import type { StayQuote } from "@/lib/uplistingApi";
+import { FunnelTracker } from "@/components/checkout/FunnelTracker";
 
 export type { CheckoutAddOn };
 
@@ -193,6 +194,14 @@ export function BookingCheckout({
 
   return (
     <div className="overflow-hidden rounded-[18px] border border-border-subtle bg-bright-cream shadow-[0_1px_3px_rgba(30,26,15,0.08)]">
+      <FunnelTracker
+        event="begin_checkout"
+        dedupeKey={`${slug}_${propertyId ?? ""}_${checkIn}_${checkOut}`}
+        itemId={slug}
+        itemName={slug}
+        value={quote.total}
+        currency={quote.currency}
+      />
       <div className="flex items-center justify-between border-b border-dashed border-border-subtle bg-pale-sage/40 px-[26px] py-[15px]">
         <span className="text-xs font-semibold tracking-[0.06em] text-forest-green uppercase">
           Secure checkout

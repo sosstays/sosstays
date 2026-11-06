@@ -5,6 +5,8 @@ import { PROPERTY_BOOKING_QUERY } from "@/sanity/queries";
 import { getStayQuote, resolveUplistingPropertyId } from "@/lib/uplistingApi";
 import { validateStayParams, validateGuestDetails } from "@/lib/bookingValidation";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
+import { readAttribution } from "@/lib/attribution-server";
+import { attributionToStripeMetadata } from "@/lib/attribution";
 
 // Creates the embedded Stripe Checkout Session the /book page mounts. The
 // amount charged always comes from a fresh Uplisting quote fetched here —
@@ -150,6 +152,9 @@ export async function POST(request: NextRequest) {
         // synced into the booking record — this is purely for visibility
         // in the Stripe dashboard/receipt.
         addOns: selectedAddOns.map((addOn) => addOn.name).join(", "),
+        // Where this guest first came from (attr_source, attr_medium, …), so
+        // every paid booking in Stripe shows its marketing channel.
+        ...attributionToStripeMetadata(await readAttribution()),
       },
     });
   } catch (error) {

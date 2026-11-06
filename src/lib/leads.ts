@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "./supabase-admin";
 import { subscribeToMailerLite } from "./mailerlite";
+import { readAttribution } from "./attribution-server";
 
 type Row = Record<string, unknown>;
 
@@ -24,6 +25,9 @@ function cleanRow(row: Row): Row {
     } else if (typeof value === "number") {
       if (Number.isFinite(value)) out[key] = value;
     } else if (typeof value === "boolean") {
+      out[key] = value;
+    } else if (value && typeof value === "object" && !Array.isArray(value)) {
+      // Plain objects are stored as jsonb (e.g. first-touch `attribution`).
       out[key] = value;
     }
   }
@@ -128,7 +132,18 @@ async function saveToSupabase(opts: SaveLeadOptions): Promise<SaveResult> {
  * Supabase key doesn't break forms that used to work.
  */
 export async function saveLead(opts: SaveLeadOptions): Promise<NextResponse> {
-  const saved = await saveToSupabase(opts);
+  // First-touch attribution (from the sos_attr cookie) is written once, when
+  // the row is created, into an `attribution` jsonb column — so every lead
+  // records where the visitor originally came from.
+  const attribution = await readAttribution();
+  let saved = await saveToSupabase(
+    attribution ? { ...opts, onCreate: { ...opts.onCreate, attribution } } : opts,
+  );
+  // If the attribution column hasn't been migrated yet the insert fails;
+  // never lose the lead over it — retry once without attribution.
+  if (!saved.ok && !("skipped" in saved && saved.skipped) && attribution) {
+    saved = await saveToSupabase(opts);
+  }
   const ml = await subscribeToMailerLite({ email: opts.email, ...opts.mailerlite });
 
   if (saved.ok && ml.ok) {
