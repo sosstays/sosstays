@@ -92,18 +92,18 @@ export default async function HomePage() {
         <div className="relative z-10 mx-auto flex min-h-[94vh] w-[calc(100%-4rem)] flex-col items-center justify-center gap-10 pt-28 pb-10 text-center sm:w-[calc(100%-7rem)] sm:pt-32">
           <div className="w-full">
             {hero?.eyebrow && (
-              <Eyebrow className="mb-3 sm:mb-5" tone="sage">
+              <Eyebrow as="h1" className="mb-3 sm:mb-5" tone="sage">
                 {hero.eyebrow}
               </Eyebrow>
             )}
-            <h1 className="mb-4 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:mb-6 sm:text-6xl">
+            <h2 className="mb-4 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:mb-6 sm:text-6xl">
               {headingLines.map((line: string, i: number) => (
                 <span key={i}>
                   {line}
                   {i < headingLines.length - 1 && <br />}
                 </span>
               ))}
-            </h1>
+            </h2>
             <p className="mx-auto mb-3 text-lg text-cream/95 sm:mb-4">
               Explore stays in Louth, Clare and Wexford, check availability and book directly with SOS Stays.
             </p>
