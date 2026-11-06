@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import Script from "next/script";
 import { client } from "@/sanity/client";
 import { HERO_SECTION_QUERY, HOMEPAGE_BLOG_QUERY, HOMEPAGE_QUERY, HOSTS_MODULE_QUERY, PROMO_GRID_QUERY, PROPERTY_ORDER_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
@@ -97,20 +96,14 @@ export default async function HomePage() {
                 {hero.eyebrow}
               </Eyebrow>
             )}
-            {/* The real H1 is this guest-first, descriptive line — not the
-                brand tagline below it, which stays as a styled <p> (same
-                look it always had) so the page has exactly one H1. */}
-            <h1 className="mb-2 font-serif text-3xl leading-[1.1] font-semibold text-cream sm:text-5xl">
-              Holiday homes and guest accommodation in Ireland
-            </h1>
-            <p className="mb-4 font-serif text-2xl leading-[1.05] font-semibold text-cream italic sm:mb-6 sm:text-4xl">
+            <h1 className="mb-4 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:mb-6 sm:text-6xl">
               {headingLines.map((line: string, i: number) => (
                 <span key={i}>
                   {line}
                   {i < headingLines.length - 1 && <br />}
                 </span>
               ))}
-            </p>
+            </h1>
             <p className="mx-auto mb-3 text-lg text-cream/95 sm:mb-4">
               Explore stays in Louth, Clare and Wexford, check availability and book directly with SOS Stays.
             </p>
@@ -130,24 +123,6 @@ export default async function HomePage() {
           {hero?.image?.alt && (
             <div className="text-sm whitespace-nowrap text-cream/75">{hero.image.alt}</div>
           )}
-        </div>
-      </section>
-
-      {/* DESTINATIONS — descriptive, crawlable links to the real existing
-          guest-facing area guide for each confirmed county. Wexford links
-          to the county-wide guide rather than the Ferns & Enniscorthy
-          local guide, which stays as its own separate page. */}
-      <section className="bg-cream px-8 py-10 sm:px-14">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-10 gap-y-3 text-center">
-          <Link href="/areas/boyne-valley-ardee" className="text-[15px] font-medium text-forest-green underline underline-offset-4">
-            Stays in Louth — the Boyne Valley &amp; Ardee
-          </Link>
-          <Link href="/areas/liscannor-cliffs-of-moher" className="text-[15px] font-medium text-forest-green underline underline-offset-4">
-            Stays in Clare — Liscannor &amp; the Cliffs of Moher
-          </Link>
-          <Link href="/areas/wexford" className="text-[15px] font-medium text-forest-green underline underline-offset-4">
-            Stays in Wexford
-          </Link>
         </div>
       </section>
 
