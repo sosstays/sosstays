@@ -147,9 +147,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* PROMO GRID — image/title/subtitle tiles directly under the hero */}
-      <PromoGrid data={promoGrid} />
-
       {/* FEATURED STAYS */}
       {properties.length > 0 && (
         <section id="stays" className="px-8 py-24 sm:px-14 sm:py-28">
@@ -173,6 +170,9 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* PROMO GRID — image/title/subtitle tiles */}
+      <PromoGrid data={promoGrid} />
 
       {/* HOSTS MODULE — property-owner services overview + pricing */}
       <HostsModule data={hostsModule} />

@@ -10,6 +10,10 @@ export type PropertyCardProps = {
   name: string;
   /** Omitted entirely when not passed — e.g. room type cards have no location. */
   location?: string;
+  /** Editorial destination label shown above the photo, e.g. "Stays in
+   *  Clare — Liscannor & the Cliffs of Moher" (property's own
+   *  `destinationHeading` field in Sanity). Omitted entirely when unset. */
+  destinationHeading?: string | null;
   shortDescription?: string | null;
   sleeps?: number | null;
   coverImage?: SanityImageWithAlt | null;
@@ -32,6 +36,7 @@ export function PropertyCard({
   slug,
   name,
   location,
+  destinationHeading,
   shortDescription,
   sleeps,
   coverImage,
@@ -53,6 +58,11 @@ export function PropertyCard({
 
   const card = (
     <>
+      {destinationHeading && (
+        <p className="font-serif mb-2.5 text-base font-bold text-forest-green sm:text-lg">
+          {destinationHeading}
+        </p>
+      )}
       {images.length >= 3 ? (
         <>
           {/* single image below sm, 3-photo collage from sm up */}

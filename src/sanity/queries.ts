@@ -752,7 +752,7 @@ export const FEATURED_PARTNER_SLUGS_QUERY = defineQuery(`
 // of propertyOrder.
 export const HOMEPAGE_QUERY = defineQuery(`{
   "properties": *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) {
-    _id, name, "slug": slug.current, location, shortDescription, sleeps,
+    _id, name, "slug": slug.current, location, destinationHeading, shortDescription, sleeps,
     "coverImage": gallery[0], "gallery": gallery[0...3]
   },
   "areas": *[_type == "areaGuide" && market == $market && defined(slug.current)] | order(areaName asc) [0...4] {
