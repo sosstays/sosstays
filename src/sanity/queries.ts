@@ -9,7 +9,9 @@ const seoProjection = `
     "title": coalesce(seoTitle, name, title, areaName, ""),
     "description": coalesce(seoDescription, shortDescription, excerpt, ""),
     "image": seoImage,
-    "noIndex": noIndex
+    "noIndex": noIndex,
+    canonicalOverride,
+    "alternate": coalesce(alternates, alternateVersion)->{ _type, market, "slug": slug.current }
   }
 `;
 
@@ -309,6 +311,8 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     defaultSeoImage,
     businessName,
     contactEmail,
+    phone,
+    address { streetAddress, locality, region, postalCode },
     bookingSubdomainUrl,
     socialLinks[] {
       platform,

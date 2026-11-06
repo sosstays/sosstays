@@ -26,6 +26,13 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    // Next's default deviceSizes go up to 3840, so a full-width image on a
+    // large/retina screen requested a 3840px original from Sanity's CDN.
+    // Capped at 1600 — most traffic (India especially) is mobile, and our
+    // sources are authored at ~1600 anyway. Also serves AVIF/WebP.
+    deviceSizes: [360, 480, 640, 750, 828, 1080, 1200, 1600],
+    imageSizes: [16, 32, 64, 96, 128, 256, 384],
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",

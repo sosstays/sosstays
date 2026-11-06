@@ -1,6 +1,7 @@
 import { urlFor } from "@/sanity/image";
 import { portableTextToPlain } from "@/sanity/portableText";
 import { SITE_URL } from "@/sanity/metadata";
+import { MARKET } from "@/lib/market";
 
 // Renders a schema.org JSON-LD <script> tag. `data` can be a single node
 // or an array of nodes (schema.org allows either). Escaping "<" prevents
@@ -17,11 +18,27 @@ type SiteSettings = {
   siteName?: string | null;
   businessName?: string | null;
   contactEmail?: string | null;
+  phone?: string | null;
+  address?: {
+    streetAddress?: string | null;
+    locality?: string | null;
+    region?: string | null;
+    postalCode?: string | null;
+  } | null;
   socialLinks?: SocialLink[] | null;
 } | null | undefined;
 
 const DEFAULT_SITE_NAME = "Sos Stays";
-const DEFAULT_CONTACT_EMAIL = "info@sosstays.com";
+// Irish fallback only — India never inherits an Irish contact address; with
+// no email in its own siteSettings the field is simply omitted.
+const DEFAULT_CONTACT_EMAIL = MARKET === "ie" ? "info@sosstays.com" : undefined;
+
+// Per-market schema.org facts. `areaServed` is where the business operates
+// (a Country for India); the Irish copy keeps its regional wording.
+const MARKET_SCHEMA = {
+  ie: { country: "IE", countryName: "Ireland", areaServed: { "@type": "AdministrativeArea", name: "Louth, Meath & the Mournes" } },
+  in: { country: "IN", countryName: "India", areaServed: { "@type": "Country", name: "India" } },
+}[MARKET];
 const DEFAULT_LOGO_URL = `${SITE_URL}/logo.svg`;
 
 function organizationRef(settings?: SiteSettings) {
@@ -39,14 +56,33 @@ export function buildOrganizationSchema(settings?: SiteSettings) {
   const sameAs = (settings?.socialLinks ?? [])
     .map((link) => link.url)
     .filter((url): url is string => Boolean(url));
+  const a = settings?.address;
+  const address =
+    a && (a.streetAddress || a.locality || a.region || a.postalCode)
+      ? {
+          "@type": "PostalAddress",
+          ...(a.streetAddress ? { streetAddress: a.streetAddress } : {}),
+          ...(a.locality ? { addressLocality: a.locality } : {}),
+          ...(a.region ? { addressRegion: a.region } : {}),
+          ...(a.postalCode ? { postalCode: a.postalCode } : {}),
+          addressCountry: MARKET_SCHEMA.country,
+        }
+      : undefined;
+  const email = settings?.contactEmail || DEFAULT_CONTACT_EMAIL;
 
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    // ProfessionalService is an Organization subtype, so this is still a
+    // valid Organization for the sameAs/logo/contact fields.
+    "@type": ["Organization", "ProfessionalService"],
     name: settings?.businessName || settings?.siteName || DEFAULT_SITE_NAME,
     url: SITE_URL,
     logo: DEFAULT_LOGO_URL,
-    email: settings?.contactEmail || DEFAULT_CONTACT_EMAIL,
+    description: "Short-term rental property management",
+    areaServed: MARKET_SCHEMA.areaServed,
+    ...(email ? { email } : {}),
+    ...(settings?.phone ? { telephone: settings.phone } : {}),
+    ...(address ? { address } : {}),
     ...(sameAs.length > 0 ? { sameAs } : {}),
   };
 }
@@ -83,7 +119,7 @@ export function buildLodgingBusinessSchema(
       ? {
           "@type": "PostalAddress",
           addressLocality: property.location,
-          addressCountry: "IE",
+          addressCountry: MARKET_SCHEMA.country,
         }
       : undefined,
     ...(property.sleeps
@@ -99,7 +135,9 @@ export function buildLodgingBusinessSchema(
           })),
         }
       : {}),
-    email: settings?.contactEmail || DEFAULT_CONTACT_EMAIL,
+    ...((settings?.contactEmail || DEFAULT_CONTACT_EMAIL)
+      ? { email: settings?.contactEmail || DEFAULT_CONTACT_EMAIL }
+      : {}),
     parentOrganization: organizationRef(settings),
   };
 }
@@ -206,10 +244,7 @@ export function buildServiceSchema(page: LandlordPageForSchema, settings?: SiteS
     description: page.heroStatement || page.proofPoints?.[0],
     url: page.slug ? `${SITE_URL}/landlords/${page.slug}` : `${SITE_URL}/landlords`,
     provider: organizationRef(settings),
-    areaServed: {
-      "@type": "AdministrativeArea",
-      name: "Louth, Meath & the Mournes",
-    },
+    areaServed: MARKET_SCHEMA.areaServed,
   };
 }
 

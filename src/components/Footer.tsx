@@ -3,6 +3,8 @@ import Link from "next/link";
 import { SocialIcons } from "@/components/SocialIcons";
 import { MARKET } from "@/lib/market";
 
+type CountrySite = { label: string; market: string; url: string };
+
 type SocialLink = {
   platform:
     | "instagram"
@@ -77,9 +79,11 @@ const DEFAULT_COLUMNS: FooterColumn[] = [
 export function Footer({
   socialLinks,
   content,
+  countries,
 }: {
   socialLinks?: SocialLink[] | null;
   content?: FooterContent | null;
+  countries?: CountrySite[] | null;
 }) {
   // The hardcoded defaults are Ireland's; other markets show only what their
   // own footer document provides.
@@ -124,8 +128,29 @@ export function Footer({
           ))}
         </div>
 
-        <div className="mt-10 border-t border-sage-grey/40 pt-6 text-xs text-near-black/50">
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-sage-grey/40 pt-6 text-xs text-near-black/50">
           <p>{copyrightText}</p>
+          {/* Plain, always-rendered text links (no flags, no JS) so crawlers
+              can discover the sibling country sites. The header dropdown is
+              JS-only, so this is the crawlable path. */}
+          {countries && countries.length > 1 && (
+            <nav aria-label="Sos Stays country sites">
+              <ul className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                {countries.map((c) => (
+                  <li key={c.market}>
+                    <a
+                      href={c.url}
+                      hrefLang={c.market === "in" ? "en-IN" : "en-IE"}
+                      aria-current={c.market === MARKET ? "true" : undefined}
+                      className={c.market === MARKET ? "font-semibold text-near-black/80" : "hover:text-forest-green"}
+                    >
+                      {c.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
         </div>
       </div>
     </footer>

@@ -3,12 +3,15 @@ import { urlFor } from "@/sanity/image";
 import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { SITE_URL, LOCALE, DEFAULT_SEO, isIndexable } from "@/lib/market";
+import { buildHreflang, type AlternateDoc } from "@/lib/hreflang";
 
 type SeoData = {
   title: string;
   description: string;
   image?: any;
   noIndex?: boolean | null;
+  canonicalOverride?: string | null;
+  alternate?: AlternateDoc;
 } | null | undefined;
 
 export { SITE_URL };
@@ -25,15 +28,19 @@ export async function buildMetadata(seo: SeoData, path: string = ""): Promise<Me
   const image = seo?.image || siteSettings?.defaultSeoImage;
   const imageUrl = image ? urlFor(image).width(1200).height(630).url() : undefined;
 
+  const canonical = seo?.canonicalOverride || `${SITE_URL}${path}`;
+  // hreflang via <link> tags only (not the sitemap) — one method, no conflicts.
+  const languages = buildHreflang(seo?.alternate, path);
+
   return {
     title,
     description,
-    alternates: { canonical: `${SITE_URL}${path}` },
+    alternates: { canonical, ...(languages ? { languages } : {}) },
     robots: isIndexable(seo?.noIndex) ? { index: true, follow: true } : { index: false, follow: false },
     openGraph: {
       title,
       description,
-      url: `${SITE_URL}${path}`,
+      url: canonical,
       siteName: "Sos Stays",
       images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630 }] : undefined,
       locale: LOCALE.og,

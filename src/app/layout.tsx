@@ -96,7 +96,7 @@ export default async function RootLayout({
         <CountryProvider countries={countries} currentMarket={MARKET}>
           <div className="flex flex-1 flex-col">{children}</div>
         </CountryProvider>
-        <Footer socialLinks={settings?.socialLinks} content={footerContent} />
+        <Footer socialLinks={settings?.socialLinks} content={footerContent} countries={countries} />
       </body>
     </html>
   );
