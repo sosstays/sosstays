@@ -83,6 +83,7 @@ export function PropertyCarousel({
               slug={property.slug}
               name={property.name}
               location={property.location}
+              destinationHeading={property.destinationHeading}
               shortDescription={property.shortDescription}
               sleeps={property.sleeps}
               coverImage={property.coverImage}
