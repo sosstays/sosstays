@@ -453,7 +453,11 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
                 {property.shortDescription}
               </p>
             )}
+            <h2 className="mb-5 text-sm font-semibold tracking-wide text-near-black/55 uppercase">
+              Property at a glance
+            </h2>
             <PropertyOverview
+              location={property.location}
               guests={property.sleeps}
               beds={property.beds}
               bedrooms={property.bedrooms}

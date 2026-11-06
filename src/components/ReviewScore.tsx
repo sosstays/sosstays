@@ -44,39 +44,26 @@ export function RatingBar({
   max?: number;
 }) {
   const { ref, inView } = useInView<HTMLDivElement>();
-  const [animatedValue, setAnimatedValue] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    const duration = 900;
-    const start = performance.now();
-    let frame: number;
-
-    const tick = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setAnimatedValue(value * eased);
-      if (progress < 1) frame = requestAnimationFrame(tick);
-    };
-
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [inView, value]);
-
-  const percent = Math.min((animatedValue / max) * 100, 100);
+  // The number itself is never animated — it's real content a crawler/AI
+  // engine reads from the server-rendered HTML, and showing an interpolated
+  // "0.0" (or any in-between value) there would be a visible-content/data
+  // mismatch. Only the bar's fill width animates in on scroll, from an
+  // actual 0% to the real percentage — a decorative transition, not a
+  // textual claim.
+  const percent = Math.min((value / max) * 100, 100);
 
   return (
     <div ref={ref}>
       <div className="mb-2 flex items-baseline justify-between">
         <span className="text-[15px] text-near-black">{title}</span>
         <span className="text-[15px] font-semibold tabular-nums text-near-black">
-          {animatedValue.toFixed(1)}
+          {value.toFixed(1)}
         </span>
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-sage-grey/25">
         <div
-          className="h-full rounded-full bg-forest-green"
-          style={{ width: `${percent}%` }}
+          className="h-full rounded-full bg-forest-green transition-[width] duration-700 ease-out"
+          style={{ width: `${inView ? percent : 0}%` }}
         />
       </div>
     </div>
