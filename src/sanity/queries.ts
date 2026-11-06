@@ -124,6 +124,10 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     name,
     "slug": slug.current,
     location,
+    city,
+    region,
+    country,
+    "geo": geo{lat, lng},
     locationLink,
     shortDescription,
     fullDescription,
@@ -856,6 +860,8 @@ export const LANDING_PAGE_QUERY = defineQuery(`
 
 export const SITEMAP_QUERY = defineQuery(`
   *[_type in ["blogPost", "propertyPage", "areaGuide", "landlordPage", "landingPage"] && defined(slug.current) && (noIndex == false || (noIndex != true && $market == "ie")) && (market == $market || (_type == "landingPage" && $market == "ie"))] {
+    _type,
+    "slug": slug.current,
     "href": select(
       _type == "blogPost" => "/blog/" + slug.current,
       _type == "propertyPage" => "/stays/" + slug.current,
@@ -871,12 +877,16 @@ export const SITEMAP_QUERY = defineQuery(`
 // terms) — the sitemap wants their real _updatedAt and noIndex flag rather
 // than treating them as unchanging routes.
 export const SITEMAP_SINGLETONS_QUERY = defineQuery(`
-  *[_type in ["aboutPage", "corporateStaysPage", "privacyPolicyPage", "termsPage"] && _id == _type + "-" + $market] {
+  *[_type in ["aboutPage", "corporateStaysPage", "privacyPolicyPage", "termsPage", "bespokeTripPage", "giftMakerPage", "partnersPage", "shopPage"] && _id == _type + "-" + $market] {
     "href": select(
       _type == "aboutPage" => "/about",
       _type == "corporateStaysPage" => "/corporate-stays",
       _type == "privacyPolicyPage" => "/privacy-policy",
-      _type == "termsPage" => "/terms-and-conditions"
+      _type == "termsPage" => "/terms-and-conditions",
+      _type == "bespokeTripPage" => "/bespoke-ireland-trip",
+      _type == "giftMakerPage" => "/gift-maker",
+      _type == "partnersPage" => "/partners",
+      _type == "shopPage" => "/shop"
     ),
     _updatedAt,
     noIndex
