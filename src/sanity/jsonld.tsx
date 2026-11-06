@@ -25,10 +25,14 @@ const LEGAL_NAME = "Power Rangers Ltd";
 const DEFAULT_CONTACT_EMAIL = "info@sosstays.com";
 const DEFAULT_LOGO_URL = `${SITE_URL}/logo.svg`;
 
-function organizationRef(settings?: SiteSettings) {
+// The brand name is always "SOS Stays" regardless of CMS content —
+// previously this preferred `settings.businessName`, which is the legal
+// entity name ("Power Rangers Ltd") — correct as `legalName`, wrong as the
+// publisher's displayed `name`.
+function organizationRef() {
   return {
     "@type": "Organization",
-    name: settings?.businessName || settings?.siteName || DEFAULT_SITE_NAME,
+    name: DEFAULT_SITE_NAME,
     legalName: LEGAL_NAME,
     url: SITE_URL,
     logo: DEFAULT_LOGO_URL,
@@ -278,7 +282,7 @@ export function buildLodgingBusinessSchema(
         }
       : {}),
     email: settings?.contactEmail || DEFAULT_CONTACT_EMAIL,
-    parentOrganization: organizationRef(settings),
+    parentOrganization: organizationRef(),
   };
 }
 
@@ -340,6 +344,7 @@ type BlogPostForSchema = {
   excerpt?: string | null;
   coverImage?: any;
   publishedAt?: string | null;
+  _updatedAt?: string | null;
   author?: { name?: string | null } | null;
 };
 
@@ -356,11 +361,12 @@ export function buildArticleSchema(post: BlogPostForSchema, settings?: SiteSetti
       ? { image: urlFor(post.coverImage).width(1200).height(675).url() }
       : {}),
     ...(post.publishedAt ? { datePublished: post.publishedAt } : {}),
+    ...(post._updatedAt ? { dateModified: post._updatedAt } : {}),
     author: post.author?.name
       ? { "@type": "Person", name: post.author.name }
-      : organizationRef(settings),
+      : organizationRef(),
     publisher: {
-      ...organizationRef(settings),
+      ...organizationRef(),
       logo: { "@type": "ImageObject", url: DEFAULT_LOGO_URL },
     },
   };
@@ -453,7 +459,7 @@ export function buildServiceSchema(page: LandlordPageForSchema, settings?: SiteS
       ? "Commission-only Airbnb and short-term let management for landlords across Ireland and Northern Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — from 15% commission, no setup fee."
       : page.heroStatement || page.proofPoints?.[0],
     url,
-    provider: organizationRef(settings),
+    provider: organizationRef(),
     areaServed: {
       "@type": "AdministrativeArea",
       name: "Louth, Meath & the Mournes",
