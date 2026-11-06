@@ -369,6 +369,28 @@ export const BESPOKE_TRIP_PAGE_QUERY = defineQuery(`
   }
 `);
 
+// ---- Gift Maker page (singleton) ----
+// Editorial copy only — the wizard tool itself reads the shop catalogue
+// live via SHOP_PRODUCTS_QUERY, not this document.
+export const GIFT_MAKER_PAGE_QUERY = defineQuery(`
+  *[_type == "giftMakerPage" && _id == "giftMakerPage-" + $market][0] {
+    heroEyebrow,
+    heading,
+    subhead,
+    heroParagraph,
+    heroImage,
+    whyHeading,
+    whyItems[] { title, text },
+    howHeading,
+    howSteps[] { title, text },
+    faqHeading,
+    faqs[] { question, answer },
+    ctaHeading,
+    ctaText,
+    ${seoProjection}
+  }
+`);
+
 // ---- Footer (singleton) ----
 
 export const FOOTER_QUERY = defineQuery(`
