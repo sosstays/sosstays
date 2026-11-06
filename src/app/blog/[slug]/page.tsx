@@ -6,7 +6,7 @@ import { client } from "@/sanity/client";
 import { BLOG_POST_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata, SITE_URL } from "@/sanity/metadata";
-import { JsonLd, buildArticleSchema, buildBreadcrumbSchema } from "@/sanity/jsonld";
+import { JsonLd, buildArticleSchema, buildBreadcrumbSchema, buildFaqSchema } from "@/sanity/jsonld";
 import { blogBodyComponents } from "@/sanity/portableText";
 import { estimateReadingTime } from "@/sanity/readingTime";
 import { HeroNav } from "@/components/HeroNav";
@@ -15,6 +15,7 @@ import { SocialIcons } from "@/components/SocialIcons";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { DisqusComments } from "@/components/DisqusComments";
 import { BlogPostListItem } from "@/components/BlogPostListItem";
+import { BespokeTripCta } from "@/components/BespokeTripCta";
 import { FaqSection } from "@/components/FaqSection";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { Reveal } from "@/components/Reveal";
@@ -52,6 +53,7 @@ export default async function BlogPostPage({ params }: Props) {
     { name: "Blog", url: `${SITE_URL}/blog` },
     { name: post.title, url: `${SITE_URL}/blog/${slug}` },
   ]);
+  const faqSchema = buildFaqSchema(post.faqs);
 
   const authorName = post.author?.name || siteSettings?.businessName || "Sos Stays";
   const readingTime = estimateReadingTime(post.body);
@@ -62,6 +64,7 @@ export default async function BlogPostPage({ params }: Props) {
     <>
       <JsonLd data={buildArticleSchema(post, siteSettings)} />
       <JsonLd data={breadcrumbSchema} />
+      {faqSchema && <JsonLd data={faqSchema} />}
       <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
 
       <main className="bg-cream font-sans text-near-black">
@@ -256,6 +259,10 @@ export default async function BlogPostPage({ params }: Props) {
                 </div>
               </div>
             )}
+
+            <div className="mb-9 last:mb-0">
+              <BespokeTripCta variant="compact" />
+            </div>
 
             {post.relatedAreaGuides && post.relatedAreaGuides.length > 0 && (
               <div>

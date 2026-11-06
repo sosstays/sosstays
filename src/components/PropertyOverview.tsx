@@ -1,4 +1,4 @@
-import { Users, BedDouble, DoorClosed, Bath, Home, DoorOpen } from "lucide-react";
+import { Users, BedDouble, DoorClosed, Bath, Home, DoorOpen, MapPin } from "lucide-react";
 import { Button, type ButtonColor } from "@/components/Button";
 
 export function BookNowCta({
@@ -48,6 +48,10 @@ function BathroomsIcon() {
   return <Bath {...overviewIconProps} />;
 }
 
+function LocationIcon() {
+  return <MapPin {...overviewIconProps} />;
+}
+
 // Whole building, booked as one unit — a roofline over full walls.
 function HouseIcon() {
   return <Home {...overviewIconProps} />;
@@ -67,12 +71,14 @@ function typeIconFor(type: string) {
 }
 
 export function PropertyOverview({
+  location,
   guests,
   beds,
   bedrooms,
   bathrooms,
   type,
 }: {
+  location?: string | null;
   guests?: number | null;
   beds?: number | null;
   bedrooms?: number | null;
@@ -80,6 +86,7 @@ export function PropertyOverview({
   type?: string | null;
 }) {
   const items = [
+    { label: "Location", value: location, Icon: LocationIcon },
     { label: "Guests", value: guests, Icon: GuestsIcon },
     { label: "Beds", value: beds, Icon: BedsIcon },
     { label: "Bedrooms", value: bedrooms, Icon: BedroomsIcon },

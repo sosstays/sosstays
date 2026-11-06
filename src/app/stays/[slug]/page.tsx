@@ -32,6 +32,7 @@ import { Eyebrow } from "@/components/Eyebrow";
 import type { CheckoutAddOn } from "@/components/checkout/AddOnSelector";
 import { AddOnsSection } from "@/components/AddOnsSection";
 import { FunnelTracker } from "@/components/checkout/FunnelTracker";
+import { BespokeTripCta } from "@/components/BespokeTripCta";
 import type { Metadata } from "next";
 
 export const revalidate = 60; // ISR: re-fetch at most once a minute
@@ -454,7 +455,11 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
                 {property.shortDescription}
               </p>
             )}
+            <h2 className="mb-5 text-sm font-semibold tracking-wide text-near-black/55 uppercase">
+              Property at a glance
+            </h2>
             <PropertyOverview
+              location={property.location}
               guests={property.sleeps}
               beds={property.beds}
               bedrooms={property.bedrooms}
@@ -551,6 +556,11 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
           />
         </div>
       </section>
+
+      {/* BESPOKE TRIP CTA */}
+      <div className="pb-24 sm:pb-28">
+        <BespokeTripCta />
+      </div>
     </main>
   );
 }

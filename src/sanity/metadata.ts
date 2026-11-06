@@ -41,7 +41,7 @@ export async function buildMetadata(seo: SeoData, path: string = ""): Promise<Me
       title,
       description,
       url: canonical,
-      siteName: "Sos Stays",
+      siteName: "SOS Stays",
       images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630 }] : undefined,
       locale: LOCALE.og,
       type: "website",

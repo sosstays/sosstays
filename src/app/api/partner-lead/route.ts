@@ -4,7 +4,8 @@ import { saveLead } from "@/lib/leads";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { businessName, contactName, email, phone, website, category, about, location, referral } = body ?? {};
+  const { businessName, contactName, email, phone, website, category, about, location, referral, consent } =
+    body ?? {};
 
   if (!isValidEmail(email)) {
     return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
@@ -17,6 +18,9 @@ export async function POST(request: NextRequest) {
   }
   if (typeof phone !== "string" || !phone.trim()) {
     return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
+  }
+  if (consent !== true) {
+    return NextResponse.json({ error: "You must agree to the Privacy Policy to continue" }, { status: 400 });
   }
 
   return saveLead({
@@ -32,6 +36,8 @@ export async function POST(request: NextRequest) {
       location,
       about_business: about,
       referral,
+      consent: true,
+      consent_at: new Date().toISOString(),
     },
     mailerlite: {
       fields: {

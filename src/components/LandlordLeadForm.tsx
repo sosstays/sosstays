@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/Button";
+import { ConsentCheckbox } from "@/components/ConsentCheckbox";
 import { trackEvent, trackLead } from "@/lib/analytics";
 import type { LandlordContact } from "@/lib/landlordHandoff";
 
@@ -32,6 +33,7 @@ export function LandlordLeadForm({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
+  const [consent, setConsent] = useState(false);
   const [step0Error, setStep0Error] = useState(false);
   const [step2Error, setStep2Error] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -57,13 +59,17 @@ export function LandlordLeadForm({
       setStep2Error("Enter a valid email address.");
       return;
     }
+    if (!consent) {
+      setStep2Error("Please agree to the Privacy Policy to continue.");
+      return;
+    }
     setStep2Error(null);
     setSubmitting(true);
     try {
       const res = await fetch("/api/mailerlite-subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, mobile, situation, propertyDescription }),
+        body: JSON.stringify({ name, email, mobile, situation, propertyDescription, consent: true }),
       });
       if (!res.ok) throw new Error(`Form submission failed: ${res.status}`);
       // Fires only once the lead has been accepted. GTM listens for this
@@ -243,6 +249,7 @@ export function LandlordLeadForm({
               className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
             />
           </label>
+          <ConsentCheckbox checked={consent} onChange={setConsent} accent="maroon" />
           {step2Error && (
             <p role="alert" className="text-[13px] text-error-red">
               {step2Error}

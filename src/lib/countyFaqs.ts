@@ -16,22 +16,35 @@ export function buildGenericCountyFaqs(countyName: string, region: Region): Coun
             "Ireland's Short-Term Letting Register opens for registration on 1 December 2026, with a compliance deadline of 31 December 2026. We'll guide you through what's needed as your registration date approaches.",
         }
       : {
-          question: `Do I need to register my ${countyName} property for short-term letting?`,
+          question: `Do I need certification for my ${countyName} property?`,
           answer:
-            "Northern Ireland runs a separate regulatory system to the Fáilte Ireland STL Register used in the Republic — it doesn't apply here. We'll walk you through what does apply for your property.",
+            "In Northern Ireland, tourist accommodation must be certified by Tourism NI. We'll guide you through certification as part of onboarding.",
         };
 
   return [
     {
-      question: `How much does Sos Stays charge in Co. ${countyName}?`,
+      question: `How much does SOS Stays charge in Co. ${countyName}?`,
       answer:
-        "Commission starts from 15% of your gross rental revenue (nightly rate, not cleaning fees), varying by property type and exact location. No setup fee or monthly retainer — you only pay when the property earns.",
+        "Commission starts from 15% of gross rental revenue (nightly rate, not cleaning fees), varying by property type and exact location. No setup fee or monthly retainer — you only pay when the property earns.",
     },
     registrationFaq,
     {
       question: "What's included in the commission?",
       answer:
         "Listing across Airbnb, Booking.com and our own direct booking channel, dynamic pricing, guest communication and check-in support, cleaning coordination, and clear monthly statements — end to end.",
+    },
+    {
+      question: "Do I need to find my own cleaner?",
+      answer: "No — keep your existing cleaner if you'd like, or we can source one from our network.",
+    },
+    {
+      question: "Can I still use the property myself?",
+      answer: "Yes. Block off personal-use dates any time you like. There's no minimum commitment.",
+    },
+    {
+      question: "What happens after I get in touch?",
+      answer:
+        "A short call, then an in-person walkthrough, a plain-terms agreement, and handover — your listing typically goes live within about a week.",
     },
   ];
 }

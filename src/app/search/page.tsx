@@ -1,5 +1,6 @@
 import { client } from "@/sanity/client";
-import { PROPERTY_PAGES_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { PROPERTY_PAGES_QUERY, PROPERTY_ORDER_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { orderProperties } from "@/lib/propertyOrder";
 import { PropertyCard } from "@/components/PropertyCard";
 import { SearchBar } from "@/components/SearchBar";
 import { SearchResultCard, type SearchResultRoom } from "@/components/SearchResultCard";
@@ -86,7 +87,7 @@ export default async function SearchPage({
   const guestCount = guests ? Number(guests) : undefined;
   const hasSearchCriteria = Boolean(check_in || check_out || location || guestCount);
 
-  const [properties, availability, siteSettings] = await Promise.all([
+  const [allProperties, availability, siteSettings, propertyOrder] = await Promise.all([
     client.fetch<SosPropertyPage[]>(PROPERTY_PAGES_QUERY),
     // A search is only ever made for one specific date/guest combination —
     // never worth caching — and Uplisting being unreachable shouldn't take
@@ -106,7 +107,9 @@ export default async function SearchPage({
         )
       : Promise.resolve(null),
     client.fetch(SITE_SETTINGS_QUERY),
+    client.fetch(PROPERTY_ORDER_QUERY),
   ]);
+  const properties = orderProperties(allProperties, propertyOrder?.orderedSlugs);
 
   const whatsappUrl = siteSettings?.socialLinks?.find(
     (link: { platform: string; url: string }) => link.platform === "whatsapp",

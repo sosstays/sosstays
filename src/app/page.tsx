@@ -1,13 +1,16 @@
 import Image from "next/image";
 import Script from "next/script";
 import { client } from "@/sanity/client";
-import { HERO_SECTION_QUERY, HOMEPAGE_BLOG_QUERY, HOMEPAGE_QUERY, HOSTS_MODULE_QUERY, PROMO_GRID_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import { HERO_SECTION_QUERY, HOMEPAGE_BLOG_QUERY, HOMEPAGE_QUERY, HOSTS_MODULE_QUERY, PROMO_GRID_QUERY, PROPERTY_ORDER_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { getGuestNavLinks } from "@/lib/navLinks";
-import { PropertyCard, type PropertyCardProps } from "@/components/PropertyCard";
+import { orderProperties } from "@/lib/propertyOrder";
+import type { PropertyCardProps } from "@/components/PropertyCard";
+import { PropertyCarousel } from "@/components/PropertyCarousel";
+import { BespokeTripCta } from "@/components/BespokeTripCta";
 import { Button } from "@/components/Button";
 import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 import { PromoGrid } from "@/components/PromoGrid";
@@ -21,19 +24,38 @@ import type { Metadata } from "next";
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildMetadata(null, "");
+  // Hardcoded here rather than left to the Sanity default-SEO fallback —
+  // this exact title/description is the guest-first homepage copy from the
+  // SEO audit's first-stage fix, approved separately from the CMS content
+  // itself (no Sanity document changed).
+  return buildMetadata(
+    {
+      title: "Holiday Homes & Guest Accommodation in Ireland | SOS Stays",
+      description:
+        "Explore stays in Louth, Clare and Wexford, check availability and book directly with SOS Stays.",
+    },
+    ""
+  );
 }
 
 export default async function HomePage() {
-  const [hero, { properties, areas }, siteSettings, hostsModule, promoGrid, homeBlog, homeNavLinks] = await Promise.all([
+  const [hero, { properties: allProperties, areas }, siteSettings, propertyOrder, hostsModule, promoGrid, homeBlog, homeNavLinks] = await Promise.all([
     client.fetch(HERO_SECTION_QUERY),
     client.fetch(HOMEPAGE_QUERY),
     client.fetch(SITE_SETTINGS_QUERY),
+    client.fetch(PROPERTY_ORDER_QUERY),
     client.fetch(HOSTS_MODULE_QUERY),
     client.fetch(PROMO_GRID_QUERY),
     client.fetch(HOMEPAGE_BLOG_QUERY),
     getGuestNavLinks(),
   ]);
+  // No cap here — the carousel is what keeps this section manageable as
+  // more stays get added; Property Order in Site Settings controls which
+  // ones lead.
+  const properties = orderProperties<PropertyCardProps & { _id: string }>(
+    allProperties,
+    propertyOrder?.orderedSlugs
+  );
   const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
   const instagramUrl = siteSettings?.socialLinks?.find(
     (link: { platform: string; url: string }) => link.platform === "instagram",
@@ -70,19 +92,25 @@ export default async function HomePage() {
         <div className="relative z-10 mx-auto flex min-h-[94vh] w-[calc(100%-4rem)] flex-col items-center justify-center gap-10 pt-28 pb-10 text-center sm:w-[calc(100%-7rem)] sm:pt-32">
           <div className="w-full">
             {hero?.eyebrow && (
-              <Eyebrow className="mb-3 sm:mb-5" tone="sage">
+              <Eyebrow as="h1" className="mb-3 sm:mb-5" tone="sage">
                 {hero.eyebrow}
               </Eyebrow>
             )}
-            <h1 className="mb-4 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:mb-6 sm:text-6xl">
+            <h2 className="mb-4 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:mb-6 sm:text-6xl">
               {headingLines.map((line: string, i: number) => (
                 <span key={i}>
                   {line}
                   {i < headingLines.length - 1 && <br />}
                 </span>
               ))}
-            </h1>
-            {hero?.body && <p className="mx-auto mb-3 text-lg text-cream/95 sm:mb-4">{hero.body}</p>}
+            </h2>
+            <p className="mx-auto mb-3 text-lg text-cream/95 sm:mb-4">
+              Explore stays in Louth, Clare and Wexford, check availability and book directly with SOS Stays.
+            </p>
+            {/* hero.body (the old CMS paragraph) is intentionally not
+                rendered here anymore — it covered the same ground as the
+                supporting line above and stacking both read as repetitive.
+                The field itself is untouched in Sanity. */}
             {hero?.subBody && (
               <p className="mx-auto mb-5 text-sm text-light-sage/85 sm:mb-8">{hero.subBody}</p>
             )}
@@ -119,45 +147,32 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* PROMO GRID — image/title/subtitle tiles directly under the hero */}
-      <PromoGrid data={promoGrid} />
-
       {/* FEATURED STAYS */}
       {properties.length > 0 && (
-        <section id="stays" className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
-          <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
-            <Reveal as="h2" className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
-              A few places to start
-            </Reveal>
-            <Reveal as="p" delay={150} className="max-w-[380px] text-near-black/60">
-              Have a proper look around each one.
-            </Reveal>
-          </div>
-
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((property: PropertyCardProps & { _id: string }, i: number) => (
-              <Reveal key={property._id} delay={Math.min(i, 5) * 90}>
-                <PropertyCard
-                  slug={property.slug}
-                  name={property.name}
-                  location={property.location}
-                  shortDescription={property.shortDescription}
-                  sleeps={property.sleeps}
-                  coverImage={property.coverImage}
-                  surface="framed"
-                  hideSleeps
-                />
+        <section id="stays" className="px-8 py-24 sm:px-14 sm:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
+              <Reveal as="h2" className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
+                A few places to start
               </Reveal>
-            ))}
-          </div>
+              <Reveal as="p" delay={150} className="max-w-[380px] text-near-black/60">
+                Have a proper look around each one.
+              </Reveal>
+            </div>
 
-          <div className="mt-12 text-center">
-            <Button link="/stays" variant="primary" bgColor="forest-green" color="cream">
-              View all stays
-            </Button>
+            <PropertyCarousel properties={properties} />
+
+            <div className="mt-12 text-center">
+              <Button link="/stays" variant="primary" bgColor="forest-green" color="cream">
+                View all stays
+              </Button>
+            </div>
           </div>
         </section>
       )}
+
+      {/* PROMO GRID — image/title/subtitle tiles */}
+      <PromoGrid data={promoGrid} />
 
       {/* HOSTS MODULE — property-owner services overview + pricing */}
       <HostsModule data={hostsModule} />
@@ -167,25 +182,27 @@ export default async function HomePage() {
       <AreaSpotlightCarousel areas={areas} />
 
       {/* INSTAGRAM FEED */}
-      <section className="mx-auto max-w-6xl px-8 py-24 sm:px-14 sm:py-28">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
-          <div>
-            <Eyebrow className="mb-2" delay={0}>Follow along</Eyebrow>
-            <Reveal as="h2" delay={100} className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
-              On Instagram
-            </Reveal>
+      <section className="px-8 py-24 sm:px-14 sm:py-28">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
+            <div>
+              <Eyebrow className="mb-2" delay={0}>Follow along</Eyebrow>
+              <Reveal as="h2" delay={100} className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
+                On Instagram
+              </Reveal>
+            </div>
+            {instagramUrl && (
+              <Reveal delay={200}>
+                <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
+                  Follow us on Instagram
+                </Button>
+              </Reveal>
+            )}
           </div>
-          {instagramUrl && (
-            <Reveal delay={200}>
-              <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
-                Follow us on Instagram
-              </Button>
-            </Reveal>
-          )}
+          <Reveal delay={150}>
+            <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
+          </Reveal>
         </div>
-        <Reveal delay={150}>
-          <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
-        </Reveal>
       </section>
       <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
 
@@ -210,6 +227,11 @@ export default async function HomePage() {
           </Reveal>
         </div>
       </section>
+
+      {/* BESPOKE TRIP CTA */}
+      <div className="py-24 sm:py-28">
+        <BespokeTripCta />
+      </div>
     </main>
   );
 }

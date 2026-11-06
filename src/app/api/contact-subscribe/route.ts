@@ -3,11 +3,20 @@ import { isValidEmail } from "@/lib/mailerlite";
 import { saveLead } from "@/lib/leads";
 
 // Must match the CHECK constraint on contact_queries.topic (and the form's dropdown).
-const TOPICS = ["Media query", "About a booking", "Hiring", "Partnership", "Other"];
+const TOPICS = [
+  "About a booking",
+  "I have a property to manage",
+  "Partner outreach",
+  "Add to shop",
+  "Media query",
+  "Events",
+  "Speaking request",
+  "Other",
+];
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { name, email, phone, topic, property, message } = body ?? {};
+  const { name, email, phone, topic, property, message, howHeard, consent } = body ?? {};
 
   if (!isValidEmail(email)) {
     return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
@@ -15,6 +24,10 @@ export async function POST(request: NextRequest) {
 
   if (typeof phone !== "string" || phone.replace(/\D/g, "").length < 7) {
     return NextResponse.json({ error: "A valid phone number is required" }, { status: 400 });
+  }
+
+  if (consent !== true) {
+    return NextResponse.json({ error: "You must agree to the Privacy Policy to continue" }, { status: 400 });
   }
 
   return saveLead({
@@ -28,6 +41,9 @@ export async function POST(request: NextRequest) {
       topic: typeof topic === "string" && TOPICS.includes(topic) ? topic : undefined,
       property_name: property,
       message,
+      how_heard: typeof howHeard === "string" && howHeard.trim() ? howHeard : undefined,
+      consent: true,
+      consent_at: new Date().toISOString(),
     },
     mailerlite: {
       fields: {
@@ -36,6 +52,7 @@ export async function POST(request: NextRequest) {
         topic,
         property_listing: property,
         message,
+        how_heard: howHeard,
       },
       groupId: process.env.MAILERLITE_CONTACT_GROUP_ID,
     },

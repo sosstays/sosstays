@@ -14,6 +14,8 @@ alter table public.contact_queries        add column if not exists attribution j
 alter table public.newsletter_subscribers add column if not exists attribution jsonb;
 alter table public.corporate_leads        add column if not exists attribution jsonb;
 alter table public.partner_leads          add column if not exists attribution jsonb;
+alter table public.bespoke_trip_leads     add column if not exists attribution jsonb;
+alter table public.gift_maker_leads       add column if not exists attribution jsonb;
 
 -- Quick "which channel produces leads" queries.
 create index if not exists landlord_leads_attr_source_idx

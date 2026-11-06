@@ -1,5 +1,34 @@
 # Handoff notes
 
+## Pending merge: SEO P1 + GA4 attribution (NOT merged yet)
+
+Pushed for review, deliberately **not** merged into `dev` or `main`.
+
+| Repo | Branch | Contents |
+| --- | --- | --- |
+| web (`sosstays/sosstays`) | `feature/seo-p1-hreflang-ga4` | hreflang from linked alternates, canonicalOverride, market-aware JSON-LD (Organization + ProfessionalService, India areaServed), crawlable footer country links, image width cap (1600), first-touch attribution cookie, attribution on leads + Stripe metadata, GA4 funnel events (view_item, begin_checkout, purchase) and `generate_lead` on every lead form, per-market GTM id, Supabase migration |
+| studio (`sosstays/sanity`) | `feature/seo-alternates-siteSettings` | shared `canonicalOverride` + `alternates` seo fields, `siteSettings.phone` / `address`, `landlordPage.alternateVersion` deprecated |
+
+The web branch already has `origin/dev` merged in (as of `a82d6fb`), so it
+should merge cleanly. Its lint errors (7) all come from files that arrived
+with that merge, not from this work.
+
+**Deploy order when merging**
+1. Studio branch: merge, then `sanity schema deploy` (so the new fields exist).
+2. Run `web/supabase/migrations/20261106000000_add_attribution.sql` in Supabase
+   (optional order: leads still save without the column, just without
+   attribution).
+3. Merge the web branch to `dev`, check the preview, then `main`.
+4. GTM / GA4 console steps — see "GA4 / GTM setup" at the bottom.
+5. Link counterpart pages with the new "Same page on the other market's site"
+   field in Studio; hreflang only appears on pages linked in both directions.
+
+**Not done (decisions / manual):** Search Console property for sosstays.in,
+GTM tags + GA4 custom dimensions, market-scoped slug uniqueness,
+`priceLabel` -> number + currency, `countyPricingStats` generalisation,
+`siteSettings` locale/currency/domain fields, archiving legacy unsuffixed
+singletons and populating the empty `-in` drafts (Sanity content edits).
+
 Known issues and follow-ups that shipped knowingly. None are blocking.
 
 ## GA4 purchase tracking (`BookingConfirmedTracker`)
