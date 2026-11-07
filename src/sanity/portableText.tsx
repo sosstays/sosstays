@@ -73,6 +73,70 @@ export const blogBodyComponents: PortableTextComponents = {
           />
         </div>
       ) : null,
+    table: ({ value }) => {
+      const rows: { _key: string; cells: string[] }[] = value?.rows ?? [];
+      if (rows.length === 0) return null;
+      const [headerRow, ...bodyRows] = rows;
+      return (
+        <div className="my-11 overflow-x-auto">
+          <table className="w-full border-collapse text-[15px]">
+            <thead>
+              <tr>
+                {headerRow.cells.map((cell, i) => (
+                  <th
+                    key={i}
+                    className="border-b-2 border-forest-green/40 px-4 py-2.5 text-left font-semibold text-forest-green"
+                  >
+                    {cell}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {bodyRows.map((row) => (
+                <tr key={row._key} className="border-b border-sage-grey/30">
+                  {row.cells.map((cell, i) => (
+                    <td key={i} className="px-4 py-2.5 text-near-black/85">
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    },
+    // Renders a pasted third-party embed code (YouTube, a form, a booking
+    // widget) inside a sandboxed iframe via `srcDoc` instead of injecting it
+    // directly into the page — so a pasted <script> runs isolated from this
+    // site's own cookies, APIs and DOM rather than with full page access.
+    embedBlock: ({ value }) => {
+      if (!value?.code) return null;
+      const ratioClass =
+        {
+          "16:9": "aspect-video",
+          "4:3": "aspect-[4/3]",
+          "1:1": "aspect-square",
+        }[value.aspectRatio as string] ?? "";
+      return (
+        <figure className="my-11">
+          <div className={`relative overflow-hidden rounded-lg ${ratioClass || "min-h-[480px]"}`}>
+            <iframe
+              srcDoc={value.code}
+              title={value.caption || "Embedded content"}
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"
+              className="h-full w-full border-0"
+              style={ratioClass ? { position: "absolute", inset: 0 } : { width: "100%", height: "100%" }}
+            />
+          </div>
+          {value.caption && (
+            <figcaption className="mt-2.5 text-sm text-near-black/55">{value.caption}</figcaption>
+          )}
+        </figure>
+      );
+    },
   },
   marks: {
     link: ({ children, value }) => (
