@@ -20,23 +20,37 @@ function formatDuration(startDate: unknown, endDate: unknown): string | undefine
 // the "message" field. Supabase's corporate_leads table gets its own real
 // columns for all of it (see migration add_corporate_leads_typeform_fields).
 function buildMailerliteNotes({
+  location,
   locationPreference,
+  workers,
   roomPreference,
+  duration,
   schedulePreference,
   otherRequirements,
   howHeard,
   message,
 }: {
+  location?: string;
   locationPreference?: string;
+  workers?: string;
   roomPreference?: string;
+  duration?: string;
   schedulePreference?: string;
   otherRequirements?: string[];
   howHeard?: string;
   message?: string;
 }): string {
+  // location_needed, number_of_workers and duration are also sent as their
+  // own MailerLite custom fields below, but those aren't reliably mapped in
+  // the MailerLite account (they don't show up on the subscriber profile) —
+  // so fold them into this same notes block too, the same way the other
+  // preferences already are, so none of this ever goes missing in MailerLite.
   const lines = [
+    location && `Location needed: ${location}`,
     locationPreference && `Location preference: ${locationPreference}`,
+    workers && `Number of workers: ${workers}`,
     roomPreference && `Room preference: ${roomPreference}`,
+    duration && `Dates: ${duration}`,
     schedulePreference && `Schedule preference: ${schedulePreference}`,
     otherRequirements?.length ? `Other requirements: ${otherRequirements.join(", ")}` : undefined,
     howHeard && `How they heard about us: ${howHeard}`,
@@ -86,8 +100,11 @@ export async function POST(request: NextRequest) {
     : [];
   const duration = formatDuration(startDate, endDate);
   const notes = buildMailerliteNotes({
+    location,
     locationPreference,
+    workers,
     roomPreference,
+    duration,
     schedulePreference,
     otherRequirements: cleanOtherRequirements,
     howHeard,
