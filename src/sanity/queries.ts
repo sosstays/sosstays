@@ -573,6 +573,19 @@ export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
   }
 `);
 
+// ---- List Your Property page (singleton) ----
+// Public corporate-stay property submission form at
+// /corporate-stays/list-your-property — only the hero banner's copy is
+// CMS-driven; the form itself is not.
+export const LIST_YOUR_PROPERTY_PAGE_QUERY = defineQuery(`
+  *[_type == "listYourPropertyPage" && _id == "listYourPropertyPage-" + $market][0] {
+    heroEyebrow,
+    heroHeading,
+    heroBody,
+    ${seoProjection}
+  }
+`);
+
 // ---- About page (singleton) ----
 
 export const ABOUT_PAGE_QUERY = defineQuery(`
