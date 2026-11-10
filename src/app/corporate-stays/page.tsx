@@ -15,6 +15,7 @@ import { BespokeTripCta } from "@/components/BespokeTripCta";
 import { CoverageMap } from "@/components/CoverageMap";
 import { CorporateLeadForm } from "@/components/CorporateLeadForm";
 import { CorporateStayPropertyCarousel } from "@/components/CorporateStayPropertyCarousel";
+import { OnboardedPropertyCarousel } from "@/components/OnboardedPropertyCarousel";
 import { SplitHero } from "@/components/SplitHero";
 import { CORPORATE_STAYS_NAV_LINKS } from "@/lib/navLinks";
 import { getPublicCorporateStayProperties } from "@/lib/corporateStayProperties";
@@ -670,32 +671,9 @@ export default async function CorporateStaysPage() {
           </Reveal>
 
           {onboardedProperties.length > 0 && (
-            <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {onboardedProperties.map((property, i) => (
-                <Reveal key={property._id} delay={i * 80}>
-                  <Link
-                    href={`/stays/${property.slug}`}
-                    className="group relative block aspect-[4/5] overflow-hidden rounded-[16px] bg-near-black"
-                  >
-                    {property.coverImage && (
-                      <Image
-                        src={urlFor(property.coverImage).width(700).height(880).url()}
-                        alt={property.coverImage.alt ?? property.name}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 to-40% to-transparent" />
-                    <div className="absolute right-5 bottom-5 left-5">
-                      <h3 className="font-serif text-lg font-bold text-cream">{property.name}</h3>
-                      {property.location && (
-                        <p className="mt-1 text-sm text-cream/75">{property.location}</p>
-                      )}
-                    </div>
-                  </Link>
-                </Reveal>
-              ))}
-            </div>
+            <Reveal className="mt-12">
+              <OnboardedPropertyCarousel properties={onboardedProperties} />
+            </Reveal>
           )}
         </div>
       </section>
