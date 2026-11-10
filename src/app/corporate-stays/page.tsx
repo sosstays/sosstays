@@ -14,8 +14,10 @@ import { FaqSection } from "@/components/FaqSection";
 import { BespokeTripCta } from "@/components/BespokeTripCta";
 import { CoverageMap } from "@/components/CoverageMap";
 import { CorporateLeadForm } from "@/components/CorporateLeadForm";
+import { CorporateStayPropertyCarousel } from "@/components/CorporateStayPropertyCarousel";
 import { SplitHero } from "@/components/SplitHero";
 import { CORPORATE_STAYS_NAV_LINKS } from "@/lib/navLinks";
+import { getPublicCorporateStayProperties } from "@/lib/corporateStayProperties";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -356,10 +358,11 @@ type OnboardedProperty = {
 };
 
 export default async function CorporateStaysPage() {
-  const [data, onboardedPropertiesRaw, propertyOrder] = await Promise.all([
+  const [data, onboardedPropertiesRaw, propertyOrder, corporateStayProperties] = await Promise.all([
     client.fetch(CORPORATE_STAYS_PAGE_QUERY),
     client.fetch(CORPORATE_ONBOARDED_PROPERTIES_QUERY),
     client.fetch(PROPERTY_ORDER_QUERY),
+    getPublicCorporateStayProperties(),
   ]);
   const onboardedProperties: OnboardedProperty[] = orderProperties<OnboardedProperty>(
     onboardedPropertiesRaw,
@@ -602,6 +605,39 @@ export default async function CorporateStaysPage() {
           </div>
         </div>
       </section>
+
+      {/* AVAILABLE PROPERTIES — owner-sourced candidate properties for
+          corporate/monthly-stay bookings specifically (Supabase
+          corporate_stay_properties, approved + owner-consented only), not
+          the regularly-managed stays shown in PARTNER WITH US below. Only
+          renders once at least one property has been approved. */}
+      {corporateStayProperties.length > 0 && (
+        <section id="available-properties" className="bg-cream px-8 py-24 sm:px-14 sm:py-28">
+          <div className="mx-auto max-w-6xl">
+            <Reveal className="max-w-[640px]">
+              <Eyebrow className="mb-2.5">Available now</Eyebrow>
+              <h2 className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+                A few properties ready for your crew.
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-near-black/70">
+                Indicative corporate pricing — a discounted monthly rate reflecting an assured,
+                direct-bank-transfer booking, not standard nightly Airbnb-style pricing. We confirm the
+                final number against your real dates and budget before anything is agreed.
+              </p>
+            </Reveal>
+            <div className="mt-11">
+              <CorporateStayPropertyCarousel properties={corporateStayProperties} />
+            </div>
+            <p className="mt-8 text-sm text-near-black/55">
+              Own a property suited to corporate or monthly stays?{" "}
+              <Link href="/corporate-stays/list-your-property" className="font-medium text-maroon underline underline-offset-2">
+                Submit it for consideration
+              </Link>
+              .
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* PARTNER WITH US — for property owners, not workforce clients; links
           out to /landlords rather than repeating the corporate lead form.

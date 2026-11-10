@@ -13,6 +13,7 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${SITE_URL}/areas`, changeFrequency: "weekly", priority: 0.6 },
   { url: `${SITE_URL}/pricing`, changeFrequency: "weekly", priority: 0.8 },
   { url: `${SITE_URL}/landlords`, changeFrequency: "weekly", priority: 0.7 },
+  { url: `${SITE_URL}/corporate-stays/list-your-property`, changeFrequency: "monthly", priority: 0.4 },
   { url: `${SITE_URL}/contact`, changeFrequency: "monthly", priority: 0.5 },
   { url: `${SITE_URL}/search`, changeFrequency: "weekly", priority: 0.5 },
 ];
