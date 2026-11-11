@@ -16,6 +16,7 @@ type HeroImage = { src: string; alt: string };
 // hero treatment instead of a full-width background image — see
 // app/corporate-stays/page.tsx for the reference usage.
 export function SplitHero({
+  id,
   navLinks,
   ctaHref,
   ctaLabel,
@@ -25,6 +26,8 @@ export function SplitHero({
   minHeight = 660,
   children,
 }: {
+  /** Anchor id for this section, e.g. so a nav link can jump to "#hero". */
+  id?: string;
   navLinks: NavLink[];
   ctaHref: string;
   ctaLabel: string;
@@ -43,7 +46,7 @@ export function SplitHero({
   children: ReactNode;
 }) {
   return (
-    <section className={`relative overflow-hidden ${bgClassName}`}>
+    <section id={id} className={`relative overflow-hidden ${bgClassName}`}>
       <HeroNav links={navLinks} variant={navVariant} ctaHref={ctaHref} ctaLabel={ctaLabel} sticky />
 
       <div className="relative lg:grid lg:grid-cols-2 lg:items-center">

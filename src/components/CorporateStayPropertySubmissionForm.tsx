@@ -7,6 +7,15 @@ import { ConsentCheckbox } from "@/components/ConsentCheckbox";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const HOW_HEARD_OPTIONS = [
+  "Google search",
+  "ChatGPT / Claude",
+  "Social media",
+  "Referred by a friend",
+  "Email",
+  "Other",
+];
+
 const STEP_IDS = ["basics", "capacity", "details", "pricing", "contact", "review"] as const;
 type StepId = (typeof STEP_IDS)[number];
 const LAST_STEP = STEP_IDS.length - 1;
@@ -31,6 +40,7 @@ type FormState = {
   ownerPhone: string;
   ownerEmail: string;
   publicListingConsent: "" | "yes" | "no";
+  howHeard: string;
   notes: string;
 };
 
@@ -54,6 +64,7 @@ const EMPTY_STATE: FormState = {
   ownerPhone: "",
   ownerEmail: "",
   publicListingConsent: "",
+  howHeard: "",
   notes: "",
 };
 
@@ -158,6 +169,7 @@ export function CorporateStayPropertySubmissionForm() {
           ownerPhone: form.ownerPhone.trim(),
           ownerEmail: form.ownerEmail.trim(),
           publicListingConsent: form.publicListingConsent,
+          howHeard: form.howHeard,
           notes: form.notes.trim(),
           consent: true,
         }),
@@ -399,6 +411,19 @@ export function CorporateStayPropertySubmissionForm() {
             </div>
           </div>
 
+          <Field label="How did you hear about us?">
+            <select
+              value={form.howHeard}
+              onChange={(e) => set("howHeard", e.target.value)}
+              className={INPUT_CLASS}
+            >
+              <option value="">— Select one —</option>
+              {HOW_HEARD_OPTIONS.map((o) => (
+                <option key={o}>{o}</option>
+              ))}
+            </select>
+          </Field>
+
           <Field label="Anything else to flag (optional)">
             <textarea value={form.notes} onChange={(e) => set("notes", e.target.value)} className={TEXTAREA_CLASS} />
           </Field>
@@ -452,6 +477,7 @@ export function CorporateStayPropertySubmissionForm() {
             />
             <ReviewRow label="Your details" value={[form.ownerName, form.ownerPhone, form.ownerEmail].filter(Boolean).join(" · ")} />
             <ReviewRow label="Public listing" value={form.publicListingConsent === "yes" ? "Can be shown publicly" : "Not shown publicly"} />
+            <ReviewRow label="How they heard about us" value={form.howHeard} />
             <ReviewRow label="Notes" value={form.notes} />
           </dl>
 

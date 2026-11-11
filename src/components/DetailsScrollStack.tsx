@@ -92,11 +92,14 @@ function lerp(a: number, b: number, t: number) {
 // cards converge into a tight stack above the heading as it scrolls
 // through view.
 export function DetailsScrollStack({
+  id,
   eyebrow,
   heading,
   headingAccent,
   items,
 }: {
+  /** Anchor id for this section, e.g. so a nav link can jump to "#details". */
+  id?: string;
   eyebrow?: string;
   heading: string;
   /** Rendered in the accent color right after `heading`, on its own if it wraps. */
@@ -116,7 +119,7 @@ export function DetailsScrollStack({
         : { position: "absolute", top: 0, left: 0, width: "100%", height: "100vh" };
 
   return (
-    <div ref={wrapperRef} className="relative h-[260vh]">
+    <div id={id} ref={wrapperRef} className="relative h-[260vh]">
       <div
         className="flex flex-col items-center justify-center overflow-hidden bg-cream px-8 sm:px-14"
         style={innerStyle}

@@ -74,7 +74,7 @@ export default async function ShopPage() {
       <HeroNav links={siteNavLinks} ctaHref="/shop" ctaLabel="Shop" sticky />
 
       {/* HERO */}
-      <section className="relative overflow-hidden bg-cream px-8 pt-16 pb-18 sm:px-14 sm:pt-20">
+      <section id={page?.heroSectionId || "hero"} className="relative overflow-hidden bg-cream px-8 pt-16 pb-18 sm:px-14 sm:pt-20">
         <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
           <Reveal>
             <span className="mb-5 inline-flex items-center gap-2.5 text-xs font-bold tracking-widest text-forest-green/80 uppercase">
@@ -132,6 +132,7 @@ export default async function ShopPage() {
 
       {/* SHOP GRID */}
       <ShopClient
+        id={page?.shelvesSectionId || "shelves"}
         products={resolvedProducts}
         vouchersBlurb={
           page?.vouchersBlurb ||

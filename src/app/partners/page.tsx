@@ -121,7 +121,7 @@ export default async function PartnersPage() {
     <>
       <main className="overflow-x-hidden bg-cream text-near-black">
         {/* HERO */}
-        <section className="relative flex flex-col overflow-hidden bg-maroon">
+        <section id={data?.heroSectionId || "hero"} className="relative flex flex-col overflow-hidden bg-maroon">
           {/* Nav renders in normal flow here (not as an absolute overlay), so
               it occupies its own space at the top of the section and the
               image below never sits underneath it. */}
@@ -170,7 +170,7 @@ export default async function PartnersPage() {
         </section>
 
         {/* INTRO */}
-        <section className="mx-auto max-w-[820px] px-8 py-24 sm:px-14 sm:py-28">
+        <section id={data?.introSectionId || "intro"} className="mx-auto max-w-[820px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal>
             <p className="mb-6 text-xl leading-relaxed text-near-black sm:text-2xl">
               {data?.introParagraph1 ||
@@ -188,7 +188,7 @@ export default async function PartnersPage() {
         </section>
 
         {/* HOW WE WORK WITH PARTNERS */}
-        <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
+        <section id={data?.tiersSectionId || "tiers"} className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
             <Reveal className="mb-14 max-w-[720px]">
               <Eyebrow className="mb-4">{data?.tiersEyebrow || "How we work with partners"}</Eyebrow>
@@ -218,7 +218,7 @@ export default async function PartnersPage() {
         </section>
 
         {/* WHO WE'RE LOOKING FOR */}
-        <section className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-28">
+        <section id={data?.whoWeWantSectionId || "who-we-want"} className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal className="mb-14 max-w-[720px]">
             <Eyebrow className="mb-4">{data?.whoWeWantEyebrow || "Who we're looking for"}</Eyebrow>
             <h2 className="font-serif text-[30px] leading-[1.1] font-bold tracking-tight text-maroon sm:text-4xl">
@@ -242,7 +242,7 @@ export default async function PartnersPage() {
         </section>
 
         {/* SPOTLIGHT IMAGE */}
-        <section className="relative overflow-hidden bg-maroon">
+        <section id={data?.spotlightSectionId || "spotlight"} className="relative overflow-hidden bg-maroon">
           <Image src={spotlightImage.src} alt={spotlightImage.alt} fill className="object-cover opacity-[.38]" />
           <div
             className="absolute inset-0"
@@ -262,7 +262,7 @@ export default async function PartnersPage() {
         </section>
 
         {/* PARTNER DIRECTORY */}
-        <section className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
+        <section id={data?.directorySectionId || "directory"} className="bg-pale-sage px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-[1200px]">
             <Reveal className="mb-12 max-w-[720px]">
               <Eyebrow className="mb-4">{data?.directoryEyebrow || "The directory"}</Eyebrow>
@@ -277,7 +277,7 @@ export default async function PartnersPage() {
         </section>
 
         {/* BECOME A PARTNER */}
-        <section id="become-a-partner" className="mx-auto max-w-[820px] px-8 py-24 sm:px-14 sm:py-28">
+        <section id={data?.becomePartnerSectionId || "become-a-partner"} className="mx-auto max-w-[820px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal className="mb-10">
             <Eyebrow className="mb-4">{data?.becomePartnerEyebrow || "Become a partner"}</Eyebrow>
             <h2 className="font-serif mb-4 text-[30px] leading-[1.1] font-bold tracking-tight text-maroon sm:text-4xl">

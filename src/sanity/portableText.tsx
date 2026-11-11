@@ -33,18 +33,43 @@ export function portableTextToMarkdownSource(blocks: PortableTextBlock[] | undef
     .join("\n\n");
 }
 
+// Slugified from a heading's own text, so it works as a jump-to id without
+// any extra authoring step — e.g. "Aggie's Coffee Hut, Tullyallen" becomes
+// "aggies-coffee-hut-tullyallen". Matches the slug an editor would guess by
+// hand when writing an in-article index ("Jump to: [Aggie's Coffee
+// Hut](#aggies-coffee-hut-tullyallen)"). Renames the heading later and the
+// id changes too — for a link that must survive a heading rename, use the
+// Anchor mark instead (see the `anchor` entry below).
+function headingId(value: { children?: unknown[] }): string {
+  const text = (value.children ?? [])
+    .map((child) => (typeof (child as { text?: unknown }).text === "string" ? (child as { text: string }).text : ""))
+    .join("");
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 // Article body renderer for long-form blog content — serif headings and an
 // accent-bordered pull-quote style for blockquotes, matching the rest of the
 // site's typography rather than the unstyled PortableText defaults.
 export const blogBodyComponents: PortableTextComponents = {
   block: {
-    h2: ({ children }) => (
-      <h2 className="mt-14 mb-5 font-serif text-2xl font-semibold tracking-tight text-forest-green first:mt-0">
+    h2: ({ children, value }) => (
+      <h2
+        id={headingId(value)}
+        className="mt-14 mb-5 scroll-mt-28 font-serif text-2xl font-semibold tracking-tight text-forest-green first:mt-0"
+      >
         {children}
       </h2>
     ),
-    h3: ({ children }) => (
-      <h3 className="mt-10 mb-4 font-serif text-xl font-semibold tracking-tight text-forest-green">
+    h3: ({ children, value }) => (
+      <h3
+        id={headingId(value)}
+        className="mt-10 mb-4 scroll-mt-28 font-serif text-xl font-semibold tracking-tight text-forest-green"
+      >
         {children}
       </h3>
     ),
@@ -149,5 +174,16 @@ export const blogBodyComponents: PortableTextComponents = {
         {children}
       </a>
     ),
+    // A manually-placed jump-to point (Studio's "Anchor" toolbar mark) —
+    // for anchoring somewhere that isn't a heading, or an id that needs to
+    // survive the surrounding text being edited later.
+    anchor: ({ children, value }) =>
+      value?.id ? (
+        <span id={value.id} className="scroll-mt-28">
+          {children}
+        </span>
+      ) : (
+        <>{children}</>
+      ),
   },
 };

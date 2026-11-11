@@ -415,7 +415,7 @@ export default async function CorporateStaysPage() {
           SplitHero (components/SplitHero.tsx) owns the nav + right-column
           image split; this page only supplies the left-column copy and its
           own mobile-only image. */}
-      <SplitHero navLinks={CORPORATE_STAYS_NAV_LINKS} ctaHref="#brief" ctaLabel="Send your SOS" images={heroImages}>
+      <SplitHero id={data?.heroSectionId || "hero"} navLinks={CORPORATE_STAYS_NAV_LINKS} ctaHref="#brief" ctaLabel="Send your SOS" images={heroImages}>
         <Reveal className="px-8 py-20 sm:px-14 sm:py-28 lg:py-16">
           <div className="lg:max-w-[520px]">
             <span className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-cream/20 bg-cream/10 px-4.5 py-2 text-xs font-semibold tracking-widest text-light-sage uppercase">
@@ -465,7 +465,7 @@ export default async function CorporateStaysPage() {
           full 96/112px cross-color gap used elsewhere on this page would
           just be dead space between two sections meant to read as one
           band — see the matching pt-16 on #how below. */}
-      <section id="who" className="bg-cream px-8 pt-24 pb-16 sm:px-14 sm:pt-28 sm:pb-20">
+      <section id={data?.whoSectionId || "who"} className="bg-cream px-8 pt-24 pb-16 sm:px-14 sm:pt-28 sm:pb-20">
         <div className="mx-auto max-w-6xl">
           <Reveal className="max-w-[640px]">
             <Eyebrow className="mb-2.5">{data?.whoEyebrow || "Who we house"}</Eyebrow>
@@ -501,7 +501,7 @@ export default async function CorporateStaysPage() {
           above's reduced bottom padding (see its comment); the FAQ that
           used to live in this same cream band has moved to the end of the
           page, so this section now owns its own bottom padding again. */}
-      <section id="how" className="bg-cream px-8 pt-16 pb-24 sm:px-14 sm:pt-20 sm:pb-28">
+      <section id={data?.howSectionId || "how"} className="bg-cream px-8 pt-16 pb-24 sm:px-14 sm:pt-20 sm:pb-28">
         <div className="mx-auto max-w-6xl">
           <Reveal className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-[560px]">
@@ -529,7 +529,7 @@ export default async function CorporateStaysPage() {
       </section>
 
       {/* COVERAGE — maroon band, matches the site's landlord/owner-context band */}
-      <section id="coverage" className="bg-maroon px-8 py-24 text-cream sm:px-14 sm:py-28">
+      <section id={data?.coverageSectionId || "coverage"} className="bg-maroon px-8 py-24 text-cream sm:px-14 sm:py-28">
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal className="overflow-hidden rounded-[18px] border border-cream/15">
             <CoverageMap
@@ -578,7 +578,7 @@ export default async function CorporateStaysPage() {
       </section>
 
       {/* WHAT'S INCLUDED */}
-      <section id="included" className="bg-cream px-8 py-24 sm:px-14 sm:py-28">
+      <section id={data?.includedSectionId || "included"} className="bg-cream px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-6xl">
           <Reveal className="max-w-[600px]">
             <Eyebrow className="mb-2.5">{data?.includedEyebrow || "What's included"}</Eyebrow>
@@ -647,7 +647,7 @@ export default async function CorporateStaysPage() {
           property grid is a live query against propertyPage (see
           CORPORATE_ONBOARDED_PROPERTIES_QUERY), so it never needs manual
           updating as properties are onboarded. */}
-      <section id="partner" className="bg-maroon px-8 py-24 text-cream sm:px-14 sm:py-28">
+      <section id={data?.partnerSectionId || "partner"} className="bg-maroon px-8 py-24 text-cream sm:px-14 sm:py-28">
         <div className="mx-auto max-w-6xl">
           <Reveal className="flex flex-wrap items-end justify-between gap-8">
             <div className="max-w-[560px]">
@@ -700,7 +700,7 @@ export default async function CorporateStaysPage() {
       </section>
 
       {/* CLOSING CTA */}
-      <section className="bg-maroon px-8 py-24 text-center sm:px-14 sm:py-28">
+      <section id={data?.closingSectionId || "closing"} className="bg-maroon px-8 py-24 text-center sm:px-14 sm:py-28">
         <Reveal className="mx-auto max-w-[640px]">
           <h2 className="text-balance font-serif text-3xl leading-tight font-bold tracking-tight text-cream sm:text-4xl">
             {data?.closingHeading || "Got a crew to house, or a county in mind?"}
@@ -723,7 +723,7 @@ export default async function CorporateStaysPage() {
           other cream band that follows a maroon one on this page. */}
       <div className="bg-cream pt-24 sm:pt-28">
         <FaqSection
-          id="faq"
+          id={data?.faqSectionId || "faq"}
           eyebrow={data?.faqEyebrow || "Questions"}
           heading={data?.faqHeading || "Frequently asked questions"}
           items={faqs}

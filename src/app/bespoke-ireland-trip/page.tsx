@@ -77,7 +77,7 @@ export default async function BespokeIrelandTripPage() {
       {faqSchema && <JsonLd data={faqSchema} />}
 
       {/* HERO */}
-      <section className="relative flex min-h-[86vh] flex-col justify-end overflow-hidden bg-deep-forest px-8 pt-[180px] pb-16 sm:px-14 sm:pt-[200px]">
+      <section id={page.heroSectionId || "hero"} className="relative flex min-h-[86vh] flex-col justify-end overflow-hidden bg-deep-forest px-8 pt-[180px] pb-16 sm:px-14 sm:pt-[200px]">
         {page.heroImage && (
           <div className="absolute inset-[-10%_0]">
             <Image
@@ -119,6 +119,7 @@ export default async function BespokeIrelandTripPage() {
       {/* WE TAKE CARE OF EVERY DETAIL — scroll-converge photo stack */}
       {page.detailItems?.length > 0 && (
         <DetailsScrollStack
+          id={page.detailsSectionId || "details"}
           eyebrow={page.detailsEyebrow}
           heading={page.detailsHeading}
           headingAccent={page.detailsHeadingAccent}
@@ -128,7 +129,7 @@ export default async function BespokeIrelandTripPage() {
 
       {/* HOW IT WORKS */}
       {page.howItWorksSteps?.length > 0 && (
-        <section className="bg-light-forest-green/25 px-8 py-28 sm:px-14">
+        <section id={page.howSectionId || "how"} className="bg-light-forest-green/25 px-8 py-28 sm:px-14">
           <div className="mx-auto max-w-6xl">
             <Reveal
               as="h2"
@@ -155,7 +156,7 @@ export default async function BespokeIrelandTripPage() {
 
       {/* WHAT WE ARRANGE */}
       {page.whatWeArrangeItems?.length > 0 && (
-        <section className="bg-maroon px-8 py-28 sm:px-14">
+        <section id={page.arrangeSectionId || "arrange"} className="bg-maroon px-8 py-28 sm:px-14">
           <div className="mx-auto max-w-6xl">
             <Reveal
               as="h2"
@@ -179,7 +180,7 @@ export default async function BespokeIrelandTripPage() {
 
       {/* THE HOUSES */}
       {page.houses?.length > 0 && (
-        <section className="mx-auto max-w-6xl px-8 pt-28 sm:px-14">
+        <section id={page.housesSectionId || "houses"} className="mx-auto max-w-6xl px-8 pt-28 sm:px-14">
           <Reveal
             as="h2"
             className="mb-10 font-serif text-[clamp(2.1rem,4vw,3.5rem)] leading-[1.04] font-bold tracking-tight text-deep-forest"
@@ -246,7 +247,7 @@ export default async function BespokeIrelandTripPage() {
 
       {/* EXPLORE IRELAND BY AREA */}
       {(page.areaGuides?.length > 0 || page.moreAreasLabel) && (
-        <section className="bg-warm-cream px-8 py-28 sm:px-14">
+        <section id={page.areasSectionId || "areas"} className="bg-warm-cream px-8 py-28 sm:px-14">
           <div className="mx-auto max-w-6xl">
             {page.areasEyebrow && (
               <Reveal
@@ -321,7 +322,7 @@ export default async function BespokeIrelandTripPage() {
 
       {/* SAMPLE ITINERARIES */}
       {page.itineraries?.length > 0 && (
-        <section className="mx-auto max-w-6xl px-8 pt-28 sm:px-14">
+        <section id={page.itinerariesSectionId || "itineraries"} className="mx-auto max-w-6xl px-8 pt-28 sm:px-14">
           <Reveal
             as="h2"
             className="mb-10 max-w-[22ch] font-serif text-[clamp(2.1rem,4vw,3.5rem)] leading-[1.04] font-bold tracking-tight text-deep-forest"
@@ -347,7 +348,7 @@ export default async function BespokeIrelandTripPage() {
       {page.faqs?.length > 0 && (
         <div className="pt-28">
           <FaqSection
-            id="faq"
+            id={page.faqSectionId || "faq"}
             heading={page.faqHeading}
             items={page.faqs}
             accent="forest-green"
@@ -357,7 +358,7 @@ export default async function BespokeIrelandTripPage() {
       )}
 
       {/* START THE CONVERSATION */}
-      <section id="enquire" className="bg-maroon px-8 py-28 sm:px-14">
+      <section id={page.enquireSectionId || "enquire"} className="bg-maroon px-8 py-28 sm:px-14">
         <div className="mx-auto max-w-3xl">
           <Reveal
             as="h2"

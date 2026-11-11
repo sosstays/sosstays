@@ -19,6 +19,15 @@ const VOUCHER_TIERS = [100, 75, 50, 25] as const;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const HOW_HEARD_OPTIONS = [
+  "Google search",
+  "ChatGPT / Claude",
+  "Social media",
+  "Referred by a friend",
+  "Email",
+  "Other",
+];
+
 function isMainVoucher(name: string) {
   return name.trim().toLowerCase().startsWith("gift voucher");
 }
@@ -175,12 +184,13 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
 
   const [packages, setPackages] = useState<GiftPackage[]>([]);
   const [selectedPkgId, setSelectedPkgId] = useState<string | null>(null);
-  const [resultsView, setResultsView] = useState<"browse" | "details" | "done">("browse");
+  const [resultsView, setResultsView] = useState<"browse" | "details">("browse");
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [billing, setBilling] = useState<"business" | "personal" | "">("");
+  const [howHeard, setHowHeard] = useState("");
   const [consent, setConsent] = useState(false);
   const [fieldError, setFieldError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -256,6 +266,7 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
           email: email.trim(),
           phone: phone.trim(),
           billingType: billing,
+          howHeard,
           recipientType: recipient,
           quantity: group === "many" ? qty : 1,
           budget,
@@ -268,7 +279,8 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
         }),
       });
       if (!res.ok) throw new Error(`Gift maker lead submission failed: ${res.status}`);
-      setResultsView("done");
+      router.push("/thank-you");
+      return;
     } catch {
       setSubmitError("That didn't go through — please try again, or email hello@sosstays.com directly.");
     } finally {
@@ -667,6 +679,19 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
               />
             </label>
           </div>
+          <label className="flex flex-col gap-1.5 text-sm text-near-black">
+            <span>How did you hear about us?</span>
+            <select
+              value={howHeard}
+              onChange={(e) => setHowHeard(e.target.value)}
+              className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+            >
+              <option value="">— Select one —</option>
+              {HOW_HEARD_OPTIONS.map((o) => (
+                <option key={o}>{o}</option>
+              ))}
+            </select>
+          </label>
           <ConsentCheckbox checked={consent} onChange={setConsent} />
           {(fieldError || submitError) && (
             <p role="alert" className="text-[13px] text-error-red">
@@ -684,47 +709,6 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
         </div>
       )}
 
-      {step === "results" && resultsView === "done" && (
-        <div className="py-5 text-center">
-          <div className="mb-3 text-4xl">✓</div>
-          <h3 className="font-serif mb-2 text-xl font-bold text-forest-green">Quote on its way</h3>
-          <p className="mx-auto max-w-[36ch] text-[14px] leading-relaxed text-near-black/65">
-            We&apos;ll email <strong>{email}</strong> pricing for{" "}
-            <strong>{packages.find((p) => p.pkgId === selectedPkgId)?.label}</strong> within one business day.
-          </p>
-          <div className="mt-6 flex justify-center gap-3">
-            <button
-              type="button"
-              onClick={() => router.push("/")}
-              className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold text-near-black"
-            >
-              Back to home
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setStep("recipient");
-                setRecipient("");
-                setGroup("");
-                setQty(5);
-                setBudget(50);
-                setFormat("");
-                setDelivery("");
-                setPackages([]);
-                setSelectedPkgId(null);
-                setName("");
-                setPhone("");
-                setEmail("");
-                setBilling("");
-                setConsent(false);
-              }}
-              className="rounded-full bg-forest-green px-6 py-3 text-sm font-semibold text-cream"
-            >
-              ↺ Start a new gift
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

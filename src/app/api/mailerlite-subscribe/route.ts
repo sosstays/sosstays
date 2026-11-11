@@ -4,7 +4,7 @@ import { saveLead } from "@/lib/leads";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { name, email, mobile, situation, propertyDescription, consent } = body ?? {};
+  const { name, email, mobile, situation, propertyDescription, howHeard, consent } = body ?? {};
 
   if (!isValidEmail(email)) {
     return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
       phone: mobile,
       landlord_situation: situation,
       property_description: propertyDescription,
+      how_heard: howHeard,
       consent: true,
       consent_at: new Date().toISOString(),
     },
@@ -35,6 +36,7 @@ export async function POST(request: NextRequest) {
         phone: mobile,
         landlord_situation: situation,
         property_description: propertyDescription,
+        how_heard: howHeard,
       },
       groupId: process.env.MAILERLITE_LANDLORD_GROUP_ID,
     },

@@ -13,6 +13,15 @@ const SITUATION_OPTIONS = [
   "I'm not sure — I just need to speak to someone",
 ];
 
+const HOW_HEARD_OPTIONS = [
+  "Google search",
+  "ChatGPT / Claude",
+  "Social media",
+  "Referred by a friend",
+  "Email",
+  "Other",
+];
+
 const CONTACT_EMAIL = "info@sosstays.com";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -34,6 +43,7 @@ export function LandlordLeadForm({
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [consent, setConsent] = useState(false);
+  const [howHeard, setHowHeard] = useState("");
   const [step0Error, setStep0Error] = useState(false);
   const [step2Error, setStep2Error] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -47,10 +57,10 @@ export function LandlordLeadForm({
       return;
     }
     setStep0Error(false);
-    setStep((s) => Math.min(2, s + 1));
+    setStep((s) => Math.min(3, s + 1));
   }
 
-  async function submitLeadForm() {
+  async function submitLeadForm(howHeardValue?: string) {
     if (!name.trim() || !email.trim() || !mobile.trim()) {
       setStep2Error("Name, email and mobile number are needed to send your SOS.");
       return;
@@ -69,7 +79,15 @@ export function LandlordLeadForm({
       const res = await fetch("/api/mailerlite-subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, mobile, situation, propertyDescription, consent: true }),
+        body: JSON.stringify({
+          name,
+          email,
+          mobile,
+          situation,
+          propertyDescription,
+          howHeard: howHeardValue ?? howHeard,
+          consent: true,
+        }),
       });
       if (!res.ok) throw new Error(`Form submission failed: ${res.status}`);
       // Fires only once the lead has been accepted. GTM listens for this
@@ -87,14 +105,14 @@ export function LandlordLeadForm({
   const mailtoHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
     "Landlord enquiry"
   )}&body=${encodeURIComponent(
-    `Name: ${name}\nEmail: ${email}\nMobile: ${mobile}\nSituation: ${situation}\n\n${propertyDescription}`
+    `Name: ${name}\nEmail: ${email}\nMobile: ${mobile}\nSituation: ${situation}\nHow they heard about us: ${howHeard}\n\n${propertyDescription}`
   )}`;
 
-  const progressSegments = [0, 1, 2].map((i) => {
+  const progressSegments = [0, 1, 2, 3].map((i) => {
     const reached = stage !== "form" || i <= step;
     return {
       number: i + 1,
-      grow: i < 2,
+      grow: i < 3,
       reached,
       lineReached: stage !== "form" || i < step,
     };
@@ -263,17 +281,68 @@ export function LandlordLeadForm({
               Back
             </button>
             <Button
-              disabled={submitting}
-              onClick={submitLeadForm}
+              onClick={() => {
+                if (!name.trim() || !email.trim() || !mobile.trim()) {
+                  setStep2Error("Name, email and mobile number are needed to send your SOS.");
+                  return;
+                }
+                if (!EMAIL_PATTERN.test(email.trim())) {
+                  setStep2Error("Enter a valid email address.");
+                  return;
+                }
+                if (!consent) {
+                  setStep2Error("Please agree to the Privacy Policy to continue.");
+                  return;
+                }
+                setStep2Error(null);
+                setStep(3);
+              }}
               variant="primary"
               bgColor="maroon"
               color="cream"
               animateColor="maroon"
-              size="custom"
-              className="px-7 py-3.5 text-sm font-semibold disabled:opacity-60"
+              size="sm"
             >
-              {submitting ? "Sending…" : "Send your SOS"}
+              Continue
             </Button>
+          </div>
+        </div>
+      )}
+
+      {stage === "form" && step === 3 && (
+        <div className="flex flex-col gap-4.5">
+          <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">
+            How did you hear about us?
+          </h3>
+          <div className="flex flex-col gap-2.5">
+            {HOW_HEARD_OPTIONS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => {
+                  setHowHeard(option);
+                  submitLeadForm(option);
+                }}
+                className="cursor-pointer rounded-[10px] border px-4.5 py-4 text-left text-sm leading-snug font-medium"
+                style={{
+                  background: howHeard === option ? "var(--maroon)" : "var(--cream)",
+                  color: howHeard === option ? "var(--cream)" : "var(--near-black)",
+                  borderColor: howHeard === option ? "var(--maroon)" : "var(--sage-grey)",
+                }}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+          <div className="mt-1 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={goBack}
+              className="text-sm font-semibold text-near-black/60 hover:text-near-black"
+            >
+              Back
+            </button>
+            {submitting && <span className="text-sm text-near-black/60">Sending…</span>}
           </div>
         </div>
       )}

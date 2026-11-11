@@ -20,6 +20,20 @@ function renderType(typeName: string, value: unknown) {
   return el ? renderToStaticMarkup(el) : "";
 }
 
+function renderBlock(style: string, value: unknown) {
+  const Component = (blogBodyComponents.block as Record<string, (props: { children: React.ReactNode; value: unknown }) => React.ReactElement>)[
+    style
+  ];
+  return renderToStaticMarkup(Component({ children: "Heading text", value }));
+}
+
+function renderMark(markName: string, value: unknown) {
+  const Component = (blogBodyComponents.marks as Record<string, (props: { children: React.ReactNode; value: unknown }) => React.ReactElement>)[
+    markName
+  ];
+  return renderToStaticMarkup(Component({ children: "Marked text", value }));
+}
+
 test("table renderer: first row becomes <thead>, rest become <tbody> rows", () => {
   const html = renderType("table", {
     rows: [
@@ -64,4 +78,26 @@ test("embedBlock renderer: missing code renders nothing", () => {
 test("embedBlock renderer: unknown aspect ratio falls back to a fixed-height container instead of an empty one", () => {
   const html = renderType("embedBlock", { code: "<p>hi</p>", aspectRatio: "auto" });
   assert.match(html, /min-h-\[480px\]/);
+});
+
+test("h2/h3 renderers: get an id slugified from the heading's own text", () => {
+  const value = { children: [{ text: "Aggie's Coffee Hut, Tullyallen — 15 minutes" }] };
+  assert.match(renderBlock("h2", value), /id="aggies-coffee-hut-tullyallen-15-minutes"/);
+  assert.match(renderBlock("h3", value), /id="aggies-coffee-hut-tullyallen-15-minutes"/);
+});
+
+test("h2 renderer: same heading text always produces the same id (so an index link keeps working)", () => {
+  const value = { children: [{ text: "How to order for a business" }] };
+  assert.equal(renderBlock("h2", value), renderBlock("h2", value));
+});
+
+test("anchor mark: wraps the marked text in a span carrying the authored id", () => {
+  const html = renderMark("anchor", { id: "best-coffee" });
+  assert.match(html, /<span id="best-coffee"[^>]*>Marked text<\/span>/);
+});
+
+test("anchor mark: renders the text plainly if the id is somehow missing", () => {
+  const html = renderMark("anchor", {});
+  assert.doesNotMatch(html, /<span/);
+  assert.match(html, /Marked text/);
 });

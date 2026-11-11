@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
     interests,
     baseOrRoute,
     notes,
+    howHeard,
     consent,
   } = body ?? {};
 
@@ -61,6 +62,7 @@ export async function POST(request: NextRequest) {
       interests: cleanInterests.join(", "),
       base_or_route: baseOrRoute,
       notes,
+      how_heard: howHeard,
       consent: true,
       consent_at: new Date().toISOString(),
     },
@@ -76,6 +78,7 @@ export async function POST(request: NextRequest) {
         interests: cleanInterests.join(", "),
         base_or_route: baseOrRoute,
         message: notes,
+        how_heard: howHeard,
       },
       groupId: process.env.MAILERLITE_BESPOKE_TRIP_GROUP_ID,
     },

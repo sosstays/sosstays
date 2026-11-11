@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
     packageLabel,
     packageItems,
     packageTotal,
+    howHeard,
     consent,
   } = body ?? {};
 
@@ -56,6 +57,7 @@ export async function POST(request: NextRequest) {
       package_label: typeof packageLabel === "string" ? packageLabel : undefined,
       package_items: typeof packageItems === "string" ? packageItems : undefined,
       package_total: typeof packageTotal === "number" ? packageTotal : undefined,
+      how_heard: typeof howHeard === "string" ? howHeard : undefined,
       consent: true,
       consent_at: new Date().toISOString(),
     },
@@ -71,6 +73,7 @@ export async function POST(request: NextRequest) {
         delivery_method: delivery,
         package_label: packageLabel,
         package_items: packageItems,
+        how_heard: howHeard,
       },
       groupId: process.env.MAILERLITE_GIFT_MAKER_GROUP_ID,
     },

@@ -305,7 +305,7 @@ export default async function AboutUsPage() {
     <>
       <main className="overflow-x-hidden bg-cream text-near-black">
         {/* HERO */}
-        <section className="relative flex flex-col overflow-hidden bg-deep-forest">
+        <section id={data?.heroSectionId || "hero"} className="relative flex flex-col overflow-hidden bg-deep-forest">
           {/* Nav renders in normal flow here (not as an absolute overlay), so
               it occupies its own space at the top of the section and the
               image below never sits underneath it. */}
@@ -359,7 +359,7 @@ export default async function AboutUsPage() {
         </section>
 
         {/* INTRO */}
-        <section className="mx-auto max-w-[820px] px-8 py-24 sm:px-14 sm:py-28">
+        <section id={data?.introSectionId || "intro"} className="mx-auto max-w-[820px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal>
             <p className="mb-6 text-xl leading-relaxed text-near-black sm:text-2xl">
               {data?.introParagraph1 ||
@@ -380,6 +380,7 @@ export default async function AboutUsPage() {
             this page's own three service lines instead */}
         {whatWeDoTabs.length > 0 && (
           <AudienceTabs
+            id={data?.whatWeDoSectionId || "who-we-work-with"}
             eyebrow={data?.whatWeDoEyebrow || "What we do"}
             tabs={whatWeDoTabs}
             useImages
@@ -389,7 +390,7 @@ export default async function AboutUsPage() {
         )}
 
         {/* WHERE WE OPERATE */}
-        <section className="relative overflow-hidden bg-deep-forest">
+        <section id={data?.coverageSectionId || "coverage"} className="relative overflow-hidden bg-deep-forest">
           <Image src={coverageImage.src} alt={coverageImage.alt} fill className="object-cover opacity-[.34]" />
           <div
             className="absolute inset-0"
@@ -420,7 +421,7 @@ export default async function AboutUsPage() {
         </section>
 
         {/* THE STAYS */}
-        <section className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-28">
+        <section id={data?.staysSectionId || "stays"} className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal className="mb-12">
             <h2 className="font-serif text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl">
               {data?.staysHeading || "The stays"}
@@ -473,7 +474,7 @@ export default async function AboutUsPage() {
         </section>
 
         {/* MEET THE TEAM */}
-        <section className="bg-deep-forest">
+        <section id={data?.teamSectionId || "team"} className="bg-deep-forest">
           <div className="mx-auto max-w-[1200px] px-8 py-20 sm:px-14 sm:py-24">
             <Reveal className="mb-12 max-w-[720px]">
               <Eyebrow className="mb-4" tone="sage">{data?.teamEyebrow || "Meet the team"}</Eyebrow>
@@ -492,7 +493,7 @@ export default async function AboutUsPage() {
         </section>
 
         {/* WORK WITH US */}
-        <section className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-28">
+        <section id={data?.workWithUsSectionId || "work-with-us"} className="mx-auto max-w-[1200px] px-8 py-24 sm:px-14 sm:py-28">
           <Reveal className="mb-12 max-w-[720px]">
             <Eyebrow className="mb-4">{data?.workWithUsEyebrow || "Work with us"}</Eyebrow>
             <h2 className="font-serif mb-4 text-[30px] leading-[1.1] font-bold tracking-tight text-forest-green sm:text-4xl">
@@ -534,7 +535,7 @@ export default async function AboutUsPage() {
 
         {/* FAQ — includes ownership & contact details as regular FAQ items */}
         <div className="pt-16">
-          <FaqSection heading={data?.faqHeading || "FAQ"} items={combinedFaqs} accent="forest-green" />
+          <FaqSection id={data?.faqSectionId || "faq"} heading={data?.faqHeading || "FAQ"} items={combinedFaqs} accent="forest-green" />
         </div>
       </main>
     </>
