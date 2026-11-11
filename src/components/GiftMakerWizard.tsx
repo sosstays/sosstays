@@ -184,7 +184,7 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
 
   const [packages, setPackages] = useState<GiftPackage[]>([]);
   const [selectedPkgId, setSelectedPkgId] = useState<string | null>(null);
-  const [resultsView, setResultsView] = useState<"browse" | "details" | "done">("browse");
+  const [resultsView, setResultsView] = useState<"browse" | "details">("browse");
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -279,7 +279,8 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
         }),
       });
       if (!res.ok) throw new Error(`Gift maker lead submission failed: ${res.status}`);
-      setResultsView("done");
+      router.push("/thank-you");
+      return;
     } catch {
       setSubmitError("That didn't go through — please try again, or email hello@sosstays.com directly.");
     } finally {
@@ -708,47 +709,6 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
         </div>
       )}
 
-      {step === "results" && resultsView === "done" && (
-        <div className="py-5 text-center">
-          <div className="mb-3 text-4xl">✓</div>
-          <h3 className="font-serif mb-2 text-xl font-bold text-forest-green">Quote on its way</h3>
-          <p className="mx-auto max-w-[36ch] text-[14px] leading-relaxed text-near-black/65">
-            We&apos;ll email <strong>{email}</strong> pricing for{" "}
-            <strong>{packages.find((p) => p.pkgId === selectedPkgId)?.label}</strong> within one business day.
-          </p>
-          <div className="mt-6 flex justify-center gap-3">
-            <button
-              type="button"
-              onClick={() => router.push("/")}
-              className="rounded-full border border-sage-grey/60 px-6 py-3 text-sm font-semibold text-near-black"
-            >
-              Back to home
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setStep("recipient");
-                setRecipient("");
-                setGroup("");
-                setQty(5);
-                setBudget(50);
-                setFormat("");
-                setDelivery("");
-                setPackages([]);
-                setSelectedPkgId(null);
-                setName("");
-                setPhone("");
-                setEmail("");
-                setBilling("");
-                setConsent(false);
-              }}
-              className="rounded-full bg-forest-green px-6 py-3 text-sm font-semibold text-cream"
-            >
-              ↺ Start a new gift
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
