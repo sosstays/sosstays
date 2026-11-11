@@ -40,7 +40,7 @@ function toPromo(post: HomeBlogPost, badge: string): Promo {
   };
 }
 
-export function HomeBlogGrid({ data }: { data: HomeBlogData }) {
+export function HomeBlogGrid({ data, id }: { data: HomeBlogData; id?: string }) {
   const recent = data?.recent ?? [];
   const featured = data?.featured ?? recent[0] ?? null;
   if (!featured) return null;
@@ -52,7 +52,7 @@ export function HomeBlogGrid({ data }: { data: HomeBlogData }) {
   ];
 
   return (
-    <section aria-label="From the blog" className="px-8 py-24 sm:px-14 sm:py-28">
+    <section id={id} aria-label="From the blog" className="px-8 py-24 sm:px-14 sm:py-28">
       {/* Inner max-w-6xl div (not combined onto the section itself) so this
           section's content lines up edge-to-edge with full-bleed colored
           bands elsewhere on the page (e.g. the thank-you page's maroon

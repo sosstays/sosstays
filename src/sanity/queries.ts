@@ -422,6 +422,16 @@ export const FOOTER_QUERY = defineQuery(`
         href
       }
     },
+    seoLinksTitle,
+    seoLinks[] {
+      label,
+      href
+    },
+    companyInfo,
+    legalLinks[] {
+      label,
+      href
+    },
     copyrightText
   }
 `);
@@ -500,7 +510,14 @@ export const HERO_SECTION_QUERY = defineQuery(`
     primaryCtaLabel,
     primaryCtaUrl,
     secondaryCtaLabel,
-    secondaryCtaUrl
+    secondaryCtaUrl,
+    heroSectionId,
+    landlordBannerSectionId,
+    areasSectionId,
+    instagramSectionId,
+    blogSectionId,
+    landlordsSectionId,
+    bespokeTripSectionId
   }
 `);
 
@@ -508,6 +525,7 @@ export const HERO_SECTION_QUERY = defineQuery(`
 
 export const HOSTS_MODULE_QUERY = defineQuery(`
   *[_type == "hostsModule" && _id == "hostsModule-" + $market][0] {
+    hostsSectionId,
     eyebrow,
     heading,
     body,
@@ -1066,6 +1084,7 @@ export const SHOP_DELIVERY_PROPERTIES_QUERY = defineQuery(`
 
 export const PROMO_GRID_QUERY = defineQuery(`
   *[_type == "promoGrid" && _id == "promoGrid-" + $market][0] {
+    promoSectionId,
     heading,
     note,
     promos[] {

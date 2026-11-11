@@ -66,7 +66,7 @@ export default async function HomePage() {
       <JsonLd data={buildOrganizationSchema(siteSettings)} />
 
       {/* HERO */}
-      <section className="relative min-h-[94vh] w-full bg-forest-green">
+      <section id={hero?.heroSectionId || "hero"} className="relative min-h-[94vh] w-full bg-forest-green">
         {hero?.image && (
           <Image
             src={urlFor(hero.image).width(1600).height(1400).url()}
@@ -128,7 +128,7 @@ export default async function HomePage() {
 
       {/* LANDLORD BANNER — thin strip under the hero, maroon per the owner-context accent color */}
       {hero?.secondaryCtaLabel && (
-        <section className="bg-maroon px-8 py-5 sm:px-14">
+        <section id={hero.landlordBannerSectionId || "owners-banner"} className="bg-maroon px-8 py-5 sm:px-14">
           <Reveal className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-3 text-center sm:justify-between sm:text-left">
             <p className="text-[15px] font-medium text-cream sm:text-base">
               Own a property? We&apos;ll manage it for you and grow your income.
@@ -147,7 +147,9 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* FEATURED STAYS */}
+      {/* FEATURED STAYS — id stays hardcoded (not CMS-editable like the
+          other sections): "/#stays" is linked from the nav CTA and footer
+          on every page. */}
       {properties.length > 0 && (
         <section id="stays" className="px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-6xl">
@@ -179,10 +181,10 @@ export default async function HomePage() {
 
       {/* AREA SPOTLIGHT */}
 
-      <AreaSpotlightCarousel areas={areas} />
+      <AreaSpotlightCarousel areas={areas} id={hero?.areasSectionId || "areas"} />
 
       {/* INSTAGRAM FEED */}
-      <section className="px-8 py-24 sm:px-14 sm:py-28">
+      <section id={hero?.instagramSectionId || "instagram"} className="px-8 py-24 sm:px-14 sm:py-28">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
             <div>
@@ -207,10 +209,10 @@ export default async function HomePage() {
       <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
 
       {/* BLOG — featured post + two most recent */}
-      <HomeBlogGrid data={homeBlog} />
+      <HomeBlogGrid data={homeBlog} id={hero?.blogSectionId || "blog"} />
 
       {/* LANDLORD CTA — maroon per the owner-context accent color */}
-      <section id="landlords" className="bg-maroon px-8 py-28 text-center sm:px-14">
+      <section id={hero?.landlordsSectionId || "landlords"} className="bg-maroon px-8 py-28 text-center sm:px-14">
         <div className="mx-auto max-w-xl">
           <Eyebrow className="mb-4" tone="sage" delay={0}>For landlords</Eyebrow>
           <Reveal as="h2" delay={120} className="mb-5 font-serif text-4xl leading-tight font-bold tracking-tight text-cream sm:text-5xl">
@@ -229,7 +231,7 @@ export default async function HomePage() {
       </section>
 
       {/* BESPOKE TRIP CTA */}
-      <div className="py-24 sm:py-28">
+      <div id={hero?.bespokeTripSectionId || "bespoke-trip"} className="py-24 sm:py-28">
         <BespokeTripCta />
       </div>
     </main>
