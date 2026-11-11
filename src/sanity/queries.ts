@@ -338,25 +338,31 @@ export const PROPERTY_ORDER_QUERY = defineQuery(`
 
 export const BESPOKE_TRIP_PAGE_QUERY = defineQuery(`
   *[_type == "bespokeTripPage" && _id == "bespokeTripPage-" + $market][0] {
+    heroSectionId,
     heroEyebrow,
     heading,
     subhead,
     heroParagraph,
     heroImage,
+    detailsSectionId,
     detailsEyebrow,
     detailsHeading,
     detailsHeadingAccent,
     detailItems[] { label, icon, image },
+    howSectionId,
     howItWorksHeading,
     howItWorksSteps[] { title, text },
+    arrangeSectionId,
     whatWeArrangeHeading,
     whatWeArrangeItems,
+    housesSectionId,
     housesHeading,
     houses[]-> {
       _id, name, "slug": slug.current, location, shortDescription,
       "coverImage": gallery[0]
     },
     housesFooterNote,
+    areasSectionId,
     areasEyebrow,
     areasHeading,
     areaGuides[]-> {
@@ -364,10 +370,13 @@ export const BESPOKE_TRIP_PAGE_QUERY = defineQuery(`
     },
     moreAreasLabel,
     moreAreasDescription,
+    itinerariesSectionId,
     itinerariesHeading,
     itineraries[] { title, text },
+    faqSectionId,
     faqHeading,
     faqs[] { question, answer },
+    enquireSectionId,
     enquireHeading,
     enquireText,
     ${seoProjection}
@@ -379,17 +388,22 @@ export const BESPOKE_TRIP_PAGE_QUERY = defineQuery(`
 // live via SHOP_PRODUCTS_QUERY, not this document.
 export const GIFT_MAKER_PAGE_QUERY = defineQuery(`
   *[_type == "giftMakerPage" && _id == "giftMakerPage-" + $market][0] {
+    heroSectionId,
     heroEyebrow,
     heading,
     subhead,
     heroParagraph,
     heroImage,
+    whySectionId,
     whyHeading,
     whyItems[] { title, text },
+    howSectionId,
     howHeading,
     howSteps[] { title, text },
+    faqSectionId,
     faqHeading,
     faqs[] { question, answer },
+    ctaSectionId,
     ctaHeading,
     ctaText,
     ${seoProjection}
@@ -519,6 +533,7 @@ export const HOSTS_MODULE_QUERY = defineQuery(`
 
 export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
   *[_type == "corporateStaysPage" && _id == "corporateStaysPage-" + $market][0] {
+    heroSectionId,
     heroBadge,
     heroHeading,
     heroBody,
@@ -526,6 +541,7 @@ export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
     heroSecondaryCtaLabel,
     heroFacts,
     heroImages,
+    whoSectionId,
     whoEyebrow,
     whoHeading,
     whoBody,
@@ -534,6 +550,7 @@ export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
       body,
       image
     },
+    howSectionId,
     howEyebrow,
     howHeading,
     howBody,
@@ -541,6 +558,7 @@ export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
       title,
       body
     },
+    coverageSectionId,
     coverageEyebrow,
     coverageHeading,
     coverageAreas[] {
@@ -549,6 +567,7 @@ export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
       body
     },
     coverageNote,
+    includedSectionId,
     includedEyebrow,
     includedHeading,
     includedFeatures[] {
@@ -556,17 +575,20 @@ export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
       body,
       icon
     },
+    partnerSectionId,
     partnerEyebrow,
     partnerHeading,
     partnerBody,
     partnerCtaLabel,
     partnerCtaUrl,
+    faqSectionId,
     faqEyebrow,
     faqHeading,
     faqs[] {
       question,
       answer
     },
+    closingSectionId,
     closingHeading,
     closingBody,
     ${seoProjection}
@@ -579,6 +601,7 @@ export const CORPORATE_STAYS_PAGE_QUERY = defineQuery(`
 // CMS-driven; the form itself is not.
 export const LIST_YOUR_PROPERTY_PAGE_QUERY = defineQuery(`
   *[_type == "listYourPropertyPage" && _id == "listYourPropertyPage-" + $market][0] {
+    heroSectionId,
     heroEyebrow,
     heroHeading,
     heroBody,
@@ -590,19 +613,23 @@ export const LIST_YOUR_PROPERTY_PAGE_QUERY = defineQuery(`
 
 export const ABOUT_PAGE_QUERY = defineQuery(`
   *[_type == "aboutPage" && _id == "aboutPage-" + $market][0] {
+    heroSectionId,
     heroBadge,
     heroHeading,
     heroSubtext,
     heroImage,
+    introSectionId,
     introParagraph1,
     introParagraph2,
     introParagraph3,
+    whatWeDoSectionId,
     whatWeDoEyebrow,
     whatWeDoItems[] {
       title,
       body,
       image
     },
+    coverageSectionId,
     coverageEyebrow,
     coverageHeading,
     coverageBody,
@@ -612,6 +639,7 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
       status,
       muted
     },
+    staysSectionId,
     staysHeading,
     featuredStays[] {
       name,
@@ -620,6 +648,7 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
       description,
       image
     },
+    teamSectionId,
     teamEyebrow,
     teamHeading,
     teamIntro,
@@ -633,6 +662,7 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
       },
       photo
     },
+    workWithUsSectionId,
     workWithUsEyebrow,
     workWithUsHeading,
     workWithUsIntro,
@@ -641,16 +671,19 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
       body
     },
     workWithUsContactLine,
+    ownershipSectionId,
     ownershipHeading,
     ownershipBody,
     ownershipCroLinkLabel,
     ownershipCroLinkUrl,
+    reachUsSectionId,
     reachUsHeading,
     reachUsEmail,
     reachUsWhatsapp,
     reachUsWhatsappUrl,
     reachUsInstagramHandle,
     reachUsInstagramUrl,
+    faqSectionId,
     faqHeading,
     faqs[] {
       question,
@@ -680,13 +713,16 @@ export const CORPORATE_ONBOARDED_PROPERTIES_QUERY = defineQuery(`
 
 export const PARTNERS_PAGE_QUERY = defineQuery(`
   *[_type == "partnersPage" && _id == "partnersPage-" + $market][0] {
+    heroSectionId,
     heroBadge,
     heroHeading,
     heroSubtext,
     heroImage,
+    introSectionId,
     introParagraph1,
     introParagraph2,
     introParagraph3,
+    tiersSectionId,
     tiersEyebrow,
     tiersHeading,
     tiers[] {
@@ -694,6 +730,7 @@ export const PARTNERS_PAGE_QUERY = defineQuery(`
       body
     },
     tiersNote,
+    whoWeWantSectionId,
     whoWeWantEyebrow,
     whoWeWantHeading,
     whoWeWantCategories[] {
@@ -701,11 +738,14 @@ export const PARTNERS_PAGE_QUERY = defineQuery(`
       body,
       tag
     },
+    spotlightSectionId,
     spotlightHeading,
     spotlightBody,
     spotlightImage,
+    directorySectionId,
     directoryEyebrow,
     directoryHeading,
+    becomePartnerSectionId,
     becomePartnerEyebrow,
     becomePartnerHeading,
     becomePartnerIntro,
@@ -956,6 +996,7 @@ export const COUNTY_PRICING_STATS_QUERY = defineQuery(`
 
 export const SHOP_PAGE_QUERY = defineQuery(`
   *[_type == "shopPage" && _id == "shopPage-" + $market][0] {
+    heroSectionId,
     heroEyebrow,
     heroHeading,
     heroSubtext,
@@ -963,6 +1004,7 @@ export const SHOP_PAGE_QUERY = defineQuery(`
       value,
       label
     },
+    shelvesSectionId,
     vouchersBlurb,
     goodsBlurb,
     ${seoProjection}

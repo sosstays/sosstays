@@ -119,12 +119,15 @@ const THEME = {
 } as const;
 
 export function AudienceTabs({
+  id = "who-we-work-with",
   eyebrow,
   tabs,
   useImages = false,
   theme = "maroon",
   showChecklist = true,
 }: {
+  /** Anchor id for this section. Defaults to "who-we-work-with" (its original hardcoded id). */
+  id?: string;
   eyebrow: string;
   tabs: AudienceTabContent[];
   /** Swaps the animated coverage-map illustration for each tab's own
@@ -200,7 +203,7 @@ export function AudienceTabs({
 
   return (
     <section
-      id="who-we-work-with"
+      id={id}
       className={`${colors.section} px-8 py-24 sm:px-14 sm:py-28`}
     >
       <Tabs

@@ -29,10 +29,13 @@ export type ShopProperty = { _id: string; name: string; slug: string };
 const money = (n: number) => `€${n}`;
 
 export function ShopClient({
+  id,
   products,
   vouchersBlurb,
   goodsBlurb,
 }: {
+  /** Anchor id for this section, e.g. so a nav link can jump to "#shelves". */
+  id?: string;
   products: ShopProduct[];
   vouchersBlurb: string;
   goodsBlurb: string;
@@ -56,7 +59,7 @@ export function ShopClient({
   }, [products, world, query]);
 
   return (
-    <section className="relative" style={{ background: "#e4ebd9" }}>
+    <section id={id} className="relative" style={{ background: "#e4ebd9" }}>
       <div
         className="sticky top-0 z-40 border-b px-8 py-5 backdrop-blur-md sm:px-14"
         style={{ background: "rgba(228,235,217,0.94)", borderColor: "rgba(74,93,72,0.2)" }}

@@ -37,7 +37,7 @@ export default async function ListCorporateStayPropertyPage() {
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
-      <section className="relative bg-maroon px-8 pt-[140px] pb-16 text-cream sm:px-14 sm:pt-[160px] sm:pb-20">
+      <section id={page?.heroSectionId || "hero"} className="relative bg-maroon px-8 pt-[140px] pb-16 text-cream sm:px-14 sm:pt-[160px] sm:pb-20">
         <HeroNav links={CORPORATE_STAYS_NAV_LINKS} variant="default" ctaHref="/corporate-stays#brief" ctaLabel="Hiring workers?" />
         <div className="mx-auto max-w-[680px] text-center">
           <Eyebrow as="span" className="mb-4" tone="sage" delay={0}>
