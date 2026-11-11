@@ -17,15 +17,6 @@ export type PublicCorporateStayProperty = {
 
 const BILLING_PERIOD_NIGHTS = 30;
 
-function parsePhotos(photosUrl: string | null): string[] {
-  if (!photosUrl) return [];
-  return photosUrl
-    .split(/[\s,]+/)
-    .map((url) => url.trim())
-    .filter((url) => /^https?:\/\//i.test(url))
-    .slice(0, 3);
-}
-
 /**
  * Approved, owner-consented corporate stay properties for the public
  * /corporate-stays carousel — never the raw listing_url or owner contact
@@ -41,7 +32,7 @@ export async function getPublicCorporateStayProperties(): Promise<PublicCorporat
   const { data: properties, error: propertiesError } = await supabase
     .from("corporate_stay_properties")
     .select(
-      "id, property_name, area, county, max_guests_standard, bedrooms, bathrooms, description, photos_url"
+      "id, property_name, area, county, max_guests_standard, bedrooms, bathrooms, description, photo_urls"
     )
     .eq("submission_status", "approved")
     .eq("public_listing_consent", "yes")
@@ -90,7 +81,7 @@ export async function getPublicCorporateStayProperties(): Promise<PublicCorporat
       bedrooms: property.bedrooms as number | null,
       bathrooms: property.bathrooms as number | null,
       description: property.description as string | null,
-      photos: parsePhotos(property.photos_url as string | null),
+      photos: ((property.photo_urls as string[] | null) ?? []).slice(0, 3),
       pricePerPersonPerNight,
     };
   });
