@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
 import { AREA_GUIDE_QUERY } from "@/sanity/queries";
@@ -18,6 +17,9 @@ import { ThingsToDoTabs } from "@/components/ThingsToDoTabs";
 import { PropertyCard } from "@/components/PropertyCard";
 import { FaqSection } from "@/components/FaqSection";
 import { BespokeTripCta } from "@/components/BespokeTripCta";
+import { CorporateStaysAreaCta } from "@/components/CorporateStaysAreaCta";
+import { RelatedArticlesCarousel } from "@/components/RelatedArticlesCarousel";
+import { getPublicCorporateStayProperties } from "@/lib/corporateStayProperties";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
 import type { Metadata } from "next";
@@ -35,9 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AreaGuidePage({ params }: Props) {
   const { slug } = await params;
-  const [guide, siteNavLinks] = await Promise.all([
+  const [guide, siteNavLinks, corporateStayProperties] = await Promise.all([
     client.fetch(AREA_GUIDE_QUERY, { slug }),
     getGuestSiteNavLinks(),
+    getPublicCorporateStayProperties(),
   ]);
   if (!guide) notFound();
 
@@ -155,24 +158,16 @@ export default async function AreaGuidePage({ params }: Props) {
         </section>
       )}
 
+      {/* CORPORATE STAYS CROSS-SELL */}
+      <CorporateStaysAreaCta properties={corporateStayProperties} />
+
       <FaqSection heading="A few questions people ask" items={guide.faqs} maxWidth="72rem" />
 
       {/* RELATED BLOG POSTS */}
       {guide.relatedBlogPosts?.length > 0 && (
         <Reveal as="section" className="mx-auto max-w-6xl border-t border-sage-grey/40 px-8 py-10 sm:px-14">
-          <p className="text-sm font-medium text-near-black/60">Read more</p>
-          <ul className="mt-3 flex flex-wrap gap-5">
-            {guide.relatedBlogPosts.map((post: any) => (
-              <li key={post._id}>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="text-sm font-medium text-forest-green underline"
-                >
-                  {post.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <p className="mb-5 text-sm font-medium text-near-black/60">Read more</p>
+          <RelatedArticlesCarousel posts={guide.relatedBlogPosts} />
         </Reveal>
       )}
 
