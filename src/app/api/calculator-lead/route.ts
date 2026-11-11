@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
     estimatedPotential,
     estimatedUplift,
     upliftPercent,
+    howHeard,
   } = body ?? {};
 
   if (!isValidEmail(email)) {
@@ -47,6 +48,7 @@ export async function POST(request: NextRequest) {
       estimated_potential: toNumber(estimatedPotential),
       estimated_uplift: toNumber(estimatedUplift),
       uplift_percent: toNumber(upliftPercent),
+      how_heard: howHeard,
       // Latest answer wins; the timestamp records when consent was last given.
       marketing_consent: typeof marketingConsent === "boolean" ? marketingConsent : undefined,
       marketing_consent_at: marketingConsent === true ? new Date().toISOString() : undefined,
@@ -68,6 +70,7 @@ export async function POST(request: NextRequest) {
         estimated_potential: estimatedPotential,
         estimated_uplift: estimatedUplift,
         uplift_percent: upliftPercent,
+        how_heard: howHeard,
       },
       groupId: process.env.MAILERLITE_CALCULATOR_GROUP_ID,
     },

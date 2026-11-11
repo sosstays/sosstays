@@ -28,6 +28,15 @@ const INTEREST_OPTIONS = ["Golf tee times", "Family days out", "Both", "Other"];
 
 const BASE_OR_ROUTE_OPTIONS = ["One base", "Touring route", "Not sure"];
 
+const HOW_HEARD_OPTIONS = [
+  "Google search",
+  "ChatGPT / Claude",
+  "Social media",
+  "Referred by a friend",
+  "Email",
+  "Other",
+];
+
 // Ordered one-question-at-a-time steps, Typeform-style — same pattern as
 // CorporateLeadForm.tsx (the site's existing precedent for this kind of
 // form; there's no shared/generic stepper component to reuse, each lead
@@ -43,6 +52,7 @@ const STEP_IDS = [
   "interests",
   "baseOrRoute",
   "notes",
+  "howHeard",
   "contact",
 ] as const;
 type StepId = (typeof STEP_IDS)[number];
@@ -127,6 +137,7 @@ export function BespokeTripForm() {
   const [interests, setInterests] = useState<string[]>([]);
   const [baseOrRoute, setBaseOrRoute] = useState("");
   const [notes, setNotes] = useState("");
+  const [howHeard, setHowHeard] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
@@ -216,6 +227,7 @@ export function BespokeTripForm() {
           interests,
           baseOrRoute,
           notes: notes.trim(),
+          howHeard,
           consent: true,
         }),
       });
@@ -244,6 +256,7 @@ export function BespokeTripForm() {
       `Accommodation preference: ${accommodationPreference}`,
       `Interests: ${interests.join(", ")}`,
       `One base or touring route: ${baseOrRoute}`,
+      `How they heard about us: ${howHeard}`,
       "",
       notes,
     ].join("\n")
@@ -467,6 +480,25 @@ export function BespokeTripForm() {
               Continue
             </Button>
           </div>
+        </div>
+      )}
+
+      {stepId === "howHeard" && (
+        <div className="flex flex-col gap-4.5">
+          <h3 className="font-serif text-lg font-bold text-maroon sm:text-xl">How did you hear about us?</h3>
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            {HOW_HEARD_OPTIONS.map((option) => (
+              <RadioOption
+                key={option}
+                label={option}
+                selected={howHeard === option}
+                onSelect={() => selectAndAdvance(option, setHowHeard)}
+              />
+            ))}
+          </div>
+          <button type="button" onClick={goBack} className="mt-1 self-start text-sm font-semibold text-near-black/60 hover:text-near-black">
+            Back
+          </button>
         </div>
       )}
 

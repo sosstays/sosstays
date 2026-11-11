@@ -31,6 +31,15 @@ const HOURS_OPTIONS = [
   { value: 20, label: "15–20+ hours" },
 ];
 
+const HOW_HEARD_OPTIONS = [
+  "Google search",
+  "ChatGPT / Claude",
+  "Social media",
+  "Referred by a friend",
+  "Email",
+  "Other",
+];
+
 const CHALLENGE_OPTIONS = [
   "Guest communications taking too long",
   "Inconsistent bookings / empty nights",
@@ -83,6 +92,7 @@ export function RevenueCalculator({
   // Step 3
   const [hoursPerWeek, setHoursPerWeek] = useState(5);
   const [biggestChallenge, setBiggestChallenge] = useState("");
+  const [howHeard, setHowHeard] = useState("");
   const [consent, setConsent] = useState(false);
 
   const [step1Error, setStep1Error] = useState(false);
@@ -224,6 +234,7 @@ export function RevenueCalculator({
         estimatedPotential: Math.round(calc.net),
         estimatedUplift: Math.round(calc.uplift),
         upliftPercent: calc.upliftPercent,
+        howHeard,
       }),
     });
   }
@@ -539,6 +550,20 @@ export function RevenueCalculator({
                   <option value="">— Select one —</option>
                   {CHALLENGE_OPTIONS.map((c) => (
                     <option key={c}>{c}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="flex flex-col gap-1.5 text-sm text-near-black">
+                How did you hear about us?
+                <select
+                  value={howHeard}
+                  onChange={(e) => setHowHeard(e.target.value)}
+                  className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+                >
+                  <option value="">— Select one —</option>
+                  {HOW_HEARD_OPTIONS.map((o) => (
+                    <option key={o}>{o}</option>
                   ))}
                 </select>
               </label>

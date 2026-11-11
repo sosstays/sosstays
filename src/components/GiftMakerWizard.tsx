@@ -19,6 +19,15 @@ const VOUCHER_TIERS = [100, 75, 50, 25] as const;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const HOW_HEARD_OPTIONS = [
+  "Google search",
+  "ChatGPT / Claude",
+  "Social media",
+  "Referred by a friend",
+  "Email",
+  "Other",
+];
+
 function isMainVoucher(name: string) {
   return name.trim().toLowerCase().startsWith("gift voucher");
 }
@@ -181,6 +190,7 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [billing, setBilling] = useState<"business" | "personal" | "">("");
+  const [howHeard, setHowHeard] = useState("");
   const [consent, setConsent] = useState(false);
   const [fieldError, setFieldError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -256,6 +266,7 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
           email: email.trim(),
           phone: phone.trim(),
           billingType: billing,
+          howHeard,
           recipientType: recipient,
           quantity: group === "many" ? qty : 1,
           budget,
@@ -667,6 +678,19 @@ export function GiftMakerWizard({ products }: { products: GiftCatalogueItem[] })
               />
             </label>
           </div>
+          <label className="flex flex-col gap-1.5 text-sm text-near-black">
+            <span>How did you hear about us?</span>
+            <select
+              value={howHeard}
+              onChange={(e) => setHowHeard(e.target.value)}
+              className="rounded-[10px] border border-sage-grey/50 bg-cream px-4 py-3 font-sans text-[15px] text-near-black"
+            >
+              <option value="">— Select one —</option>
+              {HOW_HEARD_OPTIONS.map((o) => (
+                <option key={o}>{o}</option>
+              ))}
+            </select>
+          </label>
           <ConsentCheckbox checked={consent} onChange={setConsent} />
           {(fieldError || submitError) && (
             <p role="alert" className="text-[13px] text-error-red">
