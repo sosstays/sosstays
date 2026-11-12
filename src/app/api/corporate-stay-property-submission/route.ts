@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
     notes,
     occupancyGuests,
     ownerQuoteEur,
+    wantsManagementInfo,
     consent,
   } = body ?? {};
 
@@ -92,6 +93,7 @@ export async function POST(request: NextRequest) {
       public_listing_consent: publicListingConsent,
       how_heard: typeof howHeard === "string" ? howHeard.trim() || null : null,
       notes: typeof notes === "string" ? notes.trim() || null : null,
+      wants_management_info: wantsManagementInfo === true,
       submission_status: "pending_review",
       captured_by: "Form submission",
     })

@@ -623,6 +623,14 @@ export const LIST_YOUR_PROPERTY_PAGE_QUERY = defineQuery(`
     heroEyebrow,
     heroHeading,
     heroBody,
+    howSectionId,
+    howHeading,
+    howIntro,
+    howItems[] {
+      title,
+      body
+    },
+    formSectionId,
     ${seoProjection}
   }
 `);

@@ -17,6 +17,24 @@ const DEFAULT_HERO_HEADING = "Submit your property for corporate & monthly-stay 
 const DEFAULT_HERO_BODY =
   "This is not our regular Airbnb management sign-up — it only feeds contractor crews, relocating professionals and other long-stay corporate guests. We review every submission before anything goes live, and nothing here is shared or booked outside our team.";
 
+const DEFAULT_HOW_HEADING = "How this works";
+const DEFAULT_HOW_INTRO =
+  "This page is specifically for corporate and monthly-stay sourcing — it's separate from signing up for full Sos Stays property management. If you already have a property with us, there's nothing new to do here. If you don't, submitting your details below is the first step toward picking up more corporate bookings.";
+const DEFAULT_HOW_ITEMS: { title: string; body: string }[] = [
+  {
+    title: "We find the booking",
+    body: "We put your property in front of contractor crews, relocating professionals and other long-stay corporate guests who are actively looking for monthly accommodation — a different crowd from the usual nightly Airbnb search.",
+  },
+  {
+    title: "We handle the enquiry",
+    body: "Every corporate enquiry comes to us first. We check the dates, group size and what they actually need, then come back to you with a real, specific request — never a cold booking landing in your inbox.",
+  },
+  {
+    title: "You stay in control",
+    body: "Nothing about your property is shared publicly or confirmed without you. You decide the price, the dates, and whether a particular booking is the right fit.",
+  },
+];
+
 export async function generateMetadata(): Promise<Metadata> {
   const page = await client.fetch(LIST_YOUR_PROPERTY_PAGE_QUERY);
   return buildMetadata(
@@ -34,6 +52,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ListCorporateStayPropertyPage() {
   const page = await client.fetch(LIST_YOUR_PROPERTY_PAGE_QUERY);
+  const cmsHowItems = ((page?.howItems ?? []) as { title?: string | null; body?: string | null }[]).filter(
+    (item): item is { title: string; body: string } => Boolean(item?.title && item?.body)
+  );
+  const howItems = cmsHowItems.length > 0 ? cmsHowItems : DEFAULT_HOW_ITEMS;
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
@@ -52,7 +74,32 @@ export default async function ListCorporateStayPropertyPage() {
         </div>
       </section>
 
-      <section className="px-8 py-16 sm:px-14 sm:py-20">
+      {/* HOW THIS WORKS — what this page is (and isn't) before the owner
+          reaches the form. Same card treatment as the "Who we house"
+          cards on /corporate-stays. */}
+      <section id={page?.howSectionId || "how-this-works"} className="px-8 pt-16 sm:px-14 sm:pt-20">
+        <div className="mx-auto max-w-6xl">
+          <Reveal className="max-w-[680px]">
+            <h2 className="font-serif text-3xl font-bold tracking-tight text-maroon sm:text-4xl">
+              {page?.howHeading || DEFAULT_HOW_HEADING}
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-near-black/70">{page?.howIntro || DEFAULT_HOW_INTRO}</p>
+          </Reveal>
+
+          <div className="mt-10 grid grid-cols-1 gap-5.5 sm:grid-cols-3">
+            {howItems.map((item, i) => (
+              <Reveal key={item.title} delay={i * 80}>
+                <article className="flex h-full flex-col rounded-[18px] border border-sage-grey/40 bg-bright-cream p-6">
+                  <h3 className="mb-2.5 font-serif text-xl font-bold text-maroon">{item.title}</h3>
+                  <p className="text-[15px] leading-relaxed text-near-black/70">{item.body}</p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id={page?.formSectionId || "submit"} className="px-8 py-16 sm:px-14 sm:py-20">
         <div className="mx-auto max-w-[680px]">
           <Reveal>
             <CorporateStayPropertySubmissionForm />
