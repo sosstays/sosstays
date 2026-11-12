@@ -97,6 +97,7 @@ export function CorporateStayPropertySubmissionForm() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(EMPTY_STATE);
   const [consent, setConsent] = useState(false);
+  const [wantsManagementInfo, setWantsManagementInfo] = useState(false);
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -171,6 +172,7 @@ export function CorporateStayPropertySubmissionForm() {
           publicListingConsent: form.publicListingConsent,
           howHeard: form.howHeard,
           notes: form.notes.trim(),
+          wantsManagementInfo,
           consent: true,
         }),
       });
@@ -190,6 +192,7 @@ export function CorporateStayPropertySubmissionForm() {
         <p className="mx-auto max-w-[42ch] text-[14px] leading-relaxed text-near-black/65">
           Our team will review {form.propertyName || "your property"} and be in touch about next steps.
           If you gave us a price estimate, we&apos;ll confirm it against a real client before anything is agreed.
+          {wantsManagementInfo && " Keena will also be in touch about property management."}
         </p>
         <div className="mt-6 flex justify-center">
           <Button onClick={() => router.push("/corporate-stays")} variant="primary" bgColor="maroon" color="cream" animateColor="maroon" size="sm">
@@ -480,6 +483,27 @@ export function CorporateStayPropertySubmissionForm() {
             <ReviewRow label="How they heard about us" value={form.howHeard} />
             <ReviewRow label="Notes" value={form.notes} />
           </dl>
+
+          {/* Optional, unticked by default — separate from the corporate-stays
+              submission itself, so it sits after the review as the last thing
+              before submitting. */}
+          <div className="rounded-[12px] border border-sage-grey/40 bg-cream/60 p-5">
+            <h4 className="font-serif text-base font-bold text-maroon">One more thing, if it&apos;s useful</h4>
+            <p className="mt-1.5 text-[13px] leading-relaxed text-near-black/65">
+              Separately from corporate stays, we also manage properties fully — guests, cleaning, changeovers
+              and the day-to-day running, off your shoulders. Would you like to know more?
+            </p>
+            <label className="mt-3.5 flex items-start gap-2.5 text-sm leading-relaxed text-near-black">
+              <input
+                type="checkbox"
+                checked={wantsManagementInfo}
+                onChange={(e) => setWantsManagementInfo(e.target.checked)}
+                className="mt-0.5 h-4 w-4 flex-none"
+                style={{ accentColor: "var(--maroon)" }}
+              />
+              <span>Yes, I&apos;d like to talk to Keena Duffy about property management.</span>
+            </label>
+          </div>
 
           {submitError && <p role="alert" className="text-[13px] text-error-red">{submitError}</p>}
           <div className="mt-1 flex justify-between">
