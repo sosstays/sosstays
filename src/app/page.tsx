@@ -1,27 +1,76 @@
-import Image from "next/image";
 import Script from "next/script";
 import { client } from "@/sanity/client";
-import { HERO_SECTION_QUERY, HOMEPAGE_BLOG_QUERY, HOMEPAGE_QUERY, HOSTS_MODULE_QUERY, PROMO_GRID_QUERY, PROPERTY_ORDER_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
+import {
+  HERO_SECTION_QUERY,
+  HOME_PAGE_QUERY,
+  HOMEPAGE_BLOG_QUERY,
+  HOMEPAGE_QUERY,
+  HOSTS_MODULE_QUERY,
+  PROMO_GRID_QUERY,
+  PROPERTY_ORDER_QUERY,
+  SITE_SETTINGS_QUERY,
+} from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
-import { HeroNav } from "@/components/HeroNav";
-import { getGuestNavLinks } from "@/lib/navLinks";
+import { MARKET } from "@/lib/market";
+import { filterLinksForMarket } from "@/lib/marketLinks";
 import { orderProperties } from "@/lib/propertyOrder";
 import type { PropertyCardProps } from "@/components/PropertyCard";
 import { PropertyCarousel } from "@/components/PropertyCarousel";
 import { BespokeTripCta } from "@/components/BespokeTripCta";
 import { Button } from "@/components/Button";
-import { AreaSpotlightCarousel } from "@/components/AreaSpotlightCarousel";
 import { PromoGrid } from "@/components/PromoGrid";
 import { HomeBlogGrid } from "@/components/HomeBlogGrid";
 import { HostsModule } from "@/components/HostsModule";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
-import { SearchBar } from "@/components/SearchBar";
+import { HomeHero, type HomeHeroPrompt } from "@/components/home/HomeHero";
+import { HomeDock, type DockMenu } from "@/components/home/HomeDock";
+import { HomeAreaList, type HomeArea } from "@/components/home/HomeAreaList";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
+
+type SanityImage = { alt?: string | null } & Record<string, unknown>;
+
+type HomeProperty = PropertyCardProps & {
+  _id: string;
+  slug: string;
+  homepageImage?: SanityImage | null;
+};
+
+type HomePageContent = {
+  searchPrompts?:
+    | {
+        typedText?: string | null;
+        chipLabel?: string | null;
+        location?: string | null;
+        property?: { name?: string | null; location?: string | null; image?: SanityImage | null } | null;
+      }[]
+    | null;
+  dockMenus?: { label?: string | null; links?: { label?: string | null; href?: string | null; note?: string | null }[] | null }[] | null;
+} | null;
+
+// Fallback search prompts (Ireland only), used until the Sanity "Homepage"
+// document has its own. `match` picks the stay to show by looking for that
+// word in a property's location, so the defaults keep working as
+// properties are added or renamed. Each `location` must be one of the
+// search bar's own locations (see lib/searchLocations.ts).
+const DEFAULT_PROMPTS: { text: string; chip: string; location: string; match: string }[] = [
+  { text: "A base for Newgrange and the Boyne Valley", chip: "Near Newgrange", location: "Drogheda", match: "Louth" },
+  { text: "A farm stay where the kids can meet the animals", chip: "Farm stay", location: "Wexford", match: "Wexford" },
+  { text: "Sea views near the Cliffs of Moher", chip: "Sea views in Clare", location: "Clare", match: "Clare" },
+];
+
+function heroImages(image?: SanityImage | null) {
+  return image
+    ? {
+        cardImageUrl: urlFor(image).width(420).height(320).url(),
+        heroImageUrl: urlFor(image).width(1800).height(1200).url(),
+      }
+    : { cardImageUrl: null, heroImageUrl: null };
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   // Hardcoded here rather than left to the Sanity default-SEO fallback —
@@ -39,92 +88,139 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [hero, { properties: allProperties, areas }, siteSettings, propertyOrder, hostsModule, promoGrid, homeBlog, homeNavLinks] = await Promise.all([
-    client.fetch(HERO_SECTION_QUERY),
-    client.fetch(HOMEPAGE_QUERY),
-    client.fetch(SITE_SETTINGS_QUERY),
-    client.fetch(PROPERTY_ORDER_QUERY),
-    client.fetch(HOSTS_MODULE_QUERY),
-    client.fetch(PROMO_GRID_QUERY),
-    client.fetch(HOMEPAGE_BLOG_QUERY),
-    getGuestNavLinks(),
-  ]);
+  const [hero, { properties: allProperties, areas }, siteSettings, propertyOrder, hostsModule, promoGrid, homeBlog, homePage] =
+    await Promise.all([
+      client.fetch(HERO_SECTION_QUERY),
+      client.fetch<{ properties: HomeProperty[]; areas: HomeArea[] }>(HOMEPAGE_QUERY),
+      client.fetch(SITE_SETTINGS_QUERY),
+      client.fetch(PROPERTY_ORDER_QUERY),
+      client.fetch(HOSTS_MODULE_QUERY),
+      client.fetch(PROMO_GRID_QUERY),
+      client.fetch(HOMEPAGE_BLOG_QUERY),
+      client.fetch<HomePageContent>(HOME_PAGE_QUERY),
+    ]);
+
   // No cap here — the carousel is what keeps this section manageable as
   // more stays get added; Property Order in Site Settings controls which
-  // ones lead.
-  const properties = orderProperties<PropertyCardProps & { _id: string }>(
-    allProperties,
-    propertyOrder?.orderedSlugs
-  );
-  const headingLines = hero?.heading?.split(/\\n|\n/) ?? [];
+  // ones lead. A property's "Homepage image" (if set in Sanity) leads its
+  // card: it becomes the cover and the first/large tile of the collage.
+  const properties = orderProperties<HomeProperty>(allProperties, propertyOrder?.orderedSlugs).map((property) => {
+    const lead = property.homepageImage;
+    if (!lead) return property;
+    const rest = (property.gallery ?? []).filter((image) => JSON.stringify(image.asset) !== JSON.stringify(lead.asset));
+    return { ...property, coverImage: lead, gallery: [lead, ...rest].slice(0, 3) } as HomeProperty;
+  });
+
+  const headingLines: string[] = hero?.heading?.split(/\\n|\n/) ?? [];
   const instagramUrl = siteSettings?.socialLinks?.find(
     (link: { platform: string; url: string }) => link.platform === "instagram",
   )?.url;
+
+  // Search prompts: the CMS list when it has usable entries, otherwise the
+  // Ireland defaults matched against the live properties.
+  const cmsPrompts: HomeHeroPrompt[] = (homePage?.searchPrompts ?? [])
+    .filter((p) => p?.typedText && p?.chipLabel && p?.location)
+    .map((p) => ({
+      text: p.typedText!,
+      chip: p.chipLabel!,
+      location: p.location!,
+      stay: p.property?.name
+        ? { name: p.property.name, place: p.property.location, ...heroImages(p.property.image) }
+        : null,
+    }));
+  const defaultPrompts: HomeHeroPrompt[] =
+    MARKET === "ie"
+      ? DEFAULT_PROMPTS.map(({ match, ...prompt }) => {
+          const stay = properties.find((p) => p.location?.includes(match));
+          return {
+            ...prompt,
+            stay: stay
+              ? { name: stay.name, place: stay.location, ...heroImages(stay.coverImage as SanityImage | null) }
+              : null,
+          };
+        })
+      : [];
+  const prompts = cmsPrompts.length > 0 ? cmsPrompts : defaultPrompts;
+
+  // Bottom menu: the CMS menus when set, otherwise these defaults. Either
+  // way the links are market-filtered, and a menu left empty is dropped.
+  const defaultMenus: DockMenu[] = [
+    {
+      label: "Stays",
+      links: [
+        { label: "Browse all stays", href: "/stays" },
+        { label: "Check availability", href: "/search", note: "Dates and guests" },
+        { label: "Gift vouchers", href: "/shop", note: "From the shop" },
+        { label: "Bespoke Ireland trip", href: "/bespoke-ireland-trip" },
+      ],
+    },
+    {
+      label: "Areas",
+      links: [
+        ...areas.map((area) => ({ label: area.areaName, href: `/areas/${area.slug}`, note: "Guide" })),
+        { label: "All area guides", href: "/areas" },
+      ],
+    },
+    {
+      label: "Owners",
+      links: [
+        { label: "Property management", href: "/landlords" },
+        { label: "Pricing", href: "/pricing" },
+        { label: "Revenue estimate", href: "/landlords#calculator", note: "Calculator" },
+        { label: "List for corporate stays", href: "/corporate-stays/list-your-property" },
+      ],
+    },
+    {
+      label: "More",
+      links: [
+        { label: "About", href: "/about" },
+        { label: "Blog", href: "/blog" },
+        { label: "Corporate stays", href: "/corporate-stays" },
+        { label: "Partners", href: "/partners" },
+        { label: "Contact us", href: "/contact" },
+      ],
+    },
+  ];
+  const cmsMenus: DockMenu[] = (homePage?.dockMenus ?? [])
+    .filter((menu) => menu?.label)
+    .map((menu) => ({
+      label: menu.label!,
+      links: (menu.links ?? [])
+        .filter((link) => link?.label && link?.href)
+        .map((link) => ({ label: link.label!, href: link.href!, note: link.note })),
+    }));
+  const dockMenus = (
+    await Promise.all(
+      (cmsMenus.length > 0 ? cmsMenus : defaultMenus).map(async (menu) => ({
+        ...menu,
+        links: await filterLinksForMarket(menu.links),
+      }))
+    )
+  ).filter((menu) => menu.links.length > 0);
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <JsonLd data={buildOrganizationSchema(siteSettings)} />
 
-      {/* HERO */}
-      <section id={hero?.heroSectionId || "hero"} className="relative min-h-[94vh] w-full bg-forest-green">
-        {hero?.image && (
-          <Image
-            src={urlFor(hero.image).width(1600).height(1400).url()}
-            alt={hero.image.alt}
-            fill
-            priority
-            className="object-cover"
-          />
-        )}
-        <div className="absolute inset-0 bg-forest-green/60" />
-
-        <HeroNav links={homeNavLinks} ctaHref="#stays" ctaLabel="Find your break" />
-
-        {/* hero content — in normal flow (not absolutely positioned) and
-            min-h'd rather than height-locked, so if content ever grows
-            taller than a viewport (e.g. the search bar pushing things out),
-            it pushes the section taller instead of overflowing upward
-            behind HeroNav, which sits above it (z-20 vs z-10) and would
-            otherwise visually swallow whatever overflowed under it. The
-            top padding guarantees clearance from the nav regardless of
-            content height, which `top-24` inside an absolutely-positioned,
-            vertically-centered box could not. */}
-        <div className="relative z-10 mx-auto flex min-h-[94vh] w-[calc(100%-4rem)] flex-col items-center justify-center gap-10 pt-28 pb-10 text-center sm:w-[calc(100%-7rem)] sm:pt-32">
-          <div className="w-full">
-            {hero?.eyebrow && (
-              <Eyebrow as="h1" className="mb-3 sm:mb-5" tone="sage">
-                {hero.eyebrow}
-              </Eyebrow>
-            )}
-            <h2 className="mb-4 font-serif text-4xl leading-[1.05] font-semibold text-cream italic sm:mb-6 sm:text-6xl">
-              {headingLines.map((line: string, i: number) => (
-                <span key={i}>
-                  {line}
-                  {i < headingLines.length - 1 && <br />}
-                </span>
-              ))}
-            </h2>
-            <p className="mx-auto mb-3 text-lg text-cream/95 sm:mb-4">
-              Explore stays in Louth, Clare and Wexford, check availability and book directly with SOS Stays.
-            </p>
-            {/* hero.body (the old CMS paragraph) is intentionally not
-                rendered here anymore — it covered the same ground as the
-                supporting line above and stacking both read as repetitive.
-                The field itself is untouched in Sanity. */}
-            {hero?.subBody && (
-              <p className="mx-auto mb-5 text-sm text-light-sage/85 sm:mb-8">{hero.subBody}</p>
-            )}
-          </div>
-
-          <div className="w-full">
-            <SearchBar />
-          </div>
-
-          {hero?.image?.alt && (
-            <div className="text-sm whitespace-nowrap text-cream/75">{hero.image.alt}</div>
-          )}
-        </div>
-      </section>
+      {/* HERO — photo, headline and the search bar that types its own
+          suggestions. The header inside it is only the logo and one
+          button; the rest of the navigation is the bottom menu (HomeDock,
+          rendered at the end of this page). hero.body (the old CMS
+          paragraph) is intentionally not rendered — it covered the same
+          ground as the supporting line. The field itself is untouched in
+          Sanity. */}
+      <HomeHero
+        id={hero?.heroSectionId || "hero"}
+        eyebrow={hero?.eyebrow}
+        headingLines={headingLines}
+        supporting="Explore stays in Louth, Clare and Wexford, check availability and book directly with SOS Stays."
+        subBody={hero?.subBody}
+        imageUrl={hero?.image ? urlFor(hero.image).width(1800).height(1200).url() : null}
+        imageAlt={hero?.image?.alt}
+        prompts={prompts}
+        ctaHref="#stays"
+        ctaLabel="Find your break"
+      />
 
       {/* LANDLORD BANNER — thin strip under the hero, maroon per the owner-context accent color */}
       {hero?.secondaryCtaLabel && (
@@ -153,11 +249,14 @@ export default async function HomePage() {
       {properties.length > 0 && (
         <section id="stays" className="px-8 py-24 sm:px-14 sm:py-28">
           <div className="mx-auto max-w-6xl">
-            <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
-              <Reveal as="h2" className="font-serif text-3xl font-bold tracking-tight text-forest-green sm:text-4xl">
+            <div className="mb-14 text-center">
+              <Eyebrow className="mb-3" tone="forest" delay={0}>
+                The stays
+              </Eyebrow>
+              <Reveal as="h2" delay={100} className="font-serif text-4xl font-bold tracking-tight text-forest-green sm:text-6xl">
                 A few places to start
               </Reveal>
-              <Reveal as="p" delay={150} className="max-w-[380px] text-near-black/60">
+              <Reveal as="p" delay={200} className="mx-auto mt-4 max-w-[380px] text-near-black/60">
                 Have a proper look around each one.
               </Reveal>
             </div>
@@ -173,40 +272,16 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* AREAS — every area guide as a list on a sage band */}
+      <HomeAreaList areas={areas} id={hero?.areasSectionId || "areas"} />
+
       {/* PROMO GRID — image/title/subtitle tiles */}
       <PromoGrid data={promoGrid} />
 
       {/* HOSTS MODULE — property-owner services overview + pricing */}
-      <HostsModule data={hostsModule} />
-
-      {/* AREA SPOTLIGHT */}
-
-      <AreaSpotlightCarousel areas={areas} id={hero?.areasSectionId || "areas"} />
-
-      {/* INSTAGRAM FEED */}
-      <section id={hero?.instagramSectionId || "instagram"} className="px-8 py-24 sm:px-14 sm:py-28">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
-            <div>
-              <Eyebrow className="mb-2" delay={0}>Follow along</Eyebrow>
-              <Reveal as="h2" delay={100} className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
-                On Instagram
-              </Reveal>
-            </div>
-            {instagramUrl && (
-              <Reveal delay={200}>
-                <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
-                  Follow us on Instagram
-                </Button>
-              </Reveal>
-            )}
-          </div>
-          <Reveal delay={150}>
-            <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
-          </Reveal>
-        </div>
-      </section>
-      <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
+      <div className="pt-24 sm:pt-28">
+        <HostsModule data={hostsModule} />
+      </div>
 
       {/* BLOG — featured post + two most recent */}
       <HomeBlogGrid data={homeBlog} id={hero?.blogSectionId || "blog"} />
@@ -231,9 +306,39 @@ export default async function HomePage() {
       </section>
 
       {/* BESPOKE TRIP CTA */}
-      <div id={hero?.bespokeTripSectionId || "bespoke-trip"} className="py-24 sm:py-28">
+      <div id={hero?.bespokeTripSectionId || "bespoke-trip"} className="pt-24 sm:pt-28">
         <BespokeTripCta />
       </div>
+
+      {/* INSTAGRAM FEED — last section on the page, just above the footer.
+          The feed itself is the third-party Behold widget, left exactly as
+          it was. */}
+      <section id={hero?.instagramSectionId || "instagram"} className="px-8 py-24 sm:px-14 sm:py-28">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
+            <div>
+              <Eyebrow className="mb-2" delay={0}>Follow along</Eyebrow>
+              <Reveal as="h2" delay={100} className="font-serif text-2xl font-bold tracking-tight text-forest-green sm:text-3xl">
+                On Instagram
+              </Reveal>
+            </div>
+            {instagramUrl && (
+              <Reveal delay={200}>
+                <Button link={instagramUrl} external variant="primary" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
+                  Follow us on Instagram
+                </Button>
+              </Reveal>
+            )}
+          </div>
+          <Reveal delay={150}>
+            <behold-widget feed-id="WcXQ8APwHKWEf2AxzA0R"></behold-widget>
+          </Reveal>
+        </div>
+      </section>
+      <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
+
+      {/* BOTTOM MENU — the homepage's navigation, fixed to the bottom of the screen */}
+      <HomeDock menus={dockMenus} />
     </main>
   );
 }

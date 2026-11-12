@@ -521,6 +521,40 @@ export const HERO_SECTION_QUERY = defineQuery(`
   }
 `);
 
+// ---- Homepage: search prompts, bottom menu, partner initiatives (singleton) ----
+
+export const HOME_PAGE_QUERY = defineQuery(`
+  *[_type == "homePage" && _id == "homePage-" + $market][0] {
+    searchPrompts[] {
+      typedText,
+      chipLabel,
+      location,
+      property->{
+        name,
+        location,
+        "image": coalesce(homepageImage, gallery[0])
+      }
+    },
+    dockMenus[] {
+      label,
+      links[] {
+        label,
+        href,
+        note
+      }
+    },
+    initiativesHeading,
+    initiatives[] {
+      _key,
+      title,
+      tagline,
+      tagLabel,
+      image,
+      href
+    }
+  }
+`);
+
 // ---- Homepage hosts module (singleton) ----
 
 export const HOSTS_MODULE_QUERY = defineQuery(`
@@ -832,6 +866,7 @@ export const FEATURED_PARTNER_SLUGS_QUERY = defineQuery(`
 export const HOMEPAGE_QUERY = defineQuery(`{
   "properties": *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) {
     _id, name, "slug": slug.current, location, destinationHeading, shortDescription, sleeps,
+    homepageImage,
     "coverImage": gallery[0], "gallery": gallery[0...3]
   },
   "areas": *[_type == "areaGuide" && market == $market && defined(slug.current)] | order(areaName asc) [0...4] {
