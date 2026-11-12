@@ -21,6 +21,7 @@ export type HostsModuleStep = {
 // PlatformIcons.tsx), not editorial content, so they aren't part of this —
 // PLATFORMS below stays hardcoded.
 export type HostsModuleData = {
+  hostsSectionId?: string | null;
   eyebrow?: string | null;
   heading?: string | null;
   body?: string | null;
@@ -148,7 +149,7 @@ export function HostsModule({ data }: { data: HostsModuleData | null }) {
   const current = hover ?? active;
 
   return (
-    <section className="bg-maroon px-8 py-24 sm:px-14 sm:py-28">
+    <section id={data.hostsSectionId || "hosts"} className="bg-maroon px-8 py-24 sm:px-14 sm:py-28">
       <div ref={sectionRef} className="mx-auto flex max-w-6xl flex-col gap-10 sm:gap-12">
         {/* INTRO + PRICING */}
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1.35fr_1fr] lg:gap-12">

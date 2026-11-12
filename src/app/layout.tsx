@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Poppins } from "next/font/google";
 import Script from "next/script";
-import { Footer } from "@/components/Footer";
+import { Footer, type FooterContent } from "@/components/Footer";
 import { CountryProvider, type Country } from "@/components/CountrySwitcher";
 import { MARKET, LOCALE, DEFAULT_SEO } from "@/lib/market";
 import { filterLinksForMarket } from "@/lib/marketLinks";
@@ -40,7 +40,7 @@ export default async function RootLayout({
 }>) {
   const [settings, footer, countrySwitcher] = await Promise.all([
     client.fetch(SITE_SETTINGS_QUERY),
-    client.fetch(FOOTER_QUERY),
+    client.fetch<FooterContent | null>(FOOTER_QUERY),
     client.fetch(COUNTRY_SWITCHER_QUERY),
   ]);
   const countries = ((countrySwitcher?.countries ?? []) as Partial<Country>[]).filter(
@@ -58,7 +58,14 @@ export default async function RootLayout({
         )
       ).filter((column) => column.links.length > 0)
     : null;
-  const footerContent = footer ? { ...footer, columns: footerColumns } : footer;
+  const footerContent = footer
+    ? {
+        ...footer,
+        columns: footerColumns,
+        seoLinks: footer.seoLinks ? await filterLinksForMarket(footer.seoLinks) : null,
+        legalLinks: footer.legalLinks ? await filterLinksForMarket(footer.legalLinks) : null,
+      }
+    : footer;
 
   return (
     <html

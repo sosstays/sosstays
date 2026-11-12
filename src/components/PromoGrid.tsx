@@ -18,6 +18,7 @@ export type Promo = {
 };
 
 export type PromoGridData = {
+  promoSectionId?: string | null;
   heading?: string | null;
   note?: string | null;
   promos?: Promo[] | null;
@@ -138,7 +139,7 @@ export function PromoGrid({ data }: { data: PromoGridData }) {
   const placeholders = SLOT_CLASS.length - promos.length;
 
   return (
-    <section aria-label="Promotions" className="mx-auto max-w-6xl px-8 pt-16 sm:px-14 sm:pt-20">
+    <section id={data?.promoSectionId || "offers"} aria-label="Promotions" className="mx-auto max-w-6xl px-8 pt-16 sm:px-14 sm:pt-20">
       {(data?.heading || data?.note) && (
         <div className="mb-8 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
           {data.heading && (

@@ -17,7 +17,7 @@ type Area = {
 
 const ADVANCE_MS = 6000;
 
-export function AreaSpotlightCarousel({ areas }: { areas: Area[] }) {
+export function AreaSpotlightCarousel({ areas, id = "areas" }: { areas: Area[]; id?: string }) {
   const [index, setIndex] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -45,7 +45,7 @@ export function AreaSpotlightCarousel({ areas }: { areas: Area[] }) {
 
   return (
     <section
-      id="areas"
+      id={id}
       className="relative h-[78vh] min-h-[600px] w-full overflow-hidden bg-forest-green"
     >
       {areas.map((area, i) => (
