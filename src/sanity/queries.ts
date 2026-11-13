@@ -157,6 +157,8 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     amenities,
     sleeps,
     priceLabel,
+    offerMinPrice,
+    offerMaxPrice,
     bedrooms,
     beds,
     bathrooms,
