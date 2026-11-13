@@ -6,7 +6,9 @@ import { CountryProvider, type Country } from "@/components/CountrySwitcher";
 import { MARKET, LOCALE, DEFAULT_SEO } from "@/lib/market";
 import { filterLinksForMarket } from "@/lib/marketLinks";
 import { client } from "@/sanity/client";
-import { SITE_SETTINGS_QUERY, FOOTER_QUERY, COUNTRY_SWITCHER_QUERY } from "@/sanity/queries";
+import { SITE_SETTINGS_QUERY, FOOTER_QUERY, COUNTRY_SWITCHER_QUERY, HOME_PAGE_QUERY } from "@/sanity/queries";
+import { HomeOnly } from "@/components/home/HomeOnly";
+import { HomeBrandBand, type Initiative } from "@/components/home/HomeBrandBand";
 import "./globals.css";
 
 const GTM_ID = "GTM-TLKN98WH";
@@ -38,10 +40,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [settings, footer, countrySwitcher] = await Promise.all([
+  const [settings, footer, countrySwitcher, homePage] = await Promise.all([
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch<FooterContent | null>(FOOTER_QUERY),
     client.fetch(COUNTRY_SWITCHER_QUERY),
+    // Only its partner-initiative tiles are used here — they render after
+    // the footer, which this layout owns (see HomeOnly below).
+    client.fetch<{ initiativesHeading?: string | null; initiatives?: Initiative[] | null } | null>(HOME_PAGE_QUERY),
   ]);
   const countries = ((countrySwitcher?.countries ?? []) as Partial<Country>[]).filter(
     (c): c is Country => Boolean(c.label && c.code && c.market && c.url)
@@ -104,6 +109,11 @@ export default async function RootLayout({
           <div className="flex flex-1 flex-col">{children}</div>
         </CountryProvider>
         <Footer socialLinks={settings?.socialLinks} content={footerContent} />
+        {/* Homepage only: the big one-row logo and partner-initiative tiles
+            that sit after the footer. */}
+        <HomeOnly>
+          <HomeBrandBand heading={homePage?.initiativesHeading} initiatives={homePage?.initiatives ?? []} />
+        </HomeOnly>
       </body>
     </html>
   );
