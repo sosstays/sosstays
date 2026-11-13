@@ -13,6 +13,7 @@ import { BespokeTripForm } from "@/components/BespokeTripForm";
 import { DetailsScrollStack } from "@/components/DetailsScrollStack";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Reveal } from "@/components/Reveal";
+import { Button } from "@/components/Button";
 
 export const revalidate = 60;
 
@@ -68,6 +69,10 @@ export default async function BespokeIrelandTripPage() {
     { name: "Bespoke Ireland Trip", url: `${SITE_URL}/bespoke-ireland-trip` },
   ]);
   const faqSchema = buildFaqSchema(page.faqs);
+  // Both "Start a conversation" buttons below jump to this section rather
+  // than linking a fixed "#enquire", so they still land correctly if its
+  // anchor is ever customised in Studio.
+  const enquireHref = `#${page.enquireSectionId || "enquire"}`;
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
@@ -113,6 +118,11 @@ export default async function BespokeIrelandTripPage() {
               {page.heroParagraph}
             </Reveal>
           )}
+          <Reveal delay={320} className="mt-7">
+            <Button link={enquireHref} variant="primary" bgColor="cream" color="forest-green" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
+              Start a conversation
+            </Button>
+          </Reveal>
         </div>
       </section>
 
@@ -124,6 +134,8 @@ export default async function BespokeIrelandTripPage() {
           heading={page.detailsHeading}
           headingAccent={page.detailsHeadingAccent}
           items={page.detailItems}
+          ctaHref={enquireHref}
+          ctaLabel="Start a conversation"
         />
       )}
 
@@ -340,6 +352,35 @@ export default async function BespokeIrelandTripPage() {
                 <p className="mt-2.5 text-[15px] leading-relaxed text-near-black/78">{it.text}</p>
               </Reveal>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* COMING FROM THE US */}
+      {page.usItems?.length > 0 && (
+        <section id={page.usSectionId || "coming-from-the-us"} className="bg-forest-green px-8 py-28 sm:px-14">
+          <div className="mx-auto max-w-6xl">
+            <Reveal
+              as="h2"
+              className="mb-11 font-serif text-[clamp(2.1rem,4vw,3.5rem)] leading-[1.04] font-bold tracking-tight text-cream"
+            >
+              {page.usHeading}
+            </Reveal>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {page.usItems.map((item: { title: string; body: string }, i: number) => (
+                <Reveal
+                  key={item.title}
+                  delay={i * 80}
+                  className="rounded-[18px] border border-cream/25 bg-cream/10 p-6"
+                >
+                  <p className="text-[15.5px] leading-relaxed text-cream/92">
+                    <span className="font-serif font-bold text-light-sage">{item.title}</span>
+                    {" — "}
+                    {item.body}
+                  </p>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
       )}
