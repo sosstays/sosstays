@@ -84,6 +84,8 @@ type PropertyForSchema = {
   bedrooms?: number | null;
   propertyType?: string | null;
   priceLabel?: string | null;
+  offerMinPrice?: number | null;
+  offerMaxPrice?: number | null;
 };
 
 function isFiniteCoordinate(lat: unknown, lng: unknown): lat is number {
@@ -197,6 +199,25 @@ export function buildLodgingBusinessSchema(
     // Passed through exactly as entered in Studio — not reformatted into a
     // min–max range, since the CMS only holds a single price value/label.
     ...(property.priceLabel ? { priceRange: property.priceLabel } : {}),
+    // Structured price range for search engines, from the property's own
+    // manually-maintained offerMinPrice/offerMaxPrice fields — an
+    // approximate figure, like priceRange above, not a live Uplisting rate.
+    // Omitted unless both bounds are set.
+    ...(typeof property.offerMinPrice === "number" && typeof property.offerMaxPrice === "number"
+      ? {
+          makesOffer: {
+            "@type": "Offer",
+            url: `${SITE_URL}/stays/${property.slug}`,
+            priceCurrency: "EUR",
+            priceSpecification: {
+              "@type": "PriceSpecification",
+              priceCurrency: "EUR",
+              minPrice: property.offerMinPrice,
+              maxPrice: property.offerMaxPrice,
+            },
+          },
+        }
+      : {}),
     // True of every property on the site — booking is always handled
     // on-platform via Uplisting, not a per-property editorial claim.
     acceptsReservations: true,

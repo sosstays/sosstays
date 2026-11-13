@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { DynamicIcon } from "@/components/DynamicIcon";
+import { Button } from "@/components/Button";
 import { urlFor } from "@/sanity/image";
 
 type SanityImageWithAlt = { alt?: string } & Record<string, unknown>;
@@ -97,6 +98,8 @@ export function DetailsScrollStack({
   heading,
   headingAccent,
   items,
+  ctaHref,
+  ctaLabel,
 }: {
   /** Anchor id for this section, e.g. so a nav link can jump to "#details". */
   id?: string;
@@ -105,6 +108,9 @@ export function DetailsScrollStack({
   /** Rendered in the accent color right after `heading`, on its own if it wraps. */
   headingAccent: string;
   items: DetailItem[];
+  /** Optional button shown under the heading, e.g. a jump link to the enquiry form. */
+  ctaHref?: string;
+  ctaLabel?: string;
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { progress, mode } = usePinnedScroll(wrapperRef);
@@ -177,6 +183,13 @@ export function DetailsScrollStack({
             <h2 className="font-serif text-[clamp(2rem,5vw,3.6rem)] leading-[1.05] font-bold tracking-tight text-near-black">
               {heading} <span className="text-maroon">{headingAccent}</span>
             </h2>
+            {ctaHref && ctaLabel && (
+              <div className="mt-6">
+                <Button link={ctaHref} variant="primary" bgColor="forest-green" color="cream" size="custom" className="px-7 py-3.5 text-[15px] font-semibold">
+                  {ctaLabel}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
