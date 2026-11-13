@@ -14,7 +14,6 @@ import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
 import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
 import { MARKET } from "@/lib/market";
-import { filterLinksForMarket } from "@/lib/marketLinks";
 import { orderProperties } from "@/lib/propertyOrder";
 import type { PropertyCardProps } from "@/components/PropertyCard";
 import { PropertyCarousel } from "@/components/PropertyCarousel";
@@ -26,7 +25,6 @@ import { HostsModule } from "@/components/HostsModule";
 import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
 import { HomeHero, type HomeHeroPrompt } from "@/components/home/HomeHero";
-import { HomeDock, type DockMenu } from "@/components/home/HomeDock";
 import { HomeAreaList, type HomeArea } from "@/components/home/HomeAreaList";
 import type { Metadata } from "next";
 
@@ -41,6 +39,8 @@ type HomeProperty = PropertyCardProps & {
 };
 
 type HomePageContent = {
+  headerCtaLabel?: string | null;
+  headerCtaUrl?: string | null;
   searchPrompts?:
     | {
         typedText?: string | null;
@@ -49,7 +49,6 @@ type HomePageContent = {
         property?: { name?: string | null; location?: string | null; image?: SanityImage | null } | null;
       }[]
     | null;
-  dockMenus?: { label?: string | null; links?: { label?: string | null; href?: string | null; note?: string | null }[] | null }[] | null;
 } | null;
 
 // Fallback search prompts (Ireland only), used until the Sanity "Homepage"
@@ -142,61 +141,6 @@ export default async function HomePage() {
       : [];
   const prompts = cmsPrompts.length > 0 ? cmsPrompts : defaultPrompts;
 
-  // Bottom menu: the CMS menus when set, otherwise these defaults. Either
-  // way the links are market-filtered, and a menu left empty is dropped.
-  const defaultMenus: DockMenu[] = [
-    {
-      label: "Stays",
-      links: [
-        { label: "Browse all stays", href: "/stays" },
-        { label: "Check availability", href: "/search", note: "Dates and guests" },
-        { label: "Gift vouchers", href: "/shop", note: "From the shop" },
-        { label: "Bespoke Ireland trip", href: "/bespoke-ireland-trip" },
-      ],
-    },
-    {
-      label: "Areas",
-      links: [
-        ...areas.map((area) => ({ label: area.areaName, href: `/areas/${area.slug}`, note: "Guide" })),
-        { label: "All area guides", href: "/areas" },
-      ],
-    },
-    {
-      label: "Owners",
-      links: [
-        { label: "Property management", href: "/landlords" },
-        { label: "Pricing", href: "/pricing" },
-        { label: "Revenue estimate", href: "/landlords#calculator", note: "Calculator" },
-        { label: "List for corporate stays", href: "/corporate-stays/list-your-property" },
-      ],
-    },
-    {
-      label: "More",
-      links: [
-        { label: "About", href: "/about" },
-        { label: "Blog", href: "/blog" },
-        { label: "Corporate stays", href: "/corporate-stays" },
-        { label: "Partners", href: "/partners" },
-        { label: "Contact us", href: "/contact" },
-      ],
-    },
-  ];
-  const cmsMenus: DockMenu[] = (homePage?.dockMenus ?? [])
-    .filter((menu) => menu?.label)
-    .map((menu) => ({
-      label: menu.label!,
-      links: (menu.links ?? [])
-        .filter((link) => link?.label && link?.href)
-        .map((link) => ({ label: link.label!, href: link.href!, note: link.note })),
-    }));
-  const dockMenus = (
-    await Promise.all(
-      (cmsMenus.length > 0 ? cmsMenus : defaultMenus).map(async (menu) => ({
-        ...menu,
-        links: await filterLinksForMarket(menu.links),
-      }))
-    )
-  ).filter((menu) => menu.links.length > 0);
 
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
@@ -204,8 +148,8 @@ export default async function HomePage() {
 
       {/* HERO — photo, headline and the search bar that types its own
           suggestions. The header inside it is only the logo and one
-          button; the rest of the navigation is the bottom menu (HomeDock,
-          rendered at the end of this page). hero.body (the old CMS
+          button; the rest of the navigation is the site-wide bottom menu
+          (HomeDock, rendered by the root layout). hero.body (the old CMS
           paragraph) is intentionally not rendered — it covered the same
           ground as the supporting line. The field itself is untouched in
           Sanity. */}
@@ -218,8 +162,8 @@ export default async function HomePage() {
         imageUrl={hero?.image ? urlFor(hero.image).width(1800).height(1200).url() : null}
         imageAlt={hero?.image?.alt}
         prompts={prompts}
-        ctaHref="#stays"
-        ctaLabel="Find your break"
+        ctaHref={homePage?.headerCtaUrl || "/corporate-stays"}
+        ctaLabel={homePage?.headerCtaLabel || "Corporate stays"}
       />
 
       {/* LANDLORD BANNER — thin strip under the hero, maroon per the owner-context accent color */}
@@ -337,8 +281,6 @@ export default async function HomePage() {
       </section>
       <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
 
-      {/* BOTTOM MENU — the homepage's navigation, fixed to the bottom of the screen */}
-      <HomeDock menus={dockMenus} />
     </main>
   );
 }

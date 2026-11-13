@@ -2,18 +2,27 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Home, ChevronUp } from "lucide-react";
 
 export type DockLink = { label: string; href: string; note?: string | null };
 export type DockMenu = { label: string; links: DockLink[] };
 
-// The homepage's navigation: a pill fixed to the bottom of the screen
-// instead of a row of links in the header. Each item opens its links in a
+// Pages where something else already owns the bottom of the screen — a
+// property page's sticky booking bar, or a checkout — so the menu stays out
+// of the way there.
+const HIDDEN_ON = [/^\/stays\/[^/]+/, /^\/shop\/checkout/];
+
+// The site-wide bottom menu: a pill fixed to the bottom of the screen on
+// every page (rendered by the root layout). Each item opens its links in a
 // sheet that rises above the bar. Content comes from the Sanity "homePage"
-// singleton (dockMenus), with defaults supplied by the page.
+// singleton (dockMenus), with defaults from lib/siteDock.ts. Each page
+// keeps its own header; on the homepage the header is only the logo and
+// one button, so this is its main navigation.
 export function HomeDock({ menus }: { menus: DockMenu[] }) {
   const [open, setOpen] = useState<number | null>(null);
   const ref = useRef<HTMLElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (open === null) return;
@@ -31,7 +40,7 @@ export function HomeDock({ menus }: { menus: DockMenu[] }) {
     };
   }, [open]);
 
-  if (menus.length === 0) return null;
+  if (menus.length === 0 || HIDDEN_ON.some((pattern) => pattern.test(pathname))) return null;
   const current = open === null ? null : menus[open];
 
   return (
@@ -83,7 +92,7 @@ export function HomeDock({ menus }: { menus: DockMenu[] }) {
           aria-label="Home"
           onClick={() => {
             setOpen(null);
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            if (pathname === "/") window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           className="rounded-full p-2.5 transition-colors hover:bg-cream/15 sm:px-3"
         >

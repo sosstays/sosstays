@@ -7,7 +7,8 @@ import { MARKET, LOCALE, DEFAULT_SEO } from "@/lib/market";
 import { filterLinksForMarket } from "@/lib/marketLinks";
 import { client } from "@/sanity/client";
 import { SITE_SETTINGS_QUERY, FOOTER_QUERY, COUNTRY_SWITCHER_QUERY, HOME_PAGE_QUERY } from "@/sanity/queries";
-import { HomeOnly } from "@/components/home/HomeOnly";
+import { HomeDock } from "@/components/home/HomeDock";
+import { getDockMenus } from "@/lib/siteDock";
 import { HomeBrandBand, type Initiative } from "@/components/home/HomeBrandBand";
 import "./globals.css";
 
@@ -44,9 +45,13 @@ export default async function RootLayout({
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch<FooterContent | null>(FOOTER_QUERY),
     client.fetch(COUNTRY_SWITCHER_QUERY),
-    // Only its partner-initiative tiles are used here — they render after
-    // the footer, which this layout owns (see HomeOnly below).
-    client.fetch<{ initiativesHeading?: string | null; initiatives?: Initiative[] | null } | null>(HOME_PAGE_QUERY),
+    // Site-wide pieces of the "Homepage" document: the bottom menu and the
+    // partner-initiative tiles under the big logo after the footer.
+    client.fetch<{
+      initiativesHeading?: string | null;
+      initiatives?: Initiative[] | null;
+      dockMenus?: Parameters<typeof getDockMenus>[0];
+    } | null>(HOME_PAGE_QUERY),
   ]);
   const countries = ((countrySwitcher?.countries ?? []) as Partial<Country>[]).filter(
     (c): c is Country => Boolean(c.label && c.code && c.market && c.url)
@@ -63,6 +68,7 @@ export default async function RootLayout({
         )
       ).filter((column) => column.links.length > 0)
     : null;
+  const dockMenus = await getDockMenus(homePage?.dockMenus);
   const footerContent = footer
     ? {
         ...footer,
@@ -109,11 +115,11 @@ export default async function RootLayout({
           <div className="flex flex-1 flex-col">{children}</div>
         </CountryProvider>
         <Footer socialLinks={settings?.socialLinks} content={footerContent} />
-        {/* Homepage only: the big one-row logo and partner-initiative tiles
-            that sit after the footer. */}
-        <HomeOnly>
-          <HomeBrandBand heading={homePage?.initiativesHeading} initiatives={homePage?.initiatives ?? []} />
-        </HomeOnly>
+        {/* After the footer on every page: the big one-row logo and the
+            partner-initiative tiles, then the bottom menu fixed over the
+            page (it hides itself where a booking bar owns that space). */}
+        <HomeBrandBand heading={homePage?.initiativesHeading} initiatives={homePage?.initiatives ?? []} />
+        <HomeDock menus={dockMenus} />
       </body>
     </html>
   );
