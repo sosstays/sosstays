@@ -4,11 +4,16 @@ import { defineQuery } from "next-sanity";
 // `seo.description` are never null — they resolve to the SEO override,
 // then the page's own title, then an empty string. Keeps frontend
 // metadata logic simple (see [slug]/page.tsx generateMetadata pattern).
+// `image`/`imageAlt` fall back through every cover-image field name used
+// across document types (coalesce just skips ones that don't exist on a
+// given type) so every page/post gets a social share image and an alt text
+// even when no custom Social Share Image was uploaded.
 const seoProjection = `
   "seo": {
     "title": coalesce(seoTitle, name, title, areaName, ""),
     "description": coalesce(seoDescription, shortDescription, excerpt, ""),
-    "image": seoImage,
+    "image": coalesce(seoImage, heroImage, coverImage, gallery[0], heroImages[0]),
+    "imageAlt": coalesce(seoImage.alt, heroImage.alt, coverImage.alt, gallery[0].alt, heroImages[0].alt, tags[0], name, title, areaName, ""),
     "noIndex": noIndex
   }
 `;
@@ -88,6 +93,7 @@ export const BLOG_POST_QUERY = defineQuery(`
       title,
       "slug": slug.current,
       coverImage,
+      tags,
       publishedAt
     },
     ${seoProjection}
@@ -253,7 +259,8 @@ export const AREA_GUIDE_QUERY = defineQuery(`
       title,
       "slug": slug.current,
       excerpt,
-      coverImage
+      coverImage,
+      tags
     },
     ${seoProjection}
   }

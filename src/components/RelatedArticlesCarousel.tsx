@@ -13,6 +13,7 @@ type RelatedArticle = {
   slug: string;
   excerpt?: string | null;
   coverImage?: any;
+  tags?: string[] | null;
 };
 
 // "Read more" row on an area guide page, upgraded from a plain link list
@@ -86,7 +87,7 @@ export function RelatedArticlesCarousel({ posts }: { posts: RelatedArticle[] }) 
                 {post.coverImage && (
                   <Image
                     src={urlFor(post.coverImage).width(600).height(360).url()}
-                    alt={post.coverImage.alt ?? post.title}
+                    alt={post.coverImage.alt ?? post.tags?.[0] ?? post.title}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                   />

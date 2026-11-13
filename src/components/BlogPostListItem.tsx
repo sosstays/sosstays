@@ -13,6 +13,7 @@ export type BlogPostListItemPost = {
   title: string;
   slug: string;
   coverImage?: { alt?: string } & Record<string, unknown>;
+  tags?: string[] | null;
   publishedAt?: string | null;
 };
 
@@ -25,7 +26,7 @@ export function BlogPostListItem({ post }: { post: BlogPostListItemPost }) {
         <div className="relative h-16 w-16 flex-none overflow-hidden rounded-lg">
           <Image
             src={urlFor(post.coverImage).width(128).height(128).url()}
-            alt={post.coverImage.alt || post.title}
+            alt={post.coverImage.alt || post.tags?.[0] || post.title}
             fill
             className="object-cover transition-transform group-hover:scale-105"
           />

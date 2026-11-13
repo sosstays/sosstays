@@ -8,6 +8,7 @@ type SeoData = {
   title: string;
   description: string;
   image?: any;
+  imageAlt?: string | null;
   noIndex?: boolean | null;
 } | null | undefined;
 
@@ -24,6 +25,7 @@ export async function buildMetadata(seo: SeoData, path: string = ""): Promise<Me
   const description = seo?.description || siteSettings?.defaultSeoDescription || DEFAULT_SEO.description;
   const image = seo?.image || siteSettings?.defaultSeoImage;
   const imageUrl = image ? urlFor(image).width(1200).height(630).url() : undefined;
+  const imageAlt = seo?.imageAlt || title;
 
   return {
     title,
@@ -35,7 +37,7 @@ export async function buildMetadata(seo: SeoData, path: string = ""): Promise<Me
       description,
       url: `${SITE_URL}${path}`,
       siteName: "SOS Stays",
-      images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630 }] : undefined,
+      images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: imageAlt }] : undefined,
       locale: LOCALE.og,
       type: "website",
     },
