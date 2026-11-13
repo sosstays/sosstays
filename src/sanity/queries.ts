@@ -525,6 +525,8 @@ export const HERO_SECTION_QUERY = defineQuery(`
 
 export const HOME_PAGE_QUERY = defineQuery(`
   *[_type == "homePage" && _id == "homePage-" + $market][0] {
+    headerCtaLabel,
+    headerCtaUrl,
     searchPrompts[] {
       typedText,
       chipLabel,
@@ -552,6 +554,13 @@ export const HOME_PAGE_QUERY = defineQuery(`
       image,
       href
     }
+  }
+`);
+
+// Area guides for the bottom menu's default "Areas" list (see lib/siteDock.ts).
+export const DOCK_AREAS_QUERY = defineQuery(`
+  *[_type == "areaGuide" && market == $market && defined(slug.current)] | order(areaName asc) [0...4] {
+    areaName, "slug": slug.current
   }
 `);
 

@@ -14,7 +14,7 @@ export type Initiative = {
   href?: string | null;
 };
 
-// The loud brand space after the footer on the homepage: the logo set in a
+// The loud brand space after the footer on every page: the logo set in a
 // single row across the full width, then the "partner initiatives" tiles
 // (two per row). The tiles come from the Sanity "homePage" singleton and
 // are their own list — not the Partners directory. With none set, only the
