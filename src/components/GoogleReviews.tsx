@@ -84,8 +84,8 @@ function Avatar({ review }: { review: GoogleReview }) {
 const MAX_REVIEWS = 4;
 
 // "Guest reviews" from Google for a stay page: a full-width photo band with
-// frosted-glass review cards (four at most) that appear one at a time as
-// the page scrolls. Renders nothing at all when there is no data — no heading, no
+// frosted-glass review cards (four at most) that build up one by one as the
+// page scrolls, ending with all of them on screen. Renders nothing at all when there is no data — no heading, no
 // empty box, no error.
 export function GoogleReviews({
   data,
@@ -101,10 +101,7 @@ export function GoogleReviews({
   return (
     <section
       aria-labelledby="google-reviews-heading"
-      className="relative isolate mb-14 bg-deep-forest px-6 text-cream [clip-path:inset(0)] sm:px-14"
-      // Room above the first card for the pinned heading, and below the
-      // last one so it can travel up into view before the section ends.
-      style={{ paddingTop: "62vh", paddingBottom: "18vh" }}
+      className="relative isolate mb-14 bg-deep-forest px-6 py-24 text-cream [clip-path:inset(0)] sm:px-14 sm:py-28"
     >
       {/* The photo is fixed to the viewport and clipped to this section, so
           it holds still while the cards scroll up over it. */}
@@ -115,49 +112,42 @@ export function GoogleReviews({
       )}
       <div aria-hidden className="absolute inset-0 -z-10 bg-near-black/60" />
 
-      {/* The heading is pinned the same way as the photo: fixed to the
-          viewport, visible only while this section is behind it. The cards
-          then scroll up towards it and fade out before they reach it. */}
-      <header className="pointer-events-none fixed inset-x-0 z-10 px-6 text-center" style={{ top: "9vh" }}>
-        <h2
-          id="google-reviews-heading"
-          className="font-serif text-4xl leading-[1.05] font-bold tracking-tight text-cream sm:text-6xl"
-        >
-          Hear it from our guests
-        </h2>
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[15px]">
-          <span className="flex items-center gap-2.5">
-            <span className="font-serif text-3xl leading-none font-bold" aria-hidden>
-              {data.rating.toFixed(1)}
-            </span>
-            <Stars rating={data.rating} size={20} />
-            <span className="sr-only">Rated {data.rating.toFixed(1)} out of 5 on Google.</span>
-          </span>
-          <span className="text-cream/85">
-            {data.reviewCount.toLocaleString("en-IE")} {data.reviewCount === 1 ? "review" : "reviews"}
-          </span>
-          <span className="flex items-center gap-2 rounded-full bg-bright-cream px-3 py-1.5 text-[13px] text-near-black">
-            <GoogleLogo size={16} />
-            Reviews from <span className="font-semibold">Google</span>
-          </span>
-        </div>
-      </header>
-
       <div className="mx-auto max-w-[760px]">
-        <ul className="flex flex-col gap-5">
+        <header className="mb-12 text-center sm:mb-16">
+          <Reveal
+            as="h2"
+            id="google-reviews-heading"
+            className="font-serif text-4xl leading-[1.05] font-bold tracking-tight text-cream sm:text-6xl"
+          >
+            Hear it from our guests
+          </Reveal>
+          <Reveal delay={120} className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[15px]">
+            <span className="flex items-center gap-2.5">
+              <span className="font-serif text-3xl leading-none font-bold" aria-hidden>
+                {data.rating.toFixed(1)}
+              </span>
+              <Stars rating={data.rating} size={20} />
+              <span className="sr-only">Rated {data.rating.toFixed(1)} out of 5 on Google.</span>
+            </span>
+            <span className="text-cream/85">
+              {data.reviewCount.toLocaleString("en-IE")} {data.reviewCount === 1 ? "review" : "reviews"}
+            </span>
+            <span className="flex items-center gap-2 rounded-full bg-bright-cream px-3 py-1.5 text-[13px] text-near-black">
+              <GoogleLogo size={16} />
+              Reviews from <span className="font-semibold">Google</span>
+            </span>
+          </Reveal>
+        </header>
+
+        <ul className="flex flex-col gap-4">
           {reviews.map((review, i) => (
             <ScrollRevealItem
               key={i}
-              className="rounded-[16px] border border-cream/15 bg-cream/10 p-6 backdrop-blur-xl sm:p-7"
+              className="rounded-[16px] border border-cream/15 bg-cream/10 p-6 backdrop-blur-xl"
             >
               <article>
-                <p className="mb-3 flex items-center gap-2.5 text-[13px] text-cream/85">
-                  <Stars rating={review.rating} size={15} />
-                  <span className="sr-only">Rated {review.rating} out of 5.</span>
-                  {review.relativeTime && <span>{review.relativeTime}</span>}
-                </p>
                 {review.text && <GoogleReviewText text={review.text} />}
-                <footer className="mt-5 flex items-center gap-3.5">
+                <footer className="mt-4 flex items-center gap-3.5">
                   <Avatar review={review} />
                   <p className="min-w-0 truncate text-[15px] font-medium text-cream">
                     {review.authorUrl ? (
@@ -174,13 +164,18 @@ export function GoogleReviews({
                       review.authorName
                     )}
                   </p>
+                  <p className="ml-auto flex flex-none flex-col items-end gap-1 text-[13px] text-cream/85 sm:flex-row sm:items-center sm:gap-2.5">
+                    <Stars rating={review.rating} size={15} />
+                    <span className="sr-only">Rated {review.rating} out of 5.</span>
+                    {review.relativeTime && <span>{review.relativeTime}</span>}
+                  </p>
                 </footer>
               </article>
             </ScrollRevealItem>
           ))}
         </ul>
 
-        <Reveal className="mt-12 text-center">
+        <Reveal className="mt-10 text-center">
           <Button link={data.mapsUrl} external variant="secondary" color="cream" animateBgColor="cream" animateColor="forest-green" size="sm">
             Read all reviews on Google
             <span className="sr-only"> (opens in a new tab)</span>

@@ -2,10 +2,10 @@
 
 import { useId, useState } from "react";
 
-// Reviews longer than this get clamped to five lines with a toggle. A
+// Reviews longer than this get clamped to three lines with a toggle. A
 // character count (rather than measuring the rendered height) keeps the
 // markup identical on server and client, so nothing shifts on load.
-const CLAMP_AT = 230;
+const CLAMP_AT = 170;
 
 export function GoogleReviewText({ text }: { text: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -17,7 +17,7 @@ export function GoogleReviewText({ text }: { text: string }) {
       <p
         id={id}
         className={`text-base leading-relaxed whitespace-pre-line text-cream/90 ${
-          long && !expanded ? "line-clamp-5" : ""
+          long && !expanded ? "line-clamp-3" : ""
         }`}
       >
         {text}
