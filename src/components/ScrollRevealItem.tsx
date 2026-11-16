@@ -24,9 +24,10 @@ export function ScrollRevealItem({ children, className }: { children: ReactNode;
       frame = 0;
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
-      // From just inside the bottom edge to fully in place a third of the
-      // way up the screen.
-      reached = Math.max(reached, clamp01((vh * 0.98 - rect.top) / (vh * 0.3)));
+      // From the bottom edge to fully in place a fifth of the way up the
+      // screen — early enough that the last card has finished arriving
+      // while the whole stack is still on screen.
+      reached = Math.max(reached, clamp01((vh - rect.top) / (vh * 0.2)));
       el.style.opacity = String(reached);
       el.style.transform = `translateY(${(1 - reached) * 56}px) scale(${0.95 + 0.05 * reached})`;
     };
