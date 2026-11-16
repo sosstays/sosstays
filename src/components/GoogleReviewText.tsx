@@ -16,7 +16,7 @@ export function GoogleReviewText({ text }: { text: string }) {
     <div>
       <p
         id={id}
-        className={`text-[15px] leading-relaxed whitespace-pre-line text-near-black/80 ${
+        className={`text-base leading-relaxed whitespace-pre-line text-cream/90 ${
           long && !expanded ? "line-clamp-5" : ""
         }`}
       >
@@ -28,7 +28,7 @@ export function GoogleReviewText({ text }: { text: string }) {
           aria-expanded={expanded}
           aria-controls={id}
           onClick={() => setExpanded((v) => !v)}
-          className="mt-2 rounded-[8px] text-[13px] font-semibold text-forest-green underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-green"
+          className="mt-2 rounded-[8px] text-[13px] font-semibold text-cream underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream"
         >
           {expanded ? "Show less" : "Read more"}
         </button>

@@ -1,5 +1,6 @@
+import Image from "next/image";
 import { Button } from "@/components/Button";
-import { Eyebrow } from "@/components/Eyebrow";
+import { Reveal } from "@/components/Reveal";
 import { GoogleReviewText } from "@/components/GoogleReviewText";
 
 export type GoogleReview = {
@@ -36,9 +37,9 @@ function Stars({ rating, size = 16 }: { rating: number; size?: number }) {
   );
   return (
     <span aria-hidden className="relative inline-block flex-none" style={{ width: size * 5, height: size }}>
-      {row("text-sage-grey/45")}
+      {row("text-cream/30")}
       <span className="absolute inset-y-0 left-0 overflow-hidden" style={{ width: `${percent}%` }}>
-        {row("text-forest-green")}
+        {row("text-cream")}
       </span>
     </span>
   );
@@ -63,81 +64,102 @@ function Avatar({ review }: { review: GoogleReview }) {
     <img
       src={review.authorPhotoUrl}
       alt=""
-      width={40}
-      height={40}
+      width={48}
+      height={48}
       loading="lazy"
       referrerPolicy="no-referrer"
-      className="h-10 w-10 flex-none rounded-full object-cover"
+      className="h-12 w-12 flex-none rounded-full object-cover"
     />
   ) : (
     <span
       aria-hidden
-      className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-light-forest-green text-sm font-semibold text-forest-green"
+      className="flex h-12 w-12 flex-none items-center justify-center rounded-full bg-light-forest-green text-sm font-semibold text-forest-green"
     >
       {review.authorName.charAt(0).toUpperCase()}
     </span>
   );
 }
 
-// "Guest reviews" from Google for a stay page. Renders nothing at all when
-// there is no data — no heading, no empty box, no error.
-export function GoogleReviews({ data }: { data?: GoogleReviewsData | null }) {
+// "Guest reviews" from Google for a stay page: a full-width photo band with
+// frosted-glass review cards that rise into view one by one as the page
+// scrolls. Renders nothing at all when there is no data — no heading, no
+// empty box, no error.
+export function GoogleReviews({
+  data,
+  backgroundImageUrl,
+}: {
+  data?: GoogleReviewsData | null;
+  /** One of the property's own photos, shown darkened behind the cards. */
+  backgroundImageUrl?: string | null;
+}) {
   if (!data || !data.rating || data.reviews.length === 0) return null;
   const reviews = data.reviews.slice(0, 5);
 
   return (
-    <section aria-labelledby="google-reviews-heading" className="mx-auto max-w-6xl px-8 pb-14 sm:px-14">
-      {/* One row that scrolls sideways on phones, a three-column grid from
-          md up. The summary takes the first cell, so five reviews fill two
-          even rows of three. */}
-      <ul className="-mx-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-8 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
-        <li className="relative flex w-[85%] flex-none snap-start flex-col rounded-[16px] bg-light-forest-green p-7 md:w-auto">
-          <Eyebrow className="mb-2.5" tone="forest">Guest reviews</Eyebrow>
-          <h2 id="google-reviews-heading" className="font-serif text-2xl font-bold tracking-tight text-forest-green">
-            What guests say on Google
-          </h2>
-          <p className="mt-5 flex items-end gap-3">
-            <span className="font-serif text-6xl leading-none font-bold tracking-tight text-forest-green" aria-hidden>
-              {data.rating.toFixed(1)}
-            </span>
-            <span className="pb-1">
+    <section
+      aria-labelledby="google-reviews-heading"
+      className="relative isolate mb-14 bg-deep-forest px-6 py-24 text-cream [clip-path:inset(0)] sm:px-14 sm:py-32"
+    >
+      {/* The photo is fixed to the viewport and clipped to this section, so
+          it holds still while the cards scroll up over it. */}
+      {backgroundImageUrl && (
+        <div aria-hidden className="pointer-events-none fixed inset-0 -z-20">
+          <Image src={backgroundImageUrl} alt="" fill sizes="100vw" className="object-cover" />
+        </div>
+      )}
+      <div aria-hidden className="absolute inset-0 -z-10 bg-near-black/60" />
+
+      <div className="mx-auto max-w-[760px]">
+        <header className="mb-14 text-center sm:mb-20">
+          <Reveal
+            as="h2"
+            id="google-reviews-heading"
+            className="font-serif text-4xl leading-[1.05] font-bold tracking-tight text-cream sm:text-6xl"
+          >
+            Hear it from our guests
+          </Reveal>
+          <Reveal delay={120} className="mt-7 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[15px]">
+            <span className="flex items-center gap-2.5">
+              <span className="font-serif text-3xl leading-none font-bold" aria-hidden>
+                {data.rating.toFixed(1)}
+              </span>
               <Stars rating={data.rating} size={20} />
               <span className="sr-only">Rated {data.rating.toFixed(1)} out of 5 on Google.</span>
-              <span className="mt-1 block text-sm text-near-black/70">
-                {data.reviewCount.toLocaleString("en-IE")} {data.reviewCount === 1 ? "review" : "reviews"}
-              </span>
             </span>
-          </p>
-          <p className="mt-5 flex items-center gap-2 text-[13px] text-near-black/70">
-            <GoogleLogo />
-            <span>
-              Reviews from <span className="font-semibold text-near-black">Google</span>
+            <span className="text-cream/85">
+              {data.reviewCount.toLocaleString("en-IE")} {data.reviewCount === 1 ? "review" : "reviews"}
             </span>
-          </p>
-          <div className="mt-auto pt-7">
-            <Button link={data.mapsUrl} external variant="secondary" size="sm">
-              Read all reviews on Google
-              <span className="sr-only"> (opens in a new tab)</span>
-            </Button>
-          </div>
-        </li>
+            <span className="flex items-center gap-2 rounded-full bg-bright-cream px-3 py-1.5 text-[13px] text-near-black">
+              <GoogleLogo size={16} />
+              Reviews from <span className="font-semibold">Google</span>
+            </span>
+          </Reveal>
+        </header>
 
-        {reviews.map((review, i) => (
-          <li
-            key={i}
-            className="relative w-[85%] flex-none snap-start rounded-[16px] border border-border-subtle bg-bright-cream p-6 shadow-[0_-4px_16px_0_rgba(23,25,23,0.04)] md:w-auto"
-          >
-            <article>
-              <header className="mb-4 flex items-center gap-3">
-                <Avatar review={review} />
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-near-black">
+        <ul className="flex flex-col gap-4">
+          {reviews.map((review, i) => (
+            <Reveal
+              as="li"
+              key={i}
+              delay={Math.min(i, 2) * 90}
+              className="rounded-[16px] border border-cream/15 bg-cream/10 p-6 backdrop-blur-xl sm:p-7"
+            >
+              <article>
+                <p className="mb-3 flex items-center gap-2.5 text-[13px] text-cream/85">
+                  <Stars rating={review.rating} size={15} />
+                  <span className="sr-only">Rated {review.rating} out of 5.</span>
+                  {review.relativeTime && <span>{review.relativeTime}</span>}
+                </p>
+                {review.text && <GoogleReviewText text={review.text} />}
+                <footer className="mt-5 flex items-center gap-3.5">
+                  <Avatar review={review} />
+                  <p className="min-w-0 truncate text-[15px] font-medium text-cream">
                     {review.authorUrl ? (
                       <a
                         href={review.authorUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
-                        className="underline-offset-2 hover:underline"
+                        className="rounded-[8px] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream"
                       >
                         {review.authorName}
                         <span className="sr-only"> on Google (opens in a new tab)</span>
@@ -146,22 +168,19 @@ export function GoogleReviews({ data }: { data?: GoogleReviewsData | null }) {
                       review.authorName
                     )}
                   </p>
-                  <p className="flex items-center gap-2 text-xs text-near-black/65">
-                    <Stars rating={review.rating} size={13} />
-                    <span className="sr-only">Rated {review.rating} out of 5.</span>
-                    {review.relativeTime && <span>{review.relativeTime}</span>}
-                  </p>
-                </div>
-                <span className="ml-auto self-start" title="Posted on Google">
-                  <GoogleLogo size={16} />
-                  <span className="sr-only">Posted on Google</span>
-                </span>
-              </header>
-              {review.text && <GoogleReviewText text={review.text} />}
-            </article>
-          </li>
-        ))}
-      </ul>
+                </footer>
+              </article>
+            </Reveal>
+          ))}
+        </ul>
+
+        <Reveal className="mt-12 text-center">
+          <Button link={data.mapsUrl} external variant="secondary" color="cream" animateBgColor="cream" animateColor="forest-green" size="sm">
+            Read all reviews on Google
+            <span className="sr-only"> (opens in a new tab)</span>
+          </Button>
+        </Reveal>
+      </div>
     </section>
   );
 }

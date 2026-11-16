@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { client } from "@/sanity/client";
+import { urlFor } from "@/sanity/image";
 import { GoogleReviews, type GoogleReviewsData } from "@/components/GoogleReviews";
 import { ReviewScoreCard } from "@/components/ReviewScore";
 import { FaqSection } from "@/components/FaqSection";
@@ -64,7 +66,14 @@ function StateLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function GoogleReviewsPreviewPage() {
+export default async function GoogleReviewsPreviewPage() {
+  // A real property photo for the backdrop, so the preview shows the band
+  // the way a stay page would.
+  const photo = await client.fetch(
+    `*[_type == "propertyPage" && market == $market && defined(gallery[1])][0].gallery[1]`
+  );
+  const backgroundImageUrl = photo ? urlFor(photo).width(2000).height(1400).url() : null;
+
   return (
     <main className="overflow-x-hidden bg-cream pb-24 font-sans text-near-black">
       <div className="mx-auto max-w-6xl px-8 pt-12 sm:px-14">
@@ -92,7 +101,7 @@ export default function GoogleReviewsPreviewPage() {
           />
         </div>
       </section>
-      <GoogleReviews data={PLACEHOLDER} />
+      <GoogleReviews data={PLACEHOLDER} backgroundImageUrl={backgroundImageUrl} />
       <FaqSection
         heading="Good to know"
         maxWidth="72rem"
@@ -100,7 +109,7 @@ export default function GoogleReviewsPreviewPage() {
       />
 
       <StateLabel>State 2: fewer than five reviews</StateLabel>
-      <GoogleReviews data={FEWER} />
+      <GoogleReviews data={FEWER} backgroundImageUrl={backgroundImageUrl} />
 
       <StateLabel>State 3: no data (nothing renders between these two lines)</StateLabel>
       <div className="mx-auto max-w-6xl px-8 sm:px-14">
