@@ -13,25 +13,46 @@ export function JsonLd({ data }: { data: object | object[] }) {
 }
 
 type SocialLink = { platform?: string | null; url?: string | null };
+type SiteAddress = {
+  streetAddress?: string | null;
+  addressLocality?: string | null;
+  addressRegion?: string | null;
+  postalCode?: string | null;
+  addressCountry?: string | null;
+};
 type SiteSettings = {
   siteName?: string | null;
   businessName?: string | null;
   contactEmail?: string | null;
+  description?: string | null;
+  telephone?: string | null;
+  address?: SiteAddress | null;
   socialLinks?: SocialLink[] | null;
 } | null | undefined;
 
-const DEFAULT_SITE_NAME = "SOS Stays";
+const DEFAULT_SITE_NAME = "Sos Stays";
 const LEGAL_NAME = "Power Rangers Ltd";
 const DEFAULT_CONTACT_EMAIL = "info@sosstays.com";
 const DEFAULT_LOGO_URL = `${SITE_URL}/logo.svg`;
 
-// The brand name is always "SOS Stays" regardless of CMS content —
-// previously this preferred `settings.businessName`, which is the legal
-// entity name ("Power Rangers Ltd") — correct as `legalName`, wrong as the
-// publisher's displayed `name`.
-function organizationRef() {
+// One stable identifier for the business, so every page's markup (the
+// homepage Organization, a post's publisher, a stay's parentOrganization)
+// is recognisably the same entity.
+export const ORGANIZATION_ID = `${SITE_URL}/#organization`;
+export const WEBSITE_ID = `${SITE_URL}/#website`;
+
+// Only genuine brand profiles belong in sameAs — not a WhatsApp chat link
+// or a review-site listing for one property.
+const SAME_AS_PLATFORMS = ["instagram", "tiktok", "facebook"];
+
+// The brand name is always "Sos Stays" regardless of CMS content; the
+// legal entity ("Power Rangers Ltd") is only ever `legalName`. Used
+// wherever another node points at the business, so the name is identical
+// everywhere.
+export function organizationRef() {
   return {
     "@type": "Organization",
+    "@id": ORGANIZATION_ID,
     name: DEFAULT_SITE_NAME,
     legalName: LEGAL_NAME,
     url: SITE_URL,
@@ -43,17 +64,98 @@ function organizationRef() {
 
 export function buildOrganizationSchema(settings?: SiteSettings) {
   const sameAs = (settings?.socialLinks ?? [])
+    .filter((link) => SAME_AS_PLATFORMS.includes((link.platform ?? "").toLowerCase()))
     .map((link) => link.url)
     .filter((url): url is string => Boolean(url));
 
+  const a = settings?.address;
+  const address =
+    a && (a.streetAddress || a.addressLocality || a.addressRegion || a.postalCode || a.addressCountry)
+      ? {
+          "@type": "PostalAddress",
+          ...(a.streetAddress ? { streetAddress: a.streetAddress } : {}),
+          ...(a.addressLocality ? { addressLocality: a.addressLocality } : {}),
+          ...(a.addressRegion ? { addressRegion: a.addressRegion } : {}),
+          ...(a.postalCode ? { postalCode: a.postalCode } : {}),
+          ...(a.addressCountry ? { addressCountry: a.addressCountry } : {}),
+        }
+      : undefined;
+
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    name: settings?.businessName || settings?.siteName || DEFAULT_SITE_NAME,
-    url: SITE_URL,
-    logo: DEFAULT_LOGO_URL,
+    ...organizationRef(),
+    ...(settings?.description ? { description: settings.description } : {}),
     email: settings?.contactEmail || DEFAULT_CONTACT_EMAIL,
+    ...(settings?.telephone ? { telephone: settings.telephone } : {}),
+    ...(address ? { address } : {}),
     ...(sameAs.length > 0 ? { sameAs } : {}),
+  };
+}
+
+// ---- WebSite (homepage) ----
+
+export function buildWebSiteSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": WEBSITE_ID,
+    name: DEFAULT_SITE_NAME,
+    url: SITE_URL,
+    publisher: { "@id": ORGANIZATION_ID },
+  };
+}
+
+// ---- Blog (blog index) ----
+
+type BlogListPost = { title?: string | null; slug?: string | null; publishedAt?: string | null };
+
+export function buildBlogSchema(posts: BlogListPost[] | null | undefined) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "@id": `${SITE_URL}/blog#blog`,
+    name: `${DEFAULT_SITE_NAME} Blog`,
+    url: `${SITE_URL}/blog`,
+    publisher: organizationRef(),
+    blogPost: (posts ?? [])
+      .filter((post) => post.slug && post.title)
+      .map((post) => ({
+        "@type": "BlogPosting",
+        headline: post.title,
+        url: `${SITE_URL}/blog/${post.slug}`,
+        ...(post.publishedAt ? { datePublished: post.publishedAt } : {}),
+      })),
+  };
+}
+
+// ---- Person (author page) ----
+
+type AuthorForSchema = {
+  name: string;
+  slug: string;
+  role?: string | null;
+  bio?: string | null;
+  photo?: any;
+  sameAs?: string[] | null;
+};
+
+export function authorUrl(slug: string) {
+  return `${SITE_URL}/authors/${slug}`;
+}
+
+export function buildPersonSchema(author: AuthorForSchema) {
+  const sameAs = (author.sameAs ?? []).filter(Boolean);
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${authorUrl(author.slug)}#person`,
+    name: author.name,
+    url: authorUrl(author.slug),
+    ...(author.role ? { jobTitle: author.role } : {}),
+    ...(author.bio ? { description: author.bio } : {}),
+    ...(author.photo?.asset ? { image: urlFor(author.photo).width(600).height(600).url() } : {}),
+    ...(sameAs.length > 0 ? { sameAs } : {}),
+    worksFor: { "@id": ORGANIZATION_ID },
   };
 }
 
@@ -155,9 +257,51 @@ function buildAccommodation(property: PropertyForSchema) {
   };
 }
 
+// Only reviews guests gave us directly may be marked up, and only once
+// there are enough of them to be a meaningful aggregate. Reviews copied
+// from Airbnb, Booking.com or Google are shown on the page but never
+// appear in structured data.
+export const MIN_DIRECT_REVIEWS_FOR_SCHEMA = 3;
+
+type ReviewForSchema = {
+  guestFirstName?: string | null;
+  stayMonth?: number | null;
+  stayYear?: number | null;
+  rating?: number | null;
+  text?: string | null;
+  source?: string | null;
+};
+
+function buildReviewMarkup(reviews: ReviewForSchema[] | null | undefined) {
+  const direct = (reviews ?? []).filter(
+    (r) => r.source === "direct" && typeof r.rating === "number" && r.rating >= 1 && r.rating <= 5
+  );
+  if (direct.length < MIN_DIRECT_REVIEWS_FOR_SCHEMA) return {};
+  const average = direct.reduce((sum, r) => sum + (r.rating as number), 0) / direct.length;
+  return {
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: Math.round(average * 10) / 10,
+      bestRating: 5,
+      worstRating: 1,
+      reviewCount: direct.length,
+    },
+    review: direct.map((r) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: r.guestFirstName || "Guest" },
+      reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: 5, worstRating: 1 },
+      ...(r.text ? { reviewBody: r.text } : {}),
+      ...(r.stayYear
+        ? { datePublished: r.stayMonth ? `${r.stayYear}-${String(r.stayMonth).padStart(2, "0")}` : String(r.stayYear) }
+        : {}),
+    })),
+  };
+}
+
 export function buildLodgingBusinessSchema(
   property: PropertyForSchema,
-  settings?: SiteSettings
+  settings?: SiteSettings,
+  reviews?: ReviewForSchema[] | null
 ) {
   const images = (property.gallery ?? [])
     .slice(0, 5)
@@ -230,11 +374,10 @@ export function buildLodgingBusinessSchema(
           })),
         }
       : {}),
-    // aggregateRating intentionally omitted: reviewScore/reviewCount are
-    // plain editor-typed Sanity numbers with no stated third-party source,
-    // so they aren't verifiable as genuine aggregated user reviews. See the
-    // audit note on this — flagged for the owner, not silently published as
-    // structured review data.
+    // The property's own reviewScore/reviewCount fields are editor-typed
+    // figures taken from other platforms, so they never feed structured
+    // data — only first-party reviews do (see buildReviewMarkup).
+    ...buildReviewMarkup(reviews),
     email: settings?.contactEmail || DEFAULT_CONTACT_EMAIL,
     parentOrganization: organizationRef(),
   };
@@ -299,8 +442,29 @@ type BlogPostForSchema = {
   coverImage?: any;
   publishedAt?: string | null;
   _updatedAt?: string | null;
-  author?: { name?: string | null } | null;
+  author?: { name?: string | null; role?: string | null } | null;
+  authorRef?: { name?: string | null; slug?: string | null; role?: string | null } | null;
 };
+
+function buildArticleAuthor(post: BlogPostForSchema) {
+  if (post.authorRef?.name && post.authorRef.slug) {
+    return {
+      "@type": "Person",
+      "@id": `${authorUrl(post.authorRef.slug)}#person`,
+      name: post.authorRef.name,
+      url: authorUrl(post.authorRef.slug),
+      ...(post.authorRef.role ? { jobTitle: post.authorRef.role } : {}),
+    };
+  }
+  if (post.author?.name) {
+    return {
+      "@type": "Person",
+      name: post.author.name,
+      ...(post.author.role ? { jobTitle: post.author.role } : {}),
+    };
+  }
+  return organizationRef();
+}
 
 export function buildArticleSchema(post: BlogPostForSchema, settings?: SiteSettings) {
   const url = `${SITE_URL}/blog/${post.slug}`;
@@ -316,9 +480,7 @@ export function buildArticleSchema(post: BlogPostForSchema, settings?: SiteSetti
       : {}),
     ...(post.publishedAt ? { datePublished: post.publishedAt } : {}),
     ...(post._updatedAt ? { dateModified: post._updatedAt } : {}),
-    author: post.author?.name
-      ? { "@type": "Person", name: post.author.name }
-      : organizationRef(),
+    author: buildArticleAuthor(post),
     publisher: {
       ...organizationRef(),
       logo: { "@type": "ImageObject", url: DEFAULT_LOGO_URL },

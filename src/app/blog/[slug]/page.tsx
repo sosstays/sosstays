@@ -6,8 +6,8 @@ import { client } from "@/sanity/client";
 import { BLOG_POST_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata, SITE_URL } from "@/sanity/metadata";
-import { JsonLd, buildArticleSchema, buildBreadcrumbSchema, buildFaqSchema } from "@/sanity/jsonld";
-import { blogBodyComponents } from "@/sanity/portableText";
+import { JsonLd, authorUrl, buildArticleSchema, buildBreadcrumbSchema, buildFaqSchema } from "@/sanity/jsonld";
+import { createBlogBodyComponents } from "@/sanity/portableText";
 import { estimateReadingTime } from "@/sanity/readingTime";
 import { HeroNav } from "@/components/HeroNav";
 import { Button } from "@/components/Button";
@@ -36,7 +36,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await client.fetch(BLOG_POST_QUERY, { slug });
   if (!post) return {};
-  return buildMetadata(post.seo, `/blog/${slug}`);
+  return buildMetadata(post.seo, `/blog/${slug}`, {
+    publishedTime: post.publishedAt,
+    modifiedTime: post._updatedAt,
+    // article:author is a profile URL where the post has an author page,
+    // otherwise the site itself (posts credited to the team).
+    authors: [post.authorRef?.slug ? authorUrl(post.authorRef.slug) : SITE_URL],
+  });
 }
 
 export default async function BlogPostPage({ params }: Props) {
@@ -55,7 +61,19 @@ export default async function BlogPostPage({ params }: Props) {
   ]);
   const faqSchema = buildFaqSchema(post.faqs);
 
-  const authorName = post.author?.name || siteSettings?.businessName || "Sos Stays";
+  // A linked author profile wins over the inline name/role/avatar typed on
+  // the post, which stays as the fallback for posts that predate profiles.
+  const authorName = post.authorRef?.name || post.author?.name || siteSettings?.siteName || "Sos Stays";
+  const authorRole: string | undefined = post.authorRef?.role || post.author?.role;
+  const authorImage = post.authorRef?.photo?.asset ? post.authorRef.photo : post.author?.avatar;
+  const authorHref = post.authorRef?.slug ? `/authors/${post.authorRef.slug}` : null;
+  // Only worth showing once the post has genuinely been revised — not for
+  // the publish-day tweaks every post gets.
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  const showUpdated =
+    post.publishedAt &&
+    post._updatedAt &&
+    new Date(post._updatedAt).getTime() - new Date(post.publishedAt).getTime() > DAY_MS;
   const readingTime = estimateReadingTime(post.body);
   const primaryTag: string | undefined = post.tags?.[0];
   const relatedPosts = (post.relatedPosts ?? []).filter((p: any) => p.coverImage || p.title);
@@ -88,11 +106,11 @@ export default async function BlogPostPage({ params }: Props) {
           </Reveal>
           <div className="mt-6 flex flex-wrap items-center gap-4 text-[13px] text-near-black/60">
             <div className="flex items-center gap-2.5">
-              {post.author?.avatar?.asset ? (
+              {authorImage?.asset ? (
                 <div className="relative h-8 w-8 flex-none overflow-hidden rounded-full">
                   <Image
-                    src={urlFor(post.author.avatar).width(64).height(64).url()}
-                    alt={post.author.avatar.alt || authorName}
+                    src={urlFor(authorImage).width(64).height(64).url()}
+                    alt={authorImage.alt || authorName}
                     fill
                     className="object-cover"
                   />
@@ -102,7 +120,13 @@ export default async function BlogPostPage({ params }: Props) {
                   {authorName.charAt(0)}
                 </div>
               )}
-              <span className="font-medium text-[#1C1C1C]">{authorName}</span>
+              {authorHref ? (
+                <Link href={authorHref} className="font-medium text-[#1C1C1C] hover:text-forest-green">
+                  {authorName}
+                </Link>
+              ) : (
+                <span className="font-medium text-[#1C1C1C]">{authorName}</span>
+              )}
             </div>
             {primaryTag && (
               <span className="rounded-full bg-light-forest-green px-3.5 py-1.5 text-xs font-semibold text-forest-green">
@@ -110,7 +134,14 @@ export default async function BlogPostPage({ params }: Props) {
               </span>
             )}
             <span>{readingTime} min read</span>
-            {post.publishedAt && <span>{dateFormatter.format(new Date(post.publishedAt))}</span>}
+            {post.publishedAt && (
+              <time dateTime={post.publishedAt}>{dateFormatter.format(new Date(post.publishedAt))}</time>
+            )}
+            {showUpdated && (
+              <span>
+                Last updated: <time dateTime={post._updatedAt}>{dateFormatter.format(new Date(post._updatedAt))}</time>
+              </span>
+            )}
           </div>
         </header>
 
@@ -131,16 +162,16 @@ export default async function BlogPostPage({ params }: Props) {
             )}
 
             <article className="max-w-none">
-              <PortableText value={post.body} components={blogBodyComponents} />
+              <PortableText value={post.body} components={createBlogBodyComponents(post.body)} />
             </article>
 
             {/* AUTHOR BYLINE */}
             <div className="mt-14 flex items-center gap-3.5 border-t border-sage-grey/30 pt-7">
-              {post.author?.avatar?.asset ? (
+              {authorImage?.asset ? (
                 <div className="relative h-12 w-12 flex-none overflow-hidden rounded-full">
                   <Image
-                    src={urlFor(post.author.avatar).width(96).height(96).url()}
-                    alt={post.author.avatar.alt || authorName}
+                    src={urlFor(authorImage).width(96).height(96).url()}
+                    alt={authorImage.alt || authorName}
                     fill
                     className="object-cover"
                   />
@@ -151,10 +182,17 @@ export default async function BlogPostPage({ params }: Props) {
                 </div>
               )}
               <div>
-                <p className="text-sm font-semibold text-[#1C1C1C]">Written by {authorName}</p>
-                {post.author?.role && (
-                  <p className="text-[13px] text-near-black/60">{post.author.role}</p>
-                )}
+                <p className="text-sm font-semibold text-[#1C1C1C]">
+                  Written by{" "}
+                  {authorHref ? (
+                    <Link href={authorHref} className="underline underline-offset-2 hover:text-forest-green">
+                      {authorName}
+                    </Link>
+                  ) : (
+                    authorName
+                  )}
+                </p>
+                {authorRole && <p className="text-[13px] text-near-black/60">{authorRole}</p>}
               </div>
             </div>
 

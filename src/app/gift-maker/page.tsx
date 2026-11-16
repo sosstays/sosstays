@@ -29,10 +29,10 @@ function buildGiftMakerServiceSchema() {
     name: "Corporate & Personal Irish Gift Building",
     serviceType: "Corporate and personal gift curation",
     description:
-      "A guided tool that builds real Irish gift packages — led by an SOS Stays gift voucher and filled out with local treats and experiences — matched to budget, recipient and delivery needs, for corporate gifting and personal occasions.",
+      "A guided tool that builds real Irish gift packages — led by a Sos Stays gift voucher and filled out with local treats and experiences — matched to budget, recipient and delivery needs, for corporate gifting and personal occasions.",
     provider: {
       "@type": "Organization",
-      name: "SOS Stays",
+      name: "Sos Stays",
       url: "https://sosstays.com",
       email: "hello@sosstays.com",
     },
@@ -44,7 +44,7 @@ function buildGiftMakerOrganizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "SOS Stays",
+    name: "Sos Stays",
     url: "https://sosstays.com",
     email: "hello@sosstays.com",
     contactPoint: {

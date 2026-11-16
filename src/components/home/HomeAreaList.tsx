@@ -59,7 +59,7 @@ export function HomeAreaList({ areas, id = "areas" }: { areas: HomeArea[]; id?: 
                   <span className="relative block h-[70px] w-[100px] shrink-0 overflow-hidden rounded-[14px] sm:h-[84px] sm:w-[124px]">
                     <Image
                       src={urlFor(area.heroImage).width(372).height(252).url()}
-                      alt=""
+                      alt={(area.heroImage as { alt?: string }).alt || area.areaName}
                       fill
                       sizes="124px"
                       className="object-cover transition-transform duration-500 group-hover:scale-110"

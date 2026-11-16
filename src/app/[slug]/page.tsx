@@ -154,7 +154,7 @@ const LANDING_PAGE_FAQS: Record<string, { question: string; answer: string }[]> 
     {
       question: "Do I need to buy Ryder Cup tickets separately?",
       answer:
-        "Yes. Tickets are sold only through the official Ryder Cup channels — SOS Stays is not an official provider and doesn't sell tickets or hospitality. It's worth having tickets confirmed before you book a stay.",
+        "Yes. Tickets are sold only through the official Ryder Cup channels — Sos Stays is not an official provider and doesn't sell tickets or hospitality. It's worth having tickets confirmed before you book a stay.",
     },
     {
       question: "Can you plan our whole Ireland trip around the Ryder Cup?",
@@ -207,7 +207,7 @@ function buildRyderCupConciergeServiceSchema() {
       "Bespoke concierge for golfing families travelling to Ireland for the Ryder Cup 2027 — accommodation across our Irish houses, match-day transport planning, tee times and family itineraries.",
     provider: {
       "@type": "Organization",
-      name: "SOS Stays",
+      name: "Sos Stays",
       url: "https://sosstays.com",
       email: "hello@sosstays.com",
     },
@@ -441,7 +441,7 @@ export default async function LandingPage({ params }: Props) {
             after — shouldn&apos;t be left to a spreadsheet. That&apos;s where we come in.
           </Reveal>
           <Reveal as="p" delay={160} className="mt-5.5 max-w-2xl text-[17px] leading-relaxed text-near-black/72">
-            SOS Stays is an Irish team on the ground, not a booking portal. We look after our own
+            Sos Stays is an Irish team on the ground, not a booking portal. We look after our own
             houses across Ireland — Howard&apos;s Way on the Clare coast, Rathescar Grove in the
             Boyne Valley, and more — and we&apos;ll connect them into one bespoke itinerary for
             your family: a week by Adare, then a week on the west coast, with the drives, the tee

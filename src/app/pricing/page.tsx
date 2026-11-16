@@ -10,7 +10,7 @@ import { Eyebrow } from "@/components/Eyebrow";
 
 export const revalidate = 60;
 
-const TITLE = "Airbnb Management & Pricing Ireland | SOS Stays";
+const TITLE = "Airbnb Management & Pricing Ireland | Sos Stays";
 const DESCRIPTION =
   "Commission-only Airbnb & short-term let management across Ireland and Northern Ireland. From 15% commission, no setup fee — see what your property could earn.";
 const INTRO =
@@ -37,7 +37,7 @@ export default async function PricingPage() {
           ctaLabel="Contact us"
         />
         <Eyebrow as="span" className="mb-4" tone="sage" delay={0}>
-          SOS Stays · Pricing
+          Sos Stays · Pricing
         </Eyebrow>
         <Reveal as="h1" delay={130} className="mx-auto mb-4 max-w-[760px] font-serif text-4xl leading-[1.15] font-bold tracking-tight text-cream sm:text-5xl">
           Airbnb &amp; Short-Term Let Management Across Ireland

@@ -70,14 +70,29 @@ export function RatingBar({
   );
 }
 
+const asOfFormatter = new Intl.DateTimeFormat("en-IE", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
 export function ReviewScoreCard({
   score,
   reviewCount,
   categories,
+  source,
+  sourceUrl,
+  asOf,
   compact = false,
 }: {
   score?: number | null;
   reviewCount?: number | null;
+  // Where this manually-entered score came from and when it was last
+  // checked — it's a figure copied from another platform, not our own.
+  source?: string | null;
+  sourceUrl?: string | null;
+  asOf?: string | null;
   categories?: { label: string; value: number }[] | null;
   compact?: boolean;
 }) {
@@ -94,6 +109,24 @@ export function ReviewScoreCard({
             <p className="font-serif text-lg font-bold text-near-black">{scoreLabel(score)}</p>
             {reviewCount ? (
               <p className="text-sm text-near-black/55">{reviewCount} reviews</p>
+            ) : null}
+            {source || asOf ? (
+              <p className="text-xs text-near-black/55">
+                {source ? (
+                  <>
+                    Source:{" "}
+                    {sourceUrl ? (
+                      <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+                        {source}
+                      </a>
+                    ) : (
+                      source
+                    )}
+                  </>
+                ) : null}
+                {source && asOf ? " · " : null}
+                {asOf ? `as of ${asOfFormatter.format(new Date(asOf))}` : null}
+              </p>
             ) : null}
           </div>
         </div>

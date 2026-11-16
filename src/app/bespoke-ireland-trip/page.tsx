@@ -33,7 +33,7 @@ function buildBespokeTripServiceSchema() {
       "Bespoke concierge for families and groups travelling to Ireland — accommodation in our Irish houses, event and transport planning, golf tee times and family itineraries, for events like the Ryder Cup, weddings and Paddy's weekend.",
     provider: {
       "@type": "Organization",
-      name: "SOS Stays",
+      name: "Sos Stays",
       url: "https://sosstays.com",
       email: "hello@sosstays.com",
     },
@@ -45,7 +45,7 @@ function buildBespokeTripOrganizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "SOS Stays",
+    name: "Sos Stays",
     url: "https://sosstays.com",
     email: "hello@sosstays.com",
     contactPoint: {

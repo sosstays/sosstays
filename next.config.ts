@@ -23,6 +23,13 @@ const nextConfig: NextConfig = {
         destination: "/hotels-near-funtasia",
         permanent: true,
       },
+      // Editor-managed redirects live in Sanity ("Redirect" documents) and
+      // are applied by src/proxy.ts; this one is seeded in code.
+      {
+        source: "/blog/ryder-cup-trip-plan",
+        destination: "/blog/plan-irish-holiday-ryder-cup",
+        permanent: true,
+      },
     ];
   },
   images: {

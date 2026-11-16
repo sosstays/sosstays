@@ -29,6 +29,7 @@ export const BLOG_POSTS_QUERY = defineQuery(`
     coverImage,
     publishedAt,
     author,
+    "authorRef": authorRef->{ name, "slug": slug.current },
     tags,
     featured
   }
@@ -71,6 +72,7 @@ export const BLOG_POST_QUERY = defineQuery(`
     body,
     publishedAt,
     author,
+    "authorRef": authorRef->{ name, "slug": slug.current, role, photo },
     tags,
     faqs,
     relatedAreaGuides[]-> {
@@ -172,6 +174,9 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     reviewScore,
     reviewCount,
     reviewCategories,
+    reviewSource,
+    reviewSourceUrl,
+    reviewAsOf,
     uplistingPropertySlug,
     uplistingPropertyId,
     wholeHouseAvailabilityId,
@@ -273,6 +278,7 @@ export const LANDLORD_PAGE_QUERY = defineQuery(`
     _id,
     title,
     "slug": slug.current,
+    heroHeading,
     heroStatement,
     proofPoints,
     body,
@@ -288,6 +294,7 @@ export const LANDLORD_PAGES_QUERY = defineQuery(`
     _id,
     title,
     "slug": slug.current,
+    heroHeading,
     heroStatement,
     proofPoints,
     body,
@@ -323,6 +330,9 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     defaultSeoImage,
     businessName,
     contactEmail,
+    description,
+    telephone,
+    address,
     bookingSubdomainUrl,
     socialLinks[] {
       platform,
@@ -1158,5 +1168,50 @@ export const PROMO_GRID_QUERY = defineQuery(`
       link,
       image
     }
+  }
+`);
+
+// ---- Authors ----
+
+export const AUTHOR_QUERY = defineQuery(`
+  *[_type == "author" && slug.current == $slug][0] {
+    _id,
+    name,
+    "slug": slug.current,
+    role,
+    bio,
+    photo,
+    sameAs,
+    "posts": *[_type == "blogPost" && market == $market && defined(slug.current) && authorRef._ref == ^._id] | order(publishedAt desc) {
+      _id,
+      title,
+      "slug": slug.current,
+      excerpt,
+      coverImage,
+      tags,
+      publishedAt
+    }
+  }
+`);
+
+// ---- Redirects ----
+// Read by src/proxy.ts. Not market-scoped: a redirect only ever fires for a
+// path that was requested, so an entry for another market's URL is inert.
+export const REDIRECTS_QUERY = defineQuery(`
+  *[_type == "redirect" && defined(from) && defined(to)] { from, to, permanent }
+`);
+
+// ---- Reviews ----
+// Approved reviews for one property, newest stay first.
+export const PROPERTY_REVIEWS_QUERY = defineQuery(`
+  *[_type == "review" && approved == true && property._ref == $propertyId] | order(stayYear desc, stayMonth desc, _createdAt desc) {
+    _id,
+    guestFirstName,
+    stayMonth,
+    stayYear,
+    rating,
+    text,
+    source,
+    sourceUrl
   }
 `);

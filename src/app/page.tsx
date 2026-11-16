@@ -12,7 +12,7 @@ import {
 } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import { buildMetadata } from "@/sanity/metadata";
-import { JsonLd, buildOrganizationSchema } from "@/sanity/jsonld";
+import { JsonLd, buildOrganizationSchema, buildWebSiteSchema } from "@/sanity/jsonld";
 import { MARKET } from "@/lib/market";
 import { orderProperties } from "@/lib/propertyOrder";
 import type { PropertyCardProps } from "@/components/PropertyCard";
@@ -78,9 +78,9 @@ export async function generateMetadata(): Promise<Metadata> {
   // itself (no Sanity document changed).
   return buildMetadata(
     {
-      title: "Holiday Homes & Guest Accommodation in Ireland | SOS Stays",
+      title: "Holiday Homes & Guest Accommodation in Ireland | Sos Stays",
       description:
-        "Explore stays in Louth, Clare and Wexford, check availability and book directly with SOS Stays.",
+        "Explore stays in Louth, Clare and Wexford, check availability and book directly with Sos Stays.",
     },
     ""
   );
@@ -145,6 +145,7 @@ export default async function HomePage() {
   return (
     <main className="overflow-x-hidden bg-cream font-sans text-near-black">
       <JsonLd data={buildOrganizationSchema(siteSettings)} />
+      <JsonLd data={buildWebSiteSchema()} />
 
       {/* HERO — photo, headline and the search bar that types its own
           suggestions. The header inside it is only the logo and one
@@ -157,7 +158,7 @@ export default async function HomePage() {
         id={hero?.heroSectionId || "hero"}
         eyebrow={hero?.eyebrow}
         headingLines={headingLines}
-        supporting="Explore stays in Louth, Clare and Wexford, check availability and book directly with SOS Stays."
+        supporting="Explore stays in Louth, Clare and Wexford, check availability and book directly with Sos Stays."
         subBody={hero?.subBody}
         imageUrl={hero?.image ? urlFor(hero.image).width(1800).height(1200).url() : null}
         imageAlt={hero?.image?.alt}

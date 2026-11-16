@@ -47,7 +47,7 @@ export function HomeBrandBand({
                   <>
                     <Image
                       src={urlFor(item.image!).width(1100).height(620).url()}
-                      alt={item.image?.alt ?? ""}
+                      alt={item.image?.alt || item.title || ""}
                       fill
                       sizes="(min-width: 640px) 50vw, 100vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
