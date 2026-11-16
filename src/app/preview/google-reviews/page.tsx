@@ -85,7 +85,7 @@ export default async function GoogleReviewsPreviewPage() {
         </p>
       </div>
 
-      <StateLabel>State 1: normal (five reviews), shown in context</StateLabel>
+      <StateLabel>State 1: normal (four reviews), shown in context</StateLabel>
       <section className="mx-auto max-w-6xl px-8 pb-10 sm:px-14">
         <div className="max-w-[380px]">
           <ReviewScoreCard
@@ -108,7 +108,7 @@ export default async function GoogleReviewsPreviewPage() {
         items={[{ question: "Placeholder question, to show the section that follows", answer: "Placeholder answer." }]}
       />
 
-      <StateLabel>State 2: fewer than five reviews</StateLabel>
+      <StateLabel>State 2: fewer than four reviews</StateLabel>
       <GoogleReviews data={FEWER} backgroundImageUrl={backgroundImageUrl} />
 
       <StateLabel>State 3: no data (nothing renders between these two lines)</StateLabel>

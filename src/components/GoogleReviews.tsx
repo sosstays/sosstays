@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/Button";
 import { Reveal } from "@/components/Reveal";
+import { ScrollRevealItem } from "@/components/ScrollRevealItem";
 import { GoogleReviewText } from "@/components/GoogleReviewText";
 
 export type GoogleReview = {
@@ -80,9 +81,11 @@ function Avatar({ review }: { review: GoogleReview }) {
   );
 }
 
+const MAX_REVIEWS = 4;
+
 // "Guest reviews" from Google for a stay page: a full-width photo band with
-// frosted-glass review cards that rise into view one by one as the page
-// scrolls. Renders nothing at all when there is no data — no heading, no
+// frosted-glass review cards (four at most) that appear one at a time as
+// the page scrolls. Renders nothing at all when there is no data — no heading, no
 // empty box, no error.
 export function GoogleReviews({
   data,
@@ -93,12 +96,15 @@ export function GoogleReviews({
   backgroundImageUrl?: string | null;
 }) {
   if (!data || !data.rating || data.reviews.length === 0) return null;
-  const reviews = data.reviews.slice(0, 5);
+  const reviews = data.reviews.slice(0, MAX_REVIEWS);
 
   return (
     <section
       aria-labelledby="google-reviews-heading"
-      className="relative isolate mb-14 bg-deep-forest px-6 py-24 text-cream [clip-path:inset(0)] sm:px-14 sm:py-32"
+      className="relative isolate mb-14 bg-deep-forest px-6 text-cream [clip-path:inset(0)] sm:px-14"
+      // Room above the first card for the pinned heading, and below the
+      // last one so it can travel up into view before the section ends.
+      style={{ paddingTop: "62vh", paddingBottom: "18vh" }}
     >
       {/* The photo is fixed to the viewport and clipped to this section, so
           it holds still while the cards scroll up over it. */}
@@ -109,39 +115,39 @@ export function GoogleReviews({
       )}
       <div aria-hidden className="absolute inset-0 -z-10 bg-near-black/60" />
 
-      <div className="mx-auto max-w-[760px]">
-        <header className="mb-14 text-center sm:mb-20">
-          <Reveal
-            as="h2"
-            id="google-reviews-heading"
-            className="font-serif text-4xl leading-[1.05] font-bold tracking-tight text-cream sm:text-6xl"
-          >
-            Hear it from our guests
-          </Reveal>
-          <Reveal delay={120} className="mt-7 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[15px]">
-            <span className="flex items-center gap-2.5">
-              <span className="font-serif text-3xl leading-none font-bold" aria-hidden>
-                {data.rating.toFixed(1)}
-              </span>
-              <Stars rating={data.rating} size={20} />
-              <span className="sr-only">Rated {data.rating.toFixed(1)} out of 5 on Google.</span>
+      {/* The heading is pinned the same way as the photo: fixed to the
+          viewport, visible only while this section is behind it. The cards
+          then scroll up towards it and fade out before they reach it. */}
+      <header className="pointer-events-none fixed inset-x-0 z-10 px-6 text-center" style={{ top: "9vh" }}>
+        <h2
+          id="google-reviews-heading"
+          className="font-serif text-4xl leading-[1.05] font-bold tracking-tight text-cream sm:text-6xl"
+        >
+          Hear it from our guests
+        </h2>
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[15px]">
+          <span className="flex items-center gap-2.5">
+            <span className="font-serif text-3xl leading-none font-bold" aria-hidden>
+              {data.rating.toFixed(1)}
             </span>
-            <span className="text-cream/85">
-              {data.reviewCount.toLocaleString("en-IE")} {data.reviewCount === 1 ? "review" : "reviews"}
-            </span>
-            <span className="flex items-center gap-2 rounded-full bg-bright-cream px-3 py-1.5 text-[13px] text-near-black">
-              <GoogleLogo size={16} />
-              Reviews from <span className="font-semibold">Google</span>
-            </span>
-          </Reveal>
-        </header>
+            <Stars rating={data.rating} size={20} />
+            <span className="sr-only">Rated {data.rating.toFixed(1)} out of 5 on Google.</span>
+          </span>
+          <span className="text-cream/85">
+            {data.reviewCount.toLocaleString("en-IE")} {data.reviewCount === 1 ? "review" : "reviews"}
+          </span>
+          <span className="flex items-center gap-2 rounded-full bg-bright-cream px-3 py-1.5 text-[13px] text-near-black">
+            <GoogleLogo size={16} />
+            Reviews from <span className="font-semibold">Google</span>
+          </span>
+        </div>
+      </header>
 
-        <ul className="flex flex-col gap-4">
+      <div className="mx-auto max-w-[760px]">
+        <ul className="flex flex-col gap-5">
           {reviews.map((review, i) => (
-            <Reveal
-              as="li"
+            <ScrollRevealItem
               key={i}
-              delay={Math.min(i, 2) * 90}
               className="rounded-[16px] border border-cream/15 bg-cream/10 p-6 backdrop-blur-xl sm:p-7"
             >
               <article>
@@ -170,7 +176,7 @@ export function GoogleReviews({
                   </p>
                 </footer>
               </article>
-            </Reveal>
+            </ScrollRevealItem>
           ))}
         </ul>
 
