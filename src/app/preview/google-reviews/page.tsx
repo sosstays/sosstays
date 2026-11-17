@@ -22,6 +22,7 @@ const PLACEHOLDER: GoogleReviewsData = {
     {
       authorName: "Guest A",
       authorUrl: MAPS_URL,
+      reviewUrl: MAPS_URL,
       rating: 5,
       relativeTime: "2 months ago",
       text: "Placeholder review. We stayed four nights with two kids and the house had everything we needed. The kitchen was properly stocked, the beds were comfortable and the host answered every question within minutes. Check-in was simple and the directions were clear. The garden was a hit with the children and we were ten minutes from the beach. We would happily come back next summer and have already recommended it to friends.",
@@ -29,6 +30,7 @@ const PLACEHOLDER: GoogleReviewsData = {
     {
       authorName: "Guest B",
       authorUrl: MAPS_URL,
+      reviewUrl: MAPS_URL,
       rating: 5,
       relativeTime: "3 months ago",
       text: "Placeholder review. Spotless, quiet and exactly as described. Great base for exploring the area.",
@@ -42,6 +44,7 @@ const PLACEHOLDER: GoogleReviewsData = {
     {
       authorName: "Guest D",
       authorUrl: MAPS_URL,
+      reviewUrl: MAPS_URL,
       rating: 5,
       relativeTime: "7 months ago",
       text: "Placeholder review. Booked for a family get-together and it could not have gone better.",
@@ -49,6 +52,7 @@ const PLACEHOLDER: GoogleReviewsData = {
     {
       authorName: "Guest E",
       authorUrl: MAPS_URL,
+      reviewUrl: MAPS_URL,
       rating: 3,
       relativeTime: "a year ago",
       text: "Placeholder review. Good location and clean, though the wifi dropped a few times during our stay.",

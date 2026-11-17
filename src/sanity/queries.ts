@@ -137,6 +137,7 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     country,
     "geo": geo{lat, lng},
     locationLink,
+    googlePlaceId,
     shortDescription,
     fullDescription,
     gallery,

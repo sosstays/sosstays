@@ -18,6 +18,9 @@ import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { PropertyGallery } from "@/components/PropertyGallery";
 import { ReviewScoreCard } from "@/components/ReviewScore";
 import { GuestReviews, type GuestReview } from "@/components/GuestReviews";
+import { GoogleReviews } from "@/components/GoogleReviews";
+import { urlFor } from "@/sanity/image";
+import { getGoogleReviews } from "@/lib/googleReviews";
 import { FaqSection } from "@/components/FaqSection";
 import { AreaGuideCard } from "@/components/AreaGuideCard";
 import { RoomTypesTable } from "@/components/RoomTypesTable";
@@ -66,7 +69,13 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
 
   if (!property) notFound();
 
-  const reviews: GuestReview[] = await client.fetch(PROPERTY_REVIEWS_QUERY, { propertyId: property._id });
+  const [reviews, googleReviews] = await Promise.all([
+    client.fetch(PROPERTY_REVIEWS_QUERY, { propertyId: property._id }) as Promise<GuestReview[]>,
+    // For visitors only — deliberately never passed to the JSON-LD below.
+    getGoogleReviews(property.googlePlaceId),
+  ]);
+  // The second gallery photo, so the band doesn't repeat the page's lead image.
+  const googleReviewsPhoto = property.gallery?.[1] ?? property.gallery?.[0];
 
   const whatsappUrl = siteSettings?.socialLinks?.find(
     (link: { platform: string; url: string }) => link.platform === "whatsapp",
@@ -491,6 +500,11 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
       </section>
 
       <GuestReviews reviews={reviews} />
+
+      <GoogleReviews
+        data={googleReviews}
+        backgroundImageUrl={googleReviewsPhoto?.asset ? urlFor(googleReviewsPhoto).width(2000).height(1400).url() : null}
+      />
 
       {/* VIDEO TOUR */}
       {property.videoUrl && (
