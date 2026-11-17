@@ -165,7 +165,7 @@ function Hero({ county, hasExample, shown }: { county: County; hasExample: boole
             >
               {isLive
                 ? hasExample
-                  ? "Live SOS Stays performance data for this county"
+                  ? "Live Sos Stays performance data for this county"
                   : "Live local market data for this county (AirDNA)"
                 : `We're expanding into Co. ${county.name} — no managed properties here yet`}
             </span>
@@ -206,7 +206,7 @@ function StatStrip({
         value: `${(Math.round(((realExample.afterOccupancy - realExample.beforeOccupancy) / realExample.beforeOccupancy) * 100) * p).toFixed(1)}%`,
         label: (
           <>
-            Occupancy uplift, real SOS Stays property{" "}
+            Occupancy uplift, real Sos Stays property{" "}
             <span className="font-normal text-near-black/55">
               ({realExample.beforeLabel} → {realExample.afterLabel})
             </span>

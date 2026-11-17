@@ -17,6 +17,8 @@ export function FaqSection({
   centered = false,
   maxWidth = "720px",
   padded = true,
+  intro,
+  bottomSpacing = true,
 }: {
   id?: string;
   eyebrow?: string;
@@ -32,13 +34,17 @@ export function FaqSection({
    *  sibling section's content column. Defaults to true (self-contained),
    *  which is what every other caller of this component relies on. */
   padded?: boolean;
+  /** Optional line of text under the heading. */
+  intro?: ReactNode;
+  /** Set false when the section that follows supplies its own top spacing. */
+  bottomSpacing?: boolean;
 }) {
   if (!items || items.length === 0) return null;
 
   const accentClass = accent === "maroon" ? "text-maroon" : "text-forest-green";
 
   return (
-    <section id={id} className={`mx-auto pb-24 ${padded ? "px-8 sm:px-14" : ""}`} style={{ maxWidth }}>
+    <section id={id} className={`mx-auto ${bottomSpacing ? "pb-24" : ""} ${padded ? "px-8 sm:px-14" : ""}`} style={{ maxWidth }}>
       <div className={centered ? "mb-11 text-center" : "mb-6"}>
         {eyebrow && (
           <Eyebrow className="mb-2.5" tone={accent === "maroon" ? "maroon" : "neutral"}>
@@ -52,6 +58,7 @@ export function FaqSection({
         >
           {heading}
         </h2>
+        {intro && <p className="mt-2 text-near-black/70">{intro}</p>}
       </div>
       <div className="border-t border-sage-grey/40">
         {items.map((faq, i) => (

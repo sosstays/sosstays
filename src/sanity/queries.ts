@@ -4,11 +4,16 @@ import { defineQuery } from "next-sanity";
 // `seo.description` are never null — they resolve to the SEO override,
 // then the page's own title, then an empty string. Keeps frontend
 // metadata logic simple (see [slug]/page.tsx generateMetadata pattern).
+// `image`/`imageAlt` fall back through every cover-image field name used
+// across document types (coalesce just skips ones that don't exist on a
+// given type) so every page/post gets a social share image and an alt text
+// even when no custom Social Share Image was uploaded.
 const seoProjection = `
   "seo": {
     "title": coalesce(seoTitle, name, title, areaName, ""),
     "description": coalesce(seoDescription, shortDescription, excerpt, ""),
-    "image": seoImage,
+    "image": coalesce(seoImage, heroImage, coverImage, gallery[0], heroImages[0]),
+    "imageAlt": coalesce(seoImage.alt, heroImage.alt, coverImage.alt, gallery[0].alt, heroImages[0].alt, tags[0], name, title, areaName, ""),
     "noIndex": noIndex
   }
 `;
@@ -24,6 +29,7 @@ export const BLOG_POSTS_QUERY = defineQuery(`
     coverImage,
     publishedAt,
     author,
+    "authorRef": authorRef->{ name, "slug": slug.current },
     tags,
     featured
   }
@@ -66,6 +72,7 @@ export const BLOG_POST_QUERY = defineQuery(`
     body,
     publishedAt,
     author,
+    "authorRef": authorRef->{ name, "slug": slug.current, role, photo },
     tags,
     faqs,
     relatedAreaGuides[]-> {
@@ -88,6 +95,7 @@ export const BLOG_POST_QUERY = defineQuery(`
       title,
       "slug": slug.current,
       coverImage,
+      tags,
       publishedAt
     },
     ${seoProjection}
@@ -129,6 +137,7 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     country,
     "geo": geo{lat, lng},
     locationLink,
+    googlePlaceId,
     shortDescription,
     fullDescription,
     gallery,
@@ -166,6 +175,9 @@ export const PROPERTY_PAGE_QUERY = defineQuery(`
     reviewScore,
     reviewCount,
     reviewCategories,
+    reviewSource,
+    reviewSourceUrl,
+    reviewAsOf,
     uplistingPropertySlug,
     uplistingPropertyId,
     wholeHouseAvailabilityId,
@@ -253,7 +265,8 @@ export const AREA_GUIDE_QUERY = defineQuery(`
       title,
       "slug": slug.current,
       excerpt,
-      coverImage
+      coverImage,
+      tags
     },
     ${seoProjection}
   }
@@ -266,6 +279,7 @@ export const LANDLORD_PAGE_QUERY = defineQuery(`
     _id,
     title,
     "slug": slug.current,
+    heroHeading,
     heroStatement,
     proofPoints,
     body,
@@ -281,6 +295,7 @@ export const LANDLORD_PAGES_QUERY = defineQuery(`
     _id,
     title,
     "slug": slug.current,
+    heroHeading,
     heroStatement,
     proofPoints,
     body,
@@ -316,6 +331,9 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     defaultSeoImage,
     businessName,
     contactEmail,
+    description,
+    telephone,
+    address,
     bookingSubdomainUrl,
     socialLinks[] {
       platform,
@@ -1151,5 +1169,50 @@ export const PROMO_GRID_QUERY = defineQuery(`
       link,
       image
     }
+  }
+`);
+
+// ---- Authors ----
+
+export const AUTHOR_QUERY = defineQuery(`
+  *[_type == "author" && slug.current == $slug][0] {
+    _id,
+    name,
+    "slug": slug.current,
+    role,
+    bio,
+    photo,
+    sameAs,
+    "posts": *[_type == "blogPost" && market == $market && defined(slug.current) && authorRef._ref == ^._id] | order(publishedAt desc) {
+      _id,
+      title,
+      "slug": slug.current,
+      excerpt,
+      coverImage,
+      tags,
+      publishedAt
+    }
+  }
+`);
+
+// ---- Redirects ----
+// Read by src/proxy.ts. Not market-scoped: a redirect only ever fires for a
+// path that was requested, so an entry for another market's URL is inert.
+export const REDIRECTS_QUERY = defineQuery(`
+  *[_type == "redirect" && defined(from) && defined(to)] { from, to, permanent }
+`);
+
+// ---- Reviews ----
+// Approved reviews for one property, newest stay first.
+export const PROPERTY_REVIEWS_QUERY = defineQuery(`
+  *[_type == "review" && approved == true && property._ref == $propertyId] | order(stayYear desc, stayMonth desc, _createdAt desc) {
+    _id,
+    guestFirstName,
+    stayMonth,
+    stayYear,
+    rating,
+    text,
+    source,
+    sourceUrl
   }
 `);

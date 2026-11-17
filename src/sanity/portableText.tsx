@@ -40,16 +40,23 @@ export function portableTextToMarkdownSource(blocks: PortableTextBlock[] | undef
 // Hut](#aggies-coffee-hut-tullyallen)"). Renames the heading later and the
 // id changes too — for a link that must survive a heading rename, use the
 // Anchor mark instead (see the `anchor` entry below).
-function headingId(value: { children?: unknown[] }): string {
-  const text = (value.children ?? [])
-    .map((child) => (typeof (child as { text?: unknown }).text === "string" ? (child as { text: string }).text : ""))
-    .join("");
+export function slugifyHeading(text: string): string {
   return text
     .toLowerCase()
     .trim()
     .replace(/['’]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function blockText(value: { children?: unknown[] } | null | undefined): string {
+  return (value?.children ?? [])
+    .map((child) => (typeof (child as { text?: unknown }).text === "string" ? (child as { text: string }).text : ""))
+    .join("");
+}
+
+function headingId(value: { children?: unknown[] }): string {
+  return slugifyHeading(blockText(value));
 }
 
 // Article body renderer for long-form blog content — serif headings and an
@@ -164,7 +171,12 @@ export const blogBodyComponents: PortableTextComponents = {
     },
   },
   marks: {
-    link: ({ children, value }) => (
+    link: ({ children, value }) =>
+      // A link annotation saved with no URL would otherwise render as a
+      // dead <a> with no href.
+      !value?.href?.trim() ? (
+        <>{children}</>
+      ) : (
       <a
         href={value?.href}
         className="text-forest-green underline underline-offset-2"
@@ -173,7 +185,7 @@ export const blogBodyComponents: PortableTextComponents = {
       >
         {children}
       </a>
-    ),
+      ),
     // A manually-placed jump-to point (Studio's "Anchor" toolbar mark) —
     // for anchoring somewhere that isn't a heading, or an id that needs to
     // survive the surrounding text being edited later.
@@ -187,3 +199,36 @@ export const blogBodyComponents: PortableTextComponents = {
       ),
   },
 };
+
+// Blog body renderer for one specific post. Posts carry a hand-typed
+// "Table of contents" bullet list repeating their H2 texts as plain text;
+// any list item whose text matches a heading in the same body becomes a
+// jump link to that heading's id. Items that match no heading (every
+// ordinary bullet list) render exactly as before.
+export function createBlogBodyComponents(
+  body: { _type?: string; style?: string; children?: unknown[] }[] | null | undefined
+): PortableTextComponents {
+  const headingIds = new Set(
+    (body ?? [])
+      .filter((block) => block?._type === "block" && (block.style === "h2" || block.style === "h3"))
+      .map((block) => headingId(block))
+      .filter(Boolean)
+  );
+
+  const listItem = ({ children, value }: { children?: React.ReactNode; value: { children?: unknown[] } }) => {
+    const id = headingId(value);
+    return (
+      <li>
+        {id && headingIds.has(id) ? (
+          <a href={`#${id}`} className="text-forest-green underline underline-offset-2">
+            {children}
+          </a>
+        ) : (
+          children
+        )}
+      </li>
+    );
+  };
+
+  return { ...blogBodyComponents, listItem: { bullet: listItem, number: listItem } };
+}

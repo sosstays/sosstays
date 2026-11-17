@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const page = await client.fetch(LIST_YOUR_PROPERTY_PAGE_QUERY);
   return buildMetadata(
     {
-      title: page?.seo?.title || "List Your Property for Corporate Stays | SOS Stays",
+      title: page?.seo?.title || "List Your Property for Corporate Stays | Sos Stays",
       description:
         page?.seo?.description ||
         "Submit your property for our corporate & monthly-stay sourcing pool — contractor crews, relocating professionals and other long-stay guests, separate from regular Airbnb management.",

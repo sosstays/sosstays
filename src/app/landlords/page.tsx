@@ -18,7 +18,7 @@ export const revalidate = 60;
 // is) so an editor-set seoTitle/seoDescription still takes precedence over
 // this hardcoded SEO copy.
 const LANDLORDS_FALLBACK_SEO = {
-  title: "Airbnb Management Ireland | Commission-Only | SOS Stays",
+  title: "Airbnb Management Ireland | Commission-Only | Sos Stays",
   description:
     "Commission-only Airbnb and short-term let management for landlords across Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — from 15% commission, no setup fee.",
 };

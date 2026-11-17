@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `${SITE_URL}${path}` },
-    robots: isIndexable(property.seo?.noIndex) ? { index: true, follow: true } : { index: false, follow: false },
+    robots: isIndexable(property.seo?.noIndex) ? { index: true, follow: true } : { index: false, follow: true },
     openGraph: {
       title,
       description,
@@ -157,6 +157,9 @@ export default async function RoomPage({ params, searchParams }: Props) {
               <ReviewScoreCard
                 score={property.reviewScore}
                 reviewCount={property.reviewCount}
+                source={property.reviewSource}
+                sourceUrl={property.reviewSourceUrl}
+                asOf={property.reviewAsOf}
                 categories={property.reviewCategories}
                 compact
               />

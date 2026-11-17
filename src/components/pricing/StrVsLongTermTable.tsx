@@ -16,7 +16,7 @@ function buildRows(region: Region): Row[] {
 
   return [
     { label: "Typical monthly income", str: "Higher — priced nightly, adjusted to demand", longTerm: "Fixed rent, set once a year" },
-    { label: "Who does the work", str: "SOS Stays — listings, pricing, cleaning, guests", longTerm: "You, or a letting agent on a flat fee" },
+    { label: "Who does the work", str: "Sos Stays — listings, pricing, cleaning, guests", longTerm: "You, or a letting agent on a flat fee" },
     { label: "Flexibility to use the property yourself", str: "Block off any dates you want", longTerm: "None until the tenancy ends" },
     { label: "Vacancy risk", str: "Managed actively — dynamic pricing keeps nights filled", longTerm: "One vacant month can wipe out a month's rent" },
     complianceRow,
@@ -44,7 +44,7 @@ export function StrVsLongTermTable({ region = "roi" }: { region?: Region }) {
           <thead>
             <tr className="bg-light-forest-green/50">
               <th className="px-5 py-3.5 font-semibold text-near-black/70">&nbsp;</th>
-              <th className="px-5 py-3.5 font-semibold text-forest-green">Short-term with SOS Stays</th>
+              <th className="px-5 py-3.5 font-semibold text-forest-green">Short-term with Sos Stays</th>
               <th className="px-5 py-3.5 font-semibold text-near-black/70">Long-term letting</th>
             </tr>
           </thead>

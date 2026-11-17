@@ -36,7 +36,7 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
         <div className="relative h-40">
           <Image
             src={urlFor(post.coverImage).width(500).height(320).url()}
-            alt={post.coverImage.alt ?? post.title}
+            alt={post.coverImage.alt ?? primaryTag ?? post.title}
             fill
             className="object-cover"
           />

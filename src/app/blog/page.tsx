@@ -2,6 +2,7 @@ import Link from "next/link";
 import { client } from "@/sanity/client";
 import { BLOG_POSTS_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { buildMetadata } from "@/sanity/metadata";
+import { JsonLd, buildBlogSchema } from "@/sanity/jsonld";
 import { HeroNav } from "@/components/HeroNav";
 import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { BlogSearchGrid } from "@/components/BlogSearchGrid";
@@ -33,7 +34,7 @@ export default async function BlogIndexPage({
     client.fetch(SITE_SETTINGS_QUERY),
     getGuestSiteNavLinks(),
   ]);
-  const fallbackAuthorName = siteSettings?.businessName || "Sos Stays";
+  const fallbackAuthorName = siteSettings?.siteName || "Sos Stays";
   const posts = tag
     ? allPosts.filter((post: any) => post.tags?.includes(tag))
     : allPosts;
@@ -46,6 +47,7 @@ export default async function BlogIndexPage({
 
   return (
     <>
+      <JsonLd data={buildBlogSchema(allPosts)} />
       <HeroNav links={siteNavLinks} ctaHref="/#stays" ctaLabel="Find your break" sticky />
       <main className="bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8">

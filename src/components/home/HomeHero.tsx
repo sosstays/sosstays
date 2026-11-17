@@ -219,7 +219,7 @@ export function HomeHero({
           >
             {active.stay.cardImageUrl && (
               <span className="relative block w-[34%] shrink-0">
-                <Image src={active.stay.cardImageUrl} alt="" fill sizes="180px" className="object-cover" />
+                <Image src={active.stay.cardImageUrl} alt={active.stay.name} fill sizes="180px" className="object-cover" />
               </span>
             )}
             <span className="flex min-w-0 flex-col gap-1 px-5 py-4">

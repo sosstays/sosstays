@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Image from "next/image";
 import landlordHeroImage from "@/assets/images/landlord.png";
 import { client } from "@/sanity/client";
@@ -20,6 +21,7 @@ import { COMMISSION_RANGE, MAINTENANCE_AUTHORITY_EUR } from "@/lib/businessFacts
 type LandlordPage = {
   title?: string;
   slug?: string;
+  heroHeading?: string | null;
   heroStatement?: string;
   proofPoints?: string[] | null;
   body?: any;
@@ -116,9 +118,23 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 For property owners
               </Reveal>
               <Reveal as="h1" delay={130} className="mb-7 font-serif text-4xl leading-[1.1] font-bold tracking-tight text-cream sm:text-6xl">
-                You&apos;re already doing this yourself.
-                <br />
-                Let&apos;s do it better.
+                {page.heroHeading?.trim() ? (
+                  page.heroHeading
+                    .trim()
+                    .split(/\n+/)
+                    .map((line, i) => (
+                      <Fragment key={i}>
+                        {i > 0 && <br />}
+                        {line}
+                      </Fragment>
+                    ))
+                ) : (
+                  <>
+                    You&apos;re already doing this yourself.
+                    <br />
+                    Let&apos;s do it better.
+                  </>
+                )}
               </Reveal>
               <Reveal as="p" delay={260} className="mb-9 max-w-[560px] text-lg leading-relaxed text-cream/90">
                 You handle the calendar, the cleaner, the awkward 11pm messages.
@@ -228,7 +244,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                   style={{ animationDelay: "360ms" }}
                 />
                 <span className="ml-2 text-xs font-semibold tracking-widest text-cream/60 uppercase">
-                  SOS Stays
+                  Sos Stays
                 </span>
               </div>
             </Reveal>
@@ -258,7 +274,7 @@ export async function LandlordPageContent({ page }: { page: LandlordPage }) {
                 <div>
                   <span className="inline-flex items-center gap-2.5 text-sm font-semibold text-near-black">
                     <span className="h-[3px] w-5.5 rounded-full bg-maroon" />
-                    Managed by SOS Stays
+                    Managed by Sos Stays
                   </span>
                   <p className="mt-1.5 max-w-[28ch] pl-8 text-xs leading-relaxed text-near-black/55">
                     Repriced daily against live demand — the same market data

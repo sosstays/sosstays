@@ -4,6 +4,10 @@ import { SITEMAP_QUERY, SITEMAP_SINGLETONS_QUERY } from "@/sanity/queries";
 import { normalizeLandlordSlug } from "@/sanity/jsonld";
 import { MARKET, SITE_URL, SITE_NOINDEX, isIndexable } from "@/lib/market";
 
+// Without this the sitemap is generated once at build time and never
+// again, so posts published since the last deploy are missing from it.
+export const revalidate = 60;
+
 // Priority/frequency for routes that aren't in the CMS-backed singleton
 // query below (no per-page _updatedAt to key off of).
 const STATIC_ROUTES: MetadataRoute.Sitemap = [

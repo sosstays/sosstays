@@ -211,7 +211,7 @@ const CORPORATE_STAYS_JSON_LD = {
     {
       "@type": "Organization",
       "@id": "https://sosstays.com/#organization",
-      name: "SOS Stays",
+      name: "Sos Stays",
       url: "https://sosstays.com",
       logo: "https://sosstays.com/logo.svg",
       slogan: "Sos is the Irish word for a break.",

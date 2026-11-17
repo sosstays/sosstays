@@ -23,7 +23,7 @@ export function buildGenericCountyFaqs(countyName: string, region: Region): Coun
 
   return [
     {
-      question: `How much does SOS Stays charge in Co. ${countyName}?`,
+      question: `How much does Sos Stays charge in Co. ${countyName}?`,
       answer:
         "Commission starts from 15% of gross rental revenue (nightly rate, not cleaning fees), varying by property type and exact location. No setup fee or monthly retainer — you only pay when the property earns.",
     },
