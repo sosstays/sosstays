@@ -18,6 +18,7 @@ import { StickyBookingBar } from "@/components/StickyBookingBar";
 import { ComparisonBars } from "@/components/ComparisonBars";
 import { MarqueeBanner } from "@/components/MarqueeBanner";
 import { FaqSection } from "@/components/FaqSection";
+import { linkify } from "@/lib/linkify";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -179,6 +180,16 @@ const LANDING_PAGE_FAQS: Record<string, { question: string; answer: string }[]> 
   ],
 };
 
+// An infoSection with one of these headings is the page's FAQ, written in
+// Sanity: each item's title is a question and its description the answer.
+// It renders as an accordion where it sits in the section order, and
+// replaces the hardcoded LANDING_PAGE_FAQS list above for that page.
+const FAQ_SECTION_HEADINGS = ["frequently asked questions", "common questions"];
+
+function isFaqSection(section: { heading?: string | null }) {
+  return FAQ_SECTION_HEADINGS.includes((section.heading ?? "").trim().toLowerCase());
+}
+
 const LANDING_PAGE_FAQ_HEADINGS: Record<string, string> = {
   "hotels-near-funtasia": "Frequently asked questions about accommodation near Funtasia",
   "hotels-near-cliffs-of-moher": "Frequently asked questions about accommodation near the Cliffs of Moher",
@@ -289,7 +300,8 @@ export default async function LandingPage({ params }: Props) {
     { name: page.heroHeadline || page.title, url: `${SITE_URL}/${slug}` },
   ]);
 
-  const pageFaqs = LANDING_PAGE_FAQS[slug];
+  const hasSanityFaq = (page.infoSections ?? []).some(isFaqSection);
+  const pageFaqs = hasSanityFaq ? undefined : LANDING_PAGE_FAQS[slug];
   const pageFaqHeading = LANDING_PAGE_FAQ_HEADINGS[slug];
   const pageFaqSchema = pageFaqs ? buildFaqSchema(pageFaqs) : null;
   const isRyderCup2027 = slug === RYDER_CUP_2027_SLUG;
@@ -883,7 +895,23 @@ export default async function LandingPage({ params }: Props) {
       )}
 
       {/* OTHER INFO SECTIONS — generic fallback for any section not using layout: "photoGrid" */}
-      {otherSections.map((section, i) => (
+      {otherSections.map((section, i) =>
+        isFaqSection(section) ? (
+          <div key={i} className="pt-16">
+            <FaqSection
+              id="faq"
+              eyebrow={section.eyebrow || undefined}
+              heading={section.heading!.trim()}
+              intro={section.body?.trim() ? linkify(section.body.trim()) : undefined}
+              items={(section.items ?? [])
+                .filter((item) => item.title?.trim() && item.description?.trim())
+                .map((item) => ({ question: item.title!.trim(), answer: linkify(item.description!.trim()) }))}
+              accent="forest-green"
+              maxWidth="820px"
+              bottomSpacing={false}
+            />
+          </div>
+        ) : (
         <section key={i} className="mx-auto max-w-6xl px-8 pt-16 sm:px-14">
           {section.eyebrow && <Eyebrow className="mb-2">{section.eyebrow}</Eyebrow>}
           {section.heading && (
@@ -920,7 +948,8 @@ export default async function LandingPage({ params }: Props) {
             </div>
           )}
         </section>
-      ))}
+        )
+      )}
 
       {/* ITINERARY */}
       {page.itineraryDays && page.itineraryDays.length > 0 && (
