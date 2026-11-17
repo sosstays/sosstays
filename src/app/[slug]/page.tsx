@@ -23,179 +23,31 @@ import type { Metadata } from "next";
 
 export const revalidate = 60;
 
-// Page-specific SEO additions (visible FAQ section + FAQPage JSON-LD) for a
-// handful of landing pages — this template is shared by every landingPage
-// doc, so everything below is keyed by slug rather than touching any other
-// landing page. A page's property's own LodgingBusiness/VacationRental
-// schema lives once on its /stays/[slug] page (see sanity/jsonld.tsx's
-// PROPERTY_SCHEMA_OVERRIDES) and is never duplicated here.
-const LANDING_PAGE_FAQS: Record<string, { question: string; answer: string }[]> = {
-  "hotels-near-funtasia": [
-    {
-      question: "Is there accommodation near Funtasia Drogheda?",
-      answer:
-        "Yes. Rathescar Grove Guest House is family-friendly accommodation about 15 minutes' drive from Funtasia Theme Park in Drogheda, with free on-site parking and family rooms with bunk beds for the kids.",
-    },
-    {
-      question: "How far is Rathescar Grove from Funtasia?",
-      answer:
-        "About 15 minutes by car. Funtasia is at Donore Road Industrial Estate, Drogheda, Co. Louth (A92 EVH6), and Rathescar Grove is just outside Dunleer — an easy drive, with free parking waiting at the house when you get back.",
-    },
-    {
-      question: "Do you have family rooms near Funtasia?",
-      answer:
-        "Yes. The Family Room has bunk beds for the kids plus a large double, sleeping 4, and there's also a Deluxe Family Room and a whole-house option sleeping up to 10 across 3 bedrooms and 3 bathrooms. Every stay includes free WiFi, a garden, and mountain or farmland views.",
-    },
-    {
-      question: "Is there free parking at your accommodation near Funtasia?",
-      answer:
-        "Yes — free on-site parking is included with every stay. Leave the car at the house and make the short drive to Funtasia, or park right outside when you get back.",
-    },
-    {
-      question: "Can I visit Funtasia and Newgrange in one trip?",
-      answer:
-        "Yes. Rathescar Grove sits between Funtasia in Drogheda and Newgrange / Brú na Bóinne in the Boyne Valley, so it works as a single base for both — Funtasia one day, Newgrange and the Hill of Slane the next.",
-    },
-    {
-      question: "What time is check-in and check-out?",
-      answer:
-        "Self check-in runs from 3pm to 9pm — room details arrive by message the day before. Check-out is 11:30am, leaving you time for a lazy breakfast before Funtasia opens.",
-    },
-    {
-      question: "How much are Funtasia tickets?",
-      answer:
-        "General admission is €24.95pp, off-peak (Mon–Fri 5–7pm) is €19.95pp, and children 2 and under go free. The Big Splash ticket bundles waterpark access with activities and rides — check funtasia.ie for current pricing, as the waterpark now runs a timeslot system and it's best to book online in advance.",
-    },
-  ],
-  "hotels-near-cliffs-of-moher": [
-    {
-      question: "Is there accommodation near the Cliffs of Moher?",
-      answer:
-        "Yes. Howard's Way is a private self-catering house in Liscannor, just five minutes' drive from the Cliffs of Moher — four bedrooms, sea views and private parking, sleeping up to 8 guests.",
-    },
-    {
-      question: "How far is Howard's Way from the Cliffs of Moher?",
-      answer:
-        "About five minutes by car. Howard's Way is in Liscannor, Co. Clare, which puts you closer to the cliffs than most hotels in Ennis or Lahinch.",
-    },
-    {
-      question: "How many people does Howard's Way sleep?",
-      answer:
-        "Eight guests across four bedrooms, with four acres of grounds — room for a golf group, a two-family trip, or a week without sharing a corridor with strangers.",
-    },
-    {
-      question: "Is there parking at Howard's Way?",
-      answer:
-        "Yes. Private on-site parking with EV charging is included, along with four acres of grounds and no shared lobby or check-in queue.",
-    },
-    {
-      question: "What's near Howard's Way besides the Cliffs of Moher?",
-      answer:
-        "Lahinch is ten minutes away with its shops, restaurants and 36-hole links golf course, and St Brigid's Well sits right on the Wild Atlantic Way on the edge of Liscannor village.",
-    },
-    {
-      question: "When is the best time to visit the Cliffs of Moher?",
-      answer:
-        "Go early morning or late evening to avoid the coach traffic, which is heaviest between 10am and 4pm. Staying five minutes away makes an early or late visit easy.",
-    },
-    {
-      question: "How tall are the Cliffs of Moher?",
-      answer:
-        "The cliffs rise to 214 metres over about 8km of coastline, making them Ireland's most-visited natural attraction.",
-    },
-  ],
-  "hotels-near-newgrange": [
-    {
-      question: "Is there accommodation near Newgrange?",
-      answer:
-        "Yes. Rathescar Grove Guest House is countryside accommodation in Ardee near Drogheda, about a 25-minute drive from Newgrange, with mountain and farmland views, free parking and a private balcony option.",
-    },
-    {
-      question: "How far is Rathescar Grove from Newgrange?",
-      answer:
-        "Roughly 22.5km, or about 25 minutes by car. All Newgrange visits start at the Brú na Bóinne Visitor Centre in Donore, Co. Meath (A92 EH5C) — there's no driving directly to the monument.",
-    },
-    {
-      question: "Do I need to book Newgrange in advance?",
-      answer:
-        "Yes. There's no walk-up entry — every visit starts at the Brú na Bóinne Visitor Centre, and tickets release 30 days ahead from April to October and 7 days ahead the rest of the year. Summer slots can sell out within hours, so book as early as the window allows.",
-    },
-    {
-      question: "How much do Newgrange tickets cost?",
-      answer:
-        "The main-season tour (1 March–1 November) covers the exhibition, the Newgrange chamber and Knowth, is €18 per adult for 2026 and runs about 3 hours. The winter tour covers the exhibition and Newgrange chamber only and runs about 2 hours. Always confirm on heritageireland.ie before booking.",
-    },
-    {
-      question: "Do you have rooms near Newgrange?",
-      answer:
-        "Yes. Rathescar Grove is a three-room guest house with a Family Room with Mountain View, a Deluxe Double Room and a Deluxe Family Room, sleeping up to 10 across 3 bedrooms and 3 bathrooms, with free WiFi, a garden and free parking.",
-    },
-    {
-      question: "Can I visit Newgrange and Funtasia in one trip?",
-      answer:
-        "Yes. Rathescar Grove sits between Newgrange in the Boyne Valley and Funtasia Theme Park in Drogheda, so it works as a single base for a history day and a family day out.",
-    },
-    {
-      question: "Is Newgrange suitable for young children?",
-      answer:
-        "The passage and chamber are narrow, dimly lit and involve uneven steps, so it's not accessible for everyone. It's worth preparing younger kids for a short, enclosed space in advance.",
-    },
-  ],
-  "ryder-cup-2027-accommodation": [
-    {
-      question: "Where should I stay for the Ryder Cup 2027?",
-      answer:
-        "Howard's Way is a whole self-catering house in Liscannor, Co. Clare, about an hour and 15 minutes' drive from Adare Manor — four bedrooms, sleeps eight, sea views, and Lahinch ten minutes away. If you're a bigger group or want to tour Ireland, we can also plan a route across several of our houses.",
-    },
-    {
-      question: "How far is Howard's Way from Adare Manor?",
-      answer:
-        "About 85 km by road, roughly an hour and 15 minutes via Ennis and Limerick on a normal day. Match days are busier, so leave early and plan to use the official park-and-ride or train services.",
-    },
-    {
-      question: "Do I need to buy Ryder Cup tickets separately?",
-      answer:
-        "Yes. Tickets are sold only through the official Ryder Cup channels — Sos Stays is not an official provider and doesn't sell tickets or hospitality. It's worth having tickets confirmed before you book a stay.",
-    },
-    {
-      question: "Can you plan our whole Ireland trip around the Ryder Cup?",
-      answer:
-        "Yes. Beyond the house, we act as your local concierge: accommodation across our Irish properties, match-day transport planning, tee times at the west-of-Ireland links, and family days out — all arranged for you.",
-    },
-    {
-      question: "What is there for the family during Ryder Cup week?",
-      answer:
-        "Howard's Way is five minutes from the Cliffs of Moher and ten from Lahinch beach and golf. The Aran Islands ferries leave from Doolin about 20 minutes away, and the Burren, Doolin Cave and Galway city are all easy day trips.",
-    },
-    {
-      question: "Is Adare Manor taking bookings during the Ryder Cup?",
-      answer:
-        "No — Adare Manor isn't taking normal bookings in September 2027. The official accommodation options are a campsite at Mountwilliam, the Official Property Rental Programme, and a cruise ship, so many groups stay an hour or more away.",
-    },
-    {
-      question: "How do I book Howard's Way for Ryder Cup week?",
-      answer:
-        "Email hello@sosstays.com with your dates and group size, and we'll come back with availability and a price. For a full bespoke itinerary, send us your group details and we'll plan the whole trip.",
-    },
-  ],
-};
-
 // An infoSection with one of these headings is the page's FAQ, written in
 // Sanity: each item's title is a question and its description the answer.
-// It renders as an accordion where it sits in the section order, and
-// replaces the hardcoded LANDING_PAGE_FAQS list above for that page.
+// It renders as an accordion where it sits in the section order, and the
+// same items feed the page's FAQPage structured data — so every question
+// marked up is one a visitor can see.
 const FAQ_SECTION_HEADINGS = ["frequently asked questions", "common questions"];
+
+type InfoSectionLike = {
+  heading?: string | null;
+  items?: { title?: string | null; description?: string | null }[] | null;
+};
 
 function isFaqSection(section: { heading?: string | null }) {
   return FAQ_SECTION_HEADINGS.includes((section.heading ?? "").trim().toLowerCase());
 }
 
-const LANDING_PAGE_FAQ_HEADINGS: Record<string, string> = {
-  "hotels-near-funtasia": "Frequently asked questions about accommodation near Funtasia",
-  "hotels-near-cliffs-of-moher": "Frequently asked questions about accommodation near the Cliffs of Moher",
-  "hotels-near-newgrange": "Frequently asked questions about accommodation near Newgrange",
-  "ryder-cup-2027-accommodation": "Frequently asked questions about Ryder Cup 2027 accommodation",
-};
+// The questions a FAQ section actually shows: items with both a question
+// and an answer.
+function faqItems(section: InfoSectionLike) {
+  return (section.items ?? [])
+    .map((item) => ({ question: item.title?.trim() ?? "", answer: item.description?.trim() ?? "" }))
+    .filter((item) => item.question && item.answer);
+}
+
+const stripHtml = (text: string) => text.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
 
 // Page-specific additions for /ryder-cup-2027-accommodation only: a subhead
 // under the H1, and a bespoke-trip "concierge" section. No equivalent CMS
@@ -300,10 +152,16 @@ export default async function LandingPage({ params }: Props) {
     { name: page.heroHeadline || page.title, url: `${SITE_URL}/${slug}` },
   ]);
 
-  const hasSanityFaq = (page.infoSections ?? []).some(isFaqSection);
-  const pageFaqs = hasSanityFaq ? undefined : LANDING_PAGE_FAQS[slug];
-  const pageFaqHeading = LANDING_PAGE_FAQ_HEADINGS[slug];
-  const pageFaqSchema = pageFaqs ? buildFaqSchema(pageFaqs) : null;
+  // One FAQPage for the whole page, built from exactly the questions its
+  // FAQ section(s) render, each listed once.
+  const seenQuestions = new Set<string>();
+  const pageFaqSchema = buildFaqSchema(
+    (page.infoSections ?? [])
+      .filter(isFaqSection)
+      .flatMap(faqItems)
+      .filter((item) => !seenQuestions.has(item.question) && Boolean(seenQuestions.add(item.question)))
+      .map((item) => ({ question: stripHtml(item.question), answer: stripHtml(item.answer) }))
+  );
   const isRyderCup2027 = slug === RYDER_CUP_2027_SLUG;
 
   const property = page.featuredProperty;
@@ -903,9 +761,7 @@ export default async function LandingPage({ params }: Props) {
               eyebrow={section.eyebrow || undefined}
               heading={section.heading!.trim()}
               intro={section.body?.trim() ? linkify(section.body.trim()) : undefined}
-              items={(section.items ?? [])
-                .filter((item) => item.title?.trim() && item.description?.trim())
-                .map((item) => ({ question: item.title!.trim(), answer: linkify(item.description!.trim()) }))}
+              items={faqItems(section).map((item) => ({ question: item.question, answer: linkify(item.answer) }))}
               accent="forest-green"
               maxWidth="820px"
               bottomSpacing={false}
@@ -975,19 +831,6 @@ export default async function LandingPage({ params }: Props) {
           )}
           <ItineraryTimeline days={page.itineraryDays} />
         </section>
-      )}
-
-      {/* FAQ — only on the landing pages listed in LANDING_PAGE_FAQS above */}
-      {pageFaqs && (
-        <div className="pt-28">
-          <FaqSection
-            id="faq"
-            heading={pageFaqHeading}
-            items={pageFaqs}
-            accent="forest-green"
-            maxWidth="820px"
-          />
-        </div>
       )}
 
       {/* WHILE YOU'RE IN THE AREA */}
