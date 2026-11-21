@@ -5,6 +5,7 @@ import { PROPERTY_BOOKING_QUERY } from "@/sanity/queries";
 import { getStayQuote, resolveUplistingPropertyId } from "@/lib/uplistingApi";
 import { validateStayParams, validateGuestDetails } from "@/lib/bookingValidation";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
+import { checkPromotionCode } from "@/lib/promo";
 
 // Creates the embedded Stripe Checkout Session the /book page mounts. The
 // amount charged always comes from a fresh Uplisting quote fetched here —
@@ -85,8 +86,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Promo code is no longer valid" }, { status: 400 });
     }
     const coupon = promo.promotion.coupon as Stripe.Coupon | null;
-    const currencyMismatch = !coupon || coupon.amount_off == null || coupon.currency !== quote.currency.toLowerCase();
-    if (!promo.active || !coupon?.valid || currencyMismatch) {
+    // Checked against the server-derived total (never the client's preview),
+    // so a code's minimum spend and currency can't be dodged by a tampered
+    // request. Stripe computes the discount itself when it builds the session.
+    const subtotal = quote.total + selectedAddOns.reduce((sum, addOn) => sum + addOn.price, 0);
+    if (!checkPromotionCode(promo, coupon, quote.currency.toLowerCase(), subtotal).ok) {
       return NextResponse.json({ error: "Promo code is no longer valid" }, { status: 400 });
     }
   }

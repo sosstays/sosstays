@@ -1,25 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
+import { checkPromotionCode, promoDiscount } from "@/lib/promo";
 
 // Looks up a guest-entered code against Stripe's own Promotion Codes, so
 // BookingSummaryCard can show the discount before a Checkout Session exists.
-// Only fixed-amount ("amount_off") coupons are supported for now — a
-// percent-off coupon is rejected here rather than guessing at Stripe's
-// rounding, since the actual discount is only ever finalized by Stripe at
-// session creation (see api/checkout/session, which re-verifies this same
-// code rather than trusting the amount this route returns).
+// Supports fixed-amount and percent-off coupons. The `subtotal` the client
+// sends (accommodation + add-ons) is only used to preview the discount and to
+// enforce a code's minimum spend — the discount actually charged is always
+// computed by Stripe at session creation, and api/checkout/session re-verifies
+// the code against its own server-derived total rather than trusting this.
 export async function POST(request: NextRequest) {
   if (!isStripeConfigured) {
     return NextResponse.json({ error: "Checkout is not configured" }, { status: 500 });
   }
 
   const body = await request.json().catch(() => null);
-  const code = typeof (body as Record<string, unknown> | null)?.code === "string" ? (body as Record<string, string>).code.trim() : "";
-  const currencyRaw = typeof (body as Record<string, unknown> | null)?.currency === "string" ? (body as Record<string, string>).currency : "";
-  const currency = currencyRaw.toLowerCase();
-  if (!code || !currency) {
-    return NextResponse.json({ error: "code and currency are required" }, { status: 400 });
+  const b = (body ?? {}) as Record<string, unknown>;
+  const code = typeof b.code === "string" ? b.code.trim() : "";
+  const currency = typeof b.currency === "string" ? b.currency.toLowerCase() : "";
+  const subtotal = typeof b.subtotal === "number" && Number.isFinite(b.subtotal) ? b.subtotal : NaN;
+  if (!code || !currency || !(subtotal > 0)) {
+    return NextResponse.json({ error: "code, currency and subtotal are required" }, { status: 400 });
   }
 
   let promotionCode;
@@ -38,18 +40,21 @@ export async function POST(request: NextRequest) {
   }
 
   const coupon = promotionCode?.promotion.coupon as Stripe.Coupon | undefined;
-  if (!promotionCode || !coupon || !coupon.valid) {
+  if (!promotionCode) {
     return NextResponse.json({ valid: false, error: "That promo code isn't valid." });
   }
 
-  if (coupon.amount_off == null || coupon.currency !== currency) {
-    return NextResponse.json({ valid: false, error: "That promo code can't be applied to this booking." });
+  const check = checkPromotionCode(promotionCode, coupon, currency, subtotal);
+  if (!check.ok) {
+    return NextResponse.json({ valid: false, error: check.reason });
   }
 
   return NextResponse.json({
     valid: true,
     promotionCodeId: promotionCode.id,
-    discountAmount: coupon.amount_off / 100,
-    currency: coupon.currency,
+    percentOff: check.terms.percentOff,
+    amountOff: check.terms.amountOff,
+    discountAmount: promoDiscount(check.terms, subtotal),
+    currency,
   });
 }
