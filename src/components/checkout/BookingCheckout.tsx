@@ -8,13 +8,15 @@ import { formatCurrency } from "@/lib/utils";
 import { AddOnSelector, type CheckoutAddOn } from "@/components/checkout/AddOnSelector";
 import { PaymentBadge } from "@/components/checkout/PaymentBadge";
 import type { StayQuote } from "@/lib/uplistingApi";
+import { promoDiscount, type PromoTerms } from "@/lib/promo";
 
 export type { CheckoutAddOn };
 
-// A Stripe fixed-amount promo code the guest has successfully applied —
-// see api/checkout/promo, which looks this up. Percent-off coupons aren't
-// supported yet (see that route for why).
-export type AppliedPromo = { code: string; promotionCodeId: string; discountAmount: number };
+// A Stripe promo code (fixed-amount or percent-off) the guest has successfully
+// applied — see api/checkout/promo, which looks this up. `discountAmount` is
+// the preview for the current subtotal; it's re-derived whenever add-ons change
+// (a percent-off code is worth more with more in the basket).
+export type AppliedPromo = { code: string; promotionCodeId: string; discountAmount: number } & PromoTerms;
 
 // Loaded once at module scope, outside the component, per Stripe's guidance —
 // recreating the Stripe object on every render breaks Checkout's iframe.
@@ -83,9 +85,14 @@ export function BookingCheckout({
   const [promoCodeInput, setPromoCodeInput] = useState("");
   const [promoStatus, setPromoStatus] = useState<"idle" | "checking" | "applied" | "invalid" | "error">("idle");
   const [promoError, setPromoError] = useState("");
-  const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null);
+  const [promoApplied, setPromoApplied] = useState<Omit<AppliedPromo, "discountAmount"> | null>(null);
 
-  const total = Math.max(0, quote.total + addOnSelection.total - (appliedPromo?.discountAmount ?? 0));
+  const subtotal = quote.total + addOnSelection.total;
+  const appliedPromo = useMemo<AppliedPromo | null>(
+    () => (promoApplied ? { ...promoApplied, discountAmount: promoDiscount(promoApplied, subtotal) } : null),
+    [promoApplied, subtotal]
+  );
+  const total = Math.max(0, subtotal - (appliedPromo?.discountAmount ?? 0));
 
   useEffect(() => {
     onSummaryChange?.({
@@ -103,7 +110,7 @@ export function BookingCheckout({
       const res = await fetch("/api/checkout/promo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, currency: quote.currency }),
+        body: JSON.stringify({ code, currency: quote.currency, subtotal }),
       });
       const data = await res.json();
       if (!res.ok || !data.valid) {
@@ -111,7 +118,12 @@ export function BookingCheckout({
         setPromoError(data.error || "That promo code isn't valid.");
         return;
       }
-      setAppliedPromo({ code, promotionCodeId: data.promotionCodeId, discountAmount: data.discountAmount });
+      setPromoApplied({
+        code,
+        promotionCodeId: data.promotionCodeId,
+        percentOff: data.percentOff ?? null,
+        amountOff: data.amountOff ?? null,
+      });
       setPromoStatus("applied");
     } catch {
       setPromoStatus("error");
@@ -120,7 +132,7 @@ export function BookingCheckout({
   }
 
   function clearPromoCode() {
-    setAppliedPromo(null);
+    setPromoApplied(null);
     setPromoStatus("idle");
     setPromoError("");
     setPromoCodeInput("");
@@ -253,6 +265,7 @@ export function BookingCheckout({
               <span className="text-[15px] text-near-black">
                 <strong className="font-medium">{appliedPromo.code}</strong> applied — −
                 {formatCurrency(appliedPromo.discountAmount, quote.currency)}
+                {appliedPromo.percentOff != null && ` (${appliedPromo.percentOff}% off)`}
               </span>
               <button
                 type="button"
