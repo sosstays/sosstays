@@ -5,3 +5,7 @@ export const COMMISSION_RANGE = "15–30%";
 export const COMMISSION_RANGE_FULL = `${COMMISSION_RANGE} of gross booking revenue (nightly rate only, cleaning fees excluded)`;
 export const COMMISSION_FROM = "15%";
 export const MAINTENANCE_AUTHORITY_EUR = 250;
+
+// Plain-English sentence for the pricing page and FAQ schema, so the
+// wording never drifts from the numbers above.
+export const COMMISSION_PLAIN = `Commission is ${COMMISSION_RANGE} of gross booking revenue (nightly rate only, cleaning fees excluded).`;

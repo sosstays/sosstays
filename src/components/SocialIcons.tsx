@@ -7,6 +7,9 @@ type SocialLink = {
     | "x"
     | "youtube"
     | "tripadvisor"
+    | "googlebusiness"
+    | "reddit"
+    | "quora"
     | "whatsapp";
   url: string;
 };
@@ -19,6 +22,9 @@ const LABELS: Record<SocialLink["platform"], string> = {
   x: "X (Twitter)",
   youtube: "YouTube",
   tripadvisor: "TripAdvisor",
+  googlebusiness: "Google Business Profile",
+  reddit: "Reddit",
+  quora: "Quora",
   whatsapp: "WhatsApp",
 };
 
@@ -48,6 +54,27 @@ const ICONS: Record<SocialLink["platform"], React.ReactNode> = {
       <circle cx="7.2" cy="13.4" r="1.15" />
       <circle cx="16.8" cy="13.4" r="1.15" />
       <path d="M8.9 8.4c1-.66 2.02-.98 3.1-.98s2.1.32 3.1.98M2.4 8.4h4.7M16.9 8.4h4.7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </>
+  ),
+  googlebusiness: (
+    <path
+      fillRule="evenodd"
+      d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"
+    />
+  ),
+  reddit: (
+    <>
+      <circle cx="12" cy="14" r="6.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="9.4" cy="13.4" r="1.15" />
+      <circle cx="14.6" cy="13.4" r="1.15" />
+      <path d="M9.4 16.4c.7.6 1.6.9 2.6.9s1.9-.3 2.6-.9M12 7.8l1.1-4.2 3.6.8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="17.4" cy="4.6" r="1.1" />
+    </>
+  ),
+  quora: (
+    <>
+      <circle cx="11.6" cy="11.6" r="7.4" fill="none" stroke="currentColor" strokeWidth="1.9" />
+      <path d="M13.4 14.2 19.4 20.2" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" />
     </>
   ),
   whatsapp: (

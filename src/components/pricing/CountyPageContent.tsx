@@ -8,6 +8,7 @@ import { CountyRevenueEstimator } from "@/components/pricing/CountyRevenueEstima
 import { formatEuro } from "@/lib/revenueCalculator";
 import { buildGenericCountyFaqs, mergeCountyFaqs } from "@/lib/countyFaqs";
 import { COUNTY_INTROS } from "@/lib/countyIntros";
+import { COMMISSION_RANGE } from "@/lib/businessFacts";
 import type { County } from "@/lib/pricingCounties";
 
 const STR_RULES_URL = "/blog/str-rules-ireland-what-hosts-need-to-know";
@@ -285,9 +286,8 @@ function StatStrip({
 }
 
 function PricingBandLive({ countyName, shown }: { countyName: string; shown: boolean }) {
-  // Dublin's higher property values put it on a wider commission band than
-  // the rest of the counties — everywhere else quotes the same 20–30%.
-  const commissionRange = countyName === "Dublin" ? "15–30%" : "20–30%";
+  // One range everywhere — see COMMISSION_RANGE in lib/businessFacts.
+  const commissionRange = COMMISSION_RANGE;
 
   return (
     <div
@@ -320,7 +320,7 @@ function PricingBandLive({ countyName, shown }: { countyName: string; shown: boo
             clipPath: `inset(0 ${shown ? "0" : "100%"} 0 0)`,
           }}
         >
-          From 15% of your rental revenue
+          {COMMISSION_RANGE} of your rental revenue
         </span>
         <p className="m-0 max-w-[52ch] text-[14.5px] leading-relaxed text-cream/85">
           Exact commission depends on property type and exact location within the county. No setup
@@ -345,9 +345,6 @@ function PricingBandLive({ countyName, shown }: { countyName: string; shown: boo
         <div className="flex flex-col gap-1">
           <p className="m-0 text-[11.5px] leading-relaxed text-cream/60">
             {commissionRange} commission, depending on property type and location.
-          </p>
-          <p className="m-0 text-[11.5px] leading-relaxed text-cream/60">
-            Hosts typically see up to a 40% revenue uplift after switching to full management.
           </p>
         </div>
         <Link href="/landlords" className="text-[13px] text-cream/80 underline underline-offset-[3px]">

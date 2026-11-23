@@ -20,6 +20,9 @@ const SOCIAL_LABELS: Record<string, string> = {
   x: "X (Twitter)",
   youtube: "YouTube",
   tripadvisor: "TripAdvisor",
+  googlebusiness: "Google Business Profile",
+  reddit: "Reddit",
+  quora: "Quora",
   whatsapp: "WhatsApp",
 };
 

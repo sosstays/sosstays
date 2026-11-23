@@ -12,6 +12,9 @@ type SocialLink = {
     | "x"
     | "youtube"
     | "tripadvisor"
+    | "googlebusiness"
+    | "reddit"
+    | "quora"
     | "whatsapp";
   url: string;
 };
