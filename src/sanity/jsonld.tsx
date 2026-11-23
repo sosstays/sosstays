@@ -43,7 +43,7 @@ export const WEBSITE_ID = `${SITE_URL}/#website`;
 
 // Only genuine brand profiles belong in sameAs — not a WhatsApp chat link
 // or a review-site listing for one property.
-const SAME_AS_PLATFORMS = ["instagram", "tiktok", "facebook"];
+const SAME_AS_PLATFORMS = ["instagram", "tiktok", "facebook", "linkedin", "youtube", "googlebusiness", "reddit", "quora"];
 
 // The brand name is always "Sos Stays" regardless of CMS content; the
 // legal entity ("Power Rangers Ltd") is only ever `legalName`. Used
