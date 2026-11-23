@@ -497,7 +497,7 @@ export function buildNationalPricingServiceSchema() {
     name: "Airbnb & Short-Term Let Management Ireland",
     serviceType: "Short-term rental property management",
     description:
-      "Commission-only Airbnb and holiday let management for landlords across Ireland and Northern Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — from 15% commission, no setup fee.",
+      "Commission-only Airbnb and holiday let management for landlords across Ireland and Northern Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — 15–30% commission, no setup fee.",
     url: `${SITE_URL}/pricing`,
     brand: { "@type": "Brand", name: DEFAULT_SITE_NAME },
     provider: organizationRef(),
@@ -508,7 +508,7 @@ export function buildNationalPricingServiceSchema() {
     offers: {
       "@type": "Offer",
       description:
-        "Commission-only pricing — from 15% of gross booking revenue, cleaning fees excluded. No setup fee, no monthly retainer.",
+        "Commission-only pricing — 15–30% of gross booking revenue, cleaning fees excluded. No setup fee, no monthly retainer.",
     },
   };
 }
@@ -522,7 +522,7 @@ export function buildCountyServiceSchema(county: { name: string; slug: string; r
     "@type": "Service",
     name: `Airbnb & Short-Term Let Management in ${county.name}`,
     serviceType: "Short-term rental property management",
-    description: `Commission-only Airbnb and short-term let management for landlords in County ${county.name}. Dynamic pricing, cleaning, maintenance and guest comms handled — from 15% commission, no setup fee.`,
+    description: `Commission-only Airbnb and short-term let management for landlords in County ${county.name}. Dynamic pricing, cleaning, maintenance and guest comms handled — 15–30% commission, no setup fee.`,
     url: `${SITE_URL}/pricing/${county.slug}`,
     brand: { "@type": "Brand", name: DEFAULT_SITE_NAME },
     provider: organizationRef(),
@@ -530,7 +530,7 @@ export function buildCountyServiceSchema(county: { name: string; slug: string; r
     offers: {
       "@type": "Offer",
       description:
-        "Commission-only pricing — from 15% of gross booking revenue, cleaning fees excluded. No setup fee, no monthly retainer.",
+        "Commission-only pricing — 15–30% of gross booking revenue, cleaning fees excluded. No setup fee, no monthly retainer.",
     },
   };
 }
@@ -572,7 +572,7 @@ export function buildServiceSchema(page: LandlordPageForSchema, settings?: SiteS
       ? "Airbnb & Holiday Home Management Ireland"
       : page.title || page.heroStatement || "Property Management",
     description: isHub
-      ? "Commission-only Airbnb and short-term let management for landlords across Ireland and Northern Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — from 15% commission, no setup fee."
+      ? "Commission-only Airbnb and short-term let management for landlords across Ireland and Northern Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — 15–30% commission, no setup fee."
       : page.heroStatement || page.proofPoints?.[0],
     url,
     provider: organizationRef(),

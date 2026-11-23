@@ -20,7 +20,7 @@ export const revalidate = 60;
 const LANDLORDS_FALLBACK_SEO = {
   title: "Airbnb Management Ireland | Commission-Only | Sos Stays",
   description:
-    "Commission-only Airbnb and short-term let management for landlords across Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — from 15% commission, no setup fee.",
+    "Commission-only Airbnb and short-term let management for landlords across Ireland. Dynamic pricing, cleaning, maintenance and guest comms handled — 15–30% commission, no setup fee.",
 };
 
 export async function generateMetadata(): Promise<Metadata> {

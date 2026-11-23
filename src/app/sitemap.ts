@@ -3,6 +3,7 @@ import { client } from "@/sanity/client";
 import { SITEMAP_QUERY, SITEMAP_SINGLETONS_QUERY } from "@/sanity/queries";
 import { normalizeLandlordSlug } from "@/sanity/jsonld";
 import { MARKET, SITE_URL, SITE_NOINDEX, isIndexable } from "@/lib/market";
+import { getPricingCounties } from "@/lib/fetchPricingCounties";
 
 // Without this the sitemap is generated once at build time and never
 // again, so posts published since the last deploy are missing from it.
@@ -38,10 +39,22 @@ const SINGLETON_META: Record<string, { changeFrequency: MetadataRoute.Sitemap[nu
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (SITE_NOINDEX) return [];
 
-  const [entries, singletons] = await Promise.all([
+  const [entries, singletons, counties] = await Promise.all([
     client.fetch(SITEMAP_QUERY),
     client.fetch(SITEMAP_SINGLETONS_QUERY),
+    MARKET === "ie" ? getPricingCounties() : Promise.resolve([]),
   ]);
+
+  // County pricing pages. Only counties with real market data are listed;
+  // the "expanding" ones share a generic template and stay out of the
+  // sitemap until they have their own figures.
+  const countyRoutes: MetadataRoute.Sitemap = counties
+    .filter((county) => county.state === "live")
+    .map((county) => ({
+      url: `${SITE_URL}/pricing/${county.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    }));
 
   const singletonRoutes: MetadataRoute.Sitemap = singletons
     .filter((entry: any) => entry.href && isIndexable(entry.noIndex))
@@ -73,7 +86,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   // The static route list is Ireland's; India only lists real, indexable docs.
-  const allRoutes = [...(MARKET === "ie" ? STATIC_ROUTES : []), ...singletonRoutes, ...dynamicRoutes];
+  const allRoutes = [...(MARKET === "ie" ? STATIC_ROUTES : []), ...singletonRoutes, ...countyRoutes, ...dynamicRoutes];
 
   // Defensive de-dup: keeps the first (highest-priority) entry for any URL
   // that ends up listed twice, e.g. a static route also present in a

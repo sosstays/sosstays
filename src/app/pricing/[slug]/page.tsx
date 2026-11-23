@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!county) return {};
 
   const title = `Airbnb Management & Pricing in ${county.name} | Sos Stays`;
-  const description = `Commission-only Airbnb & short-term let management in Co. ${county.name}. From 15% commission, no setup fee, no retainer — see what your ${county.name} property could earn.`;
+  const description = `Commission-only Airbnb & short-term let management in Co. ${county.name}. 15–30% commission, no setup fee, no retainer — see what your ${county.name} property could earn.`;
   return buildMetadata({ title, description }, `/pricing/${slug}`);
 }
 
