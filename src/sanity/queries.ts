@@ -105,7 +105,7 @@ export const BLOG_POST_QUERY = defineQuery(`
 // ---- Property pages ----
 
 export const PROPERTY_PAGES_QUERY = defineQuery(`
-  *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) {
+  *[_type == "propertyPage" && market == $market && defined(slug.current) && hiddenFromListings != true] | order(name asc) {
     _id,
     name,
     "slug": slug.current,
@@ -249,7 +249,7 @@ export const AREA_GUIDE_QUERY = defineQuery(`
     thingsToDo,
     travelNotes,
     faqs,
-    featuredProperties[]-> {
+    "featuredProperties": (featuredProperties[]->{
       _id,
       name,
       "slug": slug.current,
@@ -258,8 +258,9 @@ export const AREA_GUIDE_QUERY = defineQuery(`
       sleeps,
       "coverImage": gallery[0],
       "gallery": gallery[0...3],
-      uplistingPropertySlug
-    },
+      uplistingPropertySlug,
+      hiddenFromListings
+    })[hiddenFromListings != true],
     "relatedBlogPosts": *[_type == "blogPost" && market == $market && references(^._id)] {
       _id,
       title,
@@ -792,7 +793,7 @@ export const ABOUT_PAGE_QUERY = defineQuery(`
 // propertyOrder (see lib/propertyOrder.ts) before slicing down to 8 — see
 // the equivalent note on HOMEPAGE_QUERY.
 export const CORPORATE_ONBOARDED_PROPERTIES_QUERY = defineQuery(`
-  *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) {
+  *[_type == "propertyPage" && market == $market && defined(slug.current) && hiddenFromListings != true] | order(name asc) {
     _id,
     name,
     "slug": slug.current,
@@ -896,7 +897,7 @@ export const FEATURED_PARTNER_SLUGS_QUERY = defineQuery(`
 // in GROQ first would lock that section to alphabetical order regardless
 // of propertyOrder.
 export const HOMEPAGE_QUERY = defineQuery(`{
-  "properties": *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) {
+  "properties": *[_type == "propertyPage" && market == $market && defined(slug.current) && hiddenFromListings != true] | order(name asc) {
     _id, name, "slug": slug.current, location, destinationHeading, shortDescription, sleeps,
     homepageImage,
     "coverImage": gallery[0], "gallery": gallery[0...3]
@@ -1150,7 +1151,7 @@ export const SHOP_PRODUCT_BY_ID_QUERY = defineQuery(`
 // goods purchase — deliberately leaner than PROPERTY_PAGES_QUERY, which
 // pulls a lot more than a delivery picker needs.
 export const SHOP_DELIVERY_PROPERTIES_QUERY = defineQuery(`
-  *[_type == "propertyPage" && market == $market && defined(slug.current)] | order(name asc) {
+  *[_type == "propertyPage" && market == $market && defined(slug.current) && hiddenFromListings != true] | order(name asc) {
     _id,
     name,
     "slug": slug.current
