@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Calendar } from "lucide-react";
+import { Calendar, Star } from "lucide-react";
 import { PortableText } from "next-sanity";
 import { client } from "@/sanity/client";
 import { PROPERTY_PAGE_QUERY, PROPERTY_REVIEWS_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
@@ -273,6 +273,21 @@ export default async function PropertyPage({ params, searchParams }: PageProps) 
             </span>
           )}
         </div>
+        {googleReviews && (
+          <a
+            href={googleReviews.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-2 text-sm text-near-black/70 transition-colors hover:text-forest-green"
+          >
+            <Star aria-hidden="true" className="h-4 w-4 fill-current text-forest-green" strokeWidth={1.5} />
+            <span className="font-semibold text-near-black">{googleReviews.rating.toFixed(1)}</span>
+            <span>
+              · {googleReviews.reviewCount} {googleReviews.reviewCount === 1 ? "review" : "reviews"} on Google Maps
+            </span>
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
+        )}
       </section>
 
       {/* AVAILABILITY BAR */}

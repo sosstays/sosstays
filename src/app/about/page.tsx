@@ -66,7 +66,7 @@ const DEFAULT_WHAT_WE_DO = [
   },
   {
     title: "Landlord management",
-    body: "Listings, pricing, guest messaging, cleaning coordination and owner statements, sorted. Commission-only, from 15% of rental revenue. No setup fee, no retainer, no booking, no fee.",
+    body: "Listings, pricing, guest messaging, cleaning coordination and owner statements, sorted. Commission-only, 15–30% of rental revenue. No setup fee, no retainer, no booking fee.",
   },
   {
     title: "Corporate & contractor stays",
@@ -174,7 +174,7 @@ const DEFAULT_FAQS = [
   },
   {
     question: "How much does Sos Stays charge landlords?",
-    answer: "Commission-only, from 15% of rental revenue. No setup fee, no monthly retainer.",
+    answer: "Commission-only, 15–30% of rental revenue. No setup fee, no monthly retainer.",
   },
 ];
 
