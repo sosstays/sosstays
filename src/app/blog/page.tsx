@@ -8,6 +8,8 @@ import { getGuestSiteNavLinks } from "@/lib/navLinks";
 import { BlogSearchGrid } from "@/components/BlogSearchGrid";
 import { ImageOverlayCard } from "@/components/ImageOverlayCard";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
+import { BespokeTripCta } from "@/components/BespokeTripCta";
+import { SidebarPromoCard } from "@/components/SidebarPromoCard";
 import { Reveal } from "@/components/Reveal";
 import type { Metadata } from "next";
 
@@ -89,13 +91,33 @@ export default async function BlogIndexPage({
               )}
             </div>
 
-            <Reveal
-              delay={100}
-              as="aside"
-              className="h-fit rounded-[14px] border border-sage-grey/40 bg-pale-sage/30 p-6 lg:sticky lg:top-24"
-            >
-              <NewsletterSignup />
-            </Reveal>
+            <aside className="flex h-fit flex-col gap-6 lg:sticky lg:top-24">
+              <Reveal delay={100} className="rounded-[14px] border border-sage-grey/40 bg-pale-sage/30 p-6">
+                <NewsletterSignup />
+              </Reveal>
+
+              <Reveal delay={150}>
+                <SidebarPromoCard
+                  heading="Give the gift of a getaway"
+                  text="Build a voucher around a stay, an experience or just an amount — redeemable on any Sos Stays property."
+                  primaryHref="/gift-maker"
+                  primaryLabel="Build a gift"
+                />
+              </Reveal>
+
+              <Reveal delay={200}>
+                <BespokeTripCta variant="compact" />
+              </Reveal>
+
+              <Reveal delay={250}>
+                <SidebarPromoCard
+                  heading="Run a local business?"
+                  text="Cleaners, photographers, tour operators and more — get featured in front of every Sos Stays guest."
+                  primaryHref="/partners"
+                  primaryLabel="Become a partner"
+                />
+              </Reveal>
+            </aside>
           </div>
         </div>
       </main>

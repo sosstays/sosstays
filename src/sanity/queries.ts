@@ -28,8 +28,7 @@ export const BLOG_POSTS_QUERY = defineQuery(`
     excerpt,
     coverImage,
     publishedAt,
-    author,
-    "authorRef": authorRef->{ name, "slug": slug.current },
+    "authorRef": authorRef->{ name, "slug": slug.current, photo },
     tags,
     featured
   }
@@ -56,7 +55,6 @@ export const LANDLORD_BLOG_POSTS_QUERY = defineQuery(`
     excerpt,
     coverImage,
     publishedAt,
-    author,
     tags
   }
 `);
@@ -71,7 +69,6 @@ export const BLOG_POST_QUERY = defineQuery(`
     coverImage,
     body,
     publishedAt,
-    author,
     "authorRef": authorRef->{ name, "slug": slug.current, role, photo },
     tags,
     faqs,

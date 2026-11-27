@@ -160,7 +160,7 @@ export const blogBodyComponents: PortableTextComponents = {
               loading="lazy"
               sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"
               className="h-full w-full border-0"
-              style={ratioClass ? { position: "absolute", inset: 0 } : { width: "100%", height: "100%" }}
+              style={ratioClass ? { position: "absolute", inset: 0 } : { width: "100%", height: 480 }}
             />
           </div>
           {value.caption && (
