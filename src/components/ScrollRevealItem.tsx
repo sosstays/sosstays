@@ -17,9 +17,7 @@ export function ScrollRevealItem({ children, className }: { children: ReactNode;
     const el = ref.current;
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    let frame = 0;
-    const update = () => {
-      frame = 0;
+    const apply = () => {
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
       // From the bottom edge to fully in place a fifth of the way up the
@@ -31,16 +29,36 @@ export function ScrollRevealItem({ children, className }: { children: ReactNode;
       // A card that has faded out shouldn't catch clicks or keyboard focus.
       el.style.visibility = progress < 0.02 ? "hidden" : "visible";
     };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
+
+    // Driven by a running rAF loop (not the scroll event) while the item is
+    // anywhere near the viewport, so every frame — scrolling down or back up
+    // — recomputes from the element's actual position. A plain scroll-event
+    // listener can miss ticks during fast or momentum scrolling, which is
+    // what made the fade-out on the way back up look like it wasn't
+    // happening at all.
+    let raf = 0;
+    const loop = () => {
+      apply();
+      raf = requestAnimationFrame(loop);
     };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!raf) raf = requestAnimationFrame(loop);
+        } else if (raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+          apply(); // settle to the correct resting state once the loop stops
+        }
+      },
+      { rootMargin: "100% 0px 100% 0px" }
+    );
+    observer.observe(el);
+    apply();
+
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (frame) cancelAnimationFrame(frame);
+      observer.disconnect();
+      if (raf) cancelAnimationFrame(raf);
     };
   }, []);
 

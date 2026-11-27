@@ -26,6 +26,8 @@ import { Reveal } from "@/components/Reveal";
 import { Eyebrow } from "@/components/Eyebrow";
 import { HomeHero, type HomeHeroPrompt } from "@/components/home/HomeHero";
 import { HomeAreaList, type HomeArea } from "@/components/home/HomeAreaList";
+import { GoogleReviews } from "@/components/GoogleReviews";
+import { getGoogleReviews } from "@/lib/googleReviews";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -98,6 +100,8 @@ export default async function HomePage() {
       client.fetch(HOMEPAGE_BLOG_QUERY),
       client.fetch<HomePageContent>(HOME_PAGE_QUERY),
     ]);
+
+  const googleReviews = await getGoogleReviews(siteSettings?.googlePlaceId);
 
   // No cap here — the carousel is what keeps this section manageable as
   // more stays get added; Property Order in Site Settings controls which
@@ -281,6 +285,16 @@ export default async function HomePage() {
         </div>
       </section>
       <Script src="https://w.behold.so/widget.js" type="module" strategy="afterInteractive" />
+
+      {/* GOOGLE REVIEWS — business-wide rating/reviews (not one property's),
+          last section before the footer. Renders nothing without data. */}
+      <GoogleReviews
+        data={googleReviews}
+        heading="Hear it from our clients"
+        backgroundImageUrl={
+          properties[0]?.coverImage ? urlFor(properties[0].coverImage).width(2000).height(1400).url() : null
+        }
+      />
 
     </main>
   );

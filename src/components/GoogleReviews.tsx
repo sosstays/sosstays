@@ -92,10 +92,12 @@ const MAX_REVIEWS = 4;
 export function GoogleReviews({
   data,
   backgroundImageUrl,
+  heading = "Hear it from our guests",
 }: {
   data?: GoogleReviewsData | null;
   /** One of the property's own photos, shown darkened behind the cards. */
   backgroundImageUrl?: string | null;
+  heading?: string;
 }) {
   if (!data || !data.rating || data.reviews.length === 0) return null;
   const reviews = data.reviews.slice(0, MAX_REVIEWS);
@@ -121,7 +123,7 @@ export function GoogleReviews({
             id="google-reviews-heading"
             className="font-serif text-4xl leading-[1.05] font-bold tracking-tight text-cream sm:text-6xl"
           >
-            Hear it from our guests
+            {heading}
           </Reveal>
           <Reveal delay={120} className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[15px]">
             <span className="flex items-center gap-2.5">
