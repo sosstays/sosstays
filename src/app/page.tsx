@@ -74,18 +74,11 @@ function heroImages(image?: SanityImage | null) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  // Hardcoded here rather than left to the Sanity default-SEO fallback —
-  // this exact title/description is the guest-first homepage copy from the
-  // SEO audit's first-stage fix, approved separately from the CMS content
-  // itself (no Sanity document changed).
-  return buildMetadata(
-    {
-      title: "Holiday Homes & Guest Accommodation in Ireland | Sos Stays",
-      description:
-        "Explore stays in Louth, Clare and Wexford, check availability and book directly with Sos Stays.",
-    },
-    ""
-  );
+  // The homepage title and description come from Sanity: Site Settings →
+  // "Default SEO Title" / "Default SEO Description" (buildMetadata falls
+  // back to them when a page passes no seo of its own). Edit them there,
+  // not here.
+  return buildMetadata(null, "");
 }
 
 export default async function HomePage() {
