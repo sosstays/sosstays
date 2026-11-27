@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
+import { SidebarPromoCard } from "@/components/SidebarPromoCard";
 
 const HEADING = "Planning more than one stay?";
 const TEXT =
@@ -14,30 +15,14 @@ const TEXT =
 export function BespokeTripCta({ variant = "band" }: { variant?: "band" | "compact" }) {
   if (variant === "compact") {
     return (
-      <div className="relative overflow-hidden rounded-[14px] bg-deep-forest p-7 text-center">
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: "url('/images/sos-mark-pattern.svg')", backgroundSize: "120px", backgroundRepeat: "repeat" }}
-        />
-        <div className="relative">
-          <h3 className="font-serif text-xl leading-[1.15] font-bold tracking-tight text-cream">{HEADING}</h3>
-          <p className="mx-auto mt-3 text-[14px] leading-relaxed text-light-sage">{TEXT}</p>
-          <div className="mt-5 flex flex-col gap-2.5">
-            <Link
-              href="/bespoke-ireland-trip"
-              className="inline-flex items-center justify-center rounded-full bg-cream px-6 py-3 text-sm font-semibold text-deep-forest transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_26px_rgba(0,0,0,0.28)]"
-            >
-              Plan your Ireland trip
-            </Link>
-            <Link
-              href="/contact?topic=About+a+booking#contact-form"
-              className="inline-flex items-center justify-center rounded-full border border-cream/55 px-6 py-2.5 text-sm font-medium text-cream transition-colors duration-200 hover:bg-cream/14"
-            >
-              Ask us a question
-            </Link>
-          </div>
-        </div>
-      </div>
+      <SidebarPromoCard
+        heading={HEADING}
+        text={TEXT}
+        primaryHref="/bespoke-ireland-trip"
+        primaryLabel="Plan your Ireland trip"
+        secondaryHref="/contact?topic=About+a+booking#contact-form"
+        secondaryLabel="Ask us a question"
+      />
     );
   }
 
