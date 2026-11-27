@@ -335,6 +335,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     description,
     telephone,
     address,
+    googlePlaceId,
     bookingSubdomainUrl,
     socialLinks[] {
       platform,
