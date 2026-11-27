@@ -61,11 +61,9 @@ export default async function BlogPostPage({ params }: Props) {
   ]);
   const faqSchema = buildFaqSchema(post.faqs);
 
-  // A linked author profile wins over the inline name/role/avatar typed on
-  // the post, which stays as the fallback for posts that predate profiles.
-  const authorName = post.authorRef?.name || post.author?.name || siteSettings?.siteName || "Sos Stays";
-  const authorRole: string | undefined = post.authorRef?.role || post.author?.role;
-  const authorImage = post.authorRef?.photo?.asset ? post.authorRef.photo : post.author?.avatar;
+  const authorName = post.authorRef?.name || siteSettings?.siteName || "Sos Stays";
+  const authorRole: string | undefined = post.authorRef?.role;
+  const authorImage = post.authorRef?.photo?.asset ? post.authorRef.photo : undefined;
   const authorHref = post.authorRef?.slug ? `/authors/${post.authorRef.slug}` : null;
   // Only worth showing once the post has genuinely been revised — not for
   // the publish-day tweaks every post gets.

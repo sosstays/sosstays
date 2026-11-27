@@ -9,7 +9,7 @@ export type BlogPost = {
   excerpt?: string | null;
   coverImage?: any;
   publishedAt?: string;
-  author?: { name?: string; avatar?: any } | null;
+  authorRef?: { name?: string; photo?: any } | null;
   tags?: string[] | null;
   featured?: boolean | null;
 };
@@ -24,7 +24,7 @@ const dateFormatter = new Intl.DateTimeFormat("en-IE", {
 // link for the post's byline, since a blog card's equivalent
 // call-to-action is "who wrote this" rather than "go here".
 export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fallbackAuthorName: string }) {
-  const authorName = post.author?.name || fallbackAuthorName;
+  const authorName = post.authorRef?.name || fallbackAuthorName;
   const primaryTag = post.tags?.[0];
 
   return (
@@ -61,11 +61,11 @@ export function BlogPostCard({ post, fallbackAuthorName }: { post: BlogPost; fal
         )}
 
         <div className="mt-auto flex items-center gap-2.5">
-          {post.author?.avatar?.asset ? (
+          {post.authorRef?.photo?.asset ? (
             <div className="relative h-7 w-7 flex-none overflow-hidden rounded-full">
               <Image
-                src={urlFor(post.author.avatar).width(56).height(56).url()}
-                alt={post.author.avatar.alt || authorName}
+                src={urlFor(post.authorRef.photo).width(56).height(56).url()}
+                alt={post.authorRef.photo.alt || authorName}
                 fill
                 className="object-cover"
               />

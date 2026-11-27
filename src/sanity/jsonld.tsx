@@ -442,7 +442,6 @@ type BlogPostForSchema = {
   coverImage?: any;
   publishedAt?: string | null;
   _updatedAt?: string | null;
-  author?: { name?: string | null; role?: string | null } | null;
   authorRef?: { name?: string | null; slug?: string | null; role?: string | null } | null;
 };
 
@@ -454,13 +453,6 @@ function buildArticleAuthor(post: BlogPostForSchema) {
       name: post.authorRef.name,
       url: authorUrl(post.authorRef.slug),
       ...(post.authorRef.role ? { jobTitle: post.authorRef.role } : {}),
-    };
-  }
-  if (post.author?.name) {
-    return {
-      "@type": "Person",
-      name: post.author.name,
-      ...(post.author.role ? { jobTitle: post.author.role } : {}),
     };
   }
   return organizationRef();
