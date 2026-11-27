@@ -11,7 +11,7 @@ import { createBlogBodyComponents } from "@/sanity/portableText";
 import { estimateReadingTime } from "@/sanity/readingTime";
 import { HeroNav } from "@/components/HeroNav";
 import { Button } from "@/components/Button";
-import { SocialIcons } from "@/components/SocialIcons";
+import { ShareArticleButtons } from "@/components/ShareArticleButtons";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { DisqusComments } from "@/components/DisqusComments";
 import { BlogPostListItem } from "@/components/BlogPostListItem";
@@ -259,15 +259,10 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             )}
 
-            {siteSettings?.socialLinks && siteSettings.socialLinks.length > 0 && (
-              <div className="mb-9">
-                <p className="mb-4 text-[13px] font-semibold text-forest-green">Share on social media</p>
-                <SocialIcons
-                  links={siteSettings.socialLinks}
-                  className="bg-cream text-forest-green hover:bg-forest-green hover:text-cream"
-                />
-              </div>
-            )}
+            <div className="mb-9">
+              <p className="mb-4 text-[13px] font-semibold text-forest-green">Share this article</p>
+              <ShareArticleButtons url={`${SITE_URL}/blog/${slug}`} title={post.title} />
+            </div>
 
             {post.tags && post.tags.length > 0 && (
               <div className="mb-9">
